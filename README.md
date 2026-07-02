@@ -36,6 +36,19 @@ This is the fastest way to run the app with working voice on your own computer:
 
 The page calls `/api/tts`, and `server.js` calls Fish Audio with your server-side key. `.env.local` is ignored by git so the key does not get committed.
 
+### Vercel setup
+
+Yes, you can deploy this directly on Vercel. Vercel serves the static app and runs `api/tts.js` as a server-side Function, so the browser still calls `/api/tts` without seeing your Fish Audio key.
+
+1. Push this folder to GitHub.
+2. In Vercel, create a new project from that GitHub repo.
+3. Use the default **Other** framework/static settings. No build command is required because `index.html` is already generated.
+4. In **Project Settings** -> **Environment Variables**, add:
+   - `FISH_API_KEY` -> your rotated Fish Audio API key.
+   - `FISH_VOICE_ID` -> `d38790551b0548ba9de248dbd10b74e1`.
+   - Optional: `FISH_TTS_MODEL` -> `s2.1-pro-free`.
+5. Deploy, open the Vercel URL, select a word, and click **Listen to an explanation**.
+
 ### Hosted setup with Cloudflare Worker
 
 1. Go to [dash.cloudflare.com](https://dash.cloudflare.com) and sign up for a free account if needed.
