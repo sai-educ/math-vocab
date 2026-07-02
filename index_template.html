@@ -710,9 +710,9 @@ function renderDetail(){
     <div class="breadcrumb">Grade ${t.grade} → ${t.domain}</div>
     <h2>${t.term}</h2>
     <span class="standard">${t.standard}</span>
-    <button id="listenBtn"><span class="icon">🔊</span><span id="listenBtnText">Listen to an explanation</span></button>
-    <div id="listenStatus"></div>
-    <audio id="listenAudio" style="display:none;"></audio>
+    <button id="listenBtn" type="button" aria-describedby="listenStatus"><span class="icon">🔊</span><span id="listenBtnText">Listen to an explanation</span></button>
+    <div id="listenStatus" role="status" aria-live="polite"></div>
+    <audio id="listenAudio" style="display:none;" preload="none"></audio>
     <div class="block">
       <div class="block-label">Definition</div>
       <div class="block-body">${t.definition}</div>
@@ -729,13 +729,30 @@ function renderDetail(){
 // ---------------------------------------------------------------
 // Fish Audio text-to-speech ("Listen to an explanation")
 // ---------------------------------------------------------------
-// IMPORTANT: no API key lives in this file. This calls a small proxy
-// (a Cloudflare Worker) that holds the real Fish Audio key server-side.
-// See README.md -> "Voice explanations" for how to deploy that proxy,
-// then paste its URL below.
-const TTS_PROXY_URL = "PASTE_YOUR_WORKER_URL_HERE"; // e.g. https://fish-audio-proxy.yourname.workers.dev
+// IMPORTANT: no API key lives in this file. By default this calls the
+// same-origin /api/tts endpoint served by server.js. For a hosted static
+// copy, pass ?ttsProxy=https://your-worker.workers.dev once; that URL is
+// saved in localStorage for future visits.
+const TTS_PROXY_STORAGE_KEY = 'mathVocabTtsProxyUrl';
+const DEFAULT_TTS_PROXY_URL = '/api/tts';
+const TTS_PROXY_URL = readTtsProxyUrl();
 const TTS_VOICE_ID = "d38790551b0548ba9de248dbd10b74e1";
 const ttsCache = {}; // termId -> object URL, so replays don't re-call the API
+
+function readTtsProxyUrl(){
+  let configured = '';
+  try{
+    const params = new URLSearchParams(window.location.search);
+    const queryUrl = (params.get('ttsProxy') || '').trim();
+    if(queryUrl){
+      localStorage.setItem(TTS_PROXY_STORAGE_KEY, queryUrl);
+      configured = queryUrl;
+    } else {
+      configured = (localStorage.getItem(TTS_PROXY_STORAGE_KEY) || '').trim();
+    }
+  } catch(e){}
+  return configured || DEFAULT_TTS_PROXY_URL;
+}
 
 function speechScriptFor(t){
   let s = `${t.term}. ${t.definition}`;
@@ -750,8 +767,8 @@ async function speakTerm(t){
   const audioEl = document.getElementById('listenAudio');
   if(!btn) return;
 
-  if(!TTS_PROXY_URL || TTS_PROXY_URL === "PASTE_YOUR_WORKER_URL_HERE"){
-    status.textContent = "Voice explanations aren't set up yet on this copy of the app.";
+  if(!TTS_PROXY_URL){
+    status.textContent = "Voice explanations aren't configured yet.";
     status.className = 'err';
     return;
   }
@@ -785,7 +802,10 @@ async function speakTerm(t){
     audioEl.src = url;
     await audioEl.play();
   } catch(e){
-    status.textContent = 'Could not load audio: ' + e.message;
+    const setupHint = TTS_PROXY_URL === DEFAULT_TTS_PROXY_URL
+      ? ' Start the local voice server with node server.js, or configure a Worker URL with ?ttsProxy=...'
+      : '';
+    status.textContent = 'Could not load audio: ' + e.message + setupHint;
     status.className = 'err';
   } finally {
     btn.disabled = false;
