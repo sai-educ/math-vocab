@@ -23,25 +23,31 @@ Each word's detail panel has a **Listen to an explanation** button that reads th
 
 **Why this needs a separate piece (`fish-audio-worker.js`) instead of just calling Fish Audio from `index.html` directly:** this site is a public, open-access static page. Anything written directly into `index.html` — including an API key — is visible to literally anyone who views the page source or looks at the GitHub repo. If we put a Fish Audio API key straight into the page, anyone could copy it and use it under your account. So instead, the key lives only inside a small proxy service that you deploy yourself; `index.html` talks to *that* proxy, and the proxy is the only thing that ever sees the real key.
 
-**⚠️ First, rotate your API key.** The key that was shared while building this was typed into a chat conversation, which should be treated as exposed. Before deploying anything below, go to your Fish Audio dashboard and generate a new key. Use the *new* one in the steps that follow.
+**First, rotate your API key.** The key that was shared while building this was typed into a chat conversation, which should be treated as exposed. Before deploying anything public, go to your Fish Audio dashboard and generate a new key. Use the new one in the steps that follow.
 
-### One-time setup (about 10 minutes, no coding required beyond copy/paste)
+### Local setup
 
-1. Go to [dash.cloudflare.com](https://dash.cloudflare.com) and sign up for a free account (Cloudflare Workers has a generous free tier — plenty for ~10 users).
-2. In the sidebar, find **Workers & Pages** → **Create** → **Create Worker**. Give it any name, e.g. `fish-audio-proxy`, and click **Deploy** to create the placeholder.
-3. Click **Edit code** (this opens a simple in-browser code editor — no local setup needed). Delete the sample code that's there, and paste in the entire contents of `fish-audio-worker.js` from this folder. Click **Save and Deploy**.
-4. Go to the Worker's **Settings** → **Variables and Secrets**. Add two secrets (use "Secret" / encrypted type, not plain text, for the key):
-   - `FISH_API_KEY` → your new (rotated) Fish Audio API key.
-   - `FISH_VOICE_ID` → `d38790551b0548ba9de248dbd10b74e1`
-   Save.
-5. Back on the Worker's main page, copy its URL — it looks like `https://fish-audio-proxy.<your-subdomain>.workers.dev`.
-6. Open `index.html` in a text editor, find the line near the top of the `<script>` section that says:
-   `const TTS_PROXY_URL = "PASTE_YOUR_WORKER_URL_HERE";`
-   and replace `PASTE_YOUR_WORKER_URL_HERE` with the URL you copied in step 5 (keep the quotes). Save the file.
+This is the fastest way to run the app with working voice on your own computer:
 
-That's it — the Listen button will now work for anyone who opens the page, without any of your teachers ever seeing or needing an API key.
+1. Copy `.env.example` to `.env.local`.
+2. Put your rotated Fish Audio key in `.env.local` as `FISH_API_KEY=...`.
+3. Run `node server.js`.
+4. Open `http://localhost:4173`.
 
-**A note on cost/abuse:** the free Cloudflare tier and Fish Audio's free model should comfortably cover ~10 casual users. The proxy caps requests at 2,000 characters and the app caches each word's audio in the browser so replaying the same word doesn't call the API again. If you ever want tighter protection (e.g. a daily request cap), Cloudflare's dashboard has a free built-in rate-limiting rule you can add to the Worker's route with no code changes.
+The page calls `/api/tts`, and `server.js` calls Fish Audio with your server-side key. `.env.local` is ignored by git so the key does not get committed.
+
+### Hosted setup with Cloudflare Worker
+
+1. Go to [dash.cloudflare.com](https://dash.cloudflare.com) and sign up for a free account if needed.
+2. In **Workers & Pages**, create a Worker, then replace the sample code with `fish-audio-worker.js`.
+3. In the Worker's **Settings** -> **Variables and Secrets**, add:
+   - `FISH_API_KEY` -> your rotated Fish Audio API key, as a secret.
+   - `FISH_VOICE_ID` -> `d38790551b0548ba9de248dbd10b74e1`.
+   - Optional: `FISH_TTS_MODEL` -> `s2.1-pro-free`.
+4. Copy the Worker URL, for example `https://fish-audio-proxy.<your-subdomain>.workers.dev`.
+5. Open the app once with `?ttsProxy=<WORKER_URL>` appended to the page URL. The app stores that proxy URL in the browser and uses it for future Listen requests.
+
+**A note on cost/abuse:** the free Cloudflare tier and Fish Audio's free model should comfortably cover ~10 casual users. The proxy caps requests at 2,000 characters and the app caches each word's audio in the browser so replaying the same word doesn't call the API again. If you ever want tighter protection, add Cloudflare rate limiting to the Worker route.
 
 ## Design notes
 
