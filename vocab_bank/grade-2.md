@@ -5,41 +5,43 @@
 
 ### repeated addition
 
-**Definition:** Adding the same number over and over.
+**Definition:** Adding the same number again and again.
 
-**Example:** 3 + 3 + 3 + 3 is repeated addition for 4 groups of 3.
+**Example:** Nina sets out 4 plates and puts 3 grapes on each. She adds 3 + 3 + 3 + 3 and gets 12 grapes.
 
 ### array
 
-**Definition:** Objects arranged in equal rows and columns.
+**Definition:** Objects set out in equal rows and columns.
 
-**Example:** The array has 3 rows of 4 chairs.
+**Example:** Omar lines up his stickers in 3 rows of 5. That is an array. He counts 15 stickers.
+
+**Common misconception:** Every row must hold the same amount. A ragged grid is not an array.
 
 ### even number
 
-**Definition:** A number that can be split into two equal groups with none left over.
+**Definition:** A number that splits into two equal groups with none left over.
 
-**Example:** 8 is an even number.
+**Example:** Maya pairs up her 8 socks. She makes 4 pairs with nothing left over, so 8 is even.
 
 ### odd number
 
-**Definition:** A number that has one left over when split into two equal groups.
+**Definition:** A number that leaves one extra when you split it in two.
 
-**Example:** 7 is an odd number.
+**Example:** Leo tries to pair up 7 crackers. He makes 3 pairs and 1 is left alone, so 7 is odd.
 
 ### two-step problem
 
-**Definition:** A word problem that needs two operations to solve.
+**Definition:** A problem you solve in two moves.
 
-**Example:** First add, then subtract to solve the two-step problem.
+**Example:** Ana has 10 pencils. She buys 5 more, then gives 3 to Ben. First she adds to get 15. Then she subtracts to get 12.
 
-**Common misconception:** Kids often stop after the first step instead of finishing both.
+**Common misconception:** Stopping after the first step is the usual slip. Reread the question to check you finished.
 
 ### unknown number
 
-**Definition:** The missing value you're solving for.
+**Definition:** The number you are missing. A letter or a box can stand in for it.
 
-**Example:** Solve for the unknown number in 6 + __ = 11.
+**Example:** Ivy sees 12 - ? = 7. She asks herself what takes 12 down to 7. The unknown number is 5.
 
 
 ## Number & Operations in Base Ten (2.NBT)
@@ -48,114 +50,116 @@
 
 **Definition:** Groups of one hundred.
 
-**Example:** 300 has 3 hundreds.
+**Example:** Zoe counts 342 pennies. She stacks them and finds 3 hundreds, 4 tens, and 2 ones.
 
 ### expanded form
 
-**Definition:** Writing a number to show the value of each digit.
+**Definition:** A number written as the sum of what each digit is worth.
 
-**Example:** 324 in expanded form is 300 + 20 + 4.
+**Example:** Theo writes 254 in expanded form: 200 + 50 + 4.
 
 ### place value
 
-**Definition:** The value of a digit based on where it sits in a number.
+**Definition:** What a digit is worth based on its spot.
 
-**Example:** In 356, the 5 is worth 50.
+**Example:** Nina looks at 528. The 5 sits in the hundreds place, so it is worth 500.
 
 ### regroup
 
-**Definition:** Trade 10 of one place value for 1 of the next (or the reverse) when adding or subtracting.
+**Definition:** Trade ten of one unit for one of the next unit.
 
-**Example:** Regroup 10 ones as 1 ten when adding.
-
-**Common misconception:** Sometimes called 'borrowing' or 'carrying,' which can confuse kids about what's actually happening.
+**Example:** Omar adds 27 + 15. The ones make 12. He regroups 10 of them into 1 ten and writes 42.
 
 ### compare numbers
 
-**Definition:** Decide if one number is greater than, less than, or equal to another.
+**Definition:** Decide which number is bigger by checking place value.
 
-**Example:** Compare 245 and 254 using >, <, or =.
+**Example:** Maya compares 431 and 419. The hundreds match, so she checks the tens. 3 beats 1, so 431 is bigger.
+
+**Common misconception:** More digits usually means bigger, but only when you start from the biggest place. Compare left to right.
 
 
 ## Measurement & Data (2.MD)
 
 ### centimeter
 
-**Definition:** A small unit of length in the metric system.
+**Definition:** A small unit of length. It is about as wide as your fingernail.
 
-**Example:** The bug is 2 centimeters long.
+**Example:** Leo lays his crayon along a ruler. The crayon is 9 centimeters long.
 
 ### meter
 
-**Definition:** A unit of length equal to 100 centimeters.
+**Definition:** A larger unit of length. It is about as wide as a door.
 
-**Example:** The rope is 1 meter long.
+**Example:** Ana measures the rug with a meter stick. She steps it out twice, so the rug is 2 meters long.
 
 ### estimate
 
-**Definition:** Make a smart guess about an amount using what you know.
+**Definition:** A smart guess that is close, not exact.
 
-**Example:** Estimate how many books are on the shelf.
+**Example:** Ben looks at a jar of beans and guesses about 50. The real count is 46, so his estimate was close.
+
+**Common misconception:** An estimate is not a wild guess. Use what you know to get near the real amount.
 
 ### number line
 
-**Definition:** A line marked with numbers in order, used to add, subtract, or measure.
+**Definition:** A line with numbers spaced out in order.
 
-**Example:** Use a number line to add 4 + 3.
+**Example:** Ivy starts at 8 on the number line and hops to 13. She counts 5 hops.
 
 ### bar graph
 
-**Definition:** A graph that uses bars to show and compare amounts.
+**Definition:** A graph that uses bars to show amounts.
 
-**Example:** The bar graph shows favorite colors.
+**Example:** Zoe makes a bar graph of favorite fruits. The apple bar rises highest, so apples won.
 
 ### picture graph
 
-**Definition:** A graph that uses pictures or symbols to show amounts.
+**Definition:** A graph that uses pictures to stand for amounts.
 
-**Example:** The picture graph shows how many pets each student has.
+**Example:** Theo draws a picture graph of books read. Each little book stands for 1 real book.
 
 ### line plot
 
-**Definition:** A graph that shows data with marks above a number line.
+**Definition:** A graph that stacks marks above a number line.
 
-**Example:** Make a line plot of everyone's height.
+**Example:** Nina measures 10 leaves and marks an X above each length. Most of the X's stack above 4 centimeters.
 
 ### dollar
 
-**Definition:** A unit of money equal to 100 cents.
+**Definition:** A unit of money worth 100 cents.
 
-**Example:** The toy costs one dollar.
+**Example:** Omar saves 4 quarters in a jar. Together they make 1 dollar.
 
 ### quarter (coin)
 
 **Definition:** A coin worth 25 cents.
 
-**Example:** Four quarters make one dollar.
+**Example:** Maya has 3 quarters. She counts 25, 50, 75. She has 75 cents.
 
 
 ## Geometry (2.G)
 
 ### quadrilateral
 
-**Definition:** Any shape with 4 straight sides.
+**Definition:** A closed shape with 4 straight sides.
 
-**Example:** Squares, rectangles, and trapezoids are all quadrilaterals.
+**Example:** Leo sorts his shape cards. The square, the rectangle, and the kite all go in one pile. Each has 4 sides.
 
 ### pentagon
 
-**Definition:** A shape with 5 straight sides.
+**Definition:** A closed shape with 5 straight sides.
 
-**Example:** A home plate is shaped a bit like a pentagon.
+**Example:** Ana traces home plate at the ball field. She counts 5 sides, so it is a pentagon.
 
 ### rows and columns
 
-**Definition:** Rows go across, columns go up and down, used to describe arrays.
+**Definition:** Rows go across. Columns go up and down.
 
-**Example:** The array has 4 rows and 3 columns.
+**Example:** Ben sets up chairs in 4 rows and 6 columns. He counts 24 chairs in all.
 
 ### equal shares
 
-**Definition:** Parts of a shape that are exactly the same size.
+**Definition:** Parts of one whole that are all the same size.
 
-**Example:** Divide the rectangle into 3 equal shares.
+**Example:** Ivy cuts a brownie into 4 equal shares. Each friend gets a piece the same size.
