@@ -25,7 +25,7 @@ test('retells the subtract example as a short story rather than reading it verba
     story,
     'Picture Ivy with 5 balloons. Then two of them pop. '
       + 'To make sense of what happened, she subtracts 2 from 5. '
-      + 'That leaves Ivy with 3 balloons. This example helps us see what subtract means.',
+      + 'That leaves Ivy with 3 balloons. This story helps make the idea of subtract clear.',
   );
   assert.notEqual(story, subtract.example);
 });
@@ -38,7 +38,7 @@ test('creates an inviting, complete narration for a noun concept', () => {
     'Let’s explore fraction. Fraction is a number that names part of a whole. '
       + 'Picture Nina as she cuts a pie into 4 equal slices and takes 1. '
       + 'In the end, she ate 1/4 of the pie. '
-      + 'This example helps us see what fraction means.',
+      + 'This story helps make the idea of fraction clear.',
   );
 });
 
@@ -64,6 +64,26 @@ test('avoids mechanical transitions and uninflected definition verbs across the 
       term.id,
     );
   }
+});
+
+test('keeps tricky definitions and story grammar natural', () => {
+  const byId = (id) => DATA.find((term) => term.id === id);
+
+  assert.equal(
+    definitionForSpeech(byId('1-nbt-count-on')),
+    'Count on means starting at one number and continuing to count up.',
+  );
+  assert.equal(
+    definitionForSpeech(byId('2-g-rows-and-columns')),
+    'Rows and columns describe two directions. Rows go across. Columns go up and down.',
+  );
+  assert.equal(
+    definitionForSpeech(byId('1-g-halves')),
+    'Halves are two equal parts of one whole.',
+  );
+  assert.match(exampleForSpeech(byId('k-cc-less-than')), /Picture Sam as they count 2 birds/);
+  assert.match(exampleForSpeech(byId('k-oa-in-all')), /Now we can ask how many they have in all/);
+  assert.match(exampleForSpeech(byId('5-oa-evaluate')), /Then inside the parentheses gives 5/);
 });
 
 test('retells even one-sentence examples instead of embedding the displayed line verbatim', () => {
