@@ -83,7 +83,10 @@ test('keeps tricky definitions and story grammar natural', () => {
   );
   assert.match(exampleForSpeech(byId('k-cc-less-than')), /Picture Sam as they count 2 birds/);
   assert.match(exampleForSpeech(byId('k-oa-in-all')), /Now we can ask how many they have in all/);
-  assert.match(exampleForSpeech(byId('5-oa-evaluate')), /Then inside the parentheses gives 5/);
+  assert.match(
+    exampleForSpeech(byId('5-oa-evaluate')),
+    /First, the work inside the parentheses gives 5/,
+  );
 });
 
 test('retells even one-sentence examples instead of embedding the displayed line verbatim', () => {
