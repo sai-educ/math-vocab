@@ -53,16 +53,36 @@ Each word's detail panel has a **Listen to an explanation** button that reads th
 
 **First, rotate your API key.** The key that was shared while building this was typed into a chat conversation, which should be treated as exposed. Before deploying anything public, go to your Fish Audio dashboard and generate a new key. Use the new one in the steps that follow.
 
-### Local setup
+### Troubleshooting: "Could not load audio: Voice server is missing FISH_API_KEY"
 
-This is the fastest way to run the app with working voice on your own computer:
+This is not a bug — it is the server correctly reporting that it has no key. `server.js` checks for `FISH_API_KEY` and returns that message *before* it ever contacts Fish Audio, so you get a clear reason instead of a confusing network failure. The fix is always "supply the key", in whichever environment is showing the message:
+
+| Where you see it | What to set |
+| --- | --- |
+| `localhost` | `FISH_API_KEY` in `.env.local` (see below) |
+| A Vercel deployment | `FISH_API_KEY` in Project Settings → Environment Variables, then **redeploy** |
+| A Cloudflare Worker | `FISH_API_KEY` as a Worker secret |
+
+To tell a missing key from a bad one, call the endpoint directly:
+
+```bash
+curl -s -X POST http://127.0.0.1:4173/api/tts -H 'Content-Type: application/json' -d '{"text":"hello"}'
+```
+
+- `Voice server is missing FISH_API_KEY` → no key is configured.
+- `Fish Audio returned an error (401)` with `Invalid Token` → a key is configured but Fish Audio rejected it (wrong, revoked, or not yet rotated).
+- Binary audio data → it is working.
+
+### Local setup
 
 1. Copy `.env.example` to `.env.local`.
 2. Put your rotated Fish Audio key in `.env.local` as `FISH_API_KEY=...`.
 3. Run `node server.js`.
 4. Open `http://localhost:4173`.
 
-The page calls `/api/tts`, and `server.js` calls Fish Audio with your server-side key. `.env.local` is ignored by git so the key does not get committed.
+The page calls `/api/tts`, and `server.js` calls Fish Audio with your server-side key. `.env.local` is ignored by git so the key does not get committed. **Restart `node server.js` after editing `.env.local`** — the file is read once at startup.
+
+If you ever opened the page with `?ttsProxy=...`, that URL is remembered in the browser and will keep overriding `/api/tts`. Clear it by visiting the page once with an empty value: `?ttsProxy=`.
 
 ### Vercel setup
 
@@ -75,7 +95,11 @@ Yes, you can deploy this directly on Vercel. Vercel serves the static app and ru
    - `FISH_API_KEY` -> your rotated Fish Audio API key.
    - `FISH_VOICE_ID` -> `d38790551b0548ba9de248dbd10b74e1`.
    - Optional: `FISH_TTS_MODEL` -> `s2.1-pro-free`.
-5. Deploy, open the Vercel URL, select a word, and click **Listen to an explanation**.
+   Tick all three environments (Production, Preview, Development) or the button will work on the production URL but not on preview deployments.
+5. **Redeploy.** Environment variables are baked in at deploy time, so a project that was deployed before you added the key keeps returning the "missing FISH_API_KEY" message until you trigger a new deployment.
+6. Open the Vercel URL, select a word, and click **Listen to an explanation**.
+
+No `vercel.json` is needed: with the **Other** preset Vercel serves the static files from the repo root and automatically turns `api/tts.js` into a Node serverless function at `/api/tts`. `.vercelignore` keeps `.env*` out of the upload if you ever deploy with the `vercel` CLI instead of the Git integration.
 
 ### Hosted setup with Cloudflare Worker
 
@@ -88,7 +112,17 @@ Yes, you can deploy this directly on Vercel. Vercel serves the static app and ru
 4. Copy the Worker URL, for example `https://fish-audio-proxy.<your-subdomain>.workers.dev`.
 5. Open the app once with `?ttsProxy=<WORKER_URL>` appended to the page URL. The app stores that proxy URL in the browser and uses it for future Listen requests.
 
-**A note on cost/abuse:** the free Cloudflare tier and Fish Audio's free model should comfortably cover ~10 casual users. The proxy caps requests at 2,000 characters and the app caches each word's audio in the browser so replaying the same word doesn't call the API again. If you ever want tighter protection, add Cloudflare rate limiting to the Worker route.
+### Cost and abuse — read before making the URL public
+
+The proxy currently accepts **arbitrary `text`** (up to 2,000 characters) from **anyone**, with `Access-Control-Allow-Origin: *`. On a private or lightly-shared URL that is fine, and the browser-side cache means replaying a word costs nothing. But once the address is public, anyone who finds `/api/tts` has a free text-to-speech API billed to your Fish Audio account, and they are not limited to the 189 vocabulary words.
+
+Mitigations, cheapest first:
+
+1. **Set `CORS_ORIGIN`** to your real site origin (e.g. `https://mathvocab.vercel.app`) instead of leaving it `*`. This stops casual in-browser use from other sites, though it does not stop `curl`.
+2. **Add rate limiting** — Cloudflare rate limiting on the Worker route, or Vercel's firewall rules.
+3. **Accept a term id instead of free text** (the durable fix). Have the endpoint take `{"termId": "k-cc-count"}`, look the term up in `vocab_data.json` server-side, and build the sentence there. The endpoint can then only ever synthesize one of 189 fixed strings, which also makes the audio safely cacheable at the CDN edge and drops the per-request cost close to zero. This needs matching changes in `server.js`, `api/tts.js`, `fish-audio-worker.js` and `src/tts.js`.
+
+Also note that a Fish Audio key restricted to the free `s2.1-pro-free` model limits the blast radius of a leak, so prefer that over a key with billing enabled.
 
 ## Design notes
 
