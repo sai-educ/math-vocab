@@ -6,8 +6,10 @@ Builds the two pages of the site from the sources in src/.
 
 Output:
 
-    index.html   the landing page  (landing_template.html + landing.css)
-    app.html     the tool itself   (app_template.html + src/*)
+    index.html          the local landing page  (landing_template.html + landing.css)
+    app.html            the local tool itself   (app_template.html + src/*)
+    public/index.html   the deployable landing page
+    public/app.html     the deployable tool
 
 Both are single self-contained files with all CSS and JS inlined, so they can
 be opened straight from disk, dropped on any static host, and used offline
@@ -96,8 +98,9 @@ def render(template_name: str, replacements: dict) -> str:
     return template
 
 
-def write(name: str, html: str) -> None:
-    path = os.path.join(HERE, name)
+def write(output_dir: str, name: str, html: str) -> None:
+    os.makedirs(output_dir, exist_ok=True)
+    path = os.path.join(output_dir, name)
     with open(path, "w", encoding="utf-8") as handle:
         handle.write(html)
     print(f"Wrote {path} ({len(html):,} bytes)")
@@ -107,16 +110,21 @@ def main() -> None:
     data = read(HERE, "vocab_data.json")
     json.loads(data)  # fail fast if the JSON is malformed
 
-    write("app.html", render("app_template.html", {
+    app_html = render("app_template.html", {
         "__STYLES__": read(SRC, "styles.css").strip(),
         "__SCRIPTS__": bundle_app_scripts(),
         "__VOCAB_DATA__": data,
-    }))
+    })
 
-    write("index.html", render("landing_template.html", {
+    index_html = render("landing_template.html", {
         "__STYLES__": read(SRC, "landing.css").strip(),
         "__TERM_COUNT__": str(len(json.loads(data))),
-    }))
+    })
+
+    public_dir = os.path.join(HERE, "public")
+    for output_dir in (HERE, public_dir):
+        write(output_dir, "app.html", app_html)
+        write(output_dir, "index.html", index_html)
 
 
 if __name__ == "__main__":

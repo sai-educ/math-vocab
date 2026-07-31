@@ -151,15 +151,16 @@ The site is two plain HTML files, so almost any host will do.
 **On Vercel** (what this project uses):
 
 1. Connect the GitHub repo to a new Vercel project.
-2. Use the default **Other** preset. No build command is needed — the HTML is
-   already built and committed.
+2. Use the **Other** framework preset. The repository's `vercel.json` runs
+   `npm run build` and deploys the generated `public/` directory.
 3. Under **Settings → Environment Variables**, add `FISH_API_KEY` and
    `FISH_VOICE_ID`. Tick all three environments.
 4. **Redeploy.** Environment variables are only picked up at deploy time, so an
    existing deployment keeps saying "missing FISH_API_KEY" until you redeploy.
 
 Vercel turns `api/tts.js` into the server-side function automatically.
-`.vercelignore` keeps `.env*` out of the upload.
+`.vercelignore` keeps `.env*` out of the upload, and `public/` contains only the
+two self-contained HTML files that should be served statically.
 
 > **Before you make the URL public**, read
 > [Cost and abuse](#cost-and-abuse) below. The voice endpoint currently accepts
