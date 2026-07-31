@@ -138,7 +138,7 @@ function renderTopics() {
     btn.type = 'button';
     btn.className = 'topic-node';
     btn.setAttribute('aria-pressed', state.domainCode === code ? 'true' : 'false');
-    btn.innerHTML = `<span class="topic-dot" aria-hidden="true"></span>`
+    btn.innerHTML = `<span class="topic-icon" aria-hidden="true">${domainIconSvg(code, { size: 20 })}</span>`
       + `<span class="topic-text">`
       + `<span class="topic-label">${escapeHtml(name)}</span>`
       + `<span class="topic-code">${escapeHtml(state.grade)}.${escapeHtml(code)} · ${count} terms</span>`
@@ -206,10 +206,12 @@ function vocabButton(t, showGrade) {
   btn.setAttribute('aria-pressed', state.term === t.id ? 'true' : 'false');
 
   const seen = visitedTerms.has(t.id);
-  btn.innerHTML = `<span class="vocab-icon" aria-hidden="true">${escapeHtml(iconForTerm(t))}</span>`
+  btn.innerHTML = `<span class="vocab-icon" aria-hidden="true">${termIconSvg(t, { size: 19 })}</span>`
     + `<span class="vocab-name">${escapeHtml(t.term)}</span>`
     + (showGrade ? `<span class="vocab-grade">${escapeHtml(gradeLabel(t.grade))}</span>` : '')
-    + (!showGrade && seen ? '<span class="vocab-seen" aria-hidden="true">✓</span>' : '');
+    + (!showGrade && seen
+      ? `<span class="vocab-seen" aria-hidden="true">${iconSvg('check', { size: 16 })}</span>`
+      : '');
 
   btn.setAttribute('aria-label', showGrade
     ? `${t.term}. ${gradeLabel(t.grade)}.`
@@ -231,25 +233,42 @@ function renderDetail() {
   if (!t) return;
 
   detail.innerHTML = `
-    <p class="breadcrumb">${escapeHtml(gradeLabel(t.grade))} → ${escapeHtml(t.domain)}</p>
-    <h2>${escapeHtml(t.term)}</h2>
-    <span class="standard">${escapeHtml(t.standard)}</span>
+    <p class="breadcrumb">
+      <span class="crumb-icon" aria-hidden="true">${domainIconSvg(t.domainCode, { size: 15 })}</span>
+      ${escapeHtml(gradeLabel(t.grade))} · ${escapeHtml(t.domain)}
+    </p>
+
+    <div class="term-head">
+      <span class="term-mark" aria-hidden="true">${termIconSvg(t, { size: 30 })}</span>
+      <div>
+        <h2>${escapeHtml(t.term)}</h2>
+        <span class="standard">${escapeHtml(t.standard)}</span>
+      </div>
+    </div>
+
     <button id="listenBtn" type="button" aria-describedby="listenStatus"
             aria-label="Listen to an explanation of the word ${escapeHtml(t.term)}">
-      <span class="icon" aria-hidden="true">🔊</span><span id="listenBtnText">Listen to an explanation</span>
+      <span class="icon" aria-hidden="true">${iconSvg('speaker', { size: 20 })}</span>
+      <span id="listenBtnText">Listen to an explanation</span>
     </button>
     <p id="listenStatus" role="status" aria-live="polite"></p>
     <audio id="listenAudio" preload="none"></audio>
+
     <div class="block">
-      <h3 class="block-label">Definition</h3>
+      <h3 class="block-label">What it means</h3>
       <p class="block-body">${escapeHtml(t.definition)}</p>
     </div>
-    <div class="block">
-      <h3 class="block-label">Example</h3>
-      <p class="block-body">${escapeHtml(t.example)}</p>
-    </div>
+
+    <section class="story" aria-labelledby="storyHeading">
+      <h3 class="story-heading" id="storyHeading">
+        <span aria-hidden="true">${iconSvg('spark', { size: 17 })}</span>
+        See it in an example
+      </h3>
+      <p class="story-body">${escapeHtml(t.example)}</p>
+    </section>
+
     ${t.misconception ? `<div class="block">
-      <h3 class="block-label">Common misconception</h3>
+      <h3 class="block-label">Watch out for</h3>
       <p class="block-body misconception">${escapeHtml(t.misconception)}</p>
     </div>` : ''}
   `;
@@ -326,6 +345,6 @@ function renderStats() {
   const total = DATA.length;
   const seen = visitedTerms.size;
   document.getElementById('statsText').textContent =
-    `${total} terms · ${GRADES.length} grades · ${DOMAIN_ORDER.length} Common Core domains`
+    `${total} words · ${GRADES.length} grades · ${DOMAIN_ORDER.length} Common Core domains`
     + ` · ${seen} explored · CC BY-NC 4.0`;
 }
