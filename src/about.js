@@ -15,7 +15,13 @@ const About = (function () {
     overlay = document.getElementById('aboutOverlay');
     dialog = document.getElementById('aboutDialog');
 
-    document.getElementById('aboutBtn').addEventListener('click', open);
+    const aboutBtn = document.getElementById('aboutBtn');
+    aboutBtn.querySelector('.btn-icon').innerHTML = iconSvg('info', { size: 18 });
+    document.getElementById('aboutClose').insertAdjacentHTML(
+      'afterbegin', iconSvg('close', { size: 18 }),
+    );
+
+    aboutBtn.addEventListener('click', open);
     document.getElementById('statsAboutBtn').addEventListener('click', open);
     document.getElementById('aboutClose').addEventListener('click', close);
 
@@ -51,10 +57,12 @@ const About = (function () {
     // One frame before adding .open so the CSS transition has a start state.
     requestAnimationFrame(() => overlay.classList.add('open'));
     document.getElementById('aboutClose').focus();
+    Sound.play('open');
   }
 
   function close() {
     overlay.classList.remove('open');
+    Sound.play('close');
     const finish = () => {
       overlay.hidden = true;
       if (lastFocused && lastFocused.focus) lastFocused.focus();
