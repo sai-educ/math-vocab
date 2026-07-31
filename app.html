@@ -617,7 +617,7 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   header{flex-wrap:wrap;align-items:center;padding-top:11px;}
   header .titles{flex:1 0 100%;}
   header h1{font-size:17px;white-space:nowrap;}
-  header p{font-size:11.5px;white-space:nowrap;}
+  header p{font-size:11.5px;}
   .header-actions{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr;}
   .header-btn{justify-content:center;padding:8px 10px;}
 }
@@ -693,7 +693,7 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
         <div id="graphContainer"></div>
         <div id="graphLabels" aria-hidden="true"></div>
         <div id="graphTermSymbol" aria-hidden="true"></div>
-        <aside id="graphLegend" aria-label="Knowledge graph map key">
+        <aside id="graphLegend" aria-label="Knowledge graph map key" hidden>
           <p>Map key</p>
           <ul>
             <li><span class="legend-node legend-root" aria-hidden="true"></span><span>All K–5 words</span></li>
@@ -3672,9 +3672,18 @@ const Graph = (function () {
   // ---------------------------------------------------------------------
 
   function init(containerEl, labelEl) {
+    const legend = document.getElementById('graphLegend');
     if (typeof THREE === 'undefined') {
       document.getElementById('graphFallback').style.display = 'flex';
+      if (legend) {
+        legend.hidden = true;
+        legend.setAttribute('aria-hidden', 'true');
+      }
       return;
+    }
+    if (legend) {
+      legend.hidden = false;
+      legend.removeAttribute('aria-hidden');
     }
     container = containerEl;
     labelLayer = labelEl;
@@ -4589,8 +4598,8 @@ function lowerNarrationStart(text) {
 
 function storyConnectorStart(text) {
   if (!text) return '';
-  const commonStart = /^(?:a|an|each|every|he|her|his|it|one|only|she|some|that|the|their|they|this|two|we|you)\b/i;
-  return commonStart.test(text) ? lowerNarrationStart(text) : text;
+  const properName = /^(?:Maya|Leo|Ana|Ivy|Zoe|Nina|Sam|Ben|Theo|Omar)(?:'s)?\b/;
+  return properName.test(text) ? text : lowerNarrationStart(text);
 }
 
 function narrationPeriod(text) {
@@ -4610,20 +4619,36 @@ function definitionForSpeech(term) {
   const first = parts.shift();
   const action = first.match(/^([A-Za-z]+)\b(.*)$/);
   const actionGerund = action && NARRATION_ACTION_GERUNDS[action[1].toLowerCase()];
+  const conceptName = spokenConceptName(term.term);
+  const termKey = String(term.term).toLowerCase();
   const nounPhrase = /^(?:a|an|the|one|two|part|how|when|where)\b/i.test(first);
 
   let explanation;
-  if (actionGerund) {
-    const actionDetails = action[2].replace(/\band keep\b/i, 'and keeping');
-    explanation = `${spokenConceptName(term.term)} means ${actionGerund}${actionDetails}`;
+  if (termKey === 'in all') {
+    explanation = 'The words in all tell us to find the total';
+  } else if (termKey === 'left') {
+    explanation = 'The word left asks what is still there';
+  } else if (/^Another word for\b/i.test(first)) {
+    explanation = `The word ${term.term} is ${lowerNarrationStart(first)}`;
+  } else if (termKey === 'rows and columns') {
+    explanation = `${conceptName} describe two directions. ${first}`;
+  } else if (termKey === 'tenths' || termKey === 'hundredths') {
+    explanation = `${conceptName} are the equal parts made when ${
+      lowerNarrationStart(first).replace(/^one whole split\b/i, 'one whole is split')
+    }`;
+  } else if (actionGerund) {
+    const actionDetails = action[2]
+      .replace(/\band keep counting\b/i, 'and continuing to count')
+      .replace(/,\s+or find\b/i, ', or finding');
+    explanation = `${conceptName} means ${actionGerund}${actionDetails}`;
+  } else if (PLURAL_NARRATION_CONCEPTS.has(termKey)) {
+    explanation = `${conceptName} are ${lowerNarrationStart(first)}`;
   } else if (nounPhrase) {
-    explanation = `${spokenConceptName(term.term)} is ${lowerNarrationStart(first)}`;
-  } else if (PLURAL_NARRATION_CONCEPTS.has(String(term.term).toLowerCase())) {
-    explanation = `${spokenConceptName(term.term)} are ${lowerNarrationStart(first)}`;
+    explanation = `${conceptName} is ${lowerNarrationStart(first)}`;
   } else if (/^(?:goes|takes|weighs)\b/i.test(first)) {
-    explanation = `${spokenConceptName(term.term)} describes something that ${lowerNarrationStart(first)}`;
+    explanation = `${conceptName} describes something that ${lowerNarrationStart(first)}`;
   } else {
-    explanation = `${spokenConceptName(term.term)} means ${lowerNarrationStart(first)}`;
+    explanation = `${conceptName} means ${lowerNarrationStart(first)}`;
   }
 
   parts.forEach((part, index) => {
@@ -4650,9 +4675,14 @@ function exampleForSpeech(term) {
   const first = parts.shift();
   const hasOpening = first.match(/^([A-Z][a-z]+) has (.+)$/);
   const namedOpening = first.match(/^([A-Z][a-z]+)\s+(.+)$/);
+  const possessiveOpening = first.match(/^([A-Z][a-z]+)'s (.+?) (sits|stands|rests|lies) (.+)$/);
   let story;
 
-  if (hasOpening) {
+  if (possessiveOpening && NARRATION_PRONOUNS[possessiveOpening[1]]) {
+    storySubject = possessiveOpening[1];
+    story = `Picture ${storySubject}'s ${possessiveOpening[2]} as it `
+      + `${possessiveOpening[3]} ${possessiveOpening[4]}.`;
+  } else if (hasOpening) {
     storySubject = hasOpening[1];
     const pronoun = NARRATION_PRONOUNS[storySubject] || 'they';
     const splitAction = hasOpening[2].match(/^(.+?) and (eats|gets|needs|shares) (.+)$/i);
@@ -4664,8 +4694,11 @@ function exampleForSpeech(term) {
     }
   } else if (namedOpening && NARRATION_PRONOUNS[namedOpening[1]]) {
     storySubject = namedOpening[1];
-    story = `Picture ${storySubject} as ${NARRATION_PRONOUNS[storySubject]} `
-      + `${narrationPeriod(namedOpening[2])}`;
+    const pronoun = NARRATION_PRONOUNS[storySubject];
+    const action = pronoun === 'they'
+      ? namedOpening[2].replace(/^counts\b/i, 'count')
+      : namedOpening[2];
+    story = `Picture ${storySubject} as ${pronoun} ${narrationPeriod(action)}`;
   } else {
     story = `Imagine a situation where ${narrationPeriod(lowerNarrationStart(first))}`;
   }
@@ -4679,6 +4712,10 @@ function exampleForSpeech(term) {
     const nowStep = part.match(/^Now,?\s+(.+)$/i);
     const soStep = part.match(/^So,?\s+(.+)$/i);
     const observation = part.match(/^(?:Every|Only)\b/i);
+    const howManyMore = part.match(/^How many more does ([A-Z][a-z]+) have$/i);
+    const howManyDo = part.match(/^How many do (.+)$/i);
+    const howManyAre = part.match(/^How many are (.+)$/i);
+    const insideStep = part.match(/^Inside the parentheses (.+)$/i);
     const actionConcept = NARRATION_ACTION_GERUNDS[String(term.term).toLowerCase()];
     let sentence;
 
@@ -4695,12 +4732,20 @@ function exampleForSpeech(term) {
       sentence = `Now, ${storyConnectorStart(nowStep[1])}`;
     } else if (soStep) {
       sentence = `So, ${storyConnectorStart(soStep[1])}`;
+    } else if (howManyMore) {
+      sentence = `Now we can ask how many more ${howManyMore[1]} has`;
+    } else if (howManyDo) {
+      sentence = `Now we can ask how many ${storyConnectorStart(howManyDo[1])}`;
+    } else if (howManyAre) {
+      sentence = `Now we can ask how many are ${lowerNarrationStart(howManyAre[1])}`;
+    } else if (insideStep) {
+      sentence = `First, the work inside the parentheses ${insideStep[1]}`;
     } else if (observation) {
       sentence = `Notice how ${lowerNarrationStart(part)}`;
     } else if (part.toLowerCase().includes(String(term.term).toLowerCase())) {
       sentence = actionConcept
         ? `To make sense of what happened, ${storyConnectorStart(part)}`
-        : `Notice that ${lowerNarrationStart(part)}`;
+        : `Notice that ${storyConnectorStart(part)}`;
     } else if (isLast) {
       sentence = `In the end, ${storyConnectorStart(part)}`;
     } else {
@@ -4709,7 +4754,7 @@ function exampleForSpeech(term) {
     story += ` ${narrationPeriod(sentence)}`;
   });
 
-  story += ` This example helps us see what ${term.term} means.`;
+  story += ` This story helps make the idea of ${term.term} clear.`;
   return story;
 }
 
