@@ -85,6 +85,7 @@ async function speakTerm(t) {
       : '';
     status.textContent = `Could not load audio: ${error.message}${hint}`;
     status.className = 'err';
+    Sound.play('error');
   } finally {
     btn.disabled = false;
     btn.classList.remove('loading');
