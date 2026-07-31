@@ -344,12 +344,17 @@ const Graph = (function () {
     });
   }
 
-  function setLabel(key, nodeId, text, icon) {
+  function setLabel(key, nodeId, text, iconName) {
     const l = labels[key];
     l.nodeId = nodeId;
     if (!nodeId) { l.el.classList.remove('visible'); return; }
     if (l.text.textContent !== text) l.text.textContent = text;
-    if (l.icon.textContent !== (icon || '')) l.icon.textContent = icon || '';
+    // Only re-render the SVG when the glyph actually changes — this runs
+    // inside a per-frame update path.
+    if (l.iconName !== iconName) {
+      l.iconName = iconName;
+      l.icon.innerHTML = iconName ? iconSvg(iconName, { size: 16 }) : '';
+    }
     l.el.classList.add('visible');
   }
 
@@ -411,18 +416,19 @@ const Graph = (function () {
     const st = state;
     const anySelection = !!st.grade;
 
-    setLabel('root', anySelection ? null : 'root', 'Math is fun!', '✨');
+    setLabel('root', anySelection ? null : 'root', 'Every math word, K to 5', 'spark');
 
     // Grade and topic labels give way once a word is chosen — the word is
     // what matters at that point, and the breadcrumb still shows the path.
-    setLabel('grade', st.grade && !st.term ? 'grade:' + st.grade : null, gradeLabel(st.grade), '🎓');
+    setLabel('grade', st.grade && !st.term ? 'grade:' + st.grade : null, gradeLabel(st.grade), 'cap');
 
     const domId = st.grade && st.domainCode ? 'domain:' + st.grade + ':' + st.domainCode : null;
-    setLabel('domain', domId, DOMAIN_FULLNAME[st.domainCode] || '', DOMAIN_ICONS[st.domainCode] || '📚');
+    setLabel('domain', domId, DOMAIN_FULLNAME[st.domainCode] || '',
+      DOMAIN_ICON_NAMES[st.domainCode] || 'shapes');
 
     if (st.term) {
       const t = termById(st.term);
-      setLabel('term', 'term:' + st.term, t ? t.term : '', t ? iconForTerm(t) : '');
+      setLabel('term', 'term:' + st.term, t ? t.term : '', t ? iconNameForTerm(t) : '');
     } else {
       setLabel('term', null, '', '');
     }
@@ -437,7 +443,7 @@ const Graph = (function () {
   function describe(id) {
     const n = nodes[id];
     if (!n) return '';
-    if (n.level === 'root') return 'Math is fun!';
+    if (n.level === 'root') return 'Every math word, K to 5';
     if (n.level === 'grade') return gradeLabel(id.split(':')[1]);
     if (n.level === 'domain') return DOMAIN_FULLNAME[id.split(':')[2]] || '';
     const t = termById(id.slice(5));
@@ -447,11 +453,11 @@ const Graph = (function () {
   function hoverIcon(id) {
     const n = nodes[id];
     if (!n) return '';
-    if (n.level === 'root') return '✨';
-    if (n.level === 'grade') return '🎓';
-    if (n.level === 'domain') return DOMAIN_ICONS[id.split(':')[2]] || '📚';
+    if (n.level === 'root') return 'spark';
+    if (n.level === 'grade') return 'cap';
+    if (n.level === 'domain') return DOMAIN_ICON_NAMES[id.split(':')[2]] || 'shapes';
     const t = termById(id.slice(5));
-    return t ? iconForTerm(t) : '';
+    return t ? iconNameForTerm(t) : '';
   }
 
   // ---------------------------------------------------------------------
