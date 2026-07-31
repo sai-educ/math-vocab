@@ -5,212 +5,220 @@
 
 ### factor
 
-**Definition:** A number that divides evenly into another number.
+**Definition:** A number that divides into another with nothing left over.
 
-**Example:** 2, 3, 4, and 6 are all factors of 12.
+**Example:** Omar tests 12. He finds 1, 2, 3, 4, 6, and 12 all divide it evenly. Those are the factors of 12.
 
 ### multiple
 
-**Definition:** The result of multiplying a number by a whole number.
+**Definition:** What you get when you multiply a number by a whole number.
 
-**Example:** 12 is a multiple of 3.
+**Example:** Maya skip counts by 4: 4, 8, 12, 16. Each number she lands on is a multiple of 4.
 
-**Common misconception:** Kids often mix up 'factor' (numbers that multiply together) and 'multiple' (the result).
+**Common misconception:** Factors are smaller and divide in. Multiples are bigger and count up.
 
 ### prime number
 
-**Definition:** A number greater than 1 with only two factors: 1 and itself.
+**Definition:** A number with exactly two factors: 1 and itself.
 
-**Example:** 7 is a prime number because only 1 x 7 equals 7.
+**Example:** Leo tries to split 7 counters into equal groups. Only 1 group of 7 works. So 7 is prime.
+
+**Common misconception:** The number 1 is not prime. It has only one factor, not two.
 
 ### composite number
 
 **Definition:** A number with more than two factors.
 
-**Example:** 8 is composite because 1, 2, 4, and 8 are all factors.
+**Example:** Ana splits 12 counters into 2 groups of 6, then into 3 groups of 4. Many splits work, so 12 is composite.
 
 ### multi-step problem
 
-**Definition:** A word problem that requires more than one operation to solve.
+**Definition:** A problem that needs more than one step.
 
-**Example:** This multi-step problem needs both multiplication and subtraction.
+**Example:** Ben buys 3 packs of 8 pencils, then gives 5 away. First he multiplies to get 24. Then he subtracts to get 19.
 
 ### remainder
 
-**Definition:** The amount left over after dividing when the numbers don't divide evenly.
+**Definition:** The amount left over after dividing.
 
-**Example:** 13 divided by 4 is 3 with a remainder of 1.
+**Example:** Ivy shares 17 stickers with 5 friends. Each one gets 3, and the remainder is 2.
 
 ### variable
 
-**Definition:** A letter or symbol that stands for an unknown number.
+**Definition:** A letter that stands for a number you do not know yet.
 
-**Example:** In n + 5 = 12, n is the variable.
+**Example:** Zoe writes 6 × n = 42. The letter n is the variable. She solves it and finds n = 7.
 
 
 ## Number & Operations in Base Ten (4.NBT)
 
 ### place value
 
-**Definition:** The value of a digit based on its position, up to millions in grade 4.
+**Definition:** What each digit is worth based on its position.
 
-**Example:** In 3,452,100, the 3 is worth 3 million.
+**Example:** Theo studies 5,283. The 5 sits in the thousands place, so it is worth 5,000.
 
 ### multi-digit
 
 **Definition:** A number with more than one digit.
 
-**Example:** 1,236 is a multi-digit number.
+**Example:** Nina adds 3,472 and 1,915. Both are multi-digit numbers, so she lines up the places before she starts.
 
 ### standard algorithm
 
-**Definition:** The step-by-step method for adding, subtracting, multiplying, or dividing multi-digit numbers.
+**Definition:** The usual step by step way to work a problem on paper.
 
-**Example:** Use the standard algorithm to multiply 234 x 6.
+**Example:** Omar multiplies 34 × 26. He uses the standard algorithm, working one place at a time and carrying when needed.
 
 
 ## Number & Operations—Fractions (4.NF)
 
 ### equivalent fraction
 
-**Definition:** A fraction that names the same value as another fraction.
+**Definition:** A fraction that names the same amount as another.
 
-**Example:** 2/6 is equivalent to 1/3.
+**Example:** Maya has 2/4 of a chocolate bar. Leo has 1/2 of the same bar. Their pieces are exactly the same size.
 
 ### mixed number
 
-**Definition:** A whole number combined with a fraction.
+**Definition:** A whole number joined with a fraction.
 
-**Example:** 2 1/2 is a mixed number.
+**Example:** Ana pours 2 full glasses of juice and half of a third. She has 2 1/2 glasses.
 
 ### improper fraction
 
-**Definition:** A fraction where the numerator is greater than or equal to the denominator.
+**Definition:** A fraction whose top number is bigger than its bottom.
 
-**Example:** 7/4 is an improper fraction.
+**Example:** Ben has 5 quarter slices of pie. He writes 5/4, which is more than one whole pie.
+
+**Common misconception:** An improper fraction is not wrong. It is just written as parts instead of wholes.
 
 ### common denominator
 
-**Definition:** A shared denominator used to add or compare fractions.
+**Definition:** A shared bottom number for two fractions.
 
-**Example:** Use a common denominator of 12 to add 1/3 and 1/4.
+**Example:** Ivy adds 1/3 and 1/4. She rewrites them as 4/12 and 3/12. Now they share a denominator, so she can add.
 
 ### decimal
 
-**Definition:** A number that uses a decimal point to show parts of a whole based on tens.
+**Definition:** A number that uses a dot to show parts smaller than one.
 
-**Example:** 0.5 is a decimal equal to 1/2.
+**Example:** Zoe reads a price tag: $2.75. The dot separates the whole dollars from the cents.
 
 ### tenths
 
-**Definition:** Parts of a whole divided into 10 equal pieces.
+**Definition:** One whole split into 10 equal parts.
 
-**Example:** 0.3 means three tenths.
+**Example:** Theo shades 3 strips out of 10. He shaded 3 tenths, which he writes as 0.3.
 
 ### hundredths
 
-**Definition:** Parts of a whole divided into 100 equal pieces.
+**Definition:** One whole split into 100 equal parts.
 
-**Example:** 0.07 means seven hundredths.
+**Example:** Nina shades 25 little squares on a grid of 100. She shaded 25 hundredths, or 0.25.
 
 ### benchmark fraction
 
-**Definition:** A common, easy-to-picture fraction (like 1/2) used to compare other fractions.
+**Definition:** A well known fraction you use to judge others.
 
-**Example:** Use the benchmark fraction 1/2 to guess if 3/5 is bigger or smaller.
+**Example:** Omar wonders how big 5/8 is. He compares it to 1/2, a benchmark. 5/8 is a little more than half.
 
 
 ## Measurement & Data (4.MD)
 
 ### angle
 
-**Definition:** The space between two lines or rays that meet at a point, measured in degrees.
+**Definition:** The corner shape made where two rays meet.
 
-**Example:** The corner of the door forms an angle.
+**Example:** Maya opens a pair of scissors. The space between the blades forms an angle.
+
+**Common misconception:** Longer arms do not make a bigger angle. Only the spread between them counts.
 
 ### degree
 
-**Definition:** The unit used to measure the size of an angle.
+**Definition:** The unit used to measure an angle.
 
-**Example:** A right angle measures 90 degrees.
+**Example:** Leo measures a square corner with his protractor. It reads 90 degrees.
 
 ### protractor
 
-**Definition:** A tool used to measure angles.
+**Definition:** A tool for measuring angles.
 
-**Example:** Use a protractor to measure the angle.
+**Example:** Ana lines up the middle of her protractor with the corner. She reads 45 degrees.
 
 ### perimeter
 
-**Definition:** The distance around the outside of a shape.
+**Definition:** The total distance around the outside of a shape.
 
-**Example:** Find the perimeter of the rectangular field.
+**Example:** Ben fences a garden 8 feet by 3 feet. He adds 8 + 3 + 8 + 3 and needs 22 feet of fence.
 
 ### formula
 
-**Definition:** A rule written with symbols that shows how to calculate something.
+**Definition:** A rule written with symbols that works every time.
 
-**Example:** The formula for area of a rectangle is length x width.
+**Example:** Ivy uses the formula for area: length × width. Her rug is 6 by 4, so the area is 24.
 
 ### conversion
 
-**Definition:** Changing a measurement from one unit to another.
+**Definition:** Changing a measure into a different unit.
 
-**Example:** Conversion of 3 feet to inches gives 36 inches.
+**Example:** Zoe has 3 feet of ribbon and needs inches. She multiplies 3 × 12 and gets 36 inches.
 
 
 ## Geometry (4.G)
 
 ### point
 
-**Definition:** An exact location in space, usually shown as a dot.
+**Definition:** An exact spot. It has no size at all.
 
-**Example:** Point A marks a spot on the line.
+**Example:** Theo marks a dot on the map where the library sits. That dot is a point.
 
 ### line
 
-**Definition:** A straight path that goes on forever in both directions.
+**Definition:** A straight path that goes on forever both ways.
 
-**Example:** Draw a line through both points.
+**Example:** Nina draws a straight path and puts an arrow on each end. The arrows show the line never stops.
 
 ### ray
 
-**Definition:** A straight path that starts at one point and goes on forever in one direction.
+**Definition:** A straight path with one end. It goes on forever the other way.
 
-**Example:** A ray of light starts at the sun.
+**Example:** Omar shines a flashlight. The beam starts at the bulb and keeps going, much like a ray.
 
 ### acute angle
 
-**Definition:** An angle smaller than a right angle (less than 90 degrees).
+**Definition:** An angle smaller than a square corner.
 
-**Example:** The tip of a slice of pizza is often an acute angle.
+**Example:** Maya opens a book just a crack. The narrow angle at the spine is acute.
 
 ### obtuse angle
 
-**Definition:** An angle bigger than a right angle but smaller than a straight line (between 90 and 180 degrees).
+**Definition:** An angle bigger than a square corner.
 
-**Example:** The angle looks wide open, like an obtuse angle.
+**Example:** Leo leans a chair back until it nearly lies flat. The wide angle it makes is obtuse.
 
 ### right angle
 
-**Definition:** An angle that measures exactly 90 degrees, like the corner of a square.
+**Definition:** A square corner. It measures 90 degrees.
 
-**Example:** The corner of a book forms a right angle.
+**Example:** Ana checks the corner of her paper against a tile. They match exactly, so it is a right angle.
 
 ### parallel lines
 
-**Definition:** Lines that never meet and always stay the same distance apart.
+**Definition:** Lines that stay the same distance apart and never meet.
 
-**Example:** Railroad tracks are parallel lines.
+**Example:** Ben looks down the train tracks. The rails run side by side forever, so they are parallel.
 
 ### perpendicular lines
 
-**Definition:** Lines that cross to form right angles.
+**Definition:** Lines that cross and make a square corner.
 
-**Example:** The two streets meet as perpendicular lines.
+**Example:** Ivy studies the window frame. The upright meets the sill at a square corner, so those lines are perpendicular.
 
 ### line of symmetry
 
-**Definition:** A line that divides a shape into two matching mirror halves.
+**Definition:** A line that folds a shape into two matching halves.
 
-**Example:** A heart shape has a line of symmetry down the middle.
+**Example:** Zoe folds a paper heart down the middle. The two halves match exactly, so the fold is a line of symmetry.
+
+**Common misconception:** Not every fold works. The halves have to land on each other exactly.
