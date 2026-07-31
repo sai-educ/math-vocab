@@ -502,16 +502,19 @@ const Graph = (function () {
   function positionAmbientSymbols() {
     if (state.grade) return;
     const rect = container.getBoundingClientRect();
+    const rootVisible = labels.root.el.classList.contains('visible');
+    const rootBox = rootVisible
+      ? labels.root.el.firstElementChild.getBoundingClientRect()
+      : null;
     ambientSymbolEls.forEach((el) => {
       const n = nodes[el.dataset.nodeId];
       if (!n) return;
       _v.copy(n.pos).project(camera);
       const x = (_v.x * 0.5 + 0.5) * rect.width;
       const y = (-_v.y * 0.5 + 0.5) * rect.height;
-      const rootBox = labels.root.el.firstElementChild.getBoundingClientRect();
       const screenX = rect.left + x;
       const screenY = rect.top + y;
-      const obscuresRoot = labels.root.el.classList.contains('visible')
+      const obscuresRoot = rootBox
         && screenX > rootBox.left - 18 && screenX < rootBox.right + 18
         && screenY > rootBox.top - 18 && screenY < rootBox.bottom + 18;
       const obscuresLegend = x < 220 && y > rect.height - 150;

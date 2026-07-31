@@ -151,11 +151,7 @@ function definitionForSpeech(term) {
     explanation = `${conceptName} means ${lowerNarrationStart(first)}`;
   }
 
-  parts.forEach((rawPart, index) => {
-    const part = rawPart.replace(
-      /\bhow many (.+?) are there\b/i,
-      (_match, subject) => `how many ${subject} there are`,
-    );
+  parts.forEach((part, index) => {
     const you = part.match(/^You (?:can )?(.+)$/i);
     if (index === 0 && you) {
       explanation += `, so you can ${lowerNarrationStart(you[1])}`;
@@ -207,7 +203,11 @@ function exampleForSpeech(term) {
     story = `Imagine a situation where ${narrationPeriod(lowerNarrationStart(first))}`;
   }
 
-  parts.forEach((part, index) => {
+  parts.forEach((rawPart, index) => {
+    const part = rawPart.replace(
+      /\bhow many (.+?) are there\b/i,
+      (_match, subject) => `how many ${subject} there are`,
+    );
     const isLast = index === parts.length - 1;
     const thereRemaining = part.match(/^Now there (?:is|are) (.+?) left$/i);
     const remaining = part.match(/^Now (.+?) (?:is|are) left$/i);
