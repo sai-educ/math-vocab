@@ -18,10 +18,17 @@ function readTtsProxyUrl() {
   let configured = '';
   try {
     const params = new URLSearchParams(window.location.search);
+    const hasParam = params.has('ttsProxy');
     const queryUrl = (params.get('ttsProxy') || '').trim();
+
     if (queryUrl) {
       localStorage.setItem(STORAGE_KEYS.ttsProxy, queryUrl);
       configured = queryUrl;
+    } else if (hasParam) {
+      // An explicitly empty ?ttsProxy= clears a previously stored override.
+      // Without this escape hatch a single visit with a stale Worker URL
+      // would keep hijacking /api/tts in that browser forever.
+      localStorage.removeItem(STORAGE_KEYS.ttsProxy);
     } else {
       configured = (localStorage.getItem(STORAGE_KEYS.ttsProxy) || '').trim();
     }
