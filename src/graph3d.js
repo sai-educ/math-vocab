@@ -65,70 +65,80 @@ const Graph = (function () {
 
   function init(containerEl, labelEl) {
     const legend = document.getElementById('graphLegend');
+    const fallback = document.getElementById('graphFallback');
+    if (legend) {
+      legend.hidden = true;
+      legend.setAttribute('aria-hidden', 'true');
+    }
     if (typeof THREE === 'undefined') {
-      document.getElementById('graphFallback').style.display = 'flex';
-      if (legend) {
-        legend.hidden = true;
-        legend.setAttribute('aria-hidden', 'true');
-      }
+      fallback.style.display = 'flex';
       return;
     }
-    if (legend) {
-      legend.hidden = false;
-      legend.removeAttribute('aria-hidden');
+    try {
+      container = containerEl;
+      labelLayer = labelEl;
+      termSymbolEl = document.getElementById('graphTermSymbol');
+      allocScratch();
+
+      const w = Math.max(container.clientWidth, 1);
+      const h = Math.max(container.clientHeight, 1);
+
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(50, w / h, 0.1, 2000);
+      camera.position.set(130, 30, 0);
+
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.setSize(w, h);
+      if (THREE.sRGBEncoding !== undefined) renderer.outputEncoding = THREE.sRGBEncoding;
+      if (THREE.ACESFilmicToneMapping !== undefined) {
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 0.95;
+      }
+      container.appendChild(renderer.domElement);
+      renderer.domElement.setAttribute('aria-hidden', 'true');
+
+      addLights();
+      buildStarfield();
+      buildGraph();
+      buildLabels();
+
+      if (typeof THREE.OrbitControls !== 'undefined') {
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.075;
+        controls.enablePan = false;
+        controls.minDistance = 2.5;
+        controls.maxDistance = 320;
+        controls.autoRotate = !REDUCED_MOTION;
+        controls.autoRotateSpeed = 0.55;
+        controls.target.set(0, 0, 0);
+        hasControls = true;
+      } else {
+        camera.lookAt(ORIGIN);
+      }
+
+      clock = new THREE.Clock();
+      ready = true;
+
+      bindPicking();
+      window.addEventListener('resize', onResize);
+      if (window.ResizeObserver) new ResizeObserver(onResize).observe(container);
+
+      applyState(state, true);
+      if (legend) {
+        legend.hidden = false;
+        legend.removeAttribute('aria-hidden');
+      }
+      animate();
+    } catch (error) {
+      ready = false;
+      if (renderer && renderer.domElement && renderer.domElement.parentNode === container) {
+        container.removeChild(renderer.domElement);
+      }
+      fallback.style.display = 'flex';
+      console.warn('The 3D knowledge graph could not start.', error);
     }
-    container = containerEl;
-    labelLayer = labelEl;
-    termSymbolEl = document.getElementById('graphTermSymbol');
-    allocScratch();
-
-    const w = Math.max(container.clientWidth, 1);
-    const h = Math.max(container.clientHeight, 1);
-
-    scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(50, w / h, 0.1, 2000);
-    camera.position.set(130, 30, 0);
-
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer.setSize(w, h);
-    if (THREE.sRGBEncoding !== undefined) renderer.outputEncoding = THREE.sRGBEncoding;
-    if (THREE.ACESFilmicToneMapping !== undefined) {
-      renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 0.95;
-    }
-    container.appendChild(renderer.domElement);
-    renderer.domElement.setAttribute('aria-hidden', 'true');
-
-    addLights();
-    buildStarfield();
-    buildGraph();
-    buildLabels();
-
-    if (typeof THREE.OrbitControls !== 'undefined') {
-      controls = new THREE.OrbitControls(camera, renderer.domElement);
-      controls.enableDamping = true;
-      controls.dampingFactor = 0.075;
-      controls.enablePan = false;
-      controls.minDistance = 2.5;
-      controls.maxDistance = 320;
-      controls.autoRotate = !REDUCED_MOTION;
-      controls.autoRotateSpeed = 0.55;
-      controls.target.set(0, 0, 0);
-      hasControls = true;
-    } else {
-      camera.lookAt(ORIGIN);
-    }
-
-    clock = new THREE.Clock();
-    ready = true;
-
-    bindPicking();
-    window.addEventListener('resize', onResize);
-    if (window.ResizeObserver) new ResizeObserver(onResize).observe(container);
-
-    applyState(state, true);
-    animate();
   }
 
   /* Deliberately restrained. Bright white light plus additive halos washes
@@ -498,7 +508,12 @@ const Graph = (function () {
       _v.copy(n.pos).project(camera);
       const x = (_v.x * 0.5 + 0.5) * rect.width;
       const y = (-_v.y * 0.5 + 0.5) * rect.height;
-      const obscuresRoot = Math.abs(_v.x) < 0.3 && Math.abs(_v.y) < 0.24;
+      const rootBox = labels.root.el.firstElementChild.getBoundingClientRect();
+      const screenX = rect.left + x;
+      const screenY = rect.top + y;
+      const obscuresRoot = labels.root.el.classList.contains('visible')
+        && screenX > rootBox.left - 18 && screenX < rootBox.right + 18
+        && screenY > rootBox.top - 18 && screenY < rootBox.bottom + 18;
       const obscuresLegend = x < 220 && y > rect.height - 150;
       const offscreen = _v.z > 1 || Math.abs(_v.x) > 1.02 || Math.abs(_v.y) > 1.02
         || obscuresRoot || obscuresLegend;
