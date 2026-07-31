@@ -1,0 +1,17 @@
+{
+  "name": "math-vocab",
+  "version": "1.0.0",
+  "private": true,
+  "description": "An open, interactive K-5 math vocabulary knowledge graph aligned to the Common Core.",
+  "license": "CC-BY-NC-4.0",
+  "scripts": {
+    "build": "python3 build_data.py && python3 build_html.py",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cuelume": "^0.2.1"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
