@@ -118,14 +118,18 @@ function definitionForSpeech(term) {
   const nounPhrase = /^(?:a|an|the|one|two|part|how|when|where)\b/i.test(first);
 
   let explanation;
-  if (/^Words in a problem\b/i.test(first)) {
-    explanation = `${conceptName} is wording in a problem${first.slice('Words in a problem'.length)}`;
+  if (termKey === 'in all') {
+    explanation = 'The words in all tell us to find the total';
+  } else if (termKey === 'left') {
+    explanation = 'The word left asks what is still there';
   } else if (/^Another word for\b/i.test(first)) {
-    explanation = `${conceptName} is ${lowerNarrationStart(first)}`;
+    explanation = `The word ${term.term} is ${lowerNarrationStart(first)}`;
   } else if (termKey === 'rows and columns') {
     explanation = `${conceptName} describe two directions. ${first}`;
   } else if (termKey === 'tenths' || termKey === 'hundredths') {
-    explanation = `${conceptName} are the equal parts made when ${lowerNarrationStart(first)}`;
+    explanation = `${conceptName} are the equal parts made when ${
+      lowerNarrationStart(first).replace(/^one whole split\b/i, 'one whole is split')
+    }`;
   } else if (actionGerund) {
     const actionDetails = action[2]
       .replace(/\band keep counting\b/i, 'and continuing to count')
@@ -205,6 +209,7 @@ function exampleForSpeech(term) {
     const howManyMore = part.match(/^How many more does ([A-Z][a-z]+) have$/i);
     const howManyDo = part.match(/^How many do (.+)$/i);
     const howManyAre = part.match(/^How many are (.+)$/i);
+    const insideStep = part.match(/^Inside the parentheses (.+)$/i);
     const actionConcept = NARRATION_ACTION_GERUNDS[String(term.term).toLowerCase()];
     let sentence;
 
@@ -227,6 +232,8 @@ function exampleForSpeech(term) {
       sentence = `Now we can ask how many ${storyConnectorStart(howManyDo[1])}`;
     } else if (howManyAre) {
       sentence = `Now we can ask how many are ${lowerNarrationStart(howManyAre[1])}`;
+    } else if (insideStep) {
+      sentence = `First, the work inside the parentheses ${insideStep[1]}`;
     } else if (observation) {
       sentence = `Notice how ${lowerNarrationStart(part)}`;
     } else if (part.toLowerCase().includes(String(term.term).toLowerCase())) {
