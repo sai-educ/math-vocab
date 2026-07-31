@@ -84,6 +84,12 @@ function syncTabStops(containerEl) {
   const selected = items.find((el) => el.getAttribute('aria-pressed') === 'true');
   items.forEach((el) => { el.tabIndex = -1; });
   (selected || items[0]).tabIndex = 0;
+
+  // The topic and word lists are short scroll regions; without this the
+  // selected item can sit half-clipped at the edge of its panel.
+  if (selected) {
+    selected.scrollIntoView({ block: 'nearest', behavior: REDUCED_MOTION ? 'auto' : 'smooth' });
+  }
 }
 
 // ---- grade row ----------------------------------------------------------
@@ -228,7 +234,8 @@ function renderDetail() {
     <p class="breadcrumb">${escapeHtml(gradeLabel(t.grade))} → ${escapeHtml(t.domain)}</p>
     <h2>${escapeHtml(t.term)}</h2>
     <span class="standard">${escapeHtml(t.standard)}</span>
-    <button id="listenBtn" type="button" aria-describedby="listenStatus">
+    <button id="listenBtn" type="button" aria-describedby="listenStatus"
+            aria-label="Listen to an explanation of the word ${escapeHtml(t.term)}">
       <span class="icon" aria-hidden="true">🔊</span><span id="listenBtnText">Listen to an explanation</span>
     </button>
     <p id="listenStatus" role="status" aria-live="polite"></p>

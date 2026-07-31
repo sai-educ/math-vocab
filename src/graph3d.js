@@ -123,18 +123,18 @@ const Graph = (function () {
      the blue/pink/green level colours out to near-white, which is exactly
      the distinction the graph relies on. */
   function addLights() {
-    scene.add(new THREE.AmbientLight(0x6a6a90, 0.55));
+    scene.add(new THREE.AmbientLight(0x6a6a90, 0.34));
 
-    const key = new THREE.DirectionalLight(0xffffff, 0.75);
+    const key = new THREE.DirectionalLight(0xffffff, 0.5);
     key.position.set(60, 90, 40);
     scene.add(key);
 
-    const rim = new THREE.DirectionalLight(0x8fb0ff, 0.3);
+    const rim = new THREE.DirectionalLight(0x8fb0ff, 0.22);
     rim.position.set(-70, -30, -50);
     scene.add(rim);
 
     // Sits inside the white root node so the centre of the graph glows.
-    const core = new THREE.PointLight(0xfff4e0, 0.9, 70, 2);
+    const core = new THREE.PointLight(0xfff4e0, 0.5, 70, 2);
     core.position.set(0, 0, 0);
     scene.add(core);
   }
@@ -145,8 +145,11 @@ const Graph = (function () {
     canvas.width = canvas.height = size;
     const ctx = canvas.getContext('2d');
     const g = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
-    g.addColorStop(0, 'rgba(255,255,255,1)');
-    g.addColorStop(0.35, 'rgba(255,255,255,0.5)');
+    // A soft falloff rather than a hot core — a bright centre stacked on top
+    // of the lit sphere turns every node white and erases the level colour.
+    g.addColorStop(0, 'rgba(255,255,255,0.75)');
+    g.addColorStop(0.22, 'rgba(255,255,255,0.32)');
+    g.addColorStop(0.6, 'rgba(255,255,255,0.08)');
     g.addColorStop(1, 'rgba(255,255,255,0)');
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, size, size);
@@ -326,12 +329,16 @@ const Graph = (function () {
   // ---------------------------------------------------------------------
 
   const labels = {};
+  const LABEL_OFFSET_Y = 46;
+  // Lower number = more important. A short graph panel only has room for one.
+  const LABEL_PRIORITY = { hover: 0, term: 1, domain: 2, grade: 3, root: 4 };
+  const SHORT_PANEL_HEIGHT = 280;
 
   function buildLabels() {
     ['root', 'grade', 'domain', 'term', 'hover'].forEach((key) => {
       const el = document.createElement('div');
       el.className = 'graph-label lv-' + (key === 'hover' ? 'term' : key);
-      el.innerHTML = '<span class="gl-icon"></span><span class="gl-text"></span>';
+      el.innerHTML = '<div class="gl-box"><span class="gl-icon"></span><span class="gl-text"></span></div>';
       labelLayer.appendChild(el);
       labels[key] = { el, icon: el.querySelector('.gl-icon'), text: el.querySelector('.gl-text'), nodeId: null };
     });
@@ -362,29 +369,41 @@ const Graph = (function () {
       const offscreen = _v.z > 1 || Math.abs(_v.x) > 1.5 || Math.abs(_v.y) > 1.5;
       if (offscreen) { l.el.classList.remove('visible'); return; }
       l.el.classList.add('visible');
+      const box = l.el.firstElementChild;
       placed.push({
         l,
         x: (_v.x * 0.5 + 0.5) * rect.width,
-        y: (-_v.y * 0.5 + 0.5) * rect.height,
-        priority: key === 'term' || key === 'hover' ? 0 : 1,
+        // Sits above the node rather than on top of it, so the label never
+        // hides the thing it is labelling.
+        y: (-_v.y * 0.5 + 0.5) * rect.height - LABEL_OFFSET_Y,
+        w: box.offsetWidth,
+        h: box.offsetHeight,
+        priority: LABEL_PRIORITY[key],
       });
     });
 
+    // On a short panel (phone, or an iPad in Slide Over) there is only room
+    // for the deepest label; stacking two just makes both unreadable.
     placed.sort((a, b) => a.priority - b.priority || a.y - b.y);
-    const minGap = 42;
+    if (rect.height < SHORT_PANEL_HEIGHT && placed.length > 1) {
+      placed.slice(1).forEach((p) => p.l.el.classList.remove('visible'));
+      placed.length = 1;
+    }
     for (let i = 0; i < placed.length; i++) {
       for (let j = 0; j < i; j++) {
-        const dy = placed[i].y - placed[j].y;
-        const dx = Math.abs(placed[i].x - placed[j].x);
-        if (dx < 190 && Math.abs(dy) < minGap) {
-          placed[i].y = placed[j].y + (dy >= 0 ? minGap : -minGap);
+        const a = placed[j];
+        const b = placed[i];
+        const gap = (a.h + b.h) / 2 + 8;
+        const dy = b.y - a.y;
+        if (Math.abs(b.x - a.x) < (a.w + b.w) / 2 + 8 && Math.abs(dy) < gap) {
+          b.y = a.y + (dy >= 0 ? gap : -gap);
         }
       }
     }
     placed.forEach((p) => {
-      const y = Math.max(24, Math.min(rect.height - 24, p.y));
-      const x = Math.max(70, Math.min(rect.width - 70, p.x));
-      p.l.el.style.transform = `translate(-50%,-50%) translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
+      const y = Math.max(p.h / 2 + 6, Math.min(rect.height - p.h / 2 - 6, p.y));
+      const x = Math.max(p.w / 2 + 6, Math.min(rect.width - p.w / 2 - 6, p.x));
+      p.l.el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
     });
   }
 

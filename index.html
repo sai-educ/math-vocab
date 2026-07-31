@@ -103,7 +103,7 @@ header h1{margin:0 0 2px;font-size:17px;font-weight:600;letter-spacing:.2px;}
 header p{margin:0;font-size:12.5px;color:var(--text-dim);}
 
 #aboutBtn{
-  flex:0 0 auto;min-height:36px;padding:8px 14px;border-radius:999px;
+  flex:0 0 auto;min-height:var(--tap);padding:8px 16px;border-radius:999px;
   background:var(--node);border:1px solid var(--line);color:var(--text);
   font-size:12.5px;font-weight:600;cursor:pointer;
   display:inline-flex;align-items:center;gap:6px;
@@ -181,9 +181,15 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
 }
 #vocabSection{flex:1 1 60%;min-height:0;overflow-y:auto;padding:14px 0;-webkit-overflow-scrolling:touch;}
 
+/* Sticky so the step number stays visible while its list scrolls — the
+   selected item is auto-scrolled into view, which would otherwise push the
+   "Select a topic" heading out of sight. */
 .panel-heading{
+  position:sticky;top:-14px;z-index:2;
   font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);
-  margin:0 16px 10px;font-weight:600;display:flex;align-items:center;gap:6px;
+  margin:0 0 10px;padding:0 16px 8px;font-weight:600;
+  display:flex;align-items:center;gap:6px;
+  background:linear-gradient(180deg, var(--panel) 72%, rgba(27,27,38,0));
   transition:color var(--dur) var(--ease);
 }
 .panel-heading .step{
@@ -245,25 +251,32 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
    they stay crisp at any pixel ratio, never overlap the way the sprites did,
    and their text is real text. */
 #graphLabels{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
-.graph-label{
+
+/* Two elements on purpose. The outer one is moved every frame by JS and must
+   NOT be transitioned — a transition on transform would make the label chase
+   its node and never catch up. The inner one carries the eased fade. */
+.graph-label{position:absolute;left:0;top:0;width:0;height:0;will-change:transform;}
+.gl-box{
   position:absolute;left:0;top:0;
   display:flex;align-items:center;gap:7px;
   padding:6px 12px;border-radius:12px;
   background:rgba(14,14,20,.86);
   backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-  font-size:13px;font-weight:600;color:#fff;white-space:nowrap;
-  max-width:min(60%, 260px);
+  font-size:13px;font-weight:600;color:#fff;line-height:1.3;
+  /* Wraps rather than truncating — "Number & Operations in Base Ten" is a
+     topic name a child needs to read in full, not "Number & Operations…". */
+  max-width:min(52vw, 300px);text-align:left;
   opacity:0;transform:translate(-50%,-50%) scale(.94);
   transition:opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
-  will-change:transform,opacity;
 }
-.graph-label.visible{opacity:1;transform:translate(-50%,-50%) scale(1);}
-.graph-label .gl-text{overflow:hidden;text-overflow:ellipsis;}
-.graph-label .gl-icon{flex:0 0 auto;font-size:15px;line-height:1;}
-.graph-label.lv-root{border:2px solid rgba(255,255,255,.85);box-shadow:0 0 16px rgba(255,255,255,.22);}
-.graph-label.lv-grade{border:2px solid var(--accent);box-shadow:0 0 16px rgba(124,158,255,.35);}
-.graph-label.lv-domain{border:2px solid var(--accent2);box-shadow:0 0 16px rgba(255,95,168,.35);}
-.graph-label.lv-term{border:2px solid var(--accent3);box-shadow:0 0 18px rgba(124,255,178,.4);font-size:15px;padding:8px 14px;}
+.graph-label.visible .gl-box{opacity:1;transform:translate(-50%,-50%) scale(1);}
+.gl-text{min-width:0;}
+.gl-icon{flex:0 0 auto;font-size:15px;line-height:1;}
+.gl-icon:empty{display:none;}
+.lv-root .gl-box{border:2px solid rgba(255,255,255,.85);box-shadow:0 0 16px rgba(255,255,255,.22);}
+.lv-grade .gl-box{border:2px solid var(--accent);box-shadow:0 0 16px rgba(124,158,255,.35);}
+.lv-domain .gl-box{border:2px solid var(--accent2);box-shadow:0 0 16px rgba(255,95,168,.35);}
+.lv-term .gl-box{border:2px solid var(--accent3);box-shadow:0 0 18px rgba(124,255,178,.4);font-size:15px;padding:8px 14px;}
 
 #graphHint{
   position:absolute;left:50%;top:16px;transform:translateX(-50%);
@@ -352,11 +365,14 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   background:var(--panel);flex:0 0 auto;
   display:flex;align-items:center;gap:10px;flex-wrap:wrap;
 }
+/* Inline text control, so WCAG 2.5.8's inline exception applies — but keep
+   it at least 24px tall so it is still comfortable to hit on a tablet. */
 #stats .stats-about{
-  background:none;border:none;padding:2px 4px;margin:0;
+  background:none;border:none;padding:6px 6px;margin:0;min-height:26px;
   color:var(--accent);font-size:11.5px;font-family:inherit;
-  cursor:pointer;text-decoration:underline;
+  cursor:pointer;text-decoration:underline;text-underline-offset:2px;
 }
+#stats .stats-about:hover{color:var(--accent3);}
 
 /* ---------- onboarding spotlight ---------- */
 
@@ -430,12 +446,13 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
    and the definition stack in the right-hand region instead. Topic-on-left,
    example-on-right reading order is preserved. */
 @media (max-width: 1100px){
-  #main{flex-wrap:wrap;}
   #leftPanel{width:264px;flex:0 0 264px;}
-  #rightRegion{flex:1;min-width:0;display:flex;flex-direction:column;min-height:0;}
-  #graphPanel{flex:1 1 auto;min-height:300px;}
+  #rightRegion{flex:1 1 auto;min-width:0;min-height:0;display:flex;flex-direction:column;}
+  /* The definition is the payoff, so it gets the larger share and the graph
+     is capped — otherwise the definition lands below the fold on an iPad. */
+  #graphPanel{flex:0 0 44%;min-height:230px;}
   #detail{
-    width:100%;flex:0 0 auto;max-height:46%;
+    width:auto;flex:1 1 auto;min-height:0;max-height:none;
     border-left:none;border-top:1px solid var(--line);
   }
 }
@@ -456,13 +473,14 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   #topicsSection{flex:0 0 auto;max-height:210px;}
   #vocabSection{flex:0 0 auto;max-height:280px;}
   #rightRegion{display:flex;flex-direction:column;width:100%;}
-  #graphPanel{flex:0 0 auto;height:min(56vw, 340px);}
+  #graphPanel{flex:0 0 auto;height:min(72vw, 320px);min-height:200px;}
+  #resetViewBtn{font-size:11.5px;padding:8px 10px;}
   #detail{width:100%;flex:0 0 auto;max-height:none;border-left:none;border-top:1px solid var(--line);}
   header{gap:10px;}
   header h1{font-size:15.5px;}
   header p{font-size:11.5px;}
-  .graph-label{font-size:12px;max-width:70%;}
-  .graph-label.lv-term{font-size:13.5px;}
+  .gl-box{font-size:12px;max-width:62vw;}
+  .lv-term .gl-box{font-size:13.5px;}
 }
 
 /* =========================================================================
@@ -477,8 +495,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     transition-duration:.001ms !important;
     scroll-behavior:auto !important;
   }
-  .graph-label{transition:opacity .001ms !important;transform:translate(-50%,-50%) scale(1);}
-  .graph-label.visible{transform:translate(-50%,-50%) scale(1);}
+  .gl-box{transform:translate(-50%,-50%) scale(1);}
+  .graph-label.visible .gl-box{transform:translate(-50%,-50%) scale(1);}
   .topic-node:hover,.vocab-row:hover,.grade-node:hover,#listenBtn:hover{transform:none;}
 }
 </style>
@@ -2924,18 +2942,18 @@ const Graph = (function () {
      the blue/pink/green level colours out to near-white, which is exactly
      the distinction the graph relies on. */
   function addLights() {
-    scene.add(new THREE.AmbientLight(0x6a6a90, 0.55));
+    scene.add(new THREE.AmbientLight(0x6a6a90, 0.34));
 
-    const key = new THREE.DirectionalLight(0xffffff, 0.75);
+    const key = new THREE.DirectionalLight(0xffffff, 0.5);
     key.position.set(60, 90, 40);
     scene.add(key);
 
-    const rim = new THREE.DirectionalLight(0x8fb0ff, 0.3);
+    const rim = new THREE.DirectionalLight(0x8fb0ff, 0.22);
     rim.position.set(-70, -30, -50);
     scene.add(rim);
 
     // Sits inside the white root node so the centre of the graph glows.
-    const core = new THREE.PointLight(0xfff4e0, 0.9, 70, 2);
+    const core = new THREE.PointLight(0xfff4e0, 0.5, 70, 2);
     core.position.set(0, 0, 0);
     scene.add(core);
   }
@@ -2946,8 +2964,11 @@ const Graph = (function () {
     canvas.width = canvas.height = size;
     const ctx = canvas.getContext('2d');
     const g = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
-    g.addColorStop(0, 'rgba(255,255,255,1)');
-    g.addColorStop(0.35, 'rgba(255,255,255,0.5)');
+    // A soft falloff rather than a hot core — a bright centre stacked on top
+    // of the lit sphere turns every node white and erases the level colour.
+    g.addColorStop(0, 'rgba(255,255,255,0.75)');
+    g.addColorStop(0.22, 'rgba(255,255,255,0.32)');
+    g.addColorStop(0.6, 'rgba(255,255,255,0.08)');
     g.addColorStop(1, 'rgba(255,255,255,0)');
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, size, size);
@@ -3127,12 +3148,16 @@ const Graph = (function () {
   // ---------------------------------------------------------------------
 
   const labels = {};
+  const LABEL_OFFSET_Y = 46;
+  // Lower number = more important. A short graph panel only has room for one.
+  const LABEL_PRIORITY = { hover: 0, term: 1, domain: 2, grade: 3, root: 4 };
+  const SHORT_PANEL_HEIGHT = 280;
 
   function buildLabels() {
     ['root', 'grade', 'domain', 'term', 'hover'].forEach((key) => {
       const el = document.createElement('div');
       el.className = 'graph-label lv-' + (key === 'hover' ? 'term' : key);
-      el.innerHTML = '<span class="gl-icon"></span><span class="gl-text"></span>';
+      el.innerHTML = '<div class="gl-box"><span class="gl-icon"></span><span class="gl-text"></span></div>';
       labelLayer.appendChild(el);
       labels[key] = { el, icon: el.querySelector('.gl-icon'), text: el.querySelector('.gl-text'), nodeId: null };
     });
@@ -3163,29 +3188,41 @@ const Graph = (function () {
       const offscreen = _v.z > 1 || Math.abs(_v.x) > 1.5 || Math.abs(_v.y) > 1.5;
       if (offscreen) { l.el.classList.remove('visible'); return; }
       l.el.classList.add('visible');
+      const box = l.el.firstElementChild;
       placed.push({
         l,
         x: (_v.x * 0.5 + 0.5) * rect.width,
-        y: (-_v.y * 0.5 + 0.5) * rect.height,
-        priority: key === 'term' || key === 'hover' ? 0 : 1,
+        // Sits above the node rather than on top of it, so the label never
+        // hides the thing it is labelling.
+        y: (-_v.y * 0.5 + 0.5) * rect.height - LABEL_OFFSET_Y,
+        w: box.offsetWidth,
+        h: box.offsetHeight,
+        priority: LABEL_PRIORITY[key],
       });
     });
 
+    // On a short panel (phone, or an iPad in Slide Over) there is only room
+    // for the deepest label; stacking two just makes both unreadable.
     placed.sort((a, b) => a.priority - b.priority || a.y - b.y);
-    const minGap = 42;
+    if (rect.height < SHORT_PANEL_HEIGHT && placed.length > 1) {
+      placed.slice(1).forEach((p) => p.l.el.classList.remove('visible'));
+      placed.length = 1;
+    }
     for (let i = 0; i < placed.length; i++) {
       for (let j = 0; j < i; j++) {
-        const dy = placed[i].y - placed[j].y;
-        const dx = Math.abs(placed[i].x - placed[j].x);
-        if (dx < 190 && Math.abs(dy) < minGap) {
-          placed[i].y = placed[j].y + (dy >= 0 ? minGap : -minGap);
+        const a = placed[j];
+        const b = placed[i];
+        const gap = (a.h + b.h) / 2 + 8;
+        const dy = b.y - a.y;
+        if (Math.abs(b.x - a.x) < (a.w + b.w) / 2 + 8 && Math.abs(dy) < gap) {
+          b.y = a.y + (dy >= 0 ? gap : -gap);
         }
       }
     }
     placed.forEach((p) => {
-      const y = Math.max(24, Math.min(rect.height - 24, p.y));
-      const x = Math.max(70, Math.min(rect.width - 70, p.x));
-      p.l.el.style.transform = `translate(-50%,-50%) translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
+      const y = Math.max(p.h / 2 + 6, Math.min(rect.height - p.h / 2 - 6, p.y));
+      const x = Math.max(p.w / 2 + 6, Math.min(rect.width - p.w / 2 - 6, p.x));
+      p.l.el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
     });
   }
 
@@ -3718,6 +3755,12 @@ function syncTabStops(containerEl) {
   const selected = items.find((el) => el.getAttribute('aria-pressed') === 'true');
   items.forEach((el) => { el.tabIndex = -1; });
   (selected || items[0]).tabIndex = 0;
+
+  // The topic and word lists are short scroll regions; without this the
+  // selected item can sit half-clipped at the edge of its panel.
+  if (selected) {
+    selected.scrollIntoView({ block: 'nearest', behavior: REDUCED_MOTION ? 'auto' : 'smooth' });
+  }
 }
 
 // ---- grade row ----------------------------------------------------------
@@ -3862,7 +3905,8 @@ function renderDetail() {
     <p class="breadcrumb">${escapeHtml(gradeLabel(t.grade))} → ${escapeHtml(t.domain)}</p>
     <h2>${escapeHtml(t.term)}</h2>
     <span class="standard">${escapeHtml(t.standard)}</span>
-    <button id="listenBtn" type="button" aria-describedby="listenStatus">
+    <button id="listenBtn" type="button" aria-describedby="listenStatus"
+            aria-label="Listen to an explanation of the word ${escapeHtml(t.term)}">
       <span class="icon" aria-hidden="true">🔊</span><span id="listenBtnText">Listen to an explanation</span>
     </button>
     <p id="listenStatus" role="status" aria-live="polite"></p>
