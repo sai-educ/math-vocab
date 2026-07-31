@@ -64,9 +64,18 @@ const Graph = (function () {
   // ---------------------------------------------------------------------
 
   function init(containerEl, labelEl) {
+    const legend = document.getElementById('graphLegend');
     if (typeof THREE === 'undefined') {
       document.getElementById('graphFallback').style.display = 'flex';
+      if (legend) {
+        legend.hidden = true;
+        legend.setAttribute('aria-hidden', 'true');
+      }
       return;
+    }
+    if (legend) {
+      legend.hidden = false;
+      legend.removeAttribute('aria-hidden');
     }
     container = containerEl;
     labelLayer = labelEl;
