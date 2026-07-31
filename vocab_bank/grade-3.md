@@ -5,192 +5,196 @@
 
 ### multiply
 
-**Definition:** Combine equal groups to find a total.
+**Definition:** Add equal groups the fast way.
 
-**Example:** Multiply 4 groups of 3 to get 12.
+**Example:** Zoe packs 6 boxes with 4 markers in each. Instead of adding six times, she multiplies 6 × 4 and gets 24.
 
 ### factor
 
-**Definition:** A number multiplied with another number to get a product.
+**Definition:** A number you multiply.
 
-**Example:** 3 and 4 are factors of 12.
+**Example:** Theo writes 3 × 8 = 24. The 3 and the 8 are the factors.
 
 ### product
 
 **Definition:** The answer when you multiply.
 
-**Example:** The product of 5 and 6 is 30.
-
-**Common misconception:** Kids sometimes confuse 'product' (multiplication answer) with 'sum' (addition answer).
+**Example:** Nina multiplies 5 × 7. The product is 35.
 
 ### divide
 
-**Definition:** Split a total into equal groups.
+**Definition:** Split into equal groups.
 
-**Example:** Divide 12 cookies into 3 equal groups.
+**Example:** Omar has 12 grapes and 3 friends. He divides them evenly, so each friend gets 4.
 
 ### quotient
 
 **Definition:** The answer when you divide.
 
-**Example:** The quotient of 12 divided by 4 is 3.
+**Example:** Maya divides 20 by 4. The quotient is 5.
 
 ### equal groups
 
-**Definition:** Groups that all have the same number of items.
+**Definition:** Groups that all hold the same amount.
 
-**Example:** There are 5 equal groups of 4 apples.
+**Example:** Leo sorts 15 crayons into 3 equal groups. Each group holds 5 crayons.
 
 ### array
 
-**Definition:** Objects in equal rows and columns, used to show multiplication.
+**Definition:** Objects in equal rows and columns. It shows a multiplication fact.
 
-**Example:** A 3-by-5 array shows 3 rows of 5.
+**Example:** Ana draws 4 rows of 6 dots. Her array shows 4 × 6 = 24.
 
 ### area model
 
-**Definition:** A rectangle diagram used to show multiplication.
+**Definition:** A rectangle drawing that shows a multiplication problem.
 
-**Example:** Use an area model to multiply 6 x 7.
+**Example:** Ben draws a rectangle 3 units tall and 5 units wide. He counts 15 squares inside. His area model shows 3 × 5 = 15.
 
 ### unknown factor
 
-**Definition:** A missing number in a multiplication or division equation.
+**Definition:** The missing number in a multiplication fact.
 
-**Example:** Find the unknown factor: 5 x __ = 35.
+**Example:** Ivy sees 4 × ? = 28. She counts by fours until she reaches 28. The unknown factor is 7.
 
 
 ## Number & Operations in Base Ten (3.NBT)
 
 ### round
 
-**Definition:** Change a number to the nearest ten or hundred to make it easier to work with.
+**Definition:** Change a number to a nearby easier one.
 
-**Example:** Round 47 to the nearest ten: 50.
+**Example:** Zoe rounds 47 to the nearest ten. On the number line 47 sits closer to 50 than to 40, so she rounds up.
+
+**Common misconception:** Look at where the number really sits. Do not just chop the last digit off.
 
 ### place value
 
-**Definition:** The value a digit has because of its position in the number.
+**Definition:** What a digit is worth because of its spot.
 
-**Example:** In 528, the 2 is worth 20.
+**Example:** Theo looks at 528. The 2 sits in the tens place, so it is worth 20.
 
 
 ## Number & Operations—Fractions (3.NF)
 
 ### fraction
 
-**Definition:** A number that names part of a whole or part of a group.
+**Definition:** A number that names part of a whole.
 
-**Example:** 1/2 is a fraction meaning one of two equal parts.
+**Example:** Nina cuts a pie into 4 equal slices and takes 1. She ate 1/4 of the pie.
+
+**Common misconception:** The parts have to be equal. Four uneven slices do not make fourths.
 
 ### numerator
 
-**Definition:** The top number in a fraction, showing how many parts you have.
+**Definition:** The top number. It counts the parts you have.
 
-**Example:** In 3/4, the numerator is 3.
+**Example:** Omar eats 3 slices out of 8. He writes 3/8. The numerator 3 is how many he ate.
 
 ### denominator
 
-**Definition:** The bottom number in a fraction, showing how many equal parts the whole is split into.
+**Definition:** The bottom number. It tells how many equal parts make the whole.
 
-**Example:** In 3/4, the denominator is 4.
+**Example:** Maya writes 3/8. The denominator 8 means the whole pie was cut into 8 equal parts.
 
 ### unit fraction
 
-**Definition:** A fraction with 1 as the numerator.
+**Definition:** A fraction with 1 on top. It is one single part.
 
-**Example:** 1/5 is a unit fraction.
+**Example:** Leo cuts a ribbon into 5 equal pieces and picks up one. He holds 1/5, a unit fraction.
 
 ### equivalent fractions
 
-**Definition:** Fractions that name the same amount even though they look different.
+**Definition:** Different fractions that name the same amount.
 
-**Example:** 1/2 and 2/4 are equivalent fractions.
+**Example:** Ana eats 1/2 of a pizza. Ben eats 2/4 of a pizza the same size. They both ate the same amount.
 
 ### whole
 
-**Definition:** One complete thing, made of all its equal parts.
+**Definition:** All of the parts together. One complete thing.
 
-**Example:** 4/4 makes one whole.
+**Example:** Ivy has 4 quarter slices of an orange. Put back together they make one whole orange.
 
 ### partition
 
-**Definition:** Divide something into equal parts.
+**Definition:** Split something into equal parts.
 
-**Example:** Partition the circle into 3 equal parts.
+**Example:** Zoe partitions a paper strip into 6 equal parts. Now each part is 1/6 of the strip.
 
 ### compare fractions
 
-**Definition:** Decide which fraction is bigger, smaller, or equal.
+**Definition:** Decide which fraction is larger.
 
-**Example:** Compare 1/3 and 1/4 to see which is greater.
+**Example:** Theo compares 1/3 and 1/5 of the same cake. Fewer slices means bigger slices, so 1/3 is more.
 
-**Common misconception:** Kids often think a bigger denominator means a bigger fraction — it's actually the opposite for unit fractions.
+**Common misconception:** A bigger bottom number does not mean a bigger piece. It means the whole was cut into more, smaller parts.
 
 
 ## Measurement & Data (3.MD)
 
 ### area
 
-**Definition:** The amount of flat space inside a shape, measured in square units.
+**Definition:** The amount of flat space a shape covers.
 
-**Example:** The area of the rug is 12 square feet.
+**Example:** Nina tiles a table top with square tiles. She counts 24 tiles, so the area is 24 square units.
+
+**Common misconception:** Area is the space inside. Perimeter is the trip around the edge.
 
 ### perimeter
 
-**Definition:** The distance around the outside of a shape.
+**Definition:** The distance all the way around a shape.
 
-**Example:** The perimeter of the garden is 20 feet.
-
-**Common misconception:** Kids often mix up area (inside space) and perimeter (outside distance).
+**Example:** Omar walks around a square garden. Each side takes 5 steps, so the perimeter is 20 steps.
 
 ### square unit
 
-**Definition:** A unit used to measure area, like a square inch or square centimeter.
+**Definition:** One square used to measure area.
 
-**Example:** The area is 15 square units.
+**Example:** Maya covers a card with squares, leaving no gaps. Each one is a square unit. She counts 12.
 
 ### elapsed time
 
-**Definition:** The amount of time that passes between a start time and an end time.
+**Definition:** How much time has passed.
 
-**Example:** Find the elapsed time between 2:00 and 3:15.
+**Example:** Leo starts reading at 2:00 and stops at 2:45. The elapsed time is 45 minutes.
 
 ### liquid volume
 
-**Definition:** The amount of liquid something holds, measured in units like liters.
+**Definition:** How much liquid a container holds.
 
-**Example:** The liquid volume of the bottle is 2 liters.
+**Example:** Ana fills a bottle from the jug. The bottle holds 1 liter, so that is its liquid volume.
 
 ### mass
 
-**Definition:** How much matter is in an object, measured in units like grams.
+**Definition:** How much matter is in an object.
 
-**Example:** The mass of the apple is 150 grams.
+**Example:** Ben sets an apple on the scale. Its mass is 150 grams.
 
 ### scaled graph
 
-**Definition:** A graph where each picture or bar unit stands for more than one item.
+**Definition:** A graph where one picture or step stands for more than one thing.
 
-**Example:** On the scaled graph, each icon equals 5 votes.
+**Example:** Ivy makes a graph where each square stands for 5 books. A bar 4 squares tall means 20 books.
+
+**Common misconception:** Count the value of each step, not the number of steps.
 
 
 ## Geometry (3.G)
 
 ### quadrilateral
 
-**Definition:** A shape with 4 straight sides.
+**Definition:** A closed shape with exactly 4 straight sides.
 
-**Example:** Rhombuses and trapezoids are quadrilaterals.
+**Example:** Zoe drops shapes into a hoop labeled 4 sides. Squares, rectangles, and rhombuses all belong.
 
 ### category
 
-**Definition:** A group that shares an attribute, used to classify shapes.
+**Definition:** A group whose members share a trait.
 
-**Example:** Sort the shapes into the quadrilateral category.
+**Example:** Theo makes a category for shapes with 4 sides. The square and the rectangle both belong in it.
 
 ### attribute
 
-**Definition:** A defining feature of a shape, like the number of sides or angles.
+**Definition:** A feature of a shape you can name.
 
-**Example:** Right angles are an attribute of squares.
+**Example:** Nina looks at a rectangle. She names two attributes. It has 4 square corners, and the sides across from each other match.
