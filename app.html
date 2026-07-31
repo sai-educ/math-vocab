@@ -1,0 +1,4981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!-- No maximum-scale / user-scalable=no: blocking pinch-zoom fails WCAG 1.4.4
+     and is exactly the gesture a low-vision child reaches for on an iPad. -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="An open-access, interactive K-5 math vocabulary bank aligned to the Common Core standards, with a 3D knowledge graph, definitions, examples and common misconceptions.">
+<title>Math Word Explorer — K-5 math vocabulary</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<style>
+/* =========================================================================
+   Math Vocabulary Knowledge Graph — styles
+   Inlined into index.html by build_html.py (placeholder: __STYLES__).
+
+   Design language is unchanged from the original: dark "space" theme,
+   blue/pink/green level colours, three-panel layout. Everything here is a
+   refinement of that, not a replacement.
+   ========================================================================= */
+
+:root{
+  --bg:#0f0f16;
+  --panel:#1b1b26;
+  --panel2:#20202e;
+  --line:#3a3a52;
+  --line-active:#7c9eff;
+  --text:#e7e7ee;
+  --text-dim:#9a9ab0;
+  /* Was #5a5a70 (2.54:1 on --panel) which failed WCAG AA. */
+  --text-muted:#9090aa;
+  --accent:#7c9eff;
+  --accent2:#ff5fa8;
+  --accent3:#7cffb2;
+  --yellow:#ffd23f;
+  --node:#2a2a3d;
+  --node-hover:#33334a;
+
+  /* Every transition and tween uses an ease-in-out curve. No overshoot,
+     no linear starts/stops. GSAP mirrors these with power2/power3.inOut. */
+  --ease:cubic-bezier(.65,0,.35,1);
+  --ease-soft:cubic-bezier(.4,0,.2,1);
+  --dur-fast:.22s;
+  --dur:.34s;
+  --dur-slow:.55s;
+
+  /* Apple HIG minimum comfortable touch target. */
+  --tap:44px;
+
+  --safe-l:env(safe-area-inset-left,0px);
+  --safe-r:env(safe-area-inset-right,0px);
+  --safe-b:env(safe-area-inset-bottom,0px);
+}
+
+*{box-sizing:border-box;}
+
+html,body{
+  margin:0;padding:0;height:100%;
+  background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  overscroll-behavior:none;
+  -webkit-text-size-adjust:100%;
+}
+
+/* 100dvh keeps the layout stable when mobile Safari's toolbars collapse. */
+#app{display:flex;flex-direction:column;height:100vh;height:100dvh;position:relative;}
+
+/* ---------- shared a11y helpers ---------- */
+
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
+}
+
+.skip-link{
+  position:absolute;left:8px;top:-60px;z-index:200;
+  background:var(--yellow);color:#141208;font-weight:700;font-size:14px;
+  padding:10px 16px;border-radius:0 0 10px 10px;text-decoration:none;
+  transition:top var(--dur) var(--ease);
+}
+.skip-link:focus{top:0;}
+
+/* One visible focus treatment for every control on the page. */
+:focus{outline:none;}
+:focus-visible{
+  outline:3px solid var(--yellow);
+  outline-offset:2px;
+  border-radius:8px;
+}
+
+/* ---------- header ---------- */
+
+header{
+  padding:14px 20px 10px;padding-left:calc(20px + var(--safe-l));padding-right:calc(20px + var(--safe-r));
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,#181822,#14141c);
+  flex:0 0 auto;display:flex;align-items:flex-start;gap:16px;
+}
+header .titles{min-width:0;flex:1;}
+header h1{margin:0 0 2px;font-size:17px;font-weight:600;letter-spacing:.2px;}
+header p{margin:0;font-size:12.5px;color:var(--text-dim);}
+
+/* Icons inherit text colour and sit on the text baseline everywhere. */
+.icon{display:block;flex:0 0 auto;}
+.header-actions{flex:0 0 auto;display:flex;align-items:center;gap:8px;}
+.header-btn{
+  min-height:var(--tap);padding:8px 14px;border-radius:999px;
+  background:var(--node);border:1px solid var(--line);color:var(--text);
+  font-size:12.5px;font-weight:600;font-family:inherit;cursor:pointer;
+  text-decoration:none;
+  display:inline-flex;align-items:center;gap:7px;
+  transition:border-color var(--dur) var(--ease),background var(--dur) var(--ease),color var(--dur) var(--ease);
+}
+.header-btn:hover{border-color:var(--accent);background:var(--node-hover);color:var(--text);}
+.header-btn .btn-icon{display:flex;}
+#soundBtn[aria-pressed="false"]{color:var(--text-dim);}
+#soundBtn[aria-pressed="false"]:hover{color:var(--text);}
+
+/* ---------- grade row (step 1) ---------- */
+
+#gradeRow{
+  display:flex;gap:10px;padding:12px 20px;
+  padding-left:calc(20px + var(--safe-l));padding-right:calc(20px + var(--safe-r));
+  overflow-x:auto;border-bottom:1px solid var(--line);
+  background:var(--panel);align-items:center;flex:0 0 auto;
+  -webkit-overflow-scrolling:touch;scrollbar-width:thin;
+}
+
+.grade-node{
+  flex:0 0 auto;min-width:56px;width:56px;height:56px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #33334a, var(--node));
+  border:1.5px solid var(--line);color:var(--text);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:16px;font-family:inherit;
+  cursor:pointer;position:relative;padding:0;
+  transition:border-color var(--dur) var(--ease),box-shadow var(--dur) var(--ease),
+             transform var(--dur) var(--ease),background var(--dur) var(--ease);
+}
+.grade-node:hover{border-color:var(--accent);box-shadow:0 0 0 4px rgba(124,158,255,.12);transform:translateY(-2px);}
+.grade-node[aria-pressed="true"]{
+  background:radial-gradient(circle at 35% 30%, #4a6bff, #2f4bd0);
+  border-color:var(--accent);box-shadow:0 0 18px rgba(124,158,255,.55);color:#fff;
+}
+
+/* Progress ring: how much of this grade's vocabulary has been opened. */
+.grade-node::after{
+  content:"";position:absolute;inset:-5px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(var(--accent3) calc(var(--progress,0) * 1%), rgba(124,255,178,.10) 0);
+  -webkit-mask:radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px));
+  mask:radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px));
+  opacity:0;transition:opacity var(--dur) var(--ease);
+}
+.grade-node[data-started="1"]::after{opacity:1;}
+
+/* ---------- search ---------- */
+
+#searchWrap{
+  padding:12px 20px;padding-left:calc(20px + var(--safe-l));padding-right:calc(20px + var(--safe-r));
+  flex:0 0 auto;
+}
+#search{
+  width:100%;min-height:var(--tap);padding:10px 12px;border-radius:10px;
+  background:var(--panel);border:1px solid var(--line);color:var(--text);
+  font-size:14px;font-family:inherit;
+  transition:border-color var(--dur) var(--ease),box-shadow var(--dur) var(--ease);
+}
+#search::placeholder{color:var(--text-dim);}
+#search:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,158,255,.16);}
+
+/* ---------- main three-panel region ---------- */
+
+#main{flex:1;display:flex;min-height:0;}
+
+/* On desktop the graph and the definition are siblings of the left rail, so
+   this wrapper gets out of the way. Below 1100px it becomes a real flex
+   column and stacks them. */
+#rightRegion{display:contents;}
+
+#leftPanel{
+  width:280px;flex:0 0 280px;border-right:1px solid var(--line);background:var(--panel);
+  display:flex;flex-direction:column;min-height:0;
+}
+#topicsSection{
+  flex:1 1 40%;min-height:120px;overflow-y:auto;padding:14px 0;
+  border-bottom:1px solid var(--line);-webkit-overflow-scrolling:touch;
+}
+#vocabSection{flex:1 1 60%;min-height:0;overflow-y:auto;padding:14px 0;-webkit-overflow-scrolling:touch;}
+
+/* Sticky so the step number stays visible while its list scrolls — the
+   selected item is auto-scrolled into view, which would otherwise push the
+   "Select a topic" heading out of sight. */
+.panel-heading{
+  position:sticky;top:-14px;z-index:2;
+  font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);
+  margin:0 0 10px;padding:0 16px 8px;font-weight:600;
+  display:flex;align-items:center;gap:6px;
+  background:linear-gradient(180deg, var(--panel) 72%, rgba(27,27,38,0));
+  transition:color var(--dur) var(--ease);
+}
+.panel-heading .step{
+  background:var(--accent);color:#0f0f16;border-radius:50%;width:16px;height:16px;
+  font-size:10px;display:inline-flex;align-items:center;justify-content:center;
+  font-weight:800;flex:0 0 auto;transition:background var(--dur) var(--ease),color var(--dur) var(--ease);
+}
+.panel-heading.dim{color:var(--text-muted);}
+.panel-heading.dim .step{background:#5b5b78;color:#f0f0f8;}
+
+.topic-node{
+  width:calc(100% - 24px);margin:0 12px 8px;padding:10px 12px;min-height:var(--tap);
+  border-radius:10px;background:var(--node);border:1px solid var(--line);
+  cursor:pointer;text-align:left;color:var(--text);font-family:inherit;
+  display:flex;align-items:center;gap:9px;
+  transition:background var(--dur) var(--ease),border-color var(--dur) var(--ease),transform var(--dur) var(--ease);
+}
+.topic-node:hover{background:var(--node-hover);border-color:var(--accent2);transform:translateX(2px);}
+.topic-node[aria-pressed="true"]{
+  background:linear-gradient(90deg, rgba(255,95,168,.25), rgba(255,95,168,.08));
+  border-color:var(--accent2);
+}
+.topic-icon{flex:0 0 auto;display:flex;color:var(--accent2);opacity:.9;}
+.topic-text{min-width:0;}
+.topic-label{font-size:13.5px;line-height:1.3;display:block;}
+.topic-code{font-size:11px;color:var(--text-dim);display:block;margin-top:2px;}
+
+.vocab-row{
+  width:calc(100% - 24px);margin:0 12px 6px;padding:10px 12px;min-height:var(--tap);
+  border-radius:9px;background:var(--node);border:1px solid var(--line);
+  cursor:pointer;font-size:14px;text-align:left;color:var(--text);font-family:inherit;
+  display:flex;align-items:center;gap:8px;
+  transition:background var(--dur) var(--ease),border-color var(--dur) var(--ease),transform var(--dur) var(--ease);
+}
+.vocab-row:hover{background:var(--node-hover);border-color:var(--accent3);transform:translateX(2px);}
+.vocab-row[aria-pressed="true"]{
+  background:linear-gradient(90deg, rgba(124,255,178,.28), rgba(124,255,178,.1));
+  border-color:var(--accent3);
+}
+.vocab-icon{flex:0 0 auto;display:flex;color:var(--text-dim);transition:color var(--dur) var(--ease);}
+.vocab-row:hover .vocab-icon{color:var(--accent3);}
+.vocab-row[aria-pressed="true"] .vocab-icon{color:var(--accent3);}
+.vocab-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.vocab-seen{margin-left:auto;flex:0 0 auto;display:flex;color:var(--accent3);opacity:.8;}
+.vocab-grade{margin-left:auto;flex:0 0 auto;font-size:11px;color:var(--text-dim);}
+
+.placeholder-text{color:var(--text-dim);font-size:13px;padding:0 16px;line-height:1.6;}
+
+/* ---------- 3D graph panel ---------- */
+
+#graphPanel{
+  flex:1;min-width:0;position:relative;overflow:hidden;
+  background:radial-gradient(ellipse at center, #16161f 0%, #0f0f16 75%);
+}
+#graphContainer{position:absolute;inset:0;}
+#graphContainer canvas{display:block;touch-action:none;}
+
+/* HTML labels projected from 3D positions. These replaced canvas sprites:
+   they stay crisp at any pixel ratio, never overlap the way the sprites did,
+   and their text is real text. */
+#graphLabels{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+
+/* Two elements on purpose. The outer one is moved every frame by JS and must
+   NOT be transitioned — a transition on transform would make the label chase
+   its node and never catch up. The inner one carries the eased fade. */
+.graph-label{position:absolute;left:0;top:0;width:0;height:0;will-change:transform;}
+.gl-box{
+  position:absolute;left:0;top:0;
+  display:flex;align-items:center;gap:7px;
+  padding:6px 12px;border-radius:12px;
+  background:rgba(14,14,20,.86);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  font-size:13px;font-weight:600;color:#fff;line-height:1.3;
+  /* Wraps rather than truncating — "Number & Operations in Base Ten" is a
+     topic name a child needs to read in full, not "Number & Operations…". */
+  max-width:min(52vw, 300px);text-align:left;
+  opacity:0;transform:translate(-50%,-50%) scale(.94);
+  transition:opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.graph-label.visible .gl-box{opacity:1;transform:translate(-50%,-50%) scale(1);}
+.gl-text{min-width:0;}
+.gl-icon{flex:0 0 auto;font-size:15px;line-height:1;}
+.gl-icon:empty{display:none;}
+.lv-root .gl-box{border:2px solid rgba(255,255,255,.85);box-shadow:0 0 16px rgba(255,255,255,.22);}
+.lv-grade .gl-box{border:2px solid var(--accent);box-shadow:0 0 16px rgba(124,158,255,.35);}
+.lv-domain .gl-box{border:2px solid var(--accent2);box-shadow:0 0 16px rgba(255,95,168,.35);}
+.lv-term .gl-box{border:2px solid var(--accent3);box-shadow:0 0 18px rgba(124,255,178,.4);font-size:15px;padding:8px 14px;}
+
+#graphHint{
+  position:absolute;left:50%;top:16px;transform:translateX(-50%);
+  font-size:13px;font-weight:600;color:#fff8dc;background:rgba(20,18,8,.78);
+  padding:10px 20px;border-radius:999px;border:2px solid var(--yellow);
+  max-width:calc(100% - 32px);text-align:center;pointer-events:none;
+  animation:yellowPulse 2.4s var(--ease) infinite;
+  transition:opacity var(--dur) var(--ease);
+}
+#graphHint[hidden]{display:none;}
+@keyframes yellowPulse{
+  0%,100%{box-shadow:0 0 8px rgba(255,210,63,.3);}
+  50%{box-shadow:0 0 22px rgba(255,210,63,.7);}
+}
+
+.graph-btn{
+  position:absolute;z-index:6;
+  min-height:var(--tap);padding:9px 14px;border-radius:10px;
+  background:rgba(32,32,46,.9);border:1px solid var(--line);color:var(--text-dim);
+  font-size:12.5px;font-family:inherit;cursor:pointer;
+  transition:border-color var(--dur) var(--ease),color var(--dur) var(--ease),background var(--dur) var(--ease);
+}
+.graph-btn:hover{border-color:var(--accent);color:var(--text);background:var(--node-hover);}
+#resetViewBtn{top:14px;right:14px;}
+#resetViewBtn[hidden]{display:none;}
+
+#breadcrumbFloat{
+  position:absolute;bottom:14px;left:14px;right:14px;
+  font-size:12px;color:var(--text-dim);
+  background:rgba(15,15,22,.72);padding:8px 12px;border-radius:9px;
+  border:1px solid var(--line);pointer-events:none;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+#breadcrumbFloat[hidden]{display:none;}
+
+#graphFallback{
+  position:absolute;inset:0;display:none;align-items:center;justify-content:center;
+  padding:30px;text-align:center;color:var(--text-dim);font-size:13px;line-height:1.6;
+}
+
+/* ---------- detail panel ---------- */
+
+#detail{
+  width:360px;flex:0 0 360px;border-left:1px solid var(--line);background:var(--panel2);
+  padding:20px;padding-right:calc(20px + var(--safe-r));
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+}
+#detail .placeholder{color:var(--text-dim);font-size:13.5px;margin-top:40px;text-align:center;line-height:1.7;}
+#detail .breadcrumb{
+  font-size:11.5px;color:var(--text-dim);margin:0 0 14px;letter-spacing:.3px;
+  display:flex;align-items:center;gap:7px;
+}
+#detail .crumb-icon{display:flex;color:var(--accent2);}
+.term-head{display:flex;align-items:flex-start;gap:13px;margin-bottom:18px;}
+.term-mark{
+  flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+  width:52px;height:52px;border-radius:14px;
+  background:linear-gradient(140deg, rgba(124,255,178,.2), rgba(124,158,255,.12));
+  border:1px solid rgba(124,255,178,.4);color:var(--accent3);
+}
+#detail h2{margin:0 0 6px;font-size:26px;color:#fff;line-height:1.15;}
+#detail .standard{
+  display:inline-block;font-size:11px;background:rgba(124,158,255,.15);
+  color:var(--accent);border:1px solid rgba(124,158,255,.35);
+  padding:3px 9px;border-radius:12px;
+}
+
+/* The worked example is the part children reread, so it gets its own card
+   rather than being a third identical paragraph block. */
+.story{
+  margin:0 0 18px;padding:16px 18px;border-radius:14px;
+  background:linear-gradient(160deg, rgba(124,158,255,.11), rgba(124,255,178,.05));
+  border:1px solid rgba(124,158,255,.3);
+}
+.story-heading{
+  margin:0 0 10px;font-size:12px;font-weight:700;letter-spacing:.7px;
+  text-transform:uppercase;color:var(--accent);
+  display:flex;align-items:center;gap:7px;
+}
+.story-heading span{display:flex;}
+.story-body{margin:0;font-size:15.5px;line-height:1.7;color:#f2f2f8;}
+#detail .block{margin-bottom:18px;}
+#detail .block-label{
+  font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--text-dim);
+  margin-bottom:6px;font-weight:600;
+}
+#detail .block-body{font-size:15px;line-height:1.6;}
+#detail .misconception{border-left:2px solid var(--accent2);padding-left:12px;color:#f0c9dc;}
+
+#listenBtn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;min-height:var(--tap);padding:12px 14px;border-radius:11px;
+  background:linear-gradient(90deg, rgba(124,158,255,.18), rgba(124,255,178,.1));
+  border:1px solid var(--accent);color:#fff;font-size:14px;font-weight:600;
+  font-family:inherit;cursor:pointer;margin-bottom:14px;
+  transition:background var(--dur) var(--ease),transform var(--dur) var(--ease);
+}
+#listenBtn:hover:not(:disabled){background:linear-gradient(90deg, rgba(124,158,255,.3), rgba(124,255,178,.18));transform:translateY(-1px);}
+#listenBtn:disabled{opacity:.55;cursor:default;}
+#listenBtn .icon{display:flex;}
+#listenBtn.loading .icon{animation:spin 1.1s var(--ease-soft) infinite;}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+#listenStatus{font-size:12px;color:var(--text-dim);margin:-8px 0 14px;min-height:14px;line-height:1.5;}
+#listenStatus.err{color:#ffb08c;}
+
+/* ---------- footer ---------- */
+
+#stats{
+  padding:9px 20px;padding-left:calc(20px + var(--safe-l));
+  padding-right:calc(20px + var(--safe-r));padding-bottom:calc(9px + var(--safe-b));
+  font-size:11.5px;color:var(--text-dim);border-top:1px solid var(--line);
+  background:var(--panel);flex:0 0 auto;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+/* Inline text control, so WCAG 2.5.8's inline exception applies — but keep
+   it at least 24px tall so it is still comfortable to hit on a tablet. */
+#stats .stats-about{
+  background:none;border:none;padding:6px 6px;margin:0;min-height:26px;
+  color:var(--accent);font-size:11.5px;font-family:inherit;
+  cursor:pointer;text-decoration:underline;text-underline-offset:2px;
+}
+#stats .stats-about:hover{color:var(--accent3);}
+
+/* ---------- onboarding spotlight ---------- */
+
+#spotlightRing{
+  position:fixed;pointer-events:none;border-radius:16px;
+  border:3px solid var(--yellow);opacity:0;z-index:50;box-sizing:border-box;
+  transition:opacity var(--dur) var(--ease);
+}
+#spotlightRing.active{animation:spotlightPulse 2.4s var(--ease) infinite;}
+@keyframes spotlightPulse{
+  0%,100%{box-shadow:0 0 0 3px rgba(255,210,63,.12), 0 0 12px rgba(255,210,63,.35);}
+  50%{box-shadow:0 0 0 6px rgba(255,210,63,.2), 0 0 28px rgba(255,210,63,.7);}
+}
+
+/* ---------- about dialog ---------- */
+
+#aboutOverlay{
+  position:fixed;inset:0;z-index:120;
+  display:flex;align-items:center;justify-content:center;padding:24px;
+  background:rgba(8,8,13,.72);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  opacity:0;transition:opacity var(--dur) var(--ease);
+}
+#aboutOverlay[hidden]{display:none;}
+#aboutOverlay.open{opacity:1;}
+#aboutDialog{
+  width:min(560px, 100%);max-height:min(80vh, 640px);overflow-y:auto;
+  background:var(--panel2);border:1px solid var(--line);border-radius:16px;
+  padding:26px 26px 22px;box-shadow:0 24px 70px rgba(0,0,0,.6);
+  transform:translateY(10px) scale(.985);
+  transition:transform var(--dur-slow) var(--ease);
+}
+#aboutOverlay.open #aboutDialog{transform:translateY(0) scale(1);}
+#aboutDialog h2{margin:0 0 4px;font-size:20px;color:#fff;}
+#aboutDialog .about-sub{margin:0 0 18px;font-size:13px;color:var(--text-dim);}
+#aboutDialog p{font-size:14px;line-height:1.65;margin:0 0 14px;}
+#aboutDialog a{color:var(--accent);text-decoration:underline;text-underline-offset:2px;}
+#aboutDialog a:hover{color:var(--accent3);}
+#aboutDialog .about-orgs{
+  display:flex;flex-direction:column;gap:10px;margin:0 0 18px;padding:0;list-style:none;
+}
+#aboutDialog .about-orgs li{
+  background:var(--node);border:1px solid var(--line);border-radius:11px;padding:12px 14px;
+}
+#aboutDialog .about-orgs .org-name{display:block;font-size:14px;font-weight:600;margin-bottom:3px;}
+#aboutDialog .about-orgs .org-role{display:block;font-size:12.5px;color:var(--text-dim);}
+#aboutDialog .about-privacy,
+#aboutDialog .about-repo{
+  margin:0 0 16px;padding:15px 17px;border-radius:12px;
+  background:var(--node);border:1px solid var(--line);
+}
+#aboutDialog .about-privacy{
+  border-color:rgba(124,255,178,.34);background:rgba(124,255,178,.06);
+}
+#aboutDialog .about-privacy h3,
+#aboutDialog .about-repo h3{
+  margin:0 0 8px;font-size:13px;font-weight:700;letter-spacing:.5px;
+  text-transform:uppercase;color:var(--text-dim);
+}
+#aboutDialog .about-privacy h3{color:var(--accent3);}
+#aboutDialog .about-privacy p:last-child,
+#aboutDialog .about-repo p:last-child{margin-bottom:0;}
+#aboutDialog .about-privacy strong{color:var(--accent3);}
+
+#aboutDialog .license{
+  border-top:1px solid var(--line);padding-top:16px;margin-top:4px;
+  font-size:13px;line-height:1.65;color:var(--text-dim);
+}
+#aboutDialog .license strong{color:var(--text);}
+#aboutClose{
+  margin-top:18px;width:100%;min-height:var(--tap);border-radius:11px;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  background:var(--node);border:1px solid var(--line);color:var(--text);
+  font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;
+  transition:background var(--dur) var(--ease),border-color var(--dur) var(--ease);
+}
+#aboutClose:hover{background:var(--node-hover);border-color:var(--accent);}
+
+/* ---------- scrollbars ---------- */
+
+::-webkit-scrollbar{width:9px;height:9px;}
+::-webkit-scrollbar-thumb{background:#3d3d58;border-radius:5px;}
+::-webkit-scrollbar-thumb:hover{background:#4c4c6c;}
+::-webkit-scrollbar-track{background:transparent;}
+
+/* =========================================================================
+   Responsive
+   ========================================================================= */
+
+/* Tablet: the three-column split leaves the graph too narrow, so the graph
+   and the definition stack in the right-hand region instead. Topic-on-left,
+   example-on-right reading order is preserved. */
+@media (max-width: 1100px){
+  #leftPanel{width:264px;flex:0 0 264px;}
+  #rightRegion{flex:1 1 auto;min-width:0;min-height:0;display:flex;flex-direction:column;}
+  /* The definition is the payoff, so it gets the larger share and the graph
+     is capped — otherwise the definition lands below the fold on an iPad. */
+  #graphPanel{flex:0 0 44%;min-height:230px;}
+  #detail{
+    width:auto;flex:1 1 auto;min-height:0;max-height:none;
+    border-left:none;border-top:1px solid var(--line);
+  }
+}
+
+/* Larger type on touch-first sizes — these are 5–11 year olds reading. */
+@media (max-width: 1100px) and (min-width: 761px){
+  .vocab-row{font-size:15px;}
+  .topic-label{font-size:14px;}
+  #detail .block-body{font-size:15.5px;}
+}
+
+/* Phone / small split-view: one column, everything stacked and scrollable. */
+@media (max-width: 760px){
+  #main{flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+  #leftPanel{
+    width:100%;flex:0 0 auto;border-right:none;border-bottom:1px solid var(--line);
+  }
+  #topicsSection{flex:0 0 auto;max-height:210px;}
+  #vocabSection{flex:0 0 auto;max-height:280px;}
+  #rightRegion{display:flex;flex-direction:column;width:100%;}
+  #graphPanel{flex:0 0 auto;height:min(72vw, 320px);min-height:200px;}
+  #resetViewBtn{font-size:11.5px;padding:8px 10px;}
+  #detail{width:100%;flex:0 0 auto;max-height:none;border-left:none;border-top:1px solid var(--line);}
+  header{gap:10px;}
+  header h1{font-size:15.5px;}
+  header p{font-size:11.5px;}
+  .gl-box{font-size:12px;max-width:62vw;}
+  .lv-term .gl-box{font-size:13.5px;}
+}
+
+/* =========================================================================
+   Reduced motion — honours the OS "Reduce Motion" switch (Settings >
+   Accessibility > Motion on iPad). Camera flights become cuts, the graph
+   stops auto-rotating (handled in JS), and every pulse/loop stops here.
+   ========================================================================= */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+    scroll-behavior:auto !important;
+  }
+  .gl-box{transform:translate(-50%,-50%) scale(1);}
+  .graph-label.visible .gl-box{transform:translate(-50%,-50%) scale(1);}
+  .topic-node:hover,.vocab-row:hover,.grade-node:hover,#listenBtn:hover{transform:none;}
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#vocabSection">Skip to the vocabulary list</a>
+
+<div id="app">
+  <div id="spotlightRing" aria-hidden="true"></div>
+
+  <header>
+    <div class="titles">
+      <h1>Math Word Explorer</h1>
+      <p>K–5 · Common Core aligned · 189 words · free and open</p>
+    </div>
+    <div class="header-actions">
+      <button id="soundBtn" class="header-btn" type="button" aria-pressed="true"></button>
+      <button id="aboutBtn" class="header-btn" type="button" aria-haspopup="dialog">
+        <span class="btn-icon" aria-hidden="true"></span><span class="btn-text">About</span>
+      </button>
+      <a id="backHomeLink" class="header-btn" href="index.html">
+        <span class="btn-text">Home</span>
+      </a>
+    </div>
+  </header>
+
+  <div id="gradeRow" role="group" aria-label="Step 1: choose a grade"></div>
+
+  <div id="searchWrap">
+    <label class="sr-only" for="search">Search all 189 math words</label>
+    <input id="search" type="search" autocomplete="off"
+           placeholder="Search all 189 words across every grade…">
+  </div>
+
+  <div id="main">
+    <div id="leftPanel">
+      <div id="topicsSection">
+        <h2 class="panel-heading" id="topicsHeading">
+          <span class="step" aria-hidden="true">1</span>
+          <span id="topicsHeadingText">Select a grade above</span>
+        </h2>
+        <div id="topicList" role="group" aria-labelledby="topicsHeading"></div>
+      </div>
+      <div id="vocabSection">
+        <h2 class="panel-heading" id="vocabHeading">
+          <span class="step" aria-hidden="true">2</span>
+          <span id="vocabHeadingText">Select a topic first</span>
+        </h2>
+        <div id="vocabList" role="group" aria-labelledby="vocabHeading"></div>
+      </div>
+    </div>
+
+    <div id="rightRegion">
+      <div id="graphPanel">
+        <div id="graphContainer"></div>
+        <div id="graphLabels" aria-hidden="true"></div>
+        <div id="graphFallback">
+          The 3D graph could not load (it needs an internet connection the first time, for Three.js from a CDN).<br>
+          Everything else on this page still works fully offline.
+        </div>
+        <p id="graphHint">Pick a grade above to start exploring ↑</p>
+        <p id="breadcrumbFloat" hidden></p>
+        <button id="resetViewBtn" class="graph-btn" type="button" hidden>See the whole map</button>
+      </div>
+
+      <div id="detail" aria-label="Word definition">
+        <p class="placeholder">Select a grade, then a topic, then a word to see its definition here.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="stats">
+    <span id="statsText"></span>
+    <button id="statsAboutBtn" class="stats-about" type="button" aria-haspopup="dialog">About &amp; licence</button>
+  </div>
+</div>
+
+<!-- Selection changes are spoken here for screen reader users, who cannot
+     see the definition panel update on the far side of the screen. -->
+<div id="srAnnounce" class="sr-only" role="status" aria-live="polite"></div>
+
+<div id="aboutOverlay" hidden>
+  <div id="aboutDialog" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
+    <h2 id="aboutTitle">About this resource</h2>
+    <p class="about-sub">An open educational resource for elementary math vocabulary.</p>
+
+    <p>
+      A vocabulary bank of 189 math words drawn from every Common Core domain across
+      Kindergarten through Grade 5, with a child-facing definition, a worked example and
+      the misconception teachers most often see for each term.
+    </p>
+
+    <ul class="about-orgs">
+      <li>
+        <span class="org-name">
+          <a href="https://usablemath.org" target="_blank" rel="noopener noreferrer">Usable Math</a>
+        </span>
+        <span class="org-role">Developed by the Usable Math team at the University of Massachusetts Amherst.</span>
+      </li>
+      <li>
+        <span class="org-name">
+          <a href="https://societyandai.org" target="_blank" rel="noopener noreferrer">Society &amp; AI</a>
+        </span>
+        <span class="org-role">In collaboration with the Society &amp; AI research group.</span>
+      </li>
+    </ul>
+
+    <div class="about-privacy">
+      <h3>Your privacy</h3>
+      <p>
+        This site collects <strong>no data at all</strong>. There is no sign-in, no analytics,
+        no cookies, no advertising, and no tracking of any kind. Nothing about you or your
+        students is sent anywhere or stored on any server.
+      </p>
+      <p>
+        The only things kept are on your own device, in this browser: which words you have
+        opened, and whether sound is on. Clearing your browser data erases them.
+      </p>
+    </div>
+
+    <div class="about-repo">
+      <h3>Open source</h3>
+      <p>
+        Every part of this tool — the word bank, the readability checks and the code — is public,
+        so educators can see exactly how it was built, reuse it, or adapt it for their own district.
+      </p>
+      <p>
+        <a href="https://github.com/sai-educ/math-vocab" target="_blank" rel="noopener noreferrer">
+          github.com/sai-educ/math-vocab
+        </a>
+      </p>
+    </div>
+
+    <p class="license">
+      <strong>Licence — CC BY-NC 4.0.</strong>
+      Released as an Open Educational Resource under the
+      <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener noreferrer">Creative
+      Commons Attribution-NonCommercial 4.0 International licence</a>.
+      You are free to share and adapt this material for non-commercial purposes, as long as you give
+      appropriate credit.
+    </p>
+
+    <button id="aboutClose" type="button">Close</button>
+  </div>
+</div>
+
+<script id="vocab-data" type="application/json">[
+  {
+    "id": "k-cc-count",
+    "term": "count",
+    "grade": "K",
+    "domainCode": "CC",
+    "domain": "Counting & Cardinality",
+    "standard": "K.CC",
+    "definition": "Say number words in order. Touch one thing for each word you say.",
+    "example": "Maya has a bowl of grapes. She touches each one and says: 1, 2, 3, 4, 5. She counted 5 grapes.",
+    "misconception": "Kids often skip a number, or touch the same grape twice."
+  },
+  {
+    "id": "k-cc-number",
+    "term": "number",
+    "grade": "K",
+    "domainCode": "CC",
+    "domain": "Counting & Cardinality",
+    "standard": "K.CC",
+    "definition": "A word or sign that tells how many.",
+    "example": "Leo draws 3 stars on his paper. Next to them he writes the number 3. The 3 tells how many stars are there.",
+    "misconception": ""
+  },
+  {
+    "id": "k-cc-more",
+    "term": "more",
+    "grade": "K",
+    "domainCode": "CC",
+    "domain": "Counting & Cardinality",
+    "standard": "K.CC",
+    "definition": "A bigger amount. One group has extra.",
+    "example": "Ana has 7 stickers. Sam has 4 stickers. Ana has more, because 7 is a bigger amount than 4.",
+    "misconception": "Kids may think 'more' means bigger in size. A group of 7 tiny beads is still more than 4 big ones."
+  },
+  {
+    "id": "k-cc-fewer",
+    "term": "fewer",
+    "grade": "K",
+    "domainCode": "CC",
+    "domain": "Counting & Cardinality",
+    "standard": "K.CC",
+    "definition": "A smaller amount. One group has less than the other.",
+    "example": "Ivy picks 3 apples. Ben picks 6 apples. Ivy has fewer apples than Ben.",
+    "misconception": "'Fewer' is for things you count one by one. 'Less' is for things you measure, like water."
+  },
+  {
+    "id": "k-cc-equal",
+    "term": "equal",
+    "grade": "K",
+    "domainCode": "CC",
+    "domain": "Counting & Cardinality",
+    "standard": "K.CC",
+    "definition": "The same amount. Not more and not less.",
+    "example": "Zoe has 3 red blocks. Omar has 3 blue blocks. The groups are equal. Each one has 3.",
+    "misconception": ""
+  },
+  {
+    "id": "k-cc-greater-than",
+    "term": "greater than",
+    "grade": "K",
+    "domainCode": "CC",
+    "domain": "Counting & Cardinality",
+    "standard": "K.CC",
+    "definition": "A bigger value than another number.",
+    "example": "Nina rolls an 8. Theo rolls a 5. Nina's number is greater than Theo's, so she moves first.",
+    "misconception": ""
+  },
+  {
+    "id": "k-cc-less-than",
+    "term": "less than",
+    "grade": "K",
+    "domainCode": "CC",
+    "domain": "Counting & Cardinality",
+    "standard": "K.CC",
+    "definition": "A smaller value than another number.",
+    "example": "Sam counts 2 birds on the wire. Maya counts 9. Sam's number is less than Maya's.",
+    "misconception": ""
+  },
+  {
+    "id": "k-cc-one-more",
+    "term": "one more",
+    "grade": "K",
+    "domainCode": "CC",
+    "domain": "Counting & Cardinality",
+    "standard": "K.CC",
+    "definition": "The very next number when you count up.",
+    "example": "Leo has 4 marbles. His mom hands him 1 more. Now he has 5. One more than 4 is 5.",
+    "misconception": ""
+  },
+  {
+    "id": "k-cc-zero",
+    "term": "zero",
+    "grade": "K",
+    "domainCode": "CC",
+    "domain": "Counting & Cardinality",
+    "standard": "K.CC",
+    "definition": "A number that means none at all.",
+    "example": "The cookie jar had 3 cookies. Ana's family ate every one. Now there are zero cookies left.",
+    "misconception": "Zero is a real number, not an empty space. It tells you the amount is none."
+  },
+  {
+    "id": "k-cc-in-order",
+    "term": "in order",
+    "grade": "K",
+    "domainCode": "CC",
+    "domain": "Counting & Cardinality",
+    "standard": "K.CC",
+    "definition": "Lined up from smallest to biggest.",
+    "example": "Ana drops her number cards and they get mixed up. She puts them back in order: 1, 2, 3, 4, 5.",
+    "misconception": ""
+  },
+  {
+    "id": "k-oa-add",
+    "term": "add",
+    "grade": "K",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "K.OA",
+    "definition": "Put groups together. You find how many there are in all.",
+    "example": "Ben has 2 red cars. He gets 3 blue cars. He adds them together: 2 and 3 make 5 cars.",
+    "misconception": ""
+  },
+  {
+    "id": "k-oa-subtract",
+    "term": "subtract",
+    "grade": "K",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "K.OA",
+    "definition": "Take some away. You find how many are left.",
+    "example": "Ivy has 5 balloons. Two of them pop. She subtracts 2 from 5. Now 3 balloons are left.",
+    "misconception": ""
+  },
+  {
+    "id": "k-oa-sum",
+    "term": "sum",
+    "grade": "K",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "K.OA",
+    "definition": "The total you get when you add.",
+    "example": "Zoe finds 2 shells, then 3 more. She adds them. The sum is 5 shells.",
+    "misconception": "'Sum' means the answer to adding. Kids sometimes use it for any answer."
+  },
+  {
+    "id": "k-oa-put-together",
+    "term": "put together",
+    "grade": "K",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "K.OA",
+    "definition": "Join two groups to make one bigger group.",
+    "example": "Theo puts together 3 red blocks and 2 blue blocks. Now he has one tower of 5 blocks.",
+    "misconception": ""
+  },
+  {
+    "id": "k-oa-take-apart",
+    "term": "take apart",
+    "grade": "K",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "K.OA",
+    "definition": "Split one group into smaller groups.",
+    "example": "Nina has 5 crackers. She takes them apart into a group of 2 and a group of 3.",
+    "misconception": ""
+  },
+  {
+    "id": "k-oa-decompose",
+    "term": "decompose",
+    "grade": "K",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "K.OA",
+    "definition": "Break a number into smaller parts. It is a big word for 'break apart'.",
+    "example": "Omar holds 5 pennies. He decomposes 5 into 4 and 1. He puts 4 in one hand and 1 in the other.",
+    "misconception": "The word sounds hard, but the job is easy. It just means breaking a number into parts."
+  },
+  {
+    "id": "k-oa-equation",
+    "term": "equation",
+    "grade": "K",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "K.OA",
+    "definition": "A math sentence with an equal sign. It shows two sides that match.",
+    "example": "Maya writes 3 + 2 = 5. That is an equation. The left side and the right side are worth the same.",
+    "misconception": ""
+  },
+  {
+    "id": "k-oa-in-all",
+    "term": "in all",
+    "grade": "K",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "K.OA",
+    "definition": "Words in a problem that ask for the total.",
+    "example": "Leo has 4 toy cars. Sam has 2. How many do they have in all? The boys add and find 6.",
+    "misconception": ""
+  },
+  {
+    "id": "k-oa-left",
+    "term": "left",
+    "grade": "K",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "K.OA",
+    "definition": "Words in a problem that ask what is still there.",
+    "example": "Ana bakes 6 muffins and eats 2. How many are left? She subtracts and finds 4.",
+    "misconception": "Hunting for key words alone can trick you. Always picture what is really happening in the story."
+  },
+  {
+    "id": "k-nbt-ten",
+    "term": "ten",
+    "grade": "K",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "K.NBT",
+    "definition": "A group of ten ones.",
+    "example": "Ben lines up 10 straws and wraps a band around them. Now he holds 1 ten.",
+    "misconception": ""
+  },
+  {
+    "id": "k-nbt-ones",
+    "term": "ones",
+    "grade": "K",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "K.NBT",
+    "definition": "Single things. You count them one at a time.",
+    "example": "Ivy builds 13 with straws. She uses 1 bundle of ten, and 3 loose ones.",
+    "misconception": ""
+  },
+  {
+    "id": "k-nbt-teen-number",
+    "term": "teen number",
+    "grade": "K",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "K.NBT",
+    "definition": "A number from 11 to 19. Each one is a ten plus some ones.",
+    "example": "Zoe counts 14 beads. 14 is a teen number. It is 1 ten and 4 ones.",
+    "misconception": ""
+  },
+  {
+    "id": "k-nbt-compose",
+    "term": "compose",
+    "grade": "K",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "K.NBT",
+    "definition": "Put parts together to build a number.",
+    "example": "Theo composes 12. He takes 1 bundle of ten and adds 2 loose ones.",
+    "misconception": ""
+  },
+  {
+    "id": "k-md-longer",
+    "term": "longer",
+    "grade": "K",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "K.MD",
+    "definition": "Goes on for more length.",
+    "example": "Nina lays her pencil beside her eraser. The pencil reaches farther, so the pencil is longer.",
+    "misconception": "Line up the ends first. If one thing starts ahead, the test is not fair."
+  },
+  {
+    "id": "k-md-shorter",
+    "term": "shorter",
+    "grade": "K",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "K.MD",
+    "definition": "Takes up less length.",
+    "example": "Omar puts his crayon next to a ruler. The crayon stops sooner, so the crayon is shorter.",
+    "misconception": ""
+  },
+  {
+    "id": "k-md-taller",
+    "term": "taller",
+    "grade": "K",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "K.MD",
+    "definition": "Goes up higher.",
+    "example": "Maya stands beside a young tree. The tree rises above her head, so the tree is taller.",
+    "misconception": ""
+  },
+  {
+    "id": "k-md-heavier",
+    "term": "heavier",
+    "grade": "K",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "K.MD",
+    "definition": "Weighs more. It pulls down harder.",
+    "example": "Leo holds a rock in one hand and a leaf in the other. The rock pulls his hand down. The rock is heavier.",
+    "misconception": "Big does not always mean heavy. A huge pillow weighs less than a small stone."
+  },
+  {
+    "id": "k-md-lighter",
+    "term": "lighter",
+    "grade": "K",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "K.MD",
+    "definition": "Weighs less.",
+    "example": "Ana holds a feather and a book. The feather is easy to lift, so the feather is lighter.",
+    "misconception": ""
+  },
+  {
+    "id": "k-md-measure",
+    "term": "measure",
+    "grade": "K",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "K.MD",
+    "definition": "Find out how big, how long, or how much.",
+    "example": "Ben measures his desk with blocks. He lays them end to end with no gaps. The desk is 8 blocks long.",
+    "misconception": "Leave no gaps and no overlaps. Sloppy spacing gives the wrong count."
+  },
+  {
+    "id": "k-md-compare",
+    "term": "compare",
+    "grade": "K",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "K.MD",
+    "definition": "Look at two things. See how they are the same or different.",
+    "example": "Ivy compares two ribbons. She lines up the ends. The red one reaches farther, so it is longer.",
+    "misconception": ""
+  },
+  {
+    "id": "k-md-sort",
+    "term": "sort",
+    "grade": "K",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "K.MD",
+    "definition": "Put things in groups that go together.",
+    "example": "Zoe sorts her buttons by color. Red buttons go in one pile. Blue buttons go in another.",
+    "misconception": ""
+  },
+  {
+    "id": "k-md-category",
+    "term": "category",
+    "grade": "K",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "K.MD",
+    "definition": "A group of things that share something.",
+    "example": "Theo makes a category for round things. The ball and the coin both go in it.",
+    "misconception": ""
+  },
+  {
+    "id": "k-g-shape",
+    "term": "shape",
+    "grade": "K",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "K.G",
+    "definition": "The form of a thing. It is the outline you see.",
+    "example": "Nina traces the lid of a jar onto paper. The shape she draws is a circle.",
+    "misconception": ""
+  },
+  {
+    "id": "k-g-circle",
+    "term": "circle",
+    "grade": "K",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "K.G",
+    "definition": "A round shape. It has no corners and no straight sides.",
+    "example": "Omar looks at the clock on the wall. His finger slides all the way around the face with no bumps. It is a circle.",
+    "misconception": ""
+  },
+  {
+    "id": "k-g-triangle",
+    "term": "triangle",
+    "grade": "K",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "K.G",
+    "definition": "A shape with 3 straight sides and 3 corners.",
+    "example": "Maya folds her napkin into a triangle. She counts 3 sides and 3 corners.",
+    "misconception": "A triangle can be tall, wide, or tipped over. It still counts as long as it has 3 straight sides."
+  },
+  {
+    "id": "k-g-square",
+    "term": "square",
+    "grade": "K",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "K.G",
+    "definition": "A shape with 4 straight sides. All 4 sides are the same length.",
+    "example": "Leo checks a sticky note against his ruler. All 4 sides match, so it is a square.",
+    "misconception": ""
+  },
+  {
+    "id": "k-g-rectangle",
+    "term": "rectangle",
+    "grade": "K",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "K.G",
+    "definition": "A shape with 4 straight sides and 4 corners. The sides across from each other match.",
+    "example": "Ana measures the door. The two tall sides match. The two short sides match too. The door is a rectangle.",
+    "misconception": "A square is a rectangle too. It is just a special one with all 4 sides the same."
+  },
+  {
+    "id": "k-g-hexagon",
+    "term": "hexagon",
+    "grade": "K",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "K.G",
+    "definition": "A shape with 6 straight sides.",
+    "example": "Ben studies a honeycomb up close. Each little cell has 6 sides, so each cell is a hexagon.",
+    "misconception": ""
+  },
+  {
+    "id": "k-g-cube",
+    "term": "cube",
+    "grade": "K",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "K.G",
+    "definition": "A solid shape with 6 square faces.",
+    "example": "Ivy rolls a number cube. Every face she lands on is a square. She counts 6 faces in all.",
+    "misconception": ""
+  },
+  {
+    "id": "k-g-sphere",
+    "term": "sphere",
+    "grade": "K",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "K.G",
+    "definition": "A solid shape that is round all over, like a ball.",
+    "example": "Zoe spins a basketball on her finger. It looks round from every side. It is a sphere.",
+    "misconception": "A circle is flat. A sphere is solid. A plate is a circle, a marble is a sphere."
+  },
+  {
+    "id": "k-g-above",
+    "term": "above",
+    "grade": "K",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "K.G",
+    "definition": "Higher up than something else.",
+    "example": "Theo watches a bird land on a branch. The bird is above the grass.",
+    "misconception": ""
+  },
+  {
+    "id": "k-g-below",
+    "term": "below",
+    "grade": "K",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "K.G",
+    "definition": "Lower down than something else.",
+    "example": "Nina digs in the garden. She finds the roots growing below the soil.",
+    "misconception": ""
+  },
+  {
+    "id": "k-g-beside",
+    "term": "beside",
+    "grade": "K",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "K.G",
+    "definition": "Right next to something.",
+    "example": "Omar's cat sits beside the dog. The two of them rest side by side on the rug.",
+    "misconception": ""
+  },
+  {
+    "id": "k-g-corner",
+    "term": "corner",
+    "grade": "K",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "K.G",
+    "definition": "The point where two sides meet.",
+    "example": "Maya runs her finger around a square tile. She feels a sharp point at each corner and counts 4.",
+    "misconception": ""
+  },
+  {
+    "id": "1-oa-addend",
+    "term": "addend",
+    "grade": "1",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "1.OA",
+    "definition": "A number you add to another number.",
+    "example": "Leo writes 3 + 4 = 7. The 3 and the 4 are the addends. They are the parts he put together.",
+    "misconception": "The answer is not an addend. Only the numbers going in are addends."
+  },
+  {
+    "id": "1-oa-sum",
+    "term": "sum",
+    "grade": "1",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "1.OA",
+    "definition": "The answer you get when you add.",
+    "example": "Ana finds 6 shells, then 2 more. She adds them up. The sum is 8 shells.",
+    "misconception": ""
+  },
+  {
+    "id": "1-oa-difference",
+    "term": "difference",
+    "grade": "1",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "1.OA",
+    "definition": "The answer you get when you subtract.",
+    "example": "Ben has 9 grapes and eats 4. He subtracts to find the difference. It is 5 grapes.",
+    "misconception": "In math, 'difference' does not mean how two things are unlike. It is the subtraction answer."
+  },
+  {
+    "id": "1-oa-equation",
+    "term": "equation",
+    "grade": "1",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "1.OA",
+    "definition": "A math sentence with an equal sign. Both sides are worth the same.",
+    "example": "Ivy writes 5 + 3 = 8. Each side of the equal sign is worth 8, so the sentence balances.",
+    "misconception": "The equal sign does not mean 'here comes the answer'. It means both sides match."
+  },
+  {
+    "id": "1-oa-unknown",
+    "term": "unknown",
+    "grade": "1",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "1.OA",
+    "definition": "The missing number in a problem. You solve to find it.",
+    "example": "Zoe sees 4 + ? = 9. The ? is the unknown. She counts up from 4 to 9 and finds 5.",
+    "misconception": ""
+  },
+  {
+    "id": "1-oa-fact-family",
+    "term": "fact family",
+    "grade": "1",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "1.OA",
+    "definition": "A set of facts built from the same three numbers.",
+    "example": "Theo uses 3, 4, and 7. His fact family is 3 + 4 = 7, 4 + 3 = 7, 7 - 3 = 4, and 7 - 4 = 3.",
+    "misconception": ""
+  },
+  {
+    "id": "1-oa-doubles",
+    "term": "doubles",
+    "grade": "1",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "1.OA",
+    "definition": "Adding a number to itself.",
+    "example": "Nina has 4 red beads and 4 blue beads. That is a double. She knows 4 + 4 = 8 right away.",
+    "misconception": ""
+  },
+  {
+    "id": "1-oa-compare",
+    "term": "compare",
+    "grade": "1",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "1.OA",
+    "definition": "Look at two numbers. Tell which is bigger or smaller.",
+    "example": "Omar compares 6 and 9 on the number line. The 9 sits farther right, so 9 is bigger.",
+    "misconception": ""
+  },
+  {
+    "id": "1-oa-how-many-more",
+    "term": "how many more",
+    "grade": "1",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "1.OA",
+    "definition": "Words that ask about the gap between two amounts.",
+    "example": "Maya has 8 stickers. Leo has 5. How many more does Maya have? She subtracts and finds 3.",
+    "misconception": ""
+  },
+  {
+    "id": "1-nbt-place-value",
+    "term": "place value",
+    "grade": "1",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "1.NBT",
+    "definition": "The value a digit has because of where it sits.",
+    "example": "Ana writes 47. The 4 sits in the tens place, so it is worth 40. The 7 is worth just 7.",
+    "misconception": "In 47, the 4 does not mean four. Its spot makes it worth forty."
+  },
+  {
+    "id": "1-nbt-tens",
+    "term": "tens",
+    "grade": "1",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "1.NBT",
+    "definition": "Groups of ten.",
+    "example": "Ben bundles his straws into groups of ten. He makes 3 bundles. That is 3 tens, or 30.",
+    "misconception": ""
+  },
+  {
+    "id": "1-nbt-ones",
+    "term": "ones",
+    "grade": "1",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "1.NBT",
+    "definition": "Single units left over after you make tens.",
+    "example": "Ivy has 25 beads. She makes 2 bundles of ten and has 5 ones left over.",
+    "misconception": ""
+  },
+  {
+    "id": "1-nbt-greater-than",
+    "term": "greater than (>)",
+    "grade": "1",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "1.NBT",
+    "definition": "A sign that points to the bigger number.",
+    "example": "Zoe writes 8 > 5. The wide open side faces the 8, because 8 is the greater number.",
+    "misconception": ""
+  },
+  {
+    "id": "1-nbt-less-than",
+    "term": "less than (<)",
+    "grade": "1",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "1.NBT",
+    "definition": "A sign that shows the first number is smaller.",
+    "example": "Theo writes 3 < 7. The narrow point faces the 3, because 3 is less.",
+    "misconception": "Think of a hungry mouth. It always opens toward the bigger number."
+  },
+  {
+    "id": "1-nbt-equal-to",
+    "term": "equal to (=)",
+    "grade": "1",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "1.NBT",
+    "definition": "A sign that shows both sides are worth the same.",
+    "example": "Nina writes 6 = 6. Both sides match exactly, so the equal sign fits.",
+    "misconception": ""
+  },
+  {
+    "id": "1-nbt-count-on",
+    "term": "count on",
+    "grade": "1",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "1.NBT",
+    "definition": "Start at one number and keep counting up.",
+    "example": "Omar has 6 marbles and gets 3 more. He counts on from 6: 7, 8, 9. He has 9.",
+    "misconception": "Do not start over at 1. Begin at the number you already have."
+  },
+  {
+    "id": "1-md-length",
+    "term": "length",
+    "grade": "1",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "1.MD",
+    "definition": "How long something is from end to end.",
+    "example": "Maya measures her shoe with paper clips. She lays them end to end. The length is 5 clips.",
+    "misconception": ""
+  },
+  {
+    "id": "1-md-measure",
+    "term": "measure",
+    "grade": "1",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "1.MD",
+    "definition": "Find the size of something with a tool or a unit.",
+    "example": "Leo measures his book with cubes. He lines them up with no gaps and counts 7.",
+    "misconception": ""
+  },
+  {
+    "id": "1-md-order-by-length",
+    "term": "order by length",
+    "grade": "1",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "1.MD",
+    "definition": "Line things up from shortest to longest.",
+    "example": "Ana holds three ribbons. She lines up one end of each, then orders them by length.",
+    "misconception": ""
+  },
+  {
+    "id": "1-md-hour",
+    "term": "hour",
+    "grade": "1",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "1.MD",
+    "definition": "A unit of time. The short hand on a clock points to it.",
+    "example": "Ben checks the clock. The short hand is on 3 and the long hand is on 12. It is 3 o'clock.",
+    "misconception": ""
+  },
+  {
+    "id": "1-md-half-hour",
+    "term": "half hour",
+    "grade": "1",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "1.MD",
+    "definition": "Thirty minutes. Half of one hour.",
+    "example": "Ivy looks at the clock. The long hand points straight down at 6. It is half past 2.",
+    "misconception": ""
+  },
+  {
+    "id": "1-md-data",
+    "term": "data",
+    "grade": "1",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "1.MD",
+    "definition": "Facts you collect and can count.",
+    "example": "Zoe asks every classmate about their pet. She writes down each answer. Those answers are her data.",
+    "misconception": ""
+  },
+  {
+    "id": "1-md-tally-chart",
+    "term": "tally chart",
+    "grade": "1",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "1.MD",
+    "definition": "A chart that counts with small marks.",
+    "example": "Theo makes a tally chart of bus riders. He draws one mark per rider. Every fifth mark crosses the other four.",
+    "misconception": ""
+  },
+  {
+    "id": "1-md-graph",
+    "term": "graph",
+    "grade": "1",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "1.MD",
+    "definition": "A picture that shows data so you can compare.",
+    "example": "Nina graphs the class pets. The dog bar is the tallest, so dogs are the most common pet.",
+    "misconception": ""
+  },
+  {
+    "id": "1-g-partition",
+    "term": "partition",
+    "grade": "1",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "1.G",
+    "definition": "Cut a shape into parts.",
+    "example": "Omar partitions his sandwich. He cuts straight down the middle into 2 equal parts.",
+    "misconception": ""
+  },
+  {
+    "id": "1-g-equal-shares",
+    "term": "equal shares",
+    "grade": "1",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "1.G",
+    "definition": "Parts that are all the same size.",
+    "example": "Maya splits a pancake with her sister. Each one gets an equal share. Neither piece is bigger.",
+    "misconception": "Same number of pieces is not enough. The pieces have to be the same size too."
+  },
+  {
+    "id": "1-g-halves",
+    "term": "halves",
+    "grade": "1",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "1.G",
+    "definition": "Two equal parts of one whole.",
+    "example": "Leo cuts an apple into halves. Each piece is one of two equal parts.",
+    "misconception": ""
+  },
+  {
+    "id": "1-g-fourths",
+    "term": "fourths",
+    "grade": "1",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "1.G",
+    "definition": "Four equal parts of one whole.",
+    "example": "Ana cuts a pizza into fourths. She and 3 friends each take one part.",
+    "misconception": ""
+  },
+  {
+    "id": "1-g-quarters",
+    "term": "quarters",
+    "grade": "1",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "1.G",
+    "definition": "Another word for fourths.",
+    "example": "Ben folds his paper in half, then in half again. He opens it up and finds 4 quarters.",
+    "misconception": ""
+  },
+  {
+    "id": "1-g-attribute",
+    "term": "attribute",
+    "grade": "1",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "1.G",
+    "definition": "Something you can notice about a shape, like its sides or corners.",
+    "example": "Ivy looks at a triangle. She names two attributes: 3 sides and 3 corners.",
+    "misconception": ""
+  },
+  {
+    "id": "1-g-2d-shape",
+    "term": "2D shape",
+    "grade": "1",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "1.G",
+    "definition": "A flat shape. It has length and width but no thickness.",
+    "example": "Zoe draws a square on paper. It lies flat on the page, so it is a 2D shape.",
+    "misconception": ""
+  },
+  {
+    "id": "1-g-3d-shape",
+    "term": "3D shape",
+    "grade": "1",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "1.G",
+    "definition": "A solid shape you can hold. It takes up space.",
+    "example": "Theo picks up a wooden cube. He can turn it over in his hand, so it is a 3D shape.",
+    "misconception": ""
+  },
+  {
+    "id": "2-oa-repeated-addition",
+    "term": "repeated addition",
+    "grade": "2",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "2.OA",
+    "definition": "Adding the same number again and again.",
+    "example": "Nina sets out 4 plates and puts 3 grapes on each. She adds 3 + 3 + 3 + 3 and gets 12 grapes.",
+    "misconception": ""
+  },
+  {
+    "id": "2-oa-array",
+    "term": "array",
+    "grade": "2",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "2.OA",
+    "definition": "Objects set out in equal rows and columns.",
+    "example": "Omar lines up his stickers in 3 rows of 5. That is an array. He counts 15 stickers.",
+    "misconception": "Every row must hold the same amount. A ragged grid is not an array."
+  },
+  {
+    "id": "2-oa-even-number",
+    "term": "even number",
+    "grade": "2",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "2.OA",
+    "definition": "A number that splits into two equal groups with none left over.",
+    "example": "Maya pairs up her 8 socks. She makes 4 pairs with nothing left over, so 8 is even.",
+    "misconception": ""
+  },
+  {
+    "id": "2-oa-odd-number",
+    "term": "odd number",
+    "grade": "2",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "2.OA",
+    "definition": "A number that leaves one extra when you split it in two.",
+    "example": "Leo tries to pair up 7 crackers. He makes 3 pairs and 1 is left alone, so 7 is odd.",
+    "misconception": ""
+  },
+  {
+    "id": "2-oa-two-step-problem",
+    "term": "two-step problem",
+    "grade": "2",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "2.OA",
+    "definition": "A problem you solve in two moves.",
+    "example": "Ana has 10 pencils. She buys 5 more, then gives 3 to Ben. First she adds to get 15. Then she subtracts to get 12.",
+    "misconception": "Stopping after the first step is the usual slip. Reread the question to check you finished."
+  },
+  {
+    "id": "2-oa-unknown-number",
+    "term": "unknown number",
+    "grade": "2",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "2.OA",
+    "definition": "The number you are missing. A letter or a box can stand in for it.",
+    "example": "Ivy sees 12 - ? = 7. She asks herself what takes 12 down to 7. The unknown number is 5.",
+    "misconception": ""
+  },
+  {
+    "id": "2-nbt-hundreds",
+    "term": "hundreds",
+    "grade": "2",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "2.NBT",
+    "definition": "Groups of one hundred.",
+    "example": "Zoe counts 342 pennies. She stacks them and finds 3 hundreds, 4 tens, and 2 ones.",
+    "misconception": ""
+  },
+  {
+    "id": "2-nbt-expanded-form",
+    "term": "expanded form",
+    "grade": "2",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "2.NBT",
+    "definition": "A number written as the sum of what each digit is worth.",
+    "example": "Theo writes 254 in expanded form: 200 + 50 + 4.",
+    "misconception": ""
+  },
+  {
+    "id": "2-nbt-place-value",
+    "term": "place value",
+    "grade": "2",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "2.NBT",
+    "definition": "What a digit is worth based on its spot.",
+    "example": "Nina looks at 528. The 5 sits in the hundreds place, so it is worth 500.",
+    "misconception": ""
+  },
+  {
+    "id": "2-nbt-regroup",
+    "term": "regroup",
+    "grade": "2",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "2.NBT",
+    "definition": "Trade ten of one unit for one of the next unit.",
+    "example": "Omar adds 27 + 15. The ones make 12. He regroups 10 of them into 1 ten and writes 42.",
+    "misconception": ""
+  },
+  {
+    "id": "2-nbt-compare-numbers",
+    "term": "compare numbers",
+    "grade": "2",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "2.NBT",
+    "definition": "Decide which number is bigger by checking place value.",
+    "example": "Maya compares 431 and 419. The hundreds match, so she checks the tens. 3 beats 1, so 431 is bigger.",
+    "misconception": "More digits usually means bigger, but only when you start from the biggest place. Compare left to right."
+  },
+  {
+    "id": "2-md-centimeter",
+    "term": "centimeter",
+    "grade": "2",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "2.MD",
+    "definition": "A small unit of length. It is about as wide as your fingernail.",
+    "example": "Leo lays his crayon along a ruler. The crayon is 9 centimeters long.",
+    "misconception": ""
+  },
+  {
+    "id": "2-md-meter",
+    "term": "meter",
+    "grade": "2",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "2.MD",
+    "definition": "A larger unit of length. It is about as wide as a door.",
+    "example": "Ana measures the rug with a meter stick. She steps it out twice, so the rug is 2 meters long.",
+    "misconception": ""
+  },
+  {
+    "id": "2-md-estimate",
+    "term": "estimate",
+    "grade": "2",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "2.MD",
+    "definition": "A smart guess that is close, not exact.",
+    "example": "Ben looks at a jar of beans and guesses about 50. The real count is 46, so his estimate was close.",
+    "misconception": "An estimate is not a wild guess. Use what you know to get near the real amount."
+  },
+  {
+    "id": "2-md-number-line",
+    "term": "number line",
+    "grade": "2",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "2.MD",
+    "definition": "A line with numbers spaced out in order.",
+    "example": "Ivy starts at 8 on the number line and hops to 13. She counts 5 hops.",
+    "misconception": ""
+  },
+  {
+    "id": "2-md-bar-graph",
+    "term": "bar graph",
+    "grade": "2",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "2.MD",
+    "definition": "A graph that uses bars to show amounts.",
+    "example": "Zoe makes a bar graph of favorite fruits. The apple bar rises highest, so apples won.",
+    "misconception": ""
+  },
+  {
+    "id": "2-md-picture-graph",
+    "term": "picture graph",
+    "grade": "2",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "2.MD",
+    "definition": "A graph that uses pictures to stand for amounts.",
+    "example": "Theo draws a picture graph of books read. Each little book stands for 1 real book.",
+    "misconception": ""
+  },
+  {
+    "id": "2-md-line-plot",
+    "term": "line plot",
+    "grade": "2",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "2.MD",
+    "definition": "A graph that stacks marks above a number line.",
+    "example": "Nina measures 10 leaves and marks an X above each length. Most of the X's stack above 4 centimeters.",
+    "misconception": ""
+  },
+  {
+    "id": "2-md-dollar",
+    "term": "dollar",
+    "grade": "2",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "2.MD",
+    "definition": "A unit of money worth 100 cents.",
+    "example": "Omar saves 4 quarters in a jar. Together they make 1 dollar.",
+    "misconception": ""
+  },
+  {
+    "id": "2-md-quarter-coin",
+    "term": "quarter (coin)",
+    "grade": "2",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "2.MD",
+    "definition": "A coin worth 25 cents.",
+    "example": "Maya has 3 quarters. She counts 25, 50, 75. She has 75 cents.",
+    "misconception": ""
+  },
+  {
+    "id": "2-g-quadrilateral",
+    "term": "quadrilateral",
+    "grade": "2",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "2.G",
+    "definition": "A closed shape with 4 straight sides.",
+    "example": "Leo sorts his shape cards. The square, the rectangle, and the kite all go in one pile. Each has 4 sides.",
+    "misconception": ""
+  },
+  {
+    "id": "2-g-pentagon",
+    "term": "pentagon",
+    "grade": "2",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "2.G",
+    "definition": "A closed shape with 5 straight sides.",
+    "example": "Ana traces home plate at the ball field. She counts 5 sides, so it is a pentagon.",
+    "misconception": ""
+  },
+  {
+    "id": "2-g-rows-and-columns",
+    "term": "rows and columns",
+    "grade": "2",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "2.G",
+    "definition": "Rows go across. Columns go up and down.",
+    "example": "Ben sets up chairs in 4 rows and 6 columns. He counts 24 chairs in all.",
+    "misconception": ""
+  },
+  {
+    "id": "2-g-equal-shares",
+    "term": "equal shares",
+    "grade": "2",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "2.G",
+    "definition": "Parts of one whole that are all the same size.",
+    "example": "Ivy cuts a brownie into 4 equal shares. Each friend gets a piece the same size.",
+    "misconception": ""
+  },
+  {
+    "id": "3-oa-multiply",
+    "term": "multiply",
+    "grade": "3",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "3.OA",
+    "definition": "Add equal groups the fast way.",
+    "example": "Zoe packs 6 boxes with 4 markers in each. Instead of adding six times, she multiplies 6 × 4 and gets 24.",
+    "misconception": ""
+  },
+  {
+    "id": "3-oa-factor",
+    "term": "factor",
+    "grade": "3",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "3.OA",
+    "definition": "A number you multiply.",
+    "example": "Theo writes 3 × 8 = 24. The 3 and the 8 are the factors.",
+    "misconception": ""
+  },
+  {
+    "id": "3-oa-product",
+    "term": "product",
+    "grade": "3",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "3.OA",
+    "definition": "The answer when you multiply.",
+    "example": "Nina multiplies 5 × 7. The product is 35.",
+    "misconception": ""
+  },
+  {
+    "id": "3-oa-divide",
+    "term": "divide",
+    "grade": "3",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "3.OA",
+    "definition": "Split into equal groups.",
+    "example": "Omar has 12 grapes and 3 friends. He divides them evenly, so each friend gets 4.",
+    "misconception": ""
+  },
+  {
+    "id": "3-oa-quotient",
+    "term": "quotient",
+    "grade": "3",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "3.OA",
+    "definition": "The answer when you divide.",
+    "example": "Maya divides 20 by 4. The quotient is 5.",
+    "misconception": ""
+  },
+  {
+    "id": "3-oa-equal-groups",
+    "term": "equal groups",
+    "grade": "3",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "3.OA",
+    "definition": "Groups that all hold the same amount.",
+    "example": "Leo sorts 15 crayons into 3 equal groups. Each group holds 5 crayons.",
+    "misconception": ""
+  },
+  {
+    "id": "3-oa-array",
+    "term": "array",
+    "grade": "3",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "3.OA",
+    "definition": "Objects in equal rows and columns. It shows a multiplication fact.",
+    "example": "Ana draws 4 rows of 6 dots. Her array shows 4 × 6 = 24.",
+    "misconception": ""
+  },
+  {
+    "id": "3-oa-area-model",
+    "term": "area model",
+    "grade": "3",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "3.OA",
+    "definition": "A rectangle drawing that shows a multiplication problem.",
+    "example": "Ben draws a rectangle 3 units tall and 5 units wide. He counts 15 squares inside. His area model shows 3 × 5 = 15.",
+    "misconception": ""
+  },
+  {
+    "id": "3-oa-unknown-factor",
+    "term": "unknown factor",
+    "grade": "3",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "3.OA",
+    "definition": "The missing number in a multiplication fact.",
+    "example": "Ivy sees 4 × ? = 28. She counts by fours until she reaches 28. The unknown factor is 7.",
+    "misconception": ""
+  },
+  {
+    "id": "3-nbt-round",
+    "term": "round",
+    "grade": "3",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "3.NBT",
+    "definition": "Change a number to a nearby easier one.",
+    "example": "Zoe rounds 47 to the nearest ten. On the number line 47 sits closer to 50 than to 40, so she rounds up.",
+    "misconception": "Look at where the number really sits. Do not just chop the last digit off."
+  },
+  {
+    "id": "3-nbt-place-value",
+    "term": "place value",
+    "grade": "3",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "3.NBT",
+    "definition": "What a digit is worth because of its spot.",
+    "example": "Theo looks at 528. The 2 sits in the tens place, so it is worth 20.",
+    "misconception": ""
+  },
+  {
+    "id": "3-nf-fraction",
+    "term": "fraction",
+    "grade": "3",
+    "domainCode": "NF",
+    "domain": "Number & Operations—Fractions",
+    "standard": "3.NF",
+    "definition": "A number that names part of a whole.",
+    "example": "Nina cuts a pie into 4 equal slices and takes 1. She ate 1/4 of the pie.",
+    "misconception": "The parts have to be equal. Four uneven slices do not make fourths."
+  },
+  {
+    "id": "3-nf-numerator",
+    "term": "numerator",
+    "grade": "3",
+    "domainCode": "NF",
+    "domain": "Number & Operations—Fractions",
+    "standard": "3.NF",
+    "definition": "The top number. It counts the parts you have.",
+    "example": "Omar eats 3 slices out of 8. He writes 3/8. The numerator 3 is how many he ate.",
+    "misconception": ""
+  },
+  {
+    "id": "3-nf-denominator",
+    "term": "denominator",
+    "grade": "3",
+    "domainCode": "NF",
+    "domain": "Number & Operations—Fractions",
+    "standard": "3.NF",
+    "definition": "The bottom number. It tells how many equal parts make the whole.",
+    "example": "Maya writes 3/8. The denominator 8 means the whole pie was cut into 8 equal parts.",
+    "misconception": ""
+  },
+  {
+    "id": "3-nf-unit-fraction",
+    "term": "unit fraction",
+    "grade": "3",
+    "domainCode": "NF",
+    "domain": "Number & Operations—Fractions",
+    "standard": "3.NF",
+    "definition": "A fraction with 1 on top. It is one single part.",
+    "example": "Leo cuts a ribbon into 5 equal pieces and picks up one. He holds 1/5, a unit fraction.",
+    "misconception": ""
+  },
+  {
+    "id": "3-nf-equivalent-fractions",
+    "term": "equivalent fractions",
+    "grade": "3",
+    "domainCode": "NF",
+    "domain": "Number & Operations—Fractions",
+    "standard": "3.NF",
+    "definition": "Different fractions that name the same amount.",
+    "example": "Ana eats 1/2 of a pizza. Ben eats 2/4 of a pizza the same size. They both ate the same amount.",
+    "misconception": ""
+  },
+  {
+    "id": "3-nf-whole",
+    "term": "whole",
+    "grade": "3",
+    "domainCode": "NF",
+    "domain": "Number & Operations—Fractions",
+    "standard": "3.NF",
+    "definition": "All of the parts together. One complete thing.",
+    "example": "Ivy has 4 quarter slices of an orange. Put back together they make one whole orange.",
+    "misconception": ""
+  },
+  {
+    "id": "3-nf-partition",
+    "term": "partition",
+    "grade": "3",
+    "domainCode": "NF",
+    "domain": "Number & Operations—Fractions",
+    "standard": "3.NF",
+    "definition": "Split something into equal parts.",
+    "example": "Zoe partitions a paper strip into 6 equal parts. Now each part is 1/6 of the strip.",
+    "misconception": ""
+  },
+  {
+    "id": "3-nf-compare-fractions",
+    "term": "compare fractions",
+    "grade": "3",
+    "domainCode": "NF",
+    "domain": "Number & Operations—Fractions",
+    "standard": "3.NF",
+    "definition": "Decide which fraction is larger.",
+    "example": "Theo compares 1/3 and 1/5 of the same cake. Fewer slices means bigger slices, so 1/3 is more.",
+    "misconception": "A bigger bottom number does not mean a bigger piece. It means the whole was cut into more, smaller parts."
+  },
+  {
+    "id": "3-md-area",
+    "term": "area",
+    "grade": "3",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "3.MD",
+    "definition": "The amount of flat space a shape covers.",
+    "example": "Nina tiles a table top with square tiles. She counts 24 tiles, so the area is 24 square units.",
+    "misconception": "Area is the space inside. Perimeter is the trip around the edge."
+  },
+  {
+    "id": "3-md-perimeter",
+    "term": "perimeter",
+    "grade": "3",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "3.MD",
+    "definition": "The distance all the way around a shape.",
+    "example": "Omar walks around a square garden. Each side takes 5 steps, so the perimeter is 20 steps.",
+    "misconception": ""
+  },
+  {
+    "id": "3-md-square-unit",
+    "term": "square unit",
+    "grade": "3",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "3.MD",
+    "definition": "One square used to measure area.",
+    "example": "Maya covers a card with squares, leaving no gaps. Each one is a square unit. She counts 12.",
+    "misconception": ""
+  },
+  {
+    "id": "3-md-elapsed-time",
+    "term": "elapsed time",
+    "grade": "3",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "3.MD",
+    "definition": "How much time has passed.",
+    "example": "Leo starts reading at 2:00 and stops at 2:45. The elapsed time is 45 minutes.",
+    "misconception": ""
+  },
+  {
+    "id": "3-md-liquid-volume",
+    "term": "liquid volume",
+    "grade": "3",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "3.MD",
+    "definition": "How much liquid a container holds.",
+    "example": "Ana fills a bottle from the jug. The bottle holds 1 liter, so that is its liquid volume.",
+    "misconception": ""
+  },
+  {
+    "id": "3-md-mass",
+    "term": "mass",
+    "grade": "3",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "3.MD",
+    "definition": "How much matter is in an object.",
+    "example": "Ben sets an apple on the scale. Its mass is 150 grams.",
+    "misconception": ""
+  },
+  {
+    "id": "3-md-scaled-graph",
+    "term": "scaled graph",
+    "grade": "3",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "3.MD",
+    "definition": "A graph where one picture or step stands for more than one thing.",
+    "example": "Ivy makes a graph where each square stands for 5 books. A bar 4 squares tall means 20 books.",
+    "misconception": "Count the value of each step, not the number of steps."
+  },
+  {
+    "id": "3-g-quadrilateral",
+    "term": "quadrilateral",
+    "grade": "3",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "3.G",
+    "definition": "A closed shape with exactly 4 straight sides.",
+    "example": "Zoe drops shapes into a hoop labeled 4 sides. Squares, rectangles, and rhombuses all belong.",
+    "misconception": ""
+  },
+  {
+    "id": "3-g-category",
+    "term": "category",
+    "grade": "3",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "3.G",
+    "definition": "A group whose members share a trait.",
+    "example": "Theo makes a category for shapes with 4 sides. The square and the rectangle both belong in it.",
+    "misconception": ""
+  },
+  {
+    "id": "3-g-attribute",
+    "term": "attribute",
+    "grade": "3",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "3.G",
+    "definition": "A feature of a shape you can name.",
+    "example": "Nina looks at a rectangle. She names two attributes. It has 4 square corners, and the sides across from each other match.",
+    "misconception": ""
+  },
+  {
+    "id": "4-oa-factor",
+    "term": "factor",
+    "grade": "4",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "4.OA",
+    "definition": "A number that divides into another with nothing left over.",
+    "example": "Omar tests 12. He finds 1, 2, 3, 4, 6, and 12 all divide it evenly. Those are the factors of 12.",
+    "misconception": ""
+  },
+  {
+    "id": "4-oa-multiple",
+    "term": "multiple",
+    "grade": "4",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "4.OA",
+    "definition": "What you get when you multiply a number by a whole number.",
+    "example": "Maya skip counts by 4: 4, 8, 12, 16. Each number she lands on is a multiple of 4.",
+    "misconception": "Factors are smaller and divide in. Multiples are bigger and count up."
+  },
+  {
+    "id": "4-oa-prime-number",
+    "term": "prime number",
+    "grade": "4",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "4.OA",
+    "definition": "A number with exactly two factors: 1 and itself.",
+    "example": "Leo tries to split 7 counters into equal groups. Only 1 group of 7 works. So 7 is prime.",
+    "misconception": "The number 1 is not prime. It has only one factor, not two."
+  },
+  {
+    "id": "4-oa-composite-number",
+    "term": "composite number",
+    "grade": "4",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "4.OA",
+    "definition": "A number with more than two factors.",
+    "example": "Ana splits 12 counters into 2 groups of 6, then into 3 groups of 4. Many splits work, so 12 is composite.",
+    "misconception": ""
+  },
+  {
+    "id": "4-oa-multi-step-problem",
+    "term": "multi-step problem",
+    "grade": "4",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "4.OA",
+    "definition": "A problem that needs more than one step.",
+    "example": "Ben buys 3 packs of 8 pencils, then gives 5 away. First he multiplies to get 24. Then he subtracts to get 19.",
+    "misconception": ""
+  },
+  {
+    "id": "4-oa-remainder",
+    "term": "remainder",
+    "grade": "4",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "4.OA",
+    "definition": "The amount left over after dividing.",
+    "example": "Ivy shares 17 stickers with 5 friends. Each one gets 3, and the remainder is 2.",
+    "misconception": ""
+  },
+  {
+    "id": "4-oa-variable",
+    "term": "variable",
+    "grade": "4",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "4.OA",
+    "definition": "A letter that stands for a number you do not know yet.",
+    "example": "Zoe writes 6 × n = 42. The letter n is the variable. She solves it and finds n = 7.",
+    "misconception": ""
+  },
+  {
+    "id": "4-nbt-place-value",
+    "term": "place value",
+    "grade": "4",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "4.NBT",
+    "definition": "What each digit is worth based on its position.",
+    "example": "Theo studies 5,283. The 5 sits in the thousands place, so it is worth 5,000.",
+    "misconception": ""
+  },
+  {
+    "id": "4-nbt-multi-digit",
+    "term": "multi-digit",
+    "grade": "4",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "4.NBT",
+    "definition": "A number with more than one digit.",
+    "example": "Nina adds 3,472 and 1,915. Both are multi-digit numbers, so she lines up the places before she starts.",
+    "misconception": ""
+  },
+  {
+    "id": "4-nbt-standard-algorithm",
+    "term": "standard algorithm",
+    "grade": "4",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "4.NBT",
+    "definition": "The usual step by step way to work a problem on paper.",
+    "example": "Omar multiplies 34 × 26. He uses the standard algorithm, working one place at a time and carrying when needed.",
+    "misconception": ""
+  },
+  {
+    "id": "4-nf-equivalent-fraction",
+    "term": "equivalent fraction",
+    "grade": "4",
+    "domainCode": "NF",
+    "domain": "Number & Operations—Fractions",
+    "standard": "4.NF",
+    "definition": "A fraction that names the same amount as another.",
+    "example": "Maya has 2/4 of a chocolate bar. Leo has 1/2 of the same bar. Their pieces are exactly the same size.",
+    "misconception": ""
+  },
+  {
+    "id": "4-nf-mixed-number",
+    "term": "mixed number",
+    "grade": "4",
+    "domainCode": "NF",
+    "domain": "Number & Operations—Fractions",
+    "standard": "4.NF",
+    "definition": "A whole number joined with a fraction.",
+    "example": "Ana pours 2 full glasses of juice and half of a third. She has 2 1/2 glasses.",
+    "misconception": ""
+  },
+  {
+    "id": "4-nf-improper-fraction",
+    "term": "improper fraction",
+    "grade": "4",
+    "domainCode": "NF",
+    "domain": "Number & Operations—Fractions",
+    "standard": "4.NF",
+    "definition": "A fraction whose top number is bigger than its bottom.",
+    "example": "Ben has 5 quarter slices of pie. He writes 5/4, which is more than one whole pie.",
+    "misconception": "An improper fraction is not wrong. It is just written as parts instead of wholes."
+  },
+  {
+    "id": "4-nf-common-denominator",
+    "term": "common denominator",
+    "grade": "4",
+    "domainCode": "NF",
+    "domain": "Number & Operations—Fractions",
+    "standard": "4.NF",
+    "definition": "A shared bottom number for two fractions.",
+    "example": "Ivy adds 1/3 and 1/4. She rewrites them as 4/12 and 3/12. Now they share a denominator, so she can add.",
+    "misconception": ""
+  },
+  {
+    "id": "4-nf-decimal",
+    "term": "decimal",
+    "grade": "4",
+    "domainCode": "NF",
+    "domain": "Number & Operations—Fractions",
+    "standard": "4.NF",
+    "definition": "A number that uses a dot to show parts smaller than one.",
+    "example": "Zoe reads a price tag: $2.75. The dot separates the whole dollars from the cents.",
+    "misconception": ""
+  },
+  {
+    "id": "4-nf-tenths",
+    "term": "tenths",
+    "grade": "4",
+    "domainCode": "NF",
+    "domain": "Number & Operations—Fractions",
+    "standard": "4.NF",
+    "definition": "One whole split into 10 equal parts.",
+    "example": "Theo shades 3 strips out of 10. He shaded 3 tenths, which he writes as 0.3.",
+    "misconception": ""
+  },
+  {
+    "id": "4-nf-hundredths",
+    "term": "hundredths",
+    "grade": "4",
+    "domainCode": "NF",
+    "domain": "Number & Operations—Fractions",
+    "standard": "4.NF",
+    "definition": "One whole split into 100 equal parts.",
+    "example": "Nina shades 25 little squares on a grid of 100. She shaded 25 hundredths, or 0.25.",
+    "misconception": ""
+  },
+  {
+    "id": "4-nf-benchmark-fraction",
+    "term": "benchmark fraction",
+    "grade": "4",
+    "domainCode": "NF",
+    "domain": "Number & Operations—Fractions",
+    "standard": "4.NF",
+    "definition": "A well known fraction you use to judge others.",
+    "example": "Omar wonders how big 5/8 is. He compares it to 1/2, a benchmark. 5/8 is a little more than half.",
+    "misconception": ""
+  },
+  {
+    "id": "4-md-angle",
+    "term": "angle",
+    "grade": "4",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "4.MD",
+    "definition": "The corner shape made where two rays meet.",
+    "example": "Maya opens a pair of scissors. The space between the blades forms an angle.",
+    "misconception": "Longer arms do not make a bigger angle. Only the spread between them counts."
+  },
+  {
+    "id": "4-md-degree",
+    "term": "degree",
+    "grade": "4",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "4.MD",
+    "definition": "The unit used to measure an angle.",
+    "example": "Leo measures a square corner with his protractor. It reads 90 degrees.",
+    "misconception": ""
+  },
+  {
+    "id": "4-md-protractor",
+    "term": "protractor",
+    "grade": "4",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "4.MD",
+    "definition": "A tool for measuring angles.",
+    "example": "Ana lines up the middle of her protractor with the corner. She reads 45 degrees.",
+    "misconception": ""
+  },
+  {
+    "id": "4-md-perimeter",
+    "term": "perimeter",
+    "grade": "4",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "4.MD",
+    "definition": "The total distance around the outside of a shape.",
+    "example": "Ben fences a garden 8 feet by 3 feet. He adds 8 + 3 + 8 + 3 and needs 22 feet of fence.",
+    "misconception": ""
+  },
+  {
+    "id": "4-md-formula",
+    "term": "formula",
+    "grade": "4",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "4.MD",
+    "definition": "A rule written with symbols that works every time.",
+    "example": "Ivy uses the formula for area: length × width. Her rug is 6 by 4, so the area is 24.",
+    "misconception": ""
+  },
+  {
+    "id": "4-md-conversion",
+    "term": "conversion",
+    "grade": "4",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "4.MD",
+    "definition": "Changing a measure into a different unit.",
+    "example": "Zoe has 3 feet of ribbon and needs inches. She multiplies 3 × 12 and gets 36 inches.",
+    "misconception": ""
+  },
+  {
+    "id": "4-g-point",
+    "term": "point",
+    "grade": "4",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "4.G",
+    "definition": "An exact spot. It has no size at all.",
+    "example": "Theo marks a dot on the map where the library sits. That dot is a point.",
+    "misconception": ""
+  },
+  {
+    "id": "4-g-line",
+    "term": "line",
+    "grade": "4",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "4.G",
+    "definition": "A straight path that goes on forever both ways.",
+    "example": "Nina draws a straight path and puts an arrow on each end. The arrows show the line never stops.",
+    "misconception": ""
+  },
+  {
+    "id": "4-g-ray",
+    "term": "ray",
+    "grade": "4",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "4.G",
+    "definition": "A straight path with one end. It goes on forever the other way.",
+    "example": "Omar shines a flashlight. The beam starts at the bulb and keeps going, much like a ray.",
+    "misconception": ""
+  },
+  {
+    "id": "4-g-acute-angle",
+    "term": "acute angle",
+    "grade": "4",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "4.G",
+    "definition": "An angle smaller than a square corner.",
+    "example": "Maya opens a book just a crack. The narrow angle at the spine is acute.",
+    "misconception": ""
+  },
+  {
+    "id": "4-g-obtuse-angle",
+    "term": "obtuse angle",
+    "grade": "4",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "4.G",
+    "definition": "An angle bigger than a square corner.",
+    "example": "Leo leans a chair back until it nearly lies flat. The wide angle it makes is obtuse.",
+    "misconception": ""
+  },
+  {
+    "id": "4-g-right-angle",
+    "term": "right angle",
+    "grade": "4",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "4.G",
+    "definition": "A square corner. It measures 90 degrees.",
+    "example": "Ana checks the corner of her paper against a tile. They match exactly, so it is a right angle.",
+    "misconception": ""
+  },
+  {
+    "id": "4-g-parallel-lines",
+    "term": "parallel lines",
+    "grade": "4",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "4.G",
+    "definition": "Lines that stay the same distance apart and never meet.",
+    "example": "Ben looks down the train tracks. The rails run side by side forever, so they are parallel.",
+    "misconception": ""
+  },
+  {
+    "id": "4-g-perpendicular-lines",
+    "term": "perpendicular lines",
+    "grade": "4",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "4.G",
+    "definition": "Lines that cross and make a square corner.",
+    "example": "Ivy studies the window frame. The upright meets the sill at a square corner, so those lines are perpendicular.",
+    "misconception": ""
+  },
+  {
+    "id": "4-g-line-of-symmetry",
+    "term": "line of symmetry",
+    "grade": "4",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "4.G",
+    "definition": "A line that folds a shape into two matching halves.",
+    "example": "Zoe folds a paper heart down the middle. The two halves match exactly, so the fold is a line of symmetry.",
+    "misconception": "Not every fold works. The halves have to land on each other exactly."
+  },
+  {
+    "id": "5-oa-order-of-operations",
+    "term": "order of operations",
+    "grade": "5",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "5.OA",
+    "definition": "The agreed order for working a problem. Do parentheses first. Then multiply and divide. Add and subtract last.",
+    "example": "Theo solves 2 + 3 × 4. He multiplies first and gets 12. Then he adds 2 for a total of 14.",
+    "misconception": "Working left to right gives 20 here, which is wrong. Multiplying comes before adding."
+  },
+  {
+    "id": "5-oa-parentheses",
+    "term": "parentheses",
+    "grade": "5",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "5.OA",
+    "definition": "Curved marks that show what to work out first.",
+    "example": "Nina solves (2 + 3) × 4. The parentheses come first, so she gets 5. Then 5 × 4 gives 20.",
+    "misconception": ""
+  },
+  {
+    "id": "5-oa-expression",
+    "term": "expression",
+    "grade": "5",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "5.OA",
+    "definition": "A math phrase with numbers and signs. It has no equal sign.",
+    "example": "Omar writes 6 × (2 + 1). That is an expression, not an equation.",
+    "misconception": ""
+  },
+  {
+    "id": "5-oa-evaluate",
+    "term": "evaluate",
+    "grade": "5",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "5.OA",
+    "definition": "Work out what an expression is worth.",
+    "example": "Maya evaluates 4 × (3 + 2). Inside the parentheses gives 5. Then 4 × 5 gives 20.",
+    "misconception": ""
+  },
+  {
+    "id": "5-oa-numerical-pattern",
+    "term": "numerical pattern",
+    "grade": "5",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "5.OA",
+    "definition": "A list of numbers that follows a rule.",
+    "example": "Leo starts at 3 and adds 5 each time: 3, 8, 13, 18. His pattern grows by 5.",
+    "misconception": ""
+  },
+  {
+    "id": "5-oa-coordinate-pair",
+    "term": "coordinate pair",
+    "grade": "5",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "5.OA",
+    "definition": "Two numbers that locate a point on a grid.",
+    "example": "Ana plots (4, 3). She moves 4 across, then 3 up, and marks the spot.",
+    "misconception": ""
+  },
+  {
+    "id": "5-nbt-exponent",
+    "term": "exponent",
+    "grade": "5",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "5.NBT",
+    "definition": "A small raised number. It tells how many times to multiply the base by itself.",
+    "example": "Ben writes 10 with a small 3 above it. The exponent means 10 × 10 × 10, which is 1,000.",
+    "misconception": "An exponent is not the same as multiplying by 3. It means three tens multiplied together."
+  },
+  {
+    "id": "5-nbt-power-of-ten",
+    "term": "power of ten",
+    "grade": "5",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "5.NBT",
+    "definition": "What you get when you multiply 10 by itself.",
+    "example": "Ivy sees that 100 is 10 × 10. That makes 100 a power of ten.",
+    "misconception": ""
+  },
+  {
+    "id": "5-nbt-round-decimals",
+    "term": "round decimals",
+    "grade": "5",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "5.NBT",
+    "definition": "Change a decimal to a nearby simpler one.",
+    "example": "Zoe rounds 3.67 to the nearest tenth. The 7 pushes it up, so she writes 3.7.",
+    "misconception": ""
+  },
+  {
+    "id": "5-nbt-multiply-decimals",
+    "term": "multiply decimals",
+    "grade": "5",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "5.NBT",
+    "definition": "Multiply as you would whole numbers. Then place the dot.",
+    "example": "Theo multiplies 0.4 × 0.3. He thinks 4 × 3 = 12. Two decimal places give him 0.12.",
+    "misconception": "The answer can be smaller than what you started with. Multiplying by a part shrinks it."
+  },
+  {
+    "id": "5-nbt-divide-decimals",
+    "term": "divide decimals",
+    "grade": "5",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "5.NBT",
+    "definition": "Split a decimal into equal parts.",
+    "example": "Nina pours 4.5 liters into 3 bottles evenly. Each bottle gets 1.5 liters.",
+    "misconception": ""
+  },
+  {
+    "id": "5-nf-common-denominator",
+    "term": "common denominator",
+    "grade": "5",
+    "domainCode": "NF",
+    "domain": "Number & Operations—Fractions",
+    "standard": "5.NF",
+    "definition": "A shared bottom number that lets you add or compare fractions.",
+    "example": "Omar adds 1/2 and 1/3. He rewrites them as 3/6 and 2/6, then adds to get 5/6.",
+    "misconception": "You cannot add the bottom numbers. Make them match first, then add only the tops."
+  },
+  {
+    "id": "5-nf-mixed-number",
+    "term": "mixed number",
+    "grade": "5",
+    "domainCode": "NF",
+    "domain": "Number & Operations—Fractions",
+    "standard": "5.NF",
+    "definition": "A whole number plus a fraction.",
+    "example": "Maya runs 3 whole laps and half of another. She ran 3 1/2 laps.",
+    "misconception": ""
+  },
+  {
+    "id": "5-nf-multiply-fractions",
+    "term": "multiply fractions",
+    "grade": "5",
+    "domainCode": "NF",
+    "domain": "Number & Operations—Fractions",
+    "standard": "5.NF",
+    "definition": "Multiply the top numbers. Then multiply the bottom numbers.",
+    "example": "Leo scoops 1/2 of a 1/3 cup measure. He multiplies and finds he has 1/6 of a cup.",
+    "misconception": ""
+  },
+  {
+    "id": "5-nf-divide-fractions",
+    "term": "divide fractions",
+    "grade": "5",
+    "domainCode": "NF",
+    "domain": "Number & Operations—Fractions",
+    "standard": "5.NF",
+    "definition": "Split a fraction into equal parts, or find how many fit inside.",
+    "example": "Ana has 1/2 a pizza and shares it with 2 people. Each one gets 1/4 of the pizza.",
+    "misconception": ""
+  },
+  {
+    "id": "5-nf-simplify",
+    "term": "simplify",
+    "grade": "5",
+    "domainCode": "NF",
+    "domain": "Number & Operations—Fractions",
+    "standard": "5.NF",
+    "definition": "Write a fraction with the smallest numbers that still name the same amount.",
+    "example": "Ben has 6/8 of a bar. He divides the top and bottom by 2 and writes 3/4.",
+    "misconception": ""
+  },
+  {
+    "id": "5-nf-reciprocal",
+    "term": "reciprocal",
+    "grade": "5",
+    "domainCode": "NF",
+    "domain": "Number & Operations—Fractions",
+    "standard": "5.NF",
+    "definition": "The fraction you get when you flip one over.",
+    "example": "Ivy flips 2/5 and gets 5/2. That is the reciprocal. The two of them multiply to 1.",
+    "misconception": ""
+  },
+  {
+    "id": "5-md-volume",
+    "term": "volume",
+    "grade": "5",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "5.MD",
+    "definition": "The amount of space a solid takes up.",
+    "example": "Zoe fills a box with unit cubes. It holds 3 layers of 8, so the volume is 24 cubic units.",
+    "misconception": "Volume fills the inside. Area only covers a flat surface."
+  },
+  {
+    "id": "5-md-cubic-unit",
+    "term": "cubic unit",
+    "grade": "5",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "5.MD",
+    "definition": "One cube used to measure volume.",
+    "example": "Theo stacks cubes inside a box with no gaps. Each cube is one cubic unit, and he counts 18.",
+    "misconception": ""
+  },
+  {
+    "id": "5-md-convert-units",
+    "term": "convert units",
+    "grade": "5",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "5.MD",
+    "definition": "Change a measure to a different unit.",
+    "example": "Nina has 2,000 meters left to run. She converts it and sees that is just 2 kilometers.",
+    "misconception": ""
+  },
+  {
+    "id": "5-md-coordinate-plane",
+    "term": "coordinate plane",
+    "grade": "5",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "5.MD",
+    "definition": "A grid made by two number lines that cross.",
+    "example": "Omar maps his neighborhood on a coordinate plane. He finds the park at (4, 3).",
+    "misconception": ""
+  },
+  {
+    "id": "5-md-x-axis",
+    "term": "x-axis",
+    "grade": "5",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "5.MD",
+    "definition": "The number line that runs across the grid.",
+    "example": "Maya moves right along the x-axis to 5 before she moves up at all.",
+    "misconception": ""
+  },
+  {
+    "id": "5-md-y-axis",
+    "term": "y-axis",
+    "grade": "5",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "5.MD",
+    "definition": "The number line that runs up and down the grid.",
+    "example": "Leo counts up the y-axis to 4 to finish plotting his point.",
+    "misconception": ""
+  },
+  {
+    "id": "5-g-coordinate-plane",
+    "term": "coordinate plane",
+    "grade": "5",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "5.G",
+    "definition": "A grid for locating points. A level line and an upright line cross to make it.",
+    "example": "Ana plots (4, 3) on the coordinate plane. She goes 4 across, then 3 up.",
+    "misconception": ""
+  },
+  {
+    "id": "5-g-ordered-pair",
+    "term": "ordered pair",
+    "grade": "5",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "5.G",
+    "definition": "Two numbers in order that give a point's spot. The across number comes first.",
+    "example": "Ben plots (2, 5). He moves 2 across, then 5 up. The order changes where he lands.",
+    "misconception": "Swapping the numbers lands you somewhere else. (2, 5) is not the same as (5, 2)."
+  },
+  {
+    "id": "5-g-classify",
+    "term": "classify",
+    "grade": "5",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "5.G",
+    "definition": "Sort shapes into groups by what they have in common.",
+    "example": "Ivy classifies triangles by their angles. She makes one pile each for acute, right, and obtuse.",
+    "misconception": ""
+  },
+  {
+    "id": "5-g-hierarchy-of-shapes",
+    "term": "hierarchy of shapes",
+    "grade": "5",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "5.G",
+    "definition": "A way to order shape groups. Smaller groups fit inside bigger ones.",
+    "example": "Zoe draws a chart of shapes. Squares fit inside rectangles, and rectangles fit inside quadrilaterals.",
+    "misconception": "Every square is a rectangle, but not every rectangle is a square."
+  }
+]</script>
+<script>
+/* ---------- cuelume (MIT, github.com/Danilaa1/cuelume) ---------- */
+window.Cuelume = (function () {
+/* cuelume/sounds/recipes.js */
+/**
+ * The sound palette — layer/recipe types plus the fourteen built-in recipes.
+ * Each sound has its own distinct shape — a chime, an arpeggio, a pitch
+ * glide, a warm pad, a breath — rather than being a volume/EQ tweak on
+ * the same click. Add a new one here without touching any audio graph code.
+ */
+const RECIPES = {
+    /** A soft two-note ascending bell, like an iOS/macOS confirmation tink. */
+    chime: {
+        masterGain: 0.5,
+        layers: [
+            { kind: "tone", waveform: "sine", frequency: 1046.5, attack: 0.006, decay: 0.22, peak: 0.09 },
+            { kind: "tone", waveform: "sine", frequency: 1568, offset: 0.09, attack: 0.006, decay: 0.26, peak: 0.08 },
+        ],
+        shimmer: { delay: 0.12, feedback: 0.25, wet: 0.18, lowpass: 4000 },
+    },
+    /** A quick ascending twinkle of four notes — bright and playful. */
+    sparkle: {
+        masterGain: 0.5,
+        layers: [
+            { kind: "tone", waveform: "sine", frequency: 1760, offset: 0, attack: 0.003, decay: 0.09, peak: 0.045 },
+            { kind: "tone", waveform: "sine", frequency: 2217, offset: 0.045, attack: 0.003, decay: 0.09, peak: 0.04 },
+            { kind: "tone", waveform: "sine", frequency: 2637, offset: 0.09, attack: 0.003, decay: 0.1, peak: 0.038 },
+            { kind: "tone", waveform: "sine", frequency: 3520, offset: 0.135, attack: 0.003, decay: 0.12, peak: 0.032 },
+        ],
+        shimmer: { delay: 0.07, feedback: 0.35, wet: 0.22, lowpass: 6000 },
+    },
+    /** A single note gliding smoothly downward, like a drop of water. */
+    droplet: {
+        masterGain: 0.55,
+        layers: [
+            { kind: "tone", waveform: "sine", frequency: 1200, glideTo: 550, glideTime: 0.14, attack: 0.004, decay: 0.2, peak: 0.075 },
+        ],
+        shimmer: { delay: 0.09, feedback: 0.2, wet: 0.15, lowpass: 3000 },
+    },
+    /** A warm, slow-swelling pad from two gently detuned sines. */
+    bloom: {
+        masterGain: 0.5,
+        layers: [
+            { kind: "tone", waveform: "sine", frequency: 528, attack: 0.06, decay: 0.32, peak: 0.06 },
+            { kind: "tone", waveform: "sine", frequency: 528, detune: 12, attack: 0.06, decay: 0.34, peak: 0.05 },
+        ],
+        shimmer: { delay: 0.15, feedback: 0.2, wet: 0.12, lowpass: 2500 },
+    },
+    /** The quietest option — a breathy, textureless swell for dense lists. */
+    whisper: {
+        masterGain: 0.5,
+        layers: [
+            { kind: "noise", filterType: "lowpass", filterFrequency: 1200, filterQ: 0.7, attack: 0.04, decay: 0.16, peak: 0.05 },
+        ],
+    },
+    /** A focused, bandpass-filtered tick with a bright sine ping on top — crisp and instant. */
+    tick: {
+        masterGain: 0.4,
+        layers: [
+            { kind: "noise", filterType: "bandpass", filterFrequency: 5400, filterQ: 1.8, attack: 0.001, decay: 0.018, peak: 0.14 },
+            { kind: "tone", waveform: "sine", frequency: 2600, attack: 0.001, decay: 0.012, peak: 0.018 },
+        ],
+    },
+    /** A dull, muted knock — the "down" half of a press/release pair, like a key bottoming out. */
+    press: {
+        masterGain: 0.4,
+        layers: [
+            { kind: "noise", filterType: "bandpass", filterFrequency: 1700, filterQ: 1.4, attack: 0.001, decay: 0.02, peak: 0.13 },
+        ],
+    },
+    /** A brighter, springier tick — the "up" half of a press/release pair, like a key returning. */
+    release: {
+        masterGain: 0.4,
+        layers: [
+            { kind: "noise", filterType: "bandpass", filterFrequency: 4600, filterQ: 1.8, attack: 0.001, decay: 0.016, peak: 0.12 },
+            { kind: "tone", waveform: "sine", frequency: 3200, offset: 0.006, attack: 0.001, decay: 0.05, peak: 0.02 },
+        ],
+    },
+    /** A two-part click-clack, like a mechanical switch flipping between states. */
+    toggle: {
+        masterGain: 0.4,
+        layers: [
+            { kind: "noise", filterType: "bandpass", filterFrequency: 2200, filterQ: 1.6, attack: 0.001, decay: 0.016, peak: 0.12 },
+            { kind: "noise", filterType: "bandpass", filterFrequency: 3800, filterQ: 1.6, offset: 0.024, attack: 0.001, decay: 0.02, peak: 0.1 },
+        ],
+    },
+    /** A short, warm three-note ascending confirmation — "done", not a fanfare. */
+    success: {
+        masterGain: 0.5,
+        layers: [
+            { kind: "tone", waveform: "sine", frequency: 880, attack: 0.004, decay: 0.09, peak: 0.06 },
+            { kind: "tone", waveform: "sine", frequency: 1108.73, offset: 0.06, attack: 0.004, decay: 0.1, peak: 0.06 },
+            { kind: "tone", waveform: "sine", frequency: 1318.51, offset: 0.12, attack: 0.004, decay: 0.18, peak: 0.07 },
+        ],
+        shimmer: { delay: 0.1, feedback: 0.22, wet: 0.16, lowpass: 4500 },
+    },
+    /** A muted knock followed by two descending tones — a calm, recoverable refusal. */
+    error: {
+        masterGain: 0.42,
+        layers: [
+            { kind: "noise", filterType: "bandpass", filterFrequency: 850, filterQ: 1.1, attack: 0.001, decay: 0.035, peak: 0.13 },
+            { kind: "tone", waveform: "triangle", frequency: 440, offset: 0.025, attack: 0.004, decay: 0.09, peak: 0.045 },
+            { kind: "tone", waveform: "triangle", frequency: 349.23, offset: 0.1, attack: 0.004, decay: 0.14, peak: 0.04 },
+        ],
+    },
+    /** A papery filtered flick with a tiny glass tick — for pages, galleries, and carousels. */
+    page: {
+        masterGain: 0.38,
+        layers: [
+            { kind: "noise", filterType: "lowpass", filterFrequency: 1800, filterQ: 0.7, attack: 0.006, decay: 0.08, peak: 0.11 },
+            { kind: "noise", filterType: "bandpass", filterFrequency: 4200, filterQ: 1.2, offset: 0.04, attack: 0.004, decay: 0.065, peak: 0.08 },
+            { kind: "tone", waveform: "sine", frequency: 2400, offset: 0.075, attack: 0.002, decay: 0.045, peak: 0.02 },
+        ],
+    },
+    /** A brief unresolved lift — signals that user-initiated work has started. */
+    loading: {
+        masterGain: 0.42,
+        layers: [
+            { kind: "noise", filterType: "lowpass", filterFrequency: 1400, filterQ: 0.6, attack: 0.035, decay: 0.14, peak: 0.035 },
+            { kind: "tone", waveform: "sine", frequency: 420, glideTo: 630, glideTime: 0.18, attack: 0.025, decay: 0.18, peak: 0.05 },
+        ],
+        shimmer: { delay: 0.11, feedback: 0.18, wet: 0.12, lowpass: 2800 },
+    },
+    /** A precise focus tick opening into a soft harmonic bloom — content is ready. */
+    ready: {
+        masterGain: 0.45,
+        layers: [
+            { kind: "noise", filterType: "bandpass", filterFrequency: 3200, filterQ: 1.7, attack: 0.001, decay: 0.018, peak: 0.1 },
+            { kind: "tone", waveform: "sine", frequency: 659.25, offset: 0.025, attack: 0.012, decay: 0.2, peak: 0.05 },
+            { kind: "tone", waveform: "sine", frequency: 987.77, offset: 0.025, attack: 0.012, decay: 0.22, peak: 0.035 },
+        ],
+        shimmer: { delay: 0.13, feedback: 0.2, wet: 0.13, lowpass: 3600 },
+    },
+};
+function isSoundName(value) {
+    return typeof value === "string" && Object.prototype.hasOwnProperty.call(RECIPES, value);
+}
+/** All available sound names, derived from the recipe palette. */
+const sounds = Object.keys(RECIPES);
+
+/* cuelume/audio/engine.js */
+/**
+ * The audio engine — synthesizes each sound live via the Web Audio API
+ * on one shared, lazily created `AudioContext`. No audio files, no
+ * dependencies. Every sound carries a gentle envelope (and often a soft
+ * shimmer tail) instead of a hard transient, so nothing feels harsh.
+ */
+
+const SOURCE_STOP_PADDING = 0.05;
+const CLEANUP_MARGIN = 0.05;
+const INAUDIBLE_GAIN = 0.001;
+const OUTPUT_GAIN = 4;
+function renderTone(context, destination, layer, startTime) {
+    const oscillator = context.createOscillator();
+    oscillator.type = layer.waveform;
+    oscillator.frequency.setValueAtTime(layer.frequency, startTime);
+    if (layer.detune)
+        oscillator.detune.value = layer.detune;
+    if (layer.glideTo !== undefined) {
+        const glideTime = layer.glideTime ?? layer.attack + layer.decay;
+        oscillator.frequency.exponentialRampToValueAtTime(layer.glideTo, startTime + glideTime);
+    }
+    const gain = context.createGain();
+    gain.gain.setValueAtTime(0.0001, startTime);
+    gain.gain.exponentialRampToValueAtTime(layer.peak, startTime + layer.attack);
+    gain.gain.exponentialRampToValueAtTime(0.0001, startTime + layer.attack + layer.decay);
+    oscillator.connect(gain).connect(destination);
+    oscillator.start(startTime);
+    oscillator.stop(startTime + layer.attack + layer.decay + SOURCE_STOP_PADDING);
+}
+function renderNoise(context, destination, layer, startTime) {
+    const duration = layer.attack + layer.decay + SOURCE_STOP_PADDING;
+    const length = Math.max(1, Math.floor(duration * context.sampleRate));
+    const buffer = context.createBuffer(1, length, context.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < length; i++)
+        data[i] = 2 * Math.random() - 1;
+    const source = context.createBufferSource();
+    source.buffer = buffer;
+    const filter = context.createBiquadFilter();
+    filter.type = layer.filterType;
+    filter.frequency.value = layer.filterFrequency;
+    if (layer.filterQ !== undefined)
+        filter.Q.value = layer.filterQ;
+    const gain = context.createGain();
+    gain.gain.setValueAtTime(0.0001, startTime);
+    gain.gain.exponentialRampToValueAtTime(layer.peak, startTime + layer.attack);
+    gain.gain.exponentialRampToValueAtTime(0.0001, startTime + layer.attack + layer.decay);
+    source.connect(filter).connect(gain).connect(destination);
+    source.start(startTime);
+    source.stop(startTime + duration);
+}
+/** Wires a soft echo/shimmer send off `source`, feeding back into `destination`. */
+function attachShimmer(context, source, destination, shimmer) {
+    const delay = context.createDelay(1);
+    delay.delayTime.value = shimmer.delay;
+    const feedbackFilter = context.createBiquadFilter();
+    feedbackFilter.type = "lowpass";
+    feedbackFilter.frequency.value = shimmer.lowpass;
+    const feedbackGain = context.createGain();
+    feedbackGain.gain.value = shimmer.feedback;
+    const wetGain = context.createGain();
+    wetGain.gain.value = shimmer.wet;
+    source.connect(delay);
+    delay.connect(feedbackFilter);
+    feedbackFilter.connect(feedbackGain);
+    feedbackGain.connect(delay);
+    feedbackFilter.connect(wetGain);
+    wetGain.connect(destination);
+    return [delay, feedbackFilter, feedbackGain, wetGain];
+}
+function sourceEnd(recipe) {
+    return Math.max(...recipe.layers.map((layer) => (layer.offset ?? 0) + layer.attack + layer.decay + SOURCE_STOP_PADDING));
+}
+function shimmerTail(shimmer) {
+    if (!shimmer || shimmer.feedback <= 0)
+        return 0;
+    if (shimmer.feedback >= 1)
+        return shimmer.delay;
+    return shimmer.delay * (1 + Math.ceil(Math.log(INAUDIBLE_GAIN) / Math.log(shimmer.feedback)));
+}
+let sharedOutput = null;
+function getOutput(context) {
+    if (sharedOutput)
+        return sharedOutput;
+    const output = context.createGain();
+    output.gain.value = OUTPUT_GAIN;
+    const limiter = context.createDynamicsCompressor();
+    limiter.threshold.value = -8;
+    limiter.knee.value = 6;
+    limiter.ratio.value = 12;
+    limiter.attack.value = 0.002;
+    limiter.release.value = 0.08;
+    output.connect(limiter).connect(context.destination);
+    sharedOutput = output;
+    return output;
+}
+function renderRecipe(context, recipe, volume) {
+    const now = context.currentTime;
+    const output = getOutput(context);
+    const master = context.createGain();
+    master.gain.value = recipe.masterGain * volume;
+    master.connect(output);
+    const shimmerNodes = recipe.shimmer
+        ? attachShimmer(context, master, output, recipe.shimmer)
+        : [];
+    for (const layer of recipe.layers) {
+        const startTime = now + (layer.offset ?? 0);
+        if (layer.kind === "tone")
+            renderTone(context, master, layer, startTime);
+        else
+            renderNoise(context, master, layer, startTime);
+    }
+    const cleanupAfterMs = (sourceEnd(recipe) + shimmerTail(recipe.shimmer) + CLEANUP_MARGIN) * 1000;
+    setTimeout(() => {
+        master.disconnect();
+        for (const node of shimmerNodes)
+            node.disconnect();
+    }, cleanupAfterMs);
+}
+let sharedContext = null;
+let enabled = true;
+let globalVolume = 1;
+function normalizeVolume(value, fallback) {
+    return typeof value === "number" && Number.isFinite(value)
+        ? Math.min(1, Math.max(0, value))
+        : fallback;
+}
+/** Enables or disables future playback. Preference storage stays with the app. */
+function setEnabled(value) {
+    if (typeof value === "boolean")
+        enabled = value;
+}
+/** Sets the volume multiplier for future playback. Preference storage stays with the app. */
+function setVolume(value) {
+    globalVolume = normalizeVolume(value, globalVolume);
+}
+function getAudioContext() {
+    if (sharedContext)
+        return sharedContext;
+    if (typeof window === "undefined")
+        return null;
+    const Ctor = window.AudioContext ??
+        window.webkitAudioContext;
+    if (!Ctor)
+        return null;
+    try {
+        sharedContext = new Ctor();
+    }
+    catch {
+        return null;
+    }
+    return sharedContext;
+}
+/**
+ * Plays a sound immediately. Safe to call from anywhere — lazily creates
+ * the shared `AudioContext` on first use, resumes it if the browser
+ * started it suspended (e.g. before any user gesture), and is a no-op
+ * when Web Audio is unavailable (SSR, old browsers).
+ */
+function play(sound = "chime", options) {
+    if (!enabled || !isSoundName(sound))
+        return;
+    if (typeof navigator !== "undefined" && navigator.userActivation?.hasBeenActive === false)
+        return;
+    const playVolume = globalVolume * normalizeVolume(options?.volume, 1);
+    if (playVolume === 0)
+        return;
+    const context = getAudioContext();
+    if (!context)
+        return;
+    const recipe = RECIPES[sound];
+    if (context.state === "running") {
+        renderRecipe(context, recipe, playVolume);
+    }
+    else {
+        try {
+            void context.resume().then(() => {
+                if (enabled && context.state === "running")
+                    renderRecipe(context, recipe, playVolume);
+            }, () => { });
+        }
+        catch {
+            // Some browsers throw synchronously when audio is blocked.
+        }
+    }
+}
+return { play, setEnabled, setVolume, sounds };
+}());
+
+/* ---------- src/constants.js ---------- */
+/* =========================================================================
+   Shared constants: grade/domain ordering, icons, motion settings.
+   Inlined into index.html by build_html.py.
+   ========================================================================= */
+
+const DATA = JSON.parse(document.getElementById('vocab-data').textContent);
+const GRADES = ["K", "1", "2", "3", "4", "5"];
+const GRADE_NAMES = {
+  K: 'Kindergarten', 1: 'Grade 1', 2: 'Grade 2',
+  3: 'Grade 3', 4: 'Grade 4', 5: 'Grade 5',
+};
+const DOMAIN_ORDER = ["CC", "OA", "NBT", "NF", "MD", "G"];
+
+const DOMAIN_FULLNAME = {};
+DATA.forEach((d) => { DOMAIN_FULLNAME[d.domainCode] = d.domain; });
+
+/* Each Common Core domain gets its own solid in the 3D graph, so a grade's
+   branches are told apart by shape as well as by colour — shape survives
+   colour-blindness and small screens where colour alone does not. */
+const DOMAIN_SHAPES = {
+  CC: 'icosahedron',
+  OA: 'octahedron',
+  NBT: 'box',
+  NF: 'torus',
+  MD: 'cylinder',
+  G: 'dodecahedron',
+};
+
+/* Motion. The OS-level "Reduce Motion" preference switches every camera
+   flight to an instant cut and stops the idle auto-rotation. */
+const REDUCED_MOTION = window.matchMedia
+  ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  : false;
+
+/* Every eased motion in the app is in-out — nothing starts or stops abruptly. */
+const EASE_INOUT = 'power2.inOut';
+const EASE_INOUT_STRONG = 'power3.inOut';
+
+const STORAGE_KEYS = {
+  onboarded: 'mathGraphOnboarded',
+  visited: 'mathVocabVisitedTerms',
+  ttsProxy: 'mathVocabTtsProxyUrl',
+};
+
+// ---- data helpers -------------------------------------------------------
+
+function byGrade(g) { return DATA.filter((d) => d.grade === g); }
+
+function domainsForGrade(g) {
+  const set = {};
+  byGrade(g).forEach((d) => { set[d.domainCode] = d.domain; });
+  return DOMAIN_ORDER.filter((code) => set[code]).map((code) => ({ code, name: set[code] }));
+}
+
+function termsFor(g, code) { return byGrade(g).filter((d) => d.domainCode === code); }
+
+function termById(id) { return DATA.find((d) => d.id === id); }
+
+function gradeLabel(g) { return GRADE_NAMES[g] || `Grade ${g}`; }
+
+/* User-authored vocabulary is trusted, but it still flows into the DOM, so
+   escape it rather than relying on that staying true if the bank is ever
+   opened up to contributors. */
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+/* ---------- src/icons.js ---------- */
+/* =========================================================================
+   Icon set.
+
+   Replaces the emoji the first version used. Emoji render differently on
+   every platform, carry cartoon styling that fights the rest of the UI, and
+   several of the mathematical ones (❱ ⬠ ⁵⁄₄) are really just characters in a
+   fallback font. These are drawn on one 24x24 grid with a single stroke
+   weight, inherit `currentColor`, and look the same everywhere.
+
+   Every glyph is geometric and says something about the maths: the fraction
+   icon is a divided circle, the array icon is a real grid, the symmetry icon
+   is a mirrored pair. Nothing is decorative.
+   ========================================================================= */
+
+const ICON_PATHS = {
+  // --- interface -------------------------------------------------------
+  speaker: '<path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/>',
+  soundOff: '<path d="M11 5 6 9H3v6h3l5 4z"/><path d="m16 9 5 6"/><path d="m21 9-5 6"/>',
+  soundOn: '<path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/>',
+  info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.5h.01"/>',
+  close: '<path d="m7 7 10 10"/><path d="m17 7-10 10"/>',
+  search: '<circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 4 4"/>',
+  reset: '<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/>',
+  check: '<path d="m5 13 4 4L19 7"/>',
+  arrowRight: '<path d="M4 12h15"/><path d="m13 6 6 6-6 6"/>',
+  cap: '<path d="M2 8.5 12 4l10 4.5L12 13z"/><path d="M6 10.7V16c0 1.7 2.7 3 6 3s6-1.3 6-3v-5.3"/>',
+  spark: '<path d="M12 3v5"/><path d="M12 16v5"/><path d="M3 12h5"/><path d="M16 12h5"/><path d="m6.3 6.3 3 3"/><path d="m14.7 14.7 3 3"/><path d="m17.7 6.3-3 3"/><path d="m9.3 14.7-3 3"/>',
+
+  // --- number & counting ----------------------------------------------
+  countGroup: '<circle cx="7" cy="8" r="2.3"/><circle cx="15" cy="6.5" r="2.3"/><circle cx="9.5" cy="16" r="2.3"/><circle cx="17.5" cy="14.5" r="2.3"/>',
+  tally: '<path d="M5 5v14"/><path d="M9.5 5v14"/><path d="M14 5v14"/><path d="M18.5 5v14"/><path d="M3 17 20 7"/>',
+  hash: '<path d="M5 9h14"/><path d="M5 15h14"/><path d="M10 4 8 20"/><path d="M17 4l-2 16"/>',
+  zero: '<ellipse cx="12" cy="12" rx="6" ry="8"/>',
+  one: '<path d="M9 8l3-3v14"/><path d="M9 19h6"/>',
+  two: '<path d="M8 8a4 4 0 1 1 7 2.7L8 19h8"/>',
+  ten: '<circle cx="7" cy="12" r="3.5"/><circle cx="17" cy="12" r="3.5"/><path d="M7 12h10"/>',
+  hundred: '<circle cx="6" cy="12" r="3"/><circle cx="12" cy="12" r="3"/><circle cx="18" cy="12" r="3"/>',
+  sequence: '<path d="M4 18v-3"/><path d="M9.3 18v-6"/><path d="M14.7 18v-9"/><path d="M20 18v-12"/>',
+  numberLine: '<path d="M3 12h18"/><path d="M6 9v6"/><path d="M12 9v6"/><path d="M18 9v6"/>',
+  countOn: '<path d="M3 12h13"/><path d="m12 8 4 4-4 4"/><path d="M20 8v8"/>',
+
+  // --- operations ------------------------------------------------------
+  plus: '<path d="M12 5v14"/><path d="M5 12h14"/>',
+  minus: '<path d="M5 12h14"/>',
+  times: '<path d="m6 6 12 12"/><path d="m18 6-12 12"/>',
+  divide: '<path d="M5 12h14"/><circle cx="12" cy="7" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="17" r="1.4" fill="currentColor" stroke="none"/>',
+  equals: '<path d="M5 9h14"/><path d="M5 15h14"/>',
+  greater: '<path d="m9 5 7 7-7 7"/>',
+  less: '<path d="m15 5-7 7 7 7"/>',
+  balance: '<path d="M12 4v16"/><path d="M7 20h10"/><path d="M4 8h16"/><path d="M4 8 1.5 14h5z"/><path d="M20 8l2.5 6h-5z"/>',
+  sum: '<path d="M17 5H7l6 7-6 7h10"/>',
+  merge: '<path d="M5 5v5a4 4 0 0 0 4 4h6"/><path d="M19 19v-5a4 4 0 0 0-4-4H9"/><path d="m12 11 3 3-3 3"/>',
+  split: '<path d="M12 4v6"/><path d="M12 10 6 16"/><path d="m12 10 6 6"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="19" r="2"/>',
+  unknown: '<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.6 2.6 0 1 1 3 2.6v1.4"/><path d="M12.5 17h.01"/>',
+  repeat: '<path d="M4 9h12a4 4 0 0 1 0 8H8"/><path d="m8 5-4 4 4 4"/>',
+  factorTree: '<circle cx="12" cy="5" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/><path d="m10.7 6.7-3.4 9.6"/><path d="m13.3 6.7 3.4 9.6"/>',
+  steps: '<path d="M3 19h5v-5h5V9h5V4"/>',
+  variable: '<path d="m7 7 10 10"/><path d="m17 7-10 10"/><circle cx="12" cy="12" r="9"/>',
+
+  // --- place value & base ten -----------------------------------------
+  placeValue: '<rect x="3" y="5" width="5" height="14" rx="1"/><rect x="9.5" y="9" width="5" height="10" rx="1"/><rect x="16" y="13" width="5" height="6" rx="1"/>',
+  expand: '<path d="M4 12h4"/><path d="M10 12h4"/><path d="M16 12h4"/><path d="M6 8v8"/><path d="M12 8v8"/><path d="M18 8v8"/>',
+  regroup: '<path d="M8 4v6"/><path d="m5 7 3-3 3 3"/><path d="M16 20v-6"/><path d="m13 17 3 3 3-3"/>',
+  round: '<path d="M4 16a8 8 0 0 1 16 0"/><path d="M12 16v-6"/><path d="m9 13 3-3 3 3"/>',
+  exponent: '<path d="M5 18 13 8"/><path d="M5 8l8 10"/><path d="M17 4h2.5a1.5 1.5 0 0 1 0 3H17.5L17 9h3"/>',
+
+  // --- fractions & decimals -------------------------------------------
+  fraction: '<circle cx="12" cy="12" r="8"/><path d="M12 4v16"/><path d="M4 12h8"/>',
+  fractionBar: '<rect x="3" y="8" width="18" height="8" rx="1.5"/><path d="M9 8v8"/><path d="M15 8v8"/><path d="M3 8h6v8H3z" fill="currentColor" stroke="none" opacity=".45"/>',
+  numerator: '<path d="M5 12h14"/><rect x="8" y="3" width="8" height="5" rx="1" fill="currentColor" stroke="none" opacity=".7"/><rect x="8" y="16" width="8" height="5" rx="1"/>',
+  denominator: '<path d="M5 12h14"/><rect x="8" y="3" width="8" height="5" rx="1"/><rect x="8" y="16" width="8" height="5" rx="1" fill="currentColor" stroke="none" opacity=".7"/>',
+  half: '<circle cx="12" cy="12" r="8"/><path d="M12 4v16"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor" stroke="none" opacity=".45"/>',
+  equivalent: '<path d="M4 8h16"/><path d="M4 12h16"/><path d="M4 16h16"/>',
+  whole: '<circle cx="12" cy="12" r="8"/>',
+  decimal: '<path d="M4 16h4"/><path d="M11.5 16h.01"/><path d="M15 8v8"/><path d="M19 8v8"/><path d="M15 8h4"/><path d="M15 16h4"/>',
+  reciprocal: '<path d="m8 6-4 6 4 6"/><path d="m16 6 4 6-4 6"/><path d="m14 7-4 10"/>',
+  simplify: '<path d="M12 5v10"/><path d="m8 11 4 4 4-4"/><path d="M6 19h12"/>',
+
+  // --- measurement & data ---------------------------------------------
+  ruler: '<rect x="2" y="8" width="20" height="8" rx="1.5"/><path d="M7 8v3"/><path d="M12 8v4"/><path d="M17 8v3"/>',
+  weight: '<path d="M6 8h12l2 12H4z"/><path d="M9.5 8a2.5 2.5 0 1 1 5 0"/>',
+  feather: '<path d="M19 5c-7 0-12 4-12 10v4"/><path d="M7 15h6"/><path d="M5 19 19 5"/>',
+  clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+  timer: '<circle cx="12" cy="13" r="7.5"/><path d="M12 9v4"/><path d="M9.5 2.5h5"/>',
+  beaker: '<path d="M9 3v6L4.5 18a2 2 0 0 0 1.8 3h11.4a2 2 0 0 0 1.8-3L15 9V3"/><path d="M8 3h8"/><path d="M6.8 14h10.4"/>',
+  barChart: '<path d="M4 20V11"/><path d="M10 20V5"/><path d="M16 20v-6"/><path d="M3 20h18"/>',
+  pictureGraph: '<rect x="3" y="4" width="5" height="5" rx="1"/><rect x="10" y="4" width="5" height="5" rx="1"/><rect x="3" y="12" width="5" height="5" rx="1"/><path d="M3 20h18"/>',
+  linePlot: '<path d="M3 19h18"/><path d="M7 15v.01"/><path d="M7 11v.01"/><path d="M12 15v.01"/><path d="M12 11v.01"/><path d="M12 7v.01"/><path d="M17 15v.01"/>',
+  estimate: '<path d="M4 14c3-5 6-5 8 0s5 5 8 0"/><path d="M4 19h16"/>',
+  coin: '<circle cx="12" cy="12" r="8"/><path d="M12 8v8"/><path d="M14.5 9.5a2.5 2 0 0 0-5 0c0 2.5 5 1 5 3.5a2.5 2 0 0 1-5 0"/>',
+  dollar: '<path d="M12 3v18"/><path d="M16.5 7.5A3.5 3 0 0 0 12 6h-.5a3.5 3 0 0 0 0 6h1a3.5 3 0 0 1 0 6H12a3.5 3 0 0 1-4.5-1.5"/>',
+  sort: '<path d="M4 6h16"/><path d="M6 12h12"/><path d="M9 18h6"/>',
+  category: '<rect x="3" y="4" width="7" height="7" rx="1.5"/><rect x="14" y="4" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><circle cx="17.5" cy="17.5" r="3.5"/>',
+  convert: '<path d="M4 8h13"/><path d="m14 5 3 3-3 3"/><path d="M20 16H7"/><path d="m10 13-3 3 3 3"/>',
+  volume3d: '<path d="m12 3 8 4.5v9L12 21l-8-4.5v-9z"/><path d="m12 3 8 4.5-8 4.5-8-4.5z"/><path d="M12 12v9"/>',
+  cubeUnit: '<path d="M4 8h16v12H4z"/><path d="m4 8 3-4h16l-3 4"/><path d="M20 8v12l3-4V4"/>',
+
+  // --- geometry ---------------------------------------------------------
+  shapes: '<circle cx="7" cy="7" r="4"/><rect x="13" y="13" width="8" height="8" rx="1"/><path d="M17 3l4 7h-8z"/>',
+  circle: '<circle cx="12" cy="12" r="8"/>',
+  triangle: '<path d="M12 4 21 19H3z"/>',
+  square: '<rect x="5" y="5" width="14" height="14" rx="1"/>',
+  rectangle: '<rect x="2.5" y="7" width="19" height="10" rx="1"/>',
+  pentagon: '<path d="m12 3 9 6.5-3.4 10.5H6.4L3 9.5z"/>',
+  hexagon: '<path d="m12 3 7.8 4.5v9L12 21l-7.8-4.5v-9z"/>',
+  quadrilateral: '<path d="m12 3 9 7-3 11H6L3 10z" opacity="0"/><path d="M4 8 12 3l8 5-3 12H7z"/>',
+  cube: '<path d="m12 2 9 5v10l-9 5-9-5V7z"/><path d="m3 7 9 5 9-5"/><path d="M12 12v10"/>',
+  sphere: '<circle cx="12" cy="12" r="8.5"/><ellipse cx="12" cy="12" rx="4" ry="8.5"/><path d="M3.5 12h17"/>',
+  point: '<circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="7.5" opacity=".45"/>',
+  lineInf: '<path d="M3 12h18"/><path d="m6 9-3 3 3 3"/><path d="m18 9 3 3-3 3"/>',
+  ray: '<circle cx="5" cy="12" r="2" fill="currentColor" stroke="none"/><path d="M5 12h16"/><path d="m18 9 3 3-3 3"/>',
+  angle: '<path d="M4 19h16"/><path d="M4 19 16 5"/><path d="M10.5 19a7 7 0 0 0-1.4-4"/>',
+  rightAngle: '<path d="M5 19h15"/><path d="M5 19V5"/><path d="M5 14h5v5"/>',
+  acute: '<path d="M4 19h16"/><path d="M4 19 19 9"/><path d="M12 19a8 8 0 0 0-.6-3"/>',
+  obtuse: '<path d="M4 19h16"/><path d="M4 19 13 4"/><path d="M11 19a7 7 0 0 0-1.7-4.5"/>',
+  protractor: '<path d="M3 17a9 9 0 0 1 18 0z"/><path d="M12 17V8"/><path d="m7 10 1.5 2"/><path d="m17 10-1.5 2"/>',
+  parallel: '<path d="M6 4 3 20"/><path d="M15 4 12 20"/><path d="M21 4l-3 16" opacity="0"/>',
+  perpendicular: '<path d="M12 3v18"/><path d="M3 21h18"/><path d="M12 16h5v5"/>',
+  symmetry: '<path d="M12 3v18" stroke-dasharray="3 3"/><path d="M9 7 4 12l5 5z"/><path d="m15 7 5 5-5 5z"/>',
+  corner: '<path d="M5 5v14h14"/><path d="M5 10h5V5"/>',
+  above: '<path d="M12 20V6"/><path d="m7 11 5-5 5 5"/><path d="M4 3h16" opacity=".5"/>',
+  below: '<path d="M12 4v14"/><path d="m7 13 5 5 5-5"/><path d="M4 21h16" opacity=".5"/>',
+  beside: '<path d="M4 12h16"/><path d="m8 8-4 4 4 4"/><path d="m16 8 4 4-4 4"/>',
+  partition: '<rect x="3" y="6" width="18" height="12" rx="1.5"/><path d="M9 6v12"/><path d="M15 6v12"/>',
+  array: '<rect x="3" y="3" width="18" height="18" rx="1.5"/><path d="M9 3v18"/><path d="M15 3v18"/><path d="M3 9h18"/><path d="M3 15h18"/>',
+  areaModel: '<rect x="3" y="6" width="18" height="12" rx="1"/><path d="M11 6v12"/><path d="M3 12h18"/><path d="M3 6h8v6H3z" fill="currentColor" stroke="none" opacity=".35"/>',
+  perimeter: '<rect x="4" y="6" width="16" height="12" rx="1" stroke-dasharray="3 2.5"/>',
+  areaFill: '<rect x="4" y="6" width="16" height="12" rx="1"/><path d="M4 10h16"/><path d="M4 14h16"/><path d="M9 6v12"/><path d="M15 6v12"/>',
+  grid: '<path d="M3 3v18h18"/><path d="M8 21V8"/><path d="M13 21v-8"/><path d="M18 21V5"/>',
+  coordinate: '<path d="M4 20V4"/><path d="M4 20h16"/><circle cx="14" cy="10" r="2" fill="currentColor" stroke="none"/><path d="M4 10h10" stroke-dasharray="2 2"/><path d="M14 20V10" stroke-dasharray="2 2"/>',
+  axisX: '<path d="M3 16h18"/><path d="m17 12 4 4-4 4"/><path d="M6 4v12" opacity=".4"/>',
+  axisY: '<path d="M8 21V3"/><path d="m4 7 4-4 4 4"/><path d="M8 18h12" opacity=".4"/>',
+  hierarchy: '<rect x="8" y="3" width="8" height="5" rx="1"/><rect x="2" y="16" width="8" height="5" rx="1"/><rect x="14" y="16" width="8" height="5" rx="1"/><path d="M12 8v4"/><path d="M6 16v-4h12v4"/>',
+};
+
+/* Common Core domains. These also appear on the 3D domain nodes, whose
+   solids already differ by domain - the icon reinforces that pairing. */
+const DOMAIN_ICON_NAMES = {
+  CC: 'countGroup', OA: 'plus', NBT: 'placeValue',
+  NF: 'fraction', MD: 'ruler', G: 'shapes',
+};
+
+/* Term -> icon. Anything unmapped falls back to its domain icon, so adding a
+   vocabulary word never leaves a blank space. */
+const TERM_ICON_NAMES = {
+  'count': 'tally', 'number': 'hash', 'more': 'plus', 'fewer': 'minus',
+  'equal': 'equals', 'greater than': 'greater', 'less than': 'less',
+  'one more': 'countOn', 'zero': 'zero', 'in order': 'sequence',
+  'add': 'plus', 'subtract': 'minus', 'sum': 'sum', 'put together': 'merge',
+  'take apart': 'split', 'decompose': 'split', 'equation': 'balance',
+  'in all': 'sum', 'left': 'minus',
+  'ten': 'ten', 'ones': 'one', 'teen number': 'sequence', 'compose': 'merge',
+  'longer': 'ruler', 'shorter': 'ruler', 'taller': 'above',
+  'heavier': 'weight', 'lighter': 'feather', 'measure': 'ruler',
+  'compare': 'balance', 'sort': 'sort', 'category': 'category',
+  'shape': 'shapes', 'circle': 'circle', 'triangle': 'triangle',
+  'square': 'square', 'rectangle': 'rectangle', 'hexagon': 'hexagon',
+  'cube': 'cube', 'sphere': 'sphere', 'above': 'above', 'below': 'below',
+  'beside': 'beside', 'corner': 'corner',
+  'addend': 'plus', 'difference': 'minus', 'unknown': 'unknown',
+  'fact family': 'factorTree', 'doubles': 'two', 'how many more': 'greater',
+  'place value': 'placeValue', 'tens': 'ten',
+  'greater than (>)': 'greater', 'less than (<)': 'less', 'equal to (=)': 'equals',
+  'count on': 'countOn',
+  'length': 'ruler', 'order by length': 'sequence', 'hour': 'clock',
+  'half hour': 'clock', 'data': 'barChart', 'tally chart': 'tally', 'graph': 'barChart',
+  'partition': 'partition', 'equal shares': 'partition', 'halves': 'half',
+  'fourths': 'fraction', 'quarters': 'fraction', 'attribute': 'category',
+  '2D shape': 'square', '3D shape': 'cube',
+  'repeated addition': 'repeat', 'array': 'array', 'even number': 'two',
+  'odd number': 'one', 'two-step problem': 'steps', 'unknown number': 'unknown',
+  'hundreds': 'hundred', 'expanded form': 'expand', 'regroup': 'regroup',
+  'compare numbers': 'balance',
+  'centimeter': 'ruler', 'meter': 'ruler', 'estimate': 'estimate',
+  'number line': 'numberLine', 'bar graph': 'barChart',
+  'picture graph': 'pictureGraph', 'line plot': 'linePlot',
+  'dollar': 'dollar', 'quarter (coin)': 'coin',
+  'quadrilateral': 'quadrilateral', 'pentagon': 'pentagon',
+  'rows and columns': 'array',
+  'multiply': 'times', 'factor': 'factorTree', 'product': 'times',
+  'divide': 'divide', 'quotient': 'divide', 'equal groups': 'array',
+  'area model': 'areaModel', 'unknown factor': 'unknown',
+  'round': 'round',
+  'fraction': 'fraction', 'numerator': 'numerator', 'denominator': 'denominator',
+  'unit fraction': 'fractionBar', 'equivalent fractions': 'equivalent',
+  'whole': 'whole', 'compare fractions': 'balance',
+  'area': 'areaFill', 'perimeter': 'perimeter', 'square unit': 'array',
+  'elapsed time': 'timer', 'liquid volume': 'beaker', 'mass': 'weight',
+  'scaled graph': 'barChart',
+  'multiple': 'repeat', 'prime number': 'point', 'composite number': 'factorTree',
+  'multi-step problem': 'steps', 'remainder': 'divide', 'variable': 'variable',
+  'multi-digit': 'placeValue', 'standard algorithm': 'steps',
+  'equivalent fraction': 'equivalent', 'mixed number': 'fractionBar',
+  'improper fraction': 'fraction', 'common denominator': 'denominator',
+  'decimal': 'decimal', 'tenths': 'fractionBar', 'hundredths': 'array',
+  'benchmark fraction': 'half',
+  'angle': 'angle', 'degree': 'protractor', 'protractor': 'protractor',
+  'formula': 'variable', 'conversion': 'convert',
+  'point': 'point', 'line': 'lineInf', 'ray': 'ray',
+  'acute angle': 'acute', 'obtuse angle': 'obtuse', 'right angle': 'rightAngle',
+  'parallel lines': 'parallel', 'perpendicular lines': 'perpendicular',
+  'line of symmetry': 'symmetry',
+  'order of operations': 'steps', 'parentheses': 'merge', 'expression': 'hash',
+  'evaluate': 'equals', 'numerical pattern': 'sequence',
+  'coordinate pair': 'coordinate',
+  'exponent': 'exponent', 'power of ten': 'ten', 'round decimals': 'round',
+  'multiply decimals': 'times', 'divide decimals': 'divide',
+  'multiply fractions': 'times', 'divide fractions': 'divide',
+  'simplify': 'simplify', 'reciprocal': 'reciprocal',
+  'volume': 'volume3d', 'cubic unit': 'cubeUnit', 'convert units': 'convert',
+  'coordinate plane': 'grid', 'x-axis': 'axisX', 'y-axis': 'axisY',
+  'ordered pair': 'coordinate', 'classify': 'category',
+  'hierarchy of shapes': 'hierarchy',
+};
+
+/** SVG markup for an icon. Decorative by default; pass a label to expose it. */
+function iconSvg(name, { size = 20, className = '', label = '' } = {}) {
+  const paths = ICON_PATHS[name] || ICON_PATHS.circle;
+  const a11y = label
+    ? `role="img" aria-label="${escapeHtml(label)}"`
+    : 'aria-hidden="true" focusable="false"';
+  return `<svg class="icon ${className}" width="${size}" height="${size}" viewBox="0 0 24 24"`
+    + ` fill="none" stroke="currentColor" stroke-width="1.8"`
+    + ` stroke-linecap="round" stroke-linejoin="round" ${a11y}>${paths}</svg>`;
+}
+
+function iconNameForTerm(t) {
+  return TERM_ICON_NAMES[t.term] || DOMAIN_ICON_NAMES[t.domainCode] || 'circle';
+}
+
+function termIconSvg(t, options) {
+  return iconSvg(iconNameForTerm(t), options);
+}
+
+function domainIconSvg(domainCode, options) {
+  return iconSvg(DOMAIN_ICON_NAMES[domainCode] || 'shapes', options);
+}
+
+/* ---------- src/sound.js ---------- */
+/* =========================================================================
+   Interaction sounds, via cuelume (MIT, bundled into this page by
+   build_html.py — synthesized live, so there are no audio files to load and
+   it still works with no network).
+
+   The design rule here is that a sound reports *what happened*, so a child
+   can tell a grade from a topic from a word without looking:
+
+     grade   bloom    a warm swell — something big opened
+     topic   droplet  a downward glide — you went one level deeper
+     word    chime    the payoff, the brightest sound in the set
+     back    page     a paper flick — you left, you did not arrive
+     search  whisper  the quietest cue, because results fire while typing
+
+   The Listen button is deliberately silent. Its job is speech, and a chime
+   in front of the voice would step on the first word.
+
+   Sound is on by default and the toggle is in the header, one tap away —
+   thirty tablets in one room is exactly the case a mute button exists for.
+   ========================================================================= */
+
+const SOUND_STORAGE_KEY = 'mathVocabSoundOn';
+const SOUND_VOLUME = 0.55;
+
+const CUES = {
+  grade: 'bloom',
+  topic: 'droplet',
+  word: 'chime',
+  back: 'page',
+  search: 'whisper',
+  open: 'ready',
+  close: 'press',
+  toggle: 'toggle',
+  launch: 'success',
+  error: 'error',
+};
+
+const Sound = (function () {
+  let on = true;
+
+  function available() {
+    return typeof Cuelume !== 'undefined' && Cuelume;
+  }
+
+  function load() {
+    try {
+      const stored = localStorage.getItem(SOUND_STORAGE_KEY);
+      if (stored !== null) on = stored === '1';
+    } catch (e) { /* private browsing — fall back to the default */ }
+  }
+
+  function persist() {
+    try { localStorage.setItem(SOUND_STORAGE_KEY, on ? '1' : '0'); } catch (e) { /* ignore */ }
+  }
+
+  function apply() {
+    if (available()) {
+      Cuelume.setEnabled(on);
+      Cuelume.setVolume(SOUND_VOLUME);
+    }
+  }
+
+  return {
+    init() {
+      load();
+      apply();
+    },
+
+    /** Play an app event's cue. Unknown names are ignored rather than throwing. */
+    play(event) {
+      const cue = CUES[event];
+      if (cue && available()) Cuelume.play(cue);
+    },
+
+    isOn() { return on; },
+
+    setOn(value) {
+      on = !!value;
+      persist();
+      apply();
+      // Play the confirmation *after* enabling, so turning sound back on is
+      // audible and turning it off is silent.
+      if (on) this.play('toggle');
+    },
+
+    toggle() {
+      this.setOn(!on);
+      return on;
+    },
+  };
+}());
+
+/* ---------- src/graph3d.js ---------- */
+/* =========================================================================
+   The 3D knowledge graph (Three.js).
+
+   Notable differences from the first version:
+
+   * Draw calls went from ~450 (one Mesh per node + one Line per edge) to
+     roughly a dozen, by instancing the nodes and merging every edge into a
+     single LineSegments. This is what makes it comfortable on an iPad.
+   * Highlighting is a per-frame lerp instead of ~700 simultaneous GSAP
+     tweens per click.
+   * Labels are HTML elements projected from 3D rather than canvas sprites:
+     always crisp, real selectable text, and they can be pushed apart when
+     they collide instead of stacking on top of each other.
+   * Nodes are pickable — tapping a node in the graph selects it.
+   * Materials are lit (MeshStandardMaterial + three lights + filmic tone
+     mapping) rather than flat unlit colour, so the nodes read as objects.
+   ========================================================================= */
+
+const Graph = (function () {
+  let scene, camera, renderer, controls, container, labelLayer, clock;
+  let ready = false;
+  let hasControls = false;
+  let idleAngle = 0.6;
+  let onSelect = null;
+
+  const nodes = {};            // id -> node record
+  const gradeIds = [];         // instance index -> node id
+  const termIds = [];
+  const domainIdsByCode = {};  // domainCode -> [node id]
+  let gradeMesh, termMesh, rootMesh;
+  const domainMeshes = {};     // domainCode -> InstancedMesh
+  const haloLayers = {};       // level -> { points, ids, colors }
+  let edgeGeometry, edgeColors;
+  const edgeList = [];
+
+  let state = { grade: null, domainCode: null, term: null };
+  let hoveredId = null;
+
+  const RG = 34, RD = 13, RT = 6.2;
+  const COLORS = { root: 0xffffff, grade: 0x7c9eff, domain: 0xff5fa8, term: 0x7cffb2 };
+  const SIZE = { root: 2.3, grade: 1.4, domain: 0.9, term: 0.45 };
+  const HALO_SIZE = { root: 16, grade: 11, domain: 7, term: 3.6 };
+  const DIM = 0.055;           // how far inactive nodes fade toward the background
+  const DIM_SCALE = 0.45;
+
+  // Allocated in init(), after THREE is confirmed present — this module has
+  // to stay loadable when the CDN is unreachable so the rest of the page
+  // keeps working offline.
+  let _m, _q, _s, _c, _v, ORIGIN;
+
+  function allocScratch() {
+    _m = new THREE.Matrix4();
+    _q = new THREE.Quaternion();
+    _s = new THREE.Vector3();
+    _c = new THREE.Color();
+    _v = new THREE.Vector3();
+    ORIGIN = new THREE.Vector3(0, 0, 0);
+  }
+
+  // ---------------------------------------------------------------------
+  // setup
+  // ---------------------------------------------------------------------
+
+  function init(containerEl, labelEl) {
+    if (typeof THREE === 'undefined') {
+      document.getElementById('graphFallback').style.display = 'flex';
+      return;
+    }
+    container = containerEl;
+    labelLayer = labelEl;
+    allocScratch();
+
+    const w = Math.max(container.clientWidth, 1);
+    const h = Math.max(container.clientHeight, 1);
+
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(50, w / h, 0.1, 2000);
+    camera.position.set(130, 30, 0);
+
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setSize(w, h);
+    if (THREE.sRGBEncoding !== undefined) renderer.outputEncoding = THREE.sRGBEncoding;
+    if (THREE.ACESFilmicToneMapping !== undefined) {
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 0.95;
+    }
+    container.appendChild(renderer.domElement);
+    renderer.domElement.setAttribute('aria-hidden', 'true');
+
+    addLights();
+    buildStarfield();
+    buildGraph();
+    buildLabels();
+
+    if (typeof THREE.OrbitControls !== 'undefined') {
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.075;
+      controls.enablePan = false;
+      controls.minDistance = 2.5;
+      controls.maxDistance = 320;
+      controls.autoRotate = !REDUCED_MOTION;
+      controls.autoRotateSpeed = 0.55;
+      controls.target.set(0, 0, 0);
+      hasControls = true;
+    } else {
+      camera.lookAt(ORIGIN);
+    }
+
+    clock = new THREE.Clock();
+    ready = true;
+
+    bindPicking();
+    window.addEventListener('resize', onResize);
+    if (window.ResizeObserver) new ResizeObserver(onResize).observe(container);
+
+    applyState(state, true);
+    animate();
+  }
+
+  /* Deliberately restrained. Bright white light plus additive halos washes
+     the blue/pink/green level colours out to near-white, which is exactly
+     the distinction the graph relies on. */
+  function addLights() {
+    scene.add(new THREE.AmbientLight(0x6a6a90, 0.34));
+
+    const key = new THREE.DirectionalLight(0xffffff, 0.5);
+    key.position.set(60, 90, 40);
+    scene.add(key);
+
+    const rim = new THREE.DirectionalLight(0x8fb0ff, 0.22);
+    rim.position.set(-70, -30, -50);
+    scene.add(rim);
+
+    // Sits inside the white root node so the centre of the graph glows.
+    const core = new THREE.PointLight(0xfff4e0, 0.5, 70, 2);
+    core.position.set(0, 0, 0);
+    scene.add(core);
+  }
+
+  function radialTexture() {
+    const size = 128;
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    const g = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+    // A soft falloff rather than a hot core — a bright centre stacked on top
+    // of the lit sphere turns every node white and erases the level colour.
+    g.addColorStop(0, 'rgba(255,255,255,0.75)');
+    g.addColorStop(0.22, 'rgba(255,255,255,0.32)');
+    g.addColorStop(0.6, 'rgba(255,255,255,0.08)');
+    g.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, size, size);
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.minFilter = THREE.LinearFilter;
+    return tex;
+  }
+
+  function buildStarfield() {
+    const n = 700;
+    const positions = new Float32Array(n * 3);
+    for (let i = 0; i < n; i++) {
+      const r = 260 + Math.random() * 380;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos((Math.random() * 2) - 1);
+      positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+      positions[i * 3 + 1] = r * Math.cos(phi);
+      positions[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    scene.add(new THREE.Points(geo, new THREE.PointsMaterial({
+      color: 0x5a5a7c, size: 1.3, transparent: true, opacity: 0.55, sizeAttenuation: true,
+    })));
+  }
+
+  function domainGeometry(code) {
+    const r = SIZE.domain;
+    switch (DOMAIN_SHAPES[code]) {
+      case 'octahedron': return new THREE.OctahedronGeometry(r * 1.15, 0);
+      case 'box': return new THREE.BoxGeometry(r * 1.5, r * 1.5, r * 1.5);
+      case 'torus': return new THREE.TorusGeometry(r * 0.8, r * 0.34, 10, 20);
+      case 'cylinder': return new THREE.CylinderGeometry(r * 0.75, r * 0.75, r * 1.7, 14);
+      case 'dodecahedron': return new THREE.DodecahedronGeometry(r * 1.1, 0);
+      default: return new THREE.IcosahedronGeometry(r * 1.15, 0);
+    }
+  }
+
+  function nodeMaterial() {
+    // Matte rather than glossy: a tight specular highlight on a small sphere
+    // reads as a white dot and hides the node's colour.
+    return new THREE.MeshStandardMaterial({ roughness: 0.62, metalness: 0 });
+  }
+
+  function register(id, pos, level, parentId) {
+    nodes[id] = {
+      id, level, parentId,
+      pos: pos.clone(),
+      baseColor: new THREE.Color(COLORS[level]),
+      target: 1, cur: 1,          // 0 = dimmed out, 1 = fully lit
+      targetScale: 1, curScale: 1,
+    };
+    if (parentId) edgeList.push([parentId, id]);
+  }
+
+  function buildGraph() {
+    register('root', ORIGIN, 'root', null);
+
+    const domainCounts = {};
+    GRADES.forEach((g, gi) => {
+      const theta = (gi / GRADES.length) * Math.PI * 2;
+      const gpos = new THREE.Vector3(
+        RG * Math.cos(theta), 9 * Math.sin(theta * 1.6 + gi), RG * Math.sin(theta),
+      );
+      const gradeId = 'grade:' + g;
+      register(gradeId, gpos, 'grade', 'root');
+      gradeIds.push(gradeId);
+
+      domainsForGrade(g).forEach((d, di) => {
+        const doms = domainsForGrade(g);
+        const thetaD = (di / doms.length) * Math.PI * 2 + gi * 0.7;
+        const dpos = gpos.clone().add(new THREE.Vector3(
+          RD * Math.cos(thetaD), RD * 0.55 * Math.sin(thetaD * 1.4 + di), RD * Math.sin(thetaD),
+        ));
+        const domId = 'domain:' + g + ':' + d.code;
+        register(domId, dpos, 'domain', gradeId);
+        if (!domainIdsByCode[d.code]) domainIdsByCode[d.code] = [];
+        nodes[domId].instanceIndex = domainIdsByCode[d.code].length;
+        nodes[domId].domainCode = d.code;
+        domainIdsByCode[d.code].push(domId);
+        domainCounts[d.code] = (domainCounts[d.code] || 0) + 1;
+
+        const terms = termsFor(g, d.code);
+        terms.forEach((t, ti) => {
+          const thetaT = (ti / terms.length) * Math.PI * 2 + di * 0.9;
+          const tpos = dpos.clone().add(new THREE.Vector3(
+            RT * Math.cos(thetaT), RT * 0.6 * Math.sin(thetaT * 1.7 + ti), RT * Math.sin(thetaT),
+          ));
+          const termId = 'term:' + t.id;
+          register(termId, tpos, 'term', domId);
+          nodes[termId].instanceIndex = termIds.length;
+          termIds.push(termId);
+        });
+      });
+    });
+
+    gradeIds.forEach((id, i) => { nodes[id].instanceIndex = i; });
+
+    rootMesh = new THREE.Mesh(new THREE.SphereGeometry(SIZE.root, 32, 32), nodeMaterial());
+    rootMesh.material.color.set(COLORS.root);
+    rootMesh.material.emissive = new THREE.Color(0x333344);
+    scene.add(rootMesh);
+
+    gradeMesh = new THREE.InstancedMesh(
+      new THREE.SphereGeometry(SIZE.grade, 24, 24), nodeMaterial(), gradeIds.length,
+    );
+    scene.add(gradeMesh);
+
+    Object.keys(domainIdsByCode).forEach((code) => {
+      const mesh = new THREE.InstancedMesh(
+        domainGeometry(code), nodeMaterial(), domainIdsByCode[code].length,
+      );
+      domainMeshes[code] = mesh;
+      scene.add(mesh);
+    });
+
+    termMesh = new THREE.InstancedMesh(
+      new THREE.SphereGeometry(SIZE.term, 12, 12), nodeMaterial(), termIds.length,
+    );
+    scene.add(termMesh);
+
+    buildHalos();
+    buildEdges();
+    writeInstances(true);
+  }
+
+  /* Additive point sprites behind each node. This is what produces the neon
+     glow without a post-processing pass (and without the extra CDN
+     dependency an EffectComposer bloom would need). */
+  function buildHalos() {
+    const tex = radialTexture();
+    const byLevel = { root: ['root'], grade: gradeIds, domain: [], term: termIds };
+    Object.keys(domainIdsByCode).forEach((code) => {
+      byLevel.domain = byLevel.domain.concat(domainIdsByCode[code]);
+    });
+
+    Object.keys(byLevel).forEach((level) => {
+      const ids = byLevel[level];
+      if (!ids.length) return;
+      const positions = new Float32Array(ids.length * 3);
+      const colors = new Float32Array(ids.length * 3);
+      ids.forEach((id, i) => {
+        const p = nodes[id].pos;
+        positions[i * 3] = p.x; positions[i * 3 + 1] = p.y; positions[i * 3 + 2] = p.z;
+      });
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+      const points = new THREE.Points(geo, new THREE.PointsMaterial({
+        size: HALO_SIZE[level], map: tex, vertexColors: true,
+        blending: THREE.AdditiveBlending, transparent: true,
+        depthWrite: false, sizeAttenuation: true,
+      }));
+      points.renderOrder = 2;
+      scene.add(points);
+      haloLayers[level] = { points, ids, colors };
+    });
+  }
+
+  function buildEdges() {
+    const positions = new Float32Array(edgeList.length * 6);
+    edgeColors = new Float32Array(edgeList.length * 6);
+    edgeList.forEach(([a, b], i) => {
+      const pa = nodes[a].pos, pb = nodes[b].pos;
+      positions.set([pa.x, pa.y, pa.z, pb.x, pb.y, pb.z], i * 6);
+    });
+    edgeGeometry = new THREE.BufferGeometry();
+    edgeGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    edgeGeometry.setAttribute('color', new THREE.BufferAttribute(edgeColors, 3));
+    scene.add(new THREE.LineSegments(edgeGeometry, new THREE.LineBasicMaterial({
+      vertexColors: true, transparent: true, opacity: 0.9,
+    })));
+  }
+
+  // ---------------------------------------------------------------------
+  // labels
+  // ---------------------------------------------------------------------
+
+  const labels = {};
+  const LABEL_OFFSET_Y = 46;
+  // Lower number = more important. A short graph panel only has room for one.
+  const LABEL_PRIORITY = { hover: 0, term: 1, domain: 2, grade: 3, root: 4 };
+  const SHORT_PANEL_HEIGHT = 280;
+
+  function buildLabels() {
+    ['root', 'grade', 'domain', 'term', 'hover'].forEach((key) => {
+      const el = document.createElement('div');
+      el.className = 'graph-label lv-' + (key === 'hover' ? 'term' : key);
+      el.innerHTML = '<div class="gl-box"><span class="gl-icon"></span><span class="gl-text"></span></div>';
+      labelLayer.appendChild(el);
+      labels[key] = { el, icon: el.querySelector('.gl-icon'), text: el.querySelector('.gl-text'), nodeId: null };
+    });
+  }
+
+  function setLabel(key, nodeId, text, iconName) {
+    const l = labels[key];
+    l.nodeId = nodeId;
+    if (!nodeId) { l.el.classList.remove('visible'); return; }
+    if (l.text.textContent !== text) l.text.textContent = text;
+    // Only re-render the SVG when the glyph actually changes — this runs
+    // inside a per-frame update path.
+    if (l.iconName !== iconName) {
+      l.iconName = iconName;
+      l.icon.innerHTML = iconName ? iconSvg(iconName, { size: 16 }) : '';
+    }
+    l.el.classList.add('visible');
+  }
+
+  /* Project each visible label to screen space, then push colliding labels
+     apart vertically. Without this the grade/topic/word labels pile up on
+     top of one another as soon as the camera closes in. */
+  function positionLabels() {
+    const rect = container.getBoundingClientRect();
+    const placed = [];
+
+    Object.keys(labels).forEach((key) => {
+      const l = labels[key];
+      if (!l.nodeId || !nodes[l.nodeId]) return;
+      _v.copy(nodes[l.nodeId].pos).project(camera);
+      // Behind the camera, or so far outside the panel that clamping it to
+      // an edge would just be a label pinned to a corner pointing at nothing.
+      const offscreen = _v.z > 1 || Math.abs(_v.x) > 1.5 || Math.abs(_v.y) > 1.5;
+      if (offscreen) { l.el.classList.remove('visible'); return; }
+      l.el.classList.add('visible');
+      const box = l.el.firstElementChild;
+      placed.push({
+        l,
+        x: (_v.x * 0.5 + 0.5) * rect.width,
+        // Sits above the node rather than on top of it, so the label never
+        // hides the thing it is labelling.
+        y: (-_v.y * 0.5 + 0.5) * rect.height - LABEL_OFFSET_Y,
+        w: box.offsetWidth,
+        h: box.offsetHeight,
+        priority: LABEL_PRIORITY[key],
+      });
+    });
+
+    // On a short panel (phone, or an iPad in Slide Over) there is only room
+    // for the deepest label; stacking two just makes both unreadable.
+    placed.sort((a, b) => a.priority - b.priority || a.y - b.y);
+    if (rect.height < SHORT_PANEL_HEIGHT && placed.length > 1) {
+      placed.slice(1).forEach((p) => p.l.el.classList.remove('visible'));
+      placed.length = 1;
+    }
+    for (let i = 0; i < placed.length; i++) {
+      for (let j = 0; j < i; j++) {
+        const a = placed[j];
+        const b = placed[i];
+        const gap = (a.h + b.h) / 2 + 8;
+        const dy = b.y - a.y;
+        if (Math.abs(b.x - a.x) < (a.w + b.w) / 2 + 8 && Math.abs(dy) < gap) {
+          b.y = a.y + (dy >= 0 ? gap : -gap);
+        }
+      }
+    }
+    placed.forEach((p) => {
+      const y = Math.max(p.h / 2 + 6, Math.min(rect.height - p.h / 2 - 6, p.y));
+      const x = Math.max(p.w / 2 + 6, Math.min(rect.width - p.w / 2 - 6, p.x));
+      p.l.el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
+    });
+  }
+
+  function updateLabels() {
+    const st = state;
+    const anySelection = !!st.grade;
+
+    setLabel('root', anySelection ? null : 'root', 'Every math word, K to 5', 'spark');
+
+    // Grade and topic labels give way once a word is chosen — the word is
+    // what matters at that point, and the breadcrumb still shows the path.
+    setLabel('grade', st.grade && !st.term ? 'grade:' + st.grade : null, gradeLabel(st.grade), 'cap');
+
+    const domId = st.grade && st.domainCode ? 'domain:' + st.grade + ':' + st.domainCode : null;
+    setLabel('domain', domId, DOMAIN_FULLNAME[st.domainCode] || '',
+      DOMAIN_ICON_NAMES[st.domainCode] || 'shapes');
+
+    if (st.term) {
+      const t = termById(st.term);
+      setLabel('term', 'term:' + st.term, t ? t.term : '', t ? iconNameForTerm(t) : '');
+    } else {
+      setLabel('term', null, '', '');
+    }
+
+    if (hoveredId && hoveredId !== 'term:' + st.term && nodes[hoveredId]) {
+      setLabel('hover', hoveredId, describe(hoveredId), hoverIcon(hoveredId));
+    } else {
+      setLabel('hover', null, '', '');
+    }
+  }
+
+  function describe(id) {
+    const n = nodes[id];
+    if (!n) return '';
+    if (n.level === 'root') return 'Every math word, K to 5';
+    if (n.level === 'grade') return gradeLabel(id.split(':')[1]);
+    if (n.level === 'domain') return DOMAIN_FULLNAME[id.split(':')[2]] || '';
+    const t = termById(id.slice(5));
+    return t ? t.term : '';
+  }
+
+  function hoverIcon(id) {
+    const n = nodes[id];
+    if (!n) return '';
+    if (n.level === 'root') return 'spark';
+    if (n.level === 'grade') return 'cap';
+    if (n.level === 'domain') return DOMAIN_ICON_NAMES[id.split(':')[2]] || 'shapes';
+    const t = termById(id.slice(5));
+    return t ? iconNameForTerm(t) : '';
+  }
+
+  // ---------------------------------------------------------------------
+  // highlight state
+  // ---------------------------------------------------------------------
+
+  function pathFor(st) {
+    const ids = ['root'];
+    if (st.grade) ids.push('grade:' + st.grade);
+    if (st.grade && st.domainCode) ids.push('domain:' + st.grade + ':' + st.domainCode);
+    if (st.grade && st.domainCode && st.term) ids.push('term:' + st.term);
+    return ids;
+  }
+
+  function applyState(st, instant) {
+    const active = new Set(st.grade ? pathFor(st) : []);
+    const showAll = active.size === 0;
+
+    Object.keys(nodes).forEach((id) => {
+      const n = nodes[id];
+      const on = showAll || active.has(id) || id === 'root';
+      n.target = on ? 1 : DIM;
+      n.targetScale = on ? 1 : DIM_SCALE;
+      if (instant) { n.cur = n.target; n.curScale = n.targetScale; }
+    });
+
+    // The selected node gets a little extra presence.
+    const deepest = st.term ? 'term:' + st.term
+      : st.domainCode ? 'domain:' + st.grade + ':' + st.domainCode
+        : st.grade ? 'grade:' + st.grade : null;
+    if (deepest && nodes[deepest]) nodes[deepest].targetScale = 1.35;
+  }
+
+  function writeInstances() {
+    // grades
+    gradeIds.forEach((id, i) => writeInstance(gradeMesh, i, nodes[id]));
+    gradeMesh.instanceMatrix.needsUpdate = true;
+    if (gradeMesh.instanceColor) gradeMesh.instanceColor.needsUpdate = true;
+
+    // domains
+    Object.keys(domainIdsByCode).forEach((code) => {
+      const mesh = domainMeshes[code];
+      domainIdsByCode[code].forEach((id, i) => writeInstance(mesh, i, nodes[id]));
+      mesh.instanceMatrix.needsUpdate = true;
+      if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+    });
+
+    // terms
+    termIds.forEach((id, i) => writeInstance(termMesh, i, nodes[id]));
+    termMesh.instanceMatrix.needsUpdate = true;
+    if (termMesh.instanceColor) termMesh.instanceColor.needsUpdate = true;
+
+    // halos
+    Object.keys(haloLayers).forEach((level) => {
+      const layer = haloLayers[level];
+      layer.ids.forEach((id, i) => {
+        const n = nodes[id];
+        const boost = hoveredId === id ? 1.7 : 1;
+        _c.copy(n.baseColor).multiplyScalar(n.cur * 0.42 * boost);
+        layer.colors[i * 3] = _c.r; layer.colors[i * 3 + 1] = _c.g; layer.colors[i * 3 + 2] = _c.b;
+      });
+      layer.points.geometry.attributes.color.needsUpdate = true;
+    });
+
+    // edges
+    edgeList.forEach(([a, b], i) => {
+      const lit = Math.min(nodes[a].cur, nodes[b].cur);
+      const v = 0.34 * lit;
+      for (let k = 0; k < 2; k++) {
+        edgeColors[i * 6 + k * 3] = v * 0.72;
+        edgeColors[i * 6 + k * 3 + 1] = v * 0.75;
+        edgeColors[i * 6 + k * 3 + 2] = v;
+      }
+    });
+    edgeGeometry.attributes.color.needsUpdate = true;
+
+    const rootNode = nodes.root;
+    rootMesh.material.color.copy(rootNode.baseColor).multiplyScalar(Math.max(rootNode.cur, 0.3));
+  }
+
+  function writeInstance(mesh, i, n) {
+    const hover = hoveredId === n.id ? 1.25 : 1;
+    _s.setScalar(n.curScale * hover);
+    _m.compose(n.pos, _q, _s);
+    mesh.setMatrixAt(i, _m);
+    _c.copy(n.baseColor).multiplyScalar(n.cur);
+    mesh.setColorAt(i, _c);
+  }
+
+  // ---------------------------------------------------------------------
+  // camera
+  // ---------------------------------------------------------------------
+
+  /* Distance needed to fit a sphere of `radius` in view, accounting for the
+     panel's aspect ratio. On a tall narrow panel (iPad portrait) this pulls
+     the camera back so the subject and its label still fit horizontally. */
+  function frameDistance(radius) {
+    const vFov = (camera.fov * Math.PI) / 180;
+    const fitH = radius / Math.tan(vFov / 2);
+    const fitW = radius / (Math.tan(vFov / 2) * Math.max(camera.aspect, 0.001));
+    return Math.max(fitH, fitW) * 1.15;
+  }
+
+  function dirFrom(child, parent) {
+    const d = child.clone().sub(parent);
+    if (d.lengthSq() < 0.0001) d.set(1, 0, 0);
+    return d.normalize();
+  }
+
+  function flyTo(camPos, lookAt, duration) {
+    if (REDUCED_MOTION || typeof gsap === 'undefined') {
+      camera.position.copy(camPos);
+      if (hasControls) controls.target.copy(lookAt); else camera.lookAt(lookAt);
+      return;
+    }
+    gsap.to(camera.position, {
+      x: camPos.x, y: camPos.y, z: camPos.z, duration, ease: EASE_INOUT_STRONG, overwrite: true,
+    });
+    if (hasControls) {
+      gsap.to(controls.target, {
+        x: lookAt.x, y: lookAt.y, z: lookAt.z, duration, ease: EASE_INOUT_STRONG, overwrite: true,
+      });
+    } else {
+      camera.lookAt(lookAt);
+    }
+  }
+
+  function focus(st) {
+    state = { grade: st.grade, domainCode: st.domainCode, term: st.term };
+    if (!ready) return;
+
+    applyState(state, false);
+    updateLabels();
+
+    if (state.term) {
+      const n = nodes['term:' + state.term];
+      const parent = nodes['domain:' + state.grade + ':' + state.domainCode];
+      const dir = dirFrom(n.pos, parent.pos);
+      const dist = Math.max(frameDistance(2.6), 3.2);
+      flyTo(n.pos.clone().addScaledVector(dir, dist).add(new THREE.Vector3(0, dist * 0.25, 0)), n.pos.clone(), 1.15);
+      setAutoRotate(false);
+    } else if (state.domainCode) {
+      const n = nodes['domain:' + state.grade + ':' + state.domainCode];
+      const parent = nodes['grade:' + state.grade];
+      const dir = dirFrom(n.pos, parent.pos);
+      const dist = frameDistance(RT * 1.5);
+      flyTo(n.pos.clone().addScaledVector(dir, dist).add(new THREE.Vector3(0, dist * 0.28, 0)), n.pos.clone(), 1.15);
+      setAutoRotate(false);
+    } else if (state.grade) {
+      const n = nodes['grade:' + state.grade];
+      const dir = dirFrom(n.pos, ORIGIN);
+      const dist = frameDistance(RD * 1.55);
+      flyTo(n.pos.clone().addScaledVector(dir, dist).add(new THREE.Vector3(0, dist * 0.3, 0)), n.pos.clone(), 1.15);
+      setAutoRotate(false);
+    } else {
+      const dist = frameDistance(RG * 1.5);
+      flyTo(new THREE.Vector3(dist, dist * 0.24, 0), ORIGIN.clone(), 1.05);
+      setAutoRotate(true);
+    }
+  }
+
+  function setAutoRotate(on) {
+    if (hasControls) controls.autoRotate = on && !REDUCED_MOTION;
+  }
+
+  function onResize() {
+    if (!ready || !container.clientWidth) return;
+    camera.aspect = container.clientWidth / Math.max(container.clientHeight, 1);
+    camera.updateProjectionMatrix();
+    renderer.setSize(container.clientWidth, container.clientHeight);
+  }
+
+  // ---------------------------------------------------------------------
+  // picking — tapping a node in the graph selects it
+  // ---------------------------------------------------------------------
+
+  function bindPicking() {
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+    let downAt = null;
+    let pendingHover = false;
+
+    function pick(event) {
+      const rect = renderer.domElement.getBoundingClientRect();
+      pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera(pointer, camera);
+
+      const targets = [termMesh, gradeMesh, rootMesh].concat(Object.values(domainMeshes));
+      const hits = raycaster.intersectObjects(targets, false);
+      for (const hit of hits) {
+        const id = idForHit(hit);
+        if (id && nodes[id].cur > 0.3) return id;   // ignore dimmed-out nodes
+      }
+      return null;
+    }
+
+    function idForHit(hit) {
+      if (hit.object === rootMesh) return 'root';
+      if (hit.object === gradeMesh) return gradeIds[hit.instanceId];
+      if (hit.object === termMesh) return termIds[hit.instanceId];
+      const code = Object.keys(domainMeshes).find((k) => domainMeshes[k] === hit.object);
+      return code ? domainIdsByCode[code][hit.instanceId] : null;
+    }
+
+    renderer.domElement.addEventListener('pointermove', (e) => {
+      if (pendingHover) return;
+      pendingHover = true;
+      requestAnimationFrame(() => {
+        pendingHover = false;
+        const id = pick(e);
+        if (id !== hoveredId) {
+          hoveredId = id;
+          renderer.domElement.style.cursor = id ? 'pointer' : 'grab';
+          updateLabels();
+        }
+      });
+    });
+
+    renderer.domElement.addEventListener('pointerleave', () => {
+      hoveredId = null;
+      updateLabels();
+    });
+
+    renderer.domElement.addEventListener('pointerdown', (e) => {
+      downAt = { x: e.clientX, y: e.clientY, t: Date.now() };
+    });
+
+    // Only treat it as a tap if the pointer barely moved — otherwise the
+    // gesture was an orbit drag and must not change the selection.
+    renderer.domElement.addEventListener('pointerup', (e) => {
+      if (!downAt) return;
+      const moved = Math.hypot(e.clientX - downAt.x, e.clientY - downAt.y);
+      const elapsed = Date.now() - downAt.t;
+      downAt = null;
+      if (moved > 8 || elapsed > 700) return;
+      const id = pick(e);
+      if (id && onSelect) onSelect(id);
+    });
+  }
+
+  // ---------------------------------------------------------------------
+  // loop
+  // ---------------------------------------------------------------------
+
+  function animate() {
+    requestAnimationFrame(animate);
+    if (!ready) return;
+
+    const dt = Math.min(clock.getDelta(), 0.1);
+    const t = clock.getElapsedTime();
+
+    // Frame-rate independent easing toward the target highlight state.
+    const k = 1 - Math.pow(0.001, dt);
+    let changed = false;
+    Object.keys(nodes).forEach((id) => {
+      const n = nodes[id];
+      if (Math.abs(n.cur - n.target) > 0.001 || Math.abs(n.curScale - n.targetScale) > 0.001) {
+        n.cur += (n.target - n.cur) * k;
+        n.curScale += (n.targetScale - n.curScale) * k;
+        changed = true;
+      }
+    });
+    if (changed || hoveredId !== null) writeInstances();
+
+    if (hasControls) {
+      controls.update();
+    } else if (!state.grade && !REDUCED_MOTION) {
+      idleAngle += dt * 0.35;
+      camera.position.set(130 * Math.cos(idleAngle), 30, 130 * Math.sin(idleAngle));
+      camera.lookAt(ORIGIN);
+    }
+
+    if (!REDUCED_MOTION) {
+      rootMesh.scale.setScalar(1 + 0.06 * Math.sin(t * 1.1));
+    }
+
+    // project() reads camera.matrixWorldInverse, which render() is what
+    // normally refreshes — update it first so labels are never a frame
+    // behind the nodes they point at (and are not garbage on frame one).
+    camera.updateMatrixWorld();
+    camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
+    positionLabels();
+
+    renderer.render(scene, camera);
+  }
+
+  return {
+    init,
+    focus,
+    setOnSelect(cb) { onSelect = cb; },
+    isReady() { return ready; },
+  };
+}());
+
+/* ---------- src/tts.js ---------- */
+/* =========================================================================
+   "Listen to an explanation" — Fish Audio text-to-speech.
+
+   No API key lives in this file. By default the page calls the same-origin
+   /api/tts endpoint (server.js locally, api/tts.js on Vercel). For a hosted
+   static copy, pass ?ttsProxy=https://your-worker.workers.dev once; that URL
+   is remembered in localStorage.
+   ========================================================================= */
+
+const DEFAULT_TTS_PROXY_URL = '/api/tts';
+const TTS_VOICE_ID = 'd38790551b0548ba9de248dbd10b74e1';
+const TTS_PROXY_URL = readTtsProxyUrl();
+
+// termId -> object URL, so replaying a word doesn't call the API again.
+const ttsCache = {};
+
+function readTtsProxyUrl() {
+  let configured = '';
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const hasParam = params.has('ttsProxy');
+    const queryUrl = (params.get('ttsProxy') || '').trim();
+
+    if (queryUrl) {
+      localStorage.setItem(STORAGE_KEYS.ttsProxy, queryUrl);
+      configured = queryUrl;
+    } else if (hasParam) {
+      // An explicitly empty ?ttsProxy= clears a previously stored override.
+      // Without this escape hatch a single visit with a stale Worker URL
+      // would keep hijacking /api/tts in that browser forever.
+      localStorage.removeItem(STORAGE_KEYS.ttsProxy);
+    } else {
+      configured = (localStorage.getItem(STORAGE_KEYS.ttsProxy) || '').trim();
+    }
+  } catch (e) { /* storage unavailable — fall back to the default endpoint */ }
+  return configured || DEFAULT_TTS_PROXY_URL;
+}
+
+function speechScriptFor(t) {
+  let script = `${t.term}. ${t.definition}`;
+  if (t.example) script += ` For example: ${t.example}`;
+  return script;
+}
+
+async function speakTerm(t) {
+  const btn = document.getElementById('listenBtn');
+  const btnText = document.getElementById('listenBtnText');
+  const status = document.getElementById('listenStatus');
+  const audioEl = document.getElementById('listenAudio');
+  if (!btn || !audioEl) return;
+
+  if (ttsCache[t.id]) {
+    audioEl.src = ttsCache[t.id];
+    playQuietly(audioEl, status);
+    return;
+  }
+
+  btn.disabled = true;
+  btn.classList.add('loading');
+  btnText.textContent = 'Loading audio…';
+  status.textContent = '';
+  status.className = '';
+
+  try {
+    const res = await fetch(TTS_PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: speechScriptFor(t), reference_id: TTS_VOICE_ID }),
+    });
+    if (!res.ok) {
+      let message = `Request failed (${res.status}).`;
+      try {
+        const body = await res.json();
+        if (body && body.error) message = body.error;
+      } catch (e) { /* non-JSON error body — keep the status-code message */ }
+      throw new Error(message);
+    }
+    const url = URL.createObjectURL(await res.blob());
+    ttsCache[t.id] = url;
+    audioEl.src = url;
+    await audioEl.play();
+  } catch (error) {
+    const hint = TTS_PROXY_URL === DEFAULT_TTS_PROXY_URL
+      ? ' Start the local voice server with node server.js, or configure a Worker URL with ?ttsProxy=…'
+      : '';
+    status.textContent = `Could not load audio: ${error.message}${hint}`;
+    status.className = 'err';
+    Sound.play('error');
+  } finally {
+    btn.disabled = false;
+    btn.classList.remove('loading');
+    btnText.textContent = 'Listen to an explanation';
+  }
+}
+
+function playQuietly(audioEl, status) {
+  const attempt = audioEl.play();
+  if (!attempt || !attempt.catch) return;
+  attempt.catch((error) => {
+    status.textContent = `Could not play audio: ${error.message}`;
+    status.className = 'err';
+  });
+}
+
+// Object URLs live for the whole session; release them when the page closes.
+window.addEventListener('pagehide', () => {
+  Object.values(ttsCache).forEach((url) => URL.revokeObjectURL(url));
+});
+
+/* ---------- src/ui.js ---------- */
+/* =========================================================================
+   Panel rendering: the grade row, topic list, vocabulary list and the
+   definition panel.
+
+   Every choice is a real <button> with an accessible name and pressed
+   state. In the first version these were bare <div onclick> elements, which
+   meant the whole app had exactly three keyboard-reachable controls and a
+   screen reader saw none of the 189 words.
+   ========================================================================= */
+
+// ---- progress ------------------------------------------------------------
+
+const visitedTerms = loadVisited();
+
+function loadVisited() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEYS.visited);
+    return new Set(raw ? JSON.parse(raw) : []);
+  } catch (e) {
+    return new Set();
+  }
+}
+
+function markVisited(id) {
+  if (visitedTerms.has(id)) return;
+  visitedTerms.add(id);
+  try {
+    localStorage.setItem(STORAGE_KEYS.visited, JSON.stringify([...visitedTerms]));
+  } catch (e) { /* private browsing — progress just won't persist */ }
+}
+
+function gradeProgress(g) {
+  const terms = byGrade(g);
+  if (!terms.length) return { seen: 0, total: 0, percent: 0 };
+  const seen = terms.filter((t) => visitedTerms.has(t.id)).length;
+  return { seen, total: terms.length, percent: Math.round((seen / terms.length) * 100) };
+}
+
+// ---- screen reader announcements ----------------------------------------
+
+let announceTimer = null;
+
+function announce(message) {
+  const region = document.getElementById('srAnnounce');
+  if (!region) return;
+  clearTimeout(announceTimer);
+  // Clearing first makes repeat announcements of the same text speak again.
+  region.textContent = '';
+  announceTimer = setTimeout(() => { region.textContent = message; }, 60);
+}
+
+// ---- roving tabindex ----------------------------------------------------
+
+/* Tab moves between the three groups; arrow keys move within a group. With
+   189 vocabulary buttons, plain tab-through-everything would be unusable. */
+function bindRovingGroup(containerEl, orientation) {
+  containerEl.addEventListener('keydown', (event) => {
+    const items = [...containerEl.querySelectorAll('button')];
+    if (!items.length) return;
+    const current = items.indexOf(document.activeElement);
+    if (current === -1) return;
+
+    const nextKeys = orientation === 'horizontal' ? ['ArrowRight', 'ArrowDown'] : ['ArrowDown', 'ArrowRight'];
+    const prevKeys = orientation === 'horizontal' ? ['ArrowLeft', 'ArrowUp'] : ['ArrowUp', 'ArrowLeft'];
+
+    let next = null;
+    if (nextKeys.includes(event.key)) next = (current + 1) % items.length;
+    else if (prevKeys.includes(event.key)) next = (current - 1 + items.length) % items.length;
+    else if (event.key === 'Home') next = 0;
+    else if (event.key === 'End') next = items.length - 1;
+    if (next === null) return;
+
+    event.preventDefault();
+    items.forEach((el, i) => { el.tabIndex = i === next ? 0 : -1; });
+    items[next].focus();
+  });
+}
+
+/* Exactly one button per group is in the tab order — the selected one, or
+   the first if nothing is selected yet. */
+function syncTabStops(containerEl) {
+  const items = [...containerEl.querySelectorAll('button')];
+  if (!items.length) return;
+  const selected = items.find((el) => el.getAttribute('aria-pressed') === 'true');
+  items.forEach((el) => { el.tabIndex = -1; });
+  (selected || items[0]).tabIndex = 0;
+
+  // The topic and word lists are short scroll regions; without this the
+  // selected item can sit half-clipped at the edge of its panel.
+  if (selected) {
+    selected.scrollIntoView({ block: 'nearest', behavior: REDUCED_MOTION ? 'auto' : 'smooth' });
+  }
+}
+
+// ---- grade row ----------------------------------------------------------
+
+function renderGrades() {
+  const row = document.getElementById('gradeRow');
+  row.innerHTML = '';
+  GRADES.forEach((g) => {
+    const progress = gradeProgress(g);
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'grade-node';
+    btn.textContent = g;
+    btn.setAttribute('aria-pressed', state.grade === g ? 'true' : 'false');
+    btn.style.setProperty('--progress', progress.percent);
+    if (progress.seen > 0) btn.dataset.started = '1';
+    btn.setAttribute('aria-label', progress.seen > 0
+      ? `${gradeLabel(g)}. ${progress.seen} of ${progress.total} words explored.`
+      : `${gradeLabel(g)}. ${progress.total} words.`);
+    btn.addEventListener('click', () => selectGrade(g));
+    row.appendChild(btn);
+  });
+  syncTabStops(row);
+}
+
+// ---- topic list ---------------------------------------------------------
+
+function renderTopics() {
+  const headingText = document.getElementById('topicsHeadingText');
+  const heading = document.getElementById('topicsHeading');
+  const list = document.getElementById('topicList');
+  list.innerHTML = '';
+
+  if (!state.grade) {
+    headingText.textContent = 'Select a grade above';
+    heading.classList.add('dim');
+    list.innerHTML = '<p class="placeholder-text">Topics for the selected grade will appear here.</p>';
+    return;
+  }
+
+  heading.classList.remove('dim');
+  headingText.textContent = 'Select a topic';
+  domainsForGrade(state.grade).forEach(({ code, name }) => {
+    const count = termsFor(state.grade, code).length;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'topic-node';
+    btn.setAttribute('aria-pressed', state.domainCode === code ? 'true' : 'false');
+    btn.innerHTML = `<span class="topic-icon" aria-hidden="true">${domainIconSvg(code, { size: 20 })}</span>`
+      + `<span class="topic-text">`
+      + `<span class="topic-label">${escapeHtml(name)}</span>`
+      + `<span class="topic-code">${escapeHtml(state.grade)}.${escapeHtml(code)} · ${count} terms</span>`
+      + `</span>`;
+    btn.setAttribute('aria-label', `${name}. Standard ${state.grade}.${code}. ${count} terms.`);
+    btn.addEventListener('click', () => selectDomain(code));
+    list.appendChild(btn);
+  });
+  syncTabStops(list);
+}
+
+// ---- vocabulary list ----------------------------------------------------
+
+function renderVocabList() {
+  const headingText = document.getElementById('vocabHeadingText');
+  const heading = document.getElementById('vocabHeading');
+  const list = document.getElementById('vocabList');
+  list.innerHTML = '';
+
+  if (searchQuery) {
+    renderSearchResults(list, heading, headingText);
+    return;
+  }
+
+  if (!state.grade || !state.domainCode) {
+    headingText.textContent = state.grade ? 'Select a topic first' : 'Select a grade first';
+    heading.classList.add('dim');
+    list.innerHTML = '<p class="placeholder-text">Vocabulary words will appear here once you pick a topic.</p>';
+    return;
+  }
+
+  heading.classList.remove('dim');
+  headingText.textContent = 'Select a vocabulary word';
+  termsFor(state.grade, state.domainCode).forEach((t) => {
+    list.appendChild(vocabButton(t, false));
+  });
+  syncTabStops(list);
+}
+
+function renderSearchResults(list, heading, headingText) {
+  const query = searchQuery.toLowerCase();
+  // Search covers definitions and examples too, not just the term itself —
+  // a child who remembers "the top number" should still find "numerator".
+  const matches = DATA.filter((d) => d.term.toLowerCase().includes(query)
+    || d.definition.toLowerCase().includes(query)
+    || (d.example || '').toLowerCase().includes(query));
+
+  heading.classList.remove('dim');
+  headingText.textContent = `Search results (${matches.length})`;
+
+  if (!matches.length) {
+    list.innerHTML = '<p class="placeholder-text">No terms match your search.</p>';
+    announce('No terms match your search.');
+    return;
+  }
+  matches.slice(0, 150).forEach((t) => { list.appendChild(vocabButton(t, true)); });
+  syncTabStops(list);
+  announce(`${matches.length} ${matches.length === 1 ? 'result' : 'results'}.`);
+}
+
+function vocabButton(t, showGrade) {
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'vocab-row';
+  btn.setAttribute('aria-pressed', state.term === t.id ? 'true' : 'false');
+
+  const seen = visitedTerms.has(t.id);
+  btn.innerHTML = `<span class="vocab-icon" aria-hidden="true">${termIconSvg(t, { size: 19 })}</span>`
+    + `<span class="vocab-name">${escapeHtml(t.term)}</span>`
+    + (showGrade ? `<span class="vocab-grade">${escapeHtml(gradeLabel(t.grade))}</span>` : '')
+    + (!showGrade && seen
+      ? `<span class="vocab-seen" aria-hidden="true">${iconSvg('check', { size: 16 })}</span>`
+      : '');
+
+  btn.setAttribute('aria-label', showGrade
+    ? `${t.term}. ${gradeLabel(t.grade)}.`
+    : `${t.term}.${seen ? ' Already explored.' : ''}`);
+
+  btn.addEventListener('click', () => (showGrade ? jumpToTerm(t) : selectTerm(t.id)));
+  return btn;
+}
+
+// ---- definition panel ---------------------------------------------------
+
+function renderDetail() {
+  const detail = document.getElementById('detail');
+  if (!state.term) {
+    detail.innerHTML = '<p class="placeholder">Select a grade, then a topic, then a word to see its definition here.</p>';
+    return;
+  }
+  const t = termById(state.term);
+  if (!t) return;
+
+  detail.innerHTML = `
+    <p class="breadcrumb">
+      <span class="crumb-icon" aria-hidden="true">${domainIconSvg(t.domainCode, { size: 15 })}</span>
+      ${escapeHtml(gradeLabel(t.grade))} · ${escapeHtml(t.domain)}
+    </p>
+
+    <div class="term-head">
+      <span class="term-mark" aria-hidden="true">${termIconSvg(t, { size: 30 })}</span>
+      <div>
+        <h2>${escapeHtml(t.term)}</h2>
+        <span class="standard">${escapeHtml(t.standard)}</span>
+      </div>
+    </div>
+
+    <button id="listenBtn" type="button" aria-describedby="listenStatus"
+            aria-label="Listen to an explanation of the word ${escapeHtml(t.term)}">
+      <span class="icon" aria-hidden="true">${iconSvg('speaker', { size: 20 })}</span>
+      <span id="listenBtnText">Listen to an explanation</span>
+    </button>
+    <p id="listenStatus" role="status" aria-live="polite"></p>
+    <audio id="listenAudio" preload="none"></audio>
+
+    <div class="block">
+      <h3 class="block-label">What it means</h3>
+      <p class="block-body">${escapeHtml(t.definition)}</p>
+    </div>
+
+    <section class="story" aria-labelledby="storyHeading">
+      <h3 class="story-heading" id="storyHeading">
+        <span aria-hidden="true">${iconSvg('spark', { size: 17 })}</span>
+        See it in an example
+      </h3>
+      <p class="story-body">${escapeHtml(t.example)}</p>
+    </section>
+
+    ${t.misconception ? `<div class="block">
+      <h3 class="block-label">Watch out for</h3>
+      <p class="block-body misconception">${escapeHtml(t.misconception)}</p>
+    </div>` : ''}
+  `;
+  document.getElementById('listenBtn').addEventListener('click', () => speakTerm(t));
+}
+
+// ---- onboarding hint + spotlight ---------------------------------------
+
+function updateInstruction() {
+  const hint = document.getElementById('graphHint');
+  const resetBtn = document.getElementById('resetViewBtn');
+  const breadcrumb = document.getElementById('breadcrumbFloat');
+
+  resetBtn.hidden = !state.grade;
+
+  if (state.term) {
+    const t = termById(state.term);
+    breadcrumb.hidden = false;
+    breadcrumb.textContent = `${gradeLabel(t.grade)} → ${t.domain} → ${t.term}`;
+  } else {
+    breadcrumb.hidden = true;
+  }
+
+  if (onboarded) { hint.hidden = true; return; }
+
+  if (!state.grade) {
+    hint.hidden = false;
+    hint.textContent = 'Pick a grade above to start exploring ↑';
+  } else if (!state.domainCode) {
+    hint.hidden = false;
+    hint.textContent = 'Now pick a topic on the left ←';
+  } else if (!state.term) {
+    hint.hidden = false;
+    hint.textContent = 'Now pick a vocabulary word on the left ←';
+  } else {
+    hint.hidden = true;
+  }
+}
+
+function updateSpotlight() {
+  const ring = document.getElementById('spotlightRing');
+  const hide = () => {
+    ring.classList.remove('active');
+    ring.style.opacity = '0';
+  };
+  if (onboarded) return hide();
+
+  let target = null;
+  if (!state.grade) target = document.getElementById('gradeRow');
+  else if (!state.domainCode) target = document.getElementById('topicsSection');
+  else if (!state.term) target = document.getElementById('vocabSection');
+  if (!target) return hide();
+
+  const r = target.getBoundingClientRect();
+  ring.classList.add('active');
+  ring.style.opacity = '1';
+  const vars = {
+    left: `${r.left - 6}px`, top: `${r.top - 6}px`,
+    width: `${r.width + 12}px`, height: `${r.height + 12}px`,
+  };
+  if (REDUCED_MOTION || typeof gsap === 'undefined') {
+    Object.assign(ring.style, vars);
+  } else {
+    gsap.to(ring, {
+      left: r.left - 6, top: r.top - 6, width: r.width + 12, height: r.height + 12,
+      duration: 0.55, ease: EASE_INOUT, overwrite: true,
+    });
+  }
+}
+
+// ---- footer -------------------------------------------------------------
+
+function renderStats() {
+  const total = DATA.length;
+  const seen = visitedTerms.size;
+  document.getElementById('statsText').textContent =
+    `${total} words · ${GRADES.length} grades · ${DOMAIN_ORDER.length} Common Core domains`
+    + ` · ${seen} explored · CC BY-NC 4.0`;
+}
+
+/* ---------- src/about.js ---------- */
+/* =========================================================================
+   About dialog: attribution and licence.
+
+   Implemented as a modal dialog rather than a link so the credit is always
+   one tap away without navigating a child off the page. Focus is trapped
+   while it is open and returned to the trigger when it closes.
+   ========================================================================= */
+
+const About = (function () {
+  let overlay, dialog, lastFocused;
+
+  const FOCUSABLE = 'a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])';
+
+  function init() {
+    overlay = document.getElementById('aboutOverlay');
+    dialog = document.getElementById('aboutDialog');
+
+    const aboutBtn = document.getElementById('aboutBtn');
+    aboutBtn.querySelector('.btn-icon').innerHTML = iconSvg('info', { size: 18 });
+    document.getElementById('aboutClose').insertAdjacentHTML(
+      'afterbegin', iconSvg('close', { size: 18 }),
+    );
+
+    aboutBtn.addEventListener('click', open);
+    document.getElementById('statsAboutBtn').addEventListener('click', open);
+    document.getElementById('aboutClose').addEventListener('click', close);
+
+    // Clicking the backdrop (but not the dialog itself) dismisses.
+    overlay.addEventListener('click', (event) => {
+      if (event.target === overlay) close();
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (overlay.hidden) return;
+      if (event.key === 'Escape') { close(); return; }
+      if (event.key === 'Tab') trapFocus(event);
+    });
+  }
+
+  function trapFocus(event) {
+    const items = [...dialog.querySelectorAll(FOCUSABLE)];
+    if (!items.length) return;
+    const first = items[0];
+    const last = items[items.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  function open() {
+    lastFocused = document.activeElement;
+    overlay.hidden = false;
+    // One frame before adding .open so the CSS transition has a start state.
+    requestAnimationFrame(() => overlay.classList.add('open'));
+    document.getElementById('aboutClose').focus();
+    Sound.play('open');
+  }
+
+  function close() {
+    overlay.classList.remove('open');
+    Sound.play('close');
+    const finish = () => {
+      overlay.hidden = true;
+      if (lastFocused && lastFocused.focus) lastFocused.focus();
+    };
+    if (REDUCED_MOTION) finish();
+    else setTimeout(finish, 220);
+  }
+
+  return { init, open, close };
+}());
+
+/* ---------- src/main.js ---------- */
+/* =========================================================================
+   Application state and wiring.
+   ========================================================================= */
+
+let state = { grade: null, domainCode: null, term: null };
+let searchQuery = '';
+
+/* The yellow guided highlight is a one-time onboarding aid. Once someone has
+   completed grade -> topic -> word once, it is marked done and never shown
+   again on this browser. */
+let onboarded = readOnboarded();
+
+function readOnboarded() {
+  try {
+    return localStorage.getItem(STORAGE_KEYS.onboarded) === '1';
+  } catch (e) {
+    return false;
+  }
+}
+
+function markOnboarded() {
+  onboarded = true;
+  try { localStorage.setItem(STORAGE_KEYS.onboarded, '1'); } catch (e) { /* ignore */ }
+}
+
+// ---- render -------------------------------------------------------------
+
+function renderAll() {
+  if (state.term) {
+    markVisited(state.term);
+    if (!onboarded) markOnboarded();
+  }
+  renderGrades();
+  renderTopics();
+  renderVocabList();
+  renderDetail();
+  renderStats();
+  updateInstruction();
+  updateSpotlight();
+  Graph.focus(state);
+}
+
+// ---- selection ----------------------------------------------------------
+
+function selectGrade(g) {
+  state = { grade: g, domainCode: null, term: null };
+  clearSearch();
+  renderAll();
+  Sound.play('grade');
+  announce(`${gradeLabel(g)} selected. Choose a topic.`);
+}
+
+function selectDomain(code) {
+  state = { ...state, domainCode: code, term: null };
+  renderAll();
+  Sound.play('topic');
+  announce(`${DOMAIN_FULLNAME[code]} selected. Choose a vocabulary word.`);
+}
+
+function selectTerm(id) {
+  state = { ...state, term: id };
+  renderAll();
+  Sound.play('word');
+  const t = termById(id);
+  if (t) announce(`${t.term}. ${t.definition} For example: ${t.example}`);
+}
+
+function jumpToTerm(t) {
+  state = { grade: t.grade, domainCode: t.domainCode, term: t.id };
+  clearSearch();
+  renderAll();
+  Sound.play('word');
+  announce(`${t.term}. ${t.definition}`);
+}
+
+function resetAll() {
+  state = { grade: null, domainCode: null, term: null };
+  clearSearch();
+  renderAll();
+  Sound.play('back');
+  announce('Showing the full knowledge graph.');
+}
+
+function clearSearch() {
+  searchQuery = '';
+  const input = document.getElementById('search');
+  if (input) input.value = '';
+}
+
+// ---- selection driven from the 3D graph ---------------------------------
+
+/* Tapping a node picks the whole path down to it, so the panels and the
+   camera always agree with what was touched. */
+function selectFromGraphNode(nodeId) {
+  if (nodeId === 'root') return resetAll();
+
+  const parts = nodeId.split(':');
+  if (parts[0] === 'grade') return selectGrade(parts[1]);
+
+  if (parts[0] === 'domain') {
+    state = { grade: parts[1], domainCode: parts[2], term: null };
+    clearSearch();
+    renderAll();
+    announce(`${DOMAIN_FULLNAME[parts[2]]} selected. Choose a vocabulary word.`);
+    return;
+  }
+
+  if (parts[0] === 'term') {
+    const t = termById(nodeId.slice(5));
+    if (t) jumpToTerm(t);
+  }
+}
+
+// ---- boot ---------------------------------------------------------------
+
+function bindControls() {
+  document.getElementById('resetViewBtn').addEventListener('click', resetAll);
+
+  let searchTimer = null;
+  document.getElementById('search').addEventListener('input', (event) => {
+    const value = event.target.value.trim();
+    clearTimeout(searchTimer);
+    // Debounced so typing doesn't rebuild a 150-row list on every keystroke.
+    searchTimer = setTimeout(() => {
+      const changed = searchQuery !== value;
+      searchQuery = value;
+      renderVocabList();
+      if (changed && value) Sound.play('search');
+    }, 140);
+  });
+
+  bindRovingGroup(document.getElementById('gradeRow'), 'horizontal');
+  bindRovingGroup(document.getElementById('topicList'), 'vertical');
+  bindRovingGroup(document.getElementById('vocabList'), 'vertical');
+
+  bindSoundToggle();
+  window.addEventListener('resize', updateSpotlight);
+}
+
+/* The toggle reflects state in its icon, its label and aria-pressed, so it
+   reads correctly by sight and by screen reader. */
+function bindSoundToggle() {
+  const btn = document.getElementById('soundBtn');
+
+  const sync = () => {
+    const on = Sound.isOn();
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    btn.setAttribute('aria-label', on ? 'Sound on. Turn sound off.' : 'Sound off. Turn sound on.');
+    btn.innerHTML = iconSvg(on ? 'soundOn' : 'soundOff', { size: 18 })
+      + `<span class="btn-text">${on ? 'Sound' : 'Muted'}</span>`;
+  };
+
+  btn.addEventListener('click', () => { Sound.toggle(); sync(); });
+  sync();
+}
+
+function boot() {
+  Sound.init();
+  bindControls();
+  About.init();
+  renderAll();
+
+  Graph.setOnSelect(selectFromGraphNode);
+  Graph.init(
+    document.getElementById('graphContainer'),
+    document.getElementById('graphLabels'),
+  );
+  // The graph reads its framing from the panel size, so re-focus once it is up.
+  Graph.focus(state);
+}
+
+boot();
+</script>
+</body>
+</html>
