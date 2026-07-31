@@ -2,926 +2,132 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<!-- No maximum-scale / user-scalable=no: blocking pinch-zoom fails WCAG 1.4.4
+     and is exactly the gesture a low-vision child reaches for on an iPad. -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="An open-access, interactive K-5 math vocabulary bank aligned to the Common Core standards, with a 3D knowledge graph, definitions, examples and common misconceptions.">
 <title>Math Vocabulary Knowledge Graph — K-5 Common Core</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <style>
-  :root{
-    --bg:#0f0f16;
-    --panel:#1b1b26;
-    --panel2:#20202e;
-    --line:#3a3a52;
-    --line-active:#7c9eff;
-    --text:#e7e7ee;
-    --text-dim:#9a9ab0;
-    --accent:#7c9eff;
-    --accent2:#ff5fa8;
-    --accent3:#7cffb2;
-    --yellow:#ffd23f;
-    --node:#2a2a3d;
-    --node-hover:#33334a;
-  }
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;height:100%;background:var(--bg);color:var(--text);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    overscroll-behavior:none;}
-  #app{display:flex;flex-direction:column;height:100vh;position:relative;}
-
-  header{padding:14px 20px 10px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#181822,#14141c);flex:0 0 auto;}
-  header h1{margin:0 0 2px;font-size:17px;font-weight:600;letter-spacing:.2px;}
-  header p{margin:0;font-size:12.5px;color:var(--text-dim);}
-
-  #gradeRow{display:flex;gap:10px;padding:12px 20px;overflow-x:auto;border-bottom:1px solid var(--line);
-    background:var(--panel);align-items:center;flex:0 0 auto;}
-  .grade-node{
-    flex:0 0 auto;min-width:56px;height:56px;border-radius:50%;
-    background:radial-gradient(circle at 35% 30%, #33334a, var(--node));
-    border:1.5px solid var(--line);color:var(--text);
-    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;
-    cursor:pointer;transition:border-color .18s ease, box-shadow .18s ease;position:relative;
-  }
-  .grade-node:hover{border-color:var(--accent);box-shadow:0 0 0 4px rgba(124,158,255,.12);}
-  .grade-node.active{background:radial-gradient(circle at 35% 30%, #4a6bff, #2f4bd0);
-    border-color:var(--accent);box-shadow:0 0 18px rgba(124,158,255,.55);color:#fff;}
-
-  #search{margin:12px 20px 12px;padding:9px 12px;border-radius:8px;background:var(--panel);
-    border:1px solid var(--line);color:var(--text);font-size:13px;width:calc(100% - 40px);flex:0 0 auto;}
-  #search:focus{outline:none;border-color:var(--accent);}
-
-  #main{flex:1;display:flex;min-height:0;}
-
-  #leftPanel{width:270px;flex:0 0 270px;border-right:1px solid var(--line);background:var(--panel);
-    display:flex;flex-direction:column;min-height:0;}
-  #topicsSection{flex:0 0 auto;max-height:42%;overflow-y:auto;padding:14px 0;border-bottom:1px solid var(--line);}
-  #vocabSection{flex:1;min-height:0;overflow-y:auto;padding:14px 0;}
-  #leftPanel h2{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);
-    margin:0 16px 10px;font-weight:600;display:flex;align-items:center;gap:6px;}
-  #leftPanel h2 .step{background:var(--accent);color:#0f0f16;border-radius:50%;width:15px;height:15px;
-    font-size:10px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;flex:0 0 auto;}
-  #leftPanel h2.dim{color:#5a5a70;}
-  #leftPanel h2.dim .step{background:#44445a;color:#8a8aa0;}
-
-  .topic-node{
-    margin:0 12px 8px;padding:10px 12px;border-radius:10px;background:var(--node);
-    border:1px solid var(--line);cursor:pointer;transition:all .15s ease;
-    display:flex;align-items:center;gap:9px;
-  }
-  .topic-node:hover{background:var(--node-hover);border-color:var(--accent2);}
-  .topic-node.active{background:linear-gradient(90deg, rgba(255,95,168,.25), rgba(255,95,168,.08));
-    border-color:var(--accent2);}
-  .topic-dot{width:9px;height:9px;border-radius:50%;background:var(--accent2);flex:0 0 auto;}
-  .topic-label{font-size:13px;line-height:1.3;}
-  .topic-code{font-size:10px;color:var(--text-dim);display:block;margin-top:1px;}
-
-  .vocab-row{
-    margin:0 12px 6px;padding:8px 12px;border-radius:8px;background:var(--node);border:1px solid var(--line);
-    cursor:pointer;font-size:13px;transition:all .15s ease;
-  }
-  .vocab-row:hover{background:var(--node-hover);border-color:var(--accent3);}
-  .vocab-row.active{background:linear-gradient(90deg, rgba(124,255,178,.28), rgba(124,255,178,.1));
-    border-color:var(--accent3);}
-  .placeholder-text{color:var(--text-dim);font-size:12.5px;padding:0 16px;line-height:1.6;}
-
-  #graphPanel{flex:1;min-width:0;position:relative;background:radial-gradient(ellipse at center, #16161f 0%, #0f0f16 75%);overflow:hidden;}
-  #graphContainer{position:absolute;inset:0;}
-  #graphContainer canvas{display:block;touch-action:none;}
-  #graphOverlay{position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:center;
-    pointer-events:none;padding-top:16px;text-align:center;}
-  #graphInstruction{font-size:13.5px;font-weight:600;color:#fff8dc;background:rgba(20,18,8,.72);
-    padding:10px 20px;border-radius:999px;border:2px solid var(--yellow);
-    animation:yellowPulse 1.7s ease-in-out infinite;max-width:80%;}
-  @keyframes yellowPulse{
-    0%,100%{box-shadow:0 0 8px rgba(255,210,63,.35), inset 0 0 0 rgba(255,210,63,0);}
-    50%{box-shadow:0 0 22px rgba(255,210,63,.8), inset 0 0 10px rgba(255,210,63,.15);}
-  }
-  #resetViewBtn{position:absolute;top:16px;right:16px;pointer-events:auto;background:var(--node);
-    border:1px solid var(--line);color:var(--text-dim);font-size:11.5px;padding:7px 12px;border-radius:8px;
-    cursor:pointer;display:none;z-index:6;}
-  #resetViewBtn:hover{border-color:var(--accent);color:var(--text);}
-  #breadcrumbFloat{position:absolute;bottom:14px;left:16px;font-size:11.5px;color:var(--text-dim);
-    background:rgba(15,15,22,.6);padding:6px 12px;border-radius:8px;border:1px solid var(--line);display:none;}
-  #graphFallback{position:absolute;inset:0;display:none;align-items:center;justify-content:center;
-    padding:30px;text-align:center;color:var(--text-dim);font-size:13px;line-height:1.6;}
-
-  #detail{width:340px;flex:0 0 340px;border-left:1px solid var(--line);background:var(--panel2);
-    padding:20px;overflow-y:auto;}
-  #detail .placeholder{color:var(--text-dim);font-size:13px;margin-top:40px;text-align:center;line-height:1.6;}
-  #detail .breadcrumb{font-size:11px;color:var(--text-dim);margin-bottom:6px;letter-spacing:.3px;}
-  #detail h2{margin:0 0 4px;font-size:22px;color:#fff;}
-  #detail .standard{display:inline-block;font-size:10.5px;background:rgba(124,158,255,.15);
-    color:var(--accent);border:1px solid rgba(124,158,255,.35);padding:2px 8px;border-radius:12px;margin-bottom:16px;}
-  #detail .block{margin-bottom:16px;}
-  #detail .block-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;color:var(--text-dim);
-    margin-bottom:5px;font-weight:600;}
-  #detail .block-body{font-size:14px;line-height:1.55;}
-  #detail .misconception{border-left:2px solid var(--accent2);padding-left:10px;color:#f0c9dc;}
-
-  #listenBtn{display:flex;align-items:center;gap:8px;width:100%;padding:11px 14px;border-radius:10px;
-    background:linear-gradient(90deg, rgba(124,158,255,.18), rgba(124,255,178,.1));
-    border:1px solid var(--accent);color:#fff;font-size:13.5px;font-weight:600;cursor:pointer;
-    margin-bottom:14px;transition:all .15s ease;}
-  #listenBtn:hover{background:linear-gradient(90deg, rgba(124,158,255,.3), rgba(124,255,178,.18));}
-  #listenBtn:disabled{opacity:.55;cursor:default;}
-  #listenBtn .icon{font-size:16px;}
-  #listenBtn.loading .icon{animation:spin 1s linear infinite;}
-  @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
-  #listenStatus{font-size:11.5px;color:var(--text-dim);margin:-8px 0 14px;min-height:14px;}
-  #listenStatus.err{color:#ff9f7c;}
-
-  ::-webkit-scrollbar{width:8px;height:8px;}
-  ::-webkit-scrollbar-thumb{background:#33334a;border-radius:4px;}
-  ::-webkit-scrollbar-track{background:transparent;}
-
-  #stats{padding:8px 20px;font-size:11px;color:var(--text-dim);border-top:1px solid var(--line);background:var(--panel);flex:0 0 auto;}
-
-  #spotlightRing{position:fixed;pointer-events:none;border-radius:16px;
-    border:3px solid var(--yellow);opacity:0;z-index:50;box-sizing:border-box;
-    transition:opacity .3s ease;}
-  #spotlightRing.active{animation:spotlightPulse 1.6s ease-in-out infinite;}
-  @keyframes spotlightPulse{
-    0%,100%{box-shadow:0 0 0 3px rgba(255,210,63,.12), 0 0 12px rgba(255,210,63,.4);}
-    50%{box-shadow:0 0 0 6px rgba(255,210,63,.22), 0 0 30px rgba(255,210,63,.75);}
-  }
-
-  @media (max-width: 900px){
-    #leftPanel{width:210px;flex-basis:210px;}
-    #detail{width:250px;flex-basis:250px;}
-  }
-  @media (max-width: 700px){
-    #main{flex-direction:column;overflow-y:auto;}
-    #leftPanel{width:100%;flex-basis:auto;flex-direction:row;flex-wrap:wrap;max-height:none;}
-    #topicsSection,#vocabSection{max-height:180px;flex:1 1 46%;border-bottom:none;border-right:1px solid var(--line);}
-    #graphPanel{height:320px;flex:0 0 320px;}
-    #detail{width:100%;flex-basis:auto;}
-  }
+__STYLES__
 </style>
 </head>
 <body>
+<a class="skip-link" href="#vocabSection">Skip to the vocabulary list</a>
+
 <div id="app">
-  <div id="spotlightRing"></div>
+  <div id="spotlightRing" aria-hidden="true"></div>
+
   <header>
-    <h1>Math Vocabulary Knowledge Graph</h1>
-    <p>K–5 · Common Core aligned · 189 terms · open access resource</p>
+    <div class="titles">
+      <h1>Math Vocabulary Knowledge Graph</h1>
+      <p>K–5 · Common Core aligned · 189 terms · open educational resource</p>
+    </div>
+    <button id="aboutBtn" type="button" aria-haspopup="dialog">
+      <span aria-hidden="true">ⓘ</span> About
+    </button>
   </header>
 
-  <div id="gradeRow"></div>
-  <input id="search" type="text" placeholder="Search all 189 terms across every grade...">
+  <div id="gradeRow" role="group" aria-label="Step 1: choose a grade"></div>
+
+  <div id="searchWrap">
+    <label class="sr-only" for="search">Search all 189 vocabulary terms</label>
+    <input id="search" type="search" autocomplete="off"
+           placeholder="Search all 189 terms across every grade…">
+  </div>
 
   <div id="main">
     <div id="leftPanel">
       <div id="topicsSection">
-        <h2 id="topicsHeading"><span class="step">1</span><span id="topicsHeadingText">Select a grade above</span></h2>
-        <div id="topicList"></div>
+        <h2 class="panel-heading" id="topicsHeading">
+          <span class="step" aria-hidden="true">1</span>
+          <span id="topicsHeadingText">Select a grade above</span>
+        </h2>
+        <div id="topicList" role="group" aria-labelledby="topicsHeading"></div>
       </div>
       <div id="vocabSection">
-        <h2 id="vocabHeading"><span class="step">2</span><span id="vocabHeadingText">Select a topic first</span></h2>
-        <div id="vocabList"></div>
+        <h2 class="panel-heading" id="vocabHeading">
+          <span class="step" aria-hidden="true">2</span>
+          <span id="vocabHeadingText">Select a topic first</span>
+        </h2>
+        <div id="vocabList" role="group" aria-labelledby="vocabHeading"></div>
       </div>
     </div>
 
-    <div id="graphPanel">
-      <div id="graphContainer"></div>
-      <div id="graphFallback">3D graph could not load (needs an internet connection for Three.js from a CDN).<br>Everything else on this page still works fully offline.</div>
-      <div id="graphOverlay"><div id="graphInstruction">Select a grade above to begin exploring the knowledge graph ↑</div></div>
-      <div id="breadcrumbFloat"></div>
-      <button id="resetViewBtn">⤾ View full graph</button>
-    </div>
+    <div id="rightRegion">
+      <div id="graphPanel">
+        <div id="graphContainer"></div>
+        <div id="graphLabels" aria-hidden="true"></div>
+        <div id="graphFallback">
+          The 3D graph could not load (it needs an internet connection the first time, for Three.js from a CDN).<br>
+          Everything else on this page still works fully offline.
+        </div>
+        <p id="graphHint">Pick a grade above to start exploring ↑</p>
+        <p id="breadcrumbFloat" hidden></p>
+        <button id="resetViewBtn" class="graph-btn" type="button" hidden>⤾ View full graph</button>
+      </div>
 
-    <div id="detail"><div class="placeholder" id="detailPlaceholder">Select a grade, then a topic, then a word to see its definition here.</div></div>
+      <div id="detail" aria-label="Word definition">
+        <p class="placeholder">Select a grade, then a topic, then a word to see its definition here.</p>
+      </div>
+    </div>
   </div>
 
-  <div id="stats"></div>
+  <div id="stats">
+    <span id="statsText"></span>
+    <button id="statsAboutBtn" class="stats-about" type="button" aria-haspopup="dialog">About &amp; licence</button>
+  </div>
+</div>
+
+<!-- Selection changes are spoken here for screen reader users, who cannot
+     see the definition panel update on the far side of the screen. -->
+<div id="srAnnounce" class="sr-only" role="status" aria-live="polite"></div>
+
+<div id="aboutOverlay" hidden>
+  <div id="aboutDialog" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
+    <h2 id="aboutTitle">About this resource</h2>
+    <p class="about-sub">An open educational resource for elementary math vocabulary.</p>
+
+    <p>
+      A vocabulary bank of 189 math words drawn from every Common Core domain across
+      Kindergarten through Grade 5, with a child-facing definition, a worked example and
+      the misconception teachers most often see for each term.
+    </p>
+
+    <ul class="about-orgs">
+      <li>
+        <span class="org-name">
+          <a href="https://usablemath.org" target="_blank" rel="noopener noreferrer">Usable Math</a>
+        </span>
+        <span class="org-role">Developed by the Usable Math team at the University of Massachusetts Amherst.</span>
+      </li>
+      <li>
+        <span class="org-name">
+          <a href="https://societyandai.org" target="_blank" rel="noopener noreferrer">Society &amp; AI</a>
+        </span>
+        <span class="org-role">In collaboration with the Society &amp; AI research group.</span>
+      </li>
+    </ul>
+
+    <p class="license">
+      <strong>Licence — CC BY-NC 4.0.</strong>
+      Released as an Open Educational Resource under the
+      <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener noreferrer">Creative
+      Commons Attribution-NonCommercial 4.0 International licence</a>.
+      You are free to share and adapt this material for non-commercial purposes, as long as you give
+      appropriate credit.
+    </p>
+
+    <button id="aboutClose" type="button">Close</button>
+  </div>
 </div>
 
 <script id="vocab-data" type="application/json">__VOCAB_DATA__</script>
 <script>
-const DATA = JSON.parse(document.getElementById('vocab-data').textContent);
-const GRADES = ["K","1","2","3","4","5"];
-const DOMAIN_ORDER = ["CC","OA","NBT","NF","MD","G"];
-const DOMAIN_FULLNAME = {};
-DATA.forEach(d => { DOMAIN_FULLNAME[d.domainCode] = d.domain; });
-
-function byGrade(g){ return DATA.filter(d => d.grade === g); }
-function domainsForGrade(g){
-  const set = {};
-  byGrade(g).forEach(d => { set[d.domainCode] = d.domain; });
-  return DOMAIN_ORDER.filter(code => set[code]).map(code => ({code, name:set[code]}));
-}
-function termsFor(g, code){ return byGrade(g).filter(d => d.domainCode === code); }
-function truncate(s,n){ return s.length>n ? s.slice(0,n-1)+'…' : s; }
-
-const DOMAIN_ICONS = { CC:'🔢', OA:'➕', NBT:'🔟', NF:'🍕', MD:'📏', G:'📐' };
-const TERM_ICONS = {
-  'count':'🔢','number':'#️⃣','more':'➕','fewer':'➖','equal':'⚖️',
-  'greater than':'❱','less than':'❰','one more':'➕','zero':'0️⃣','in order':'🔀',
-  'add':'➕','subtract':'➖','sum':'➕','put together':'🧩','take apart':'✂️',
-  'decompose':'🧩','equation':'⚖️','in all':'∑','left':'➖',
-  'ten':'🔟','ones':'1️⃣','teen number':'🔢','compose':'🧩',
-  'longer':'📏','shorter':'📏','taller':'📐','heavier':'⚖️','lighter':'🪶',
-  'measure':'📏','compare':'⚖️','sort':'🗂️','category':'🗂️',
-  'shape':'🔷','circle':'●','triangle':'▲','square':'■','rectangle':'▬',
-  'hexagon':'⬡','cube':'🧊','sphere':'⚪','above':'⬆️','below':'⬇️',
-  'beside':'↔️','corner':'📐',
-  'addend':'➕','difference':'➖','unknown':'❓','fact family':'👪',
-  'doubles':'✌️','how many more':'➕',
-  'place value':'🔢','greater than (>)':'❱','less than (<)':'❰','equal to (=)':'=',
-  'count on':'➡️','length':'📏','hour':'🕐','half hour':'🕧','data':'📊',
-  'tally chart':'✓','graph':'📊',
-  'partition':'🍰','equal shares':'🍰','halves':'½','fourths':'¼','quarters':'¼',
-  'attribute':'🏷️','2D shape':'🔷','3D shape':'🧊',
-  'repeated addition':'➕','array':'▦','even number':'🔷','odd number':'🔶',
-  'two-step problem':'2️⃣','unknown number':'❓','hundreds':'💯','expanded form':'🔢',
-  'regroup':'🔁','compare numbers':'⚖️','centimeter':'📏','meter':'📏',
-  'estimate':'🤔','number line':'📏','bar graph':'📊','picture graph':'🖼️',
-  'line plot':'📈','dollar':'💵','quarter (coin)':'🪙','quadrilateral':'◇',
-  'pentagon':'⬠','rows and columns':'▦',
-  'multiply':'✖️','factor':'✖️','product':'✖️','divide':'➗','quotient':'➗',
-  'equal groups':'▦','area model':'▦','unknown factor':'❓','round':'🔄',
-  'fraction':'½','numerator':'⬆️','denominator':'⬇️','unit fraction':'⅓',
-  'equivalent fractions':'≈','whole':'⭕','compare fractions':'⚖️',
-  'area':'▦','perimeter':'⬚','square unit':'▦','elapsed time':'⏱️',
-  'liquid volume':'🧪','mass':'⚖️','scaled graph':'📊',
-  'prime number':'🔒','composite number':'🔓','multi-step problem':'🔢',
-  'remainder':'➗','variable':'𝑥','multi-digit':'🔢','standard algorithm':'🔢',
-  'equivalent fraction':'≈','mixed number':'1½','improper fraction':'⁵⁄₄',
-  'common denominator':'⬇️','decimal':'.','tenths':'.1','hundredths':'.01',
-  'benchmark fraction':'½','angle':'📐','degree':'°','protractor':'📐',
-  'formula':'🧮','conversion':'🔁','point':'•','line':'—','ray':'↗️',
-  'acute angle':'📐','obtuse angle':'📐','right angle':'📐',
-  'parallel lines':'∥','perpendicular lines':'⊥','line of symmetry':'🪞',
-  'order of operations':'🔢','parentheses':'( )','expression':'🔢','evaluate':'🧮',
-  'numerical pattern':'🔁','coordinate pair':'📍','exponent':'ⁿ','power of ten':'🔟',
-  'round decimals':'🔄','multiply decimals':'✖️','divide decimals':'➗',
-  'multiply fractions':'✖️','divide fractions':'➗','simplify':'↓','reciprocal':'🔃',
-  'volume':'📦','cubic unit':'📦','convert units':'🔁','coordinate plane':'📊',
-  'x-axis':'↔️','y-axis':'↕️','ordered pair':'📍','classify':'🗂️',
-  'hierarchy of shapes':'🗂️'
-};
-function iconForTerm(t){ return TERM_ICONS[t.term] || DOMAIN_ICONS[t.domainCode] || '🔎'; }
-
-let state = { grade: null, domainCode: null, term: null };
-// The yellow guided highlight (instruction pill + spotlight ring) is a
-// one-time onboarding aid. Once someone completes grade -> topic -> word
-// once, it's marked done in localStorage and never shown again on this
-// browser -- including after a page reload or clicking "view full graph".
-let onboarded = false;
-try { onboarded = localStorage.getItem('mathGraphOnboarded') === '1'; } catch(e){}
-let searchQuery = '';
-
-// ---------------------------------------------------------------
-// tween(): GSAP if available, instant fallback otherwise
-// ---------------------------------------------------------------
-function tween(target, vars){
-  if(typeof gsap !== 'undefined'){ return gsap.to(target, vars); }
-  const v = Object.assign({}, vars);
-  const onComplete = v.onComplete;
-  delete v.duration; delete v.ease; delete v.onUpdate; delete v.onComplete; delete v.yoyo; delete v.repeat;
-  const isDom = !!(target && target.style);
-  Object.keys(v).forEach(k=>{
-    if(isDom){ target.style[k] = (['left','top','width','height'].includes(k)) ? v[k]+'px' : v[k]; }
-    else { target[k] = v[k]; }
-  });
-  if(onComplete) onComplete();
-  return target;
-}
-
-// ---------------------------------------------------------------
-// Three.js knowledge graph
-// ---------------------------------------------------------------
-const Graph = (function(){
-  let scene, camera, renderer, controls, container, clock;
-  let nodesById = {};
-  let edges = [];
-  let labelSprites = { root:null, grade:null, domain:null, term:null };
-  let lastState = { grade:null, domainCode:null, term:null };
-  let ready = false;
-  let hasControls = false;
-  let idleAngle = 0.6;
-
-  const RG = 34, RD = 13, RT = 6.2;
-  const COLORS = { root:0xffffff, grade:0x7c9eff, domain:0xff5fa8, term:0x7cffb2 };
-  const SIZE = { root:2.3, grade:1.4, domain:0.85, term:0.42 };
-
-  function init(containerEl){
-    if(typeof THREE === 'undefined'){
-      document.getElementById('graphFallback').style.display = 'flex';
-      return;
-    }
-    container = containerEl;
-    scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(50, container.clientWidth/Math.max(container.clientHeight,1), 0.1, 2000);
-    renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
-    renderer.setSize(container.clientWidth, container.clientHeight);
-    container.appendChild(renderer.domElement);
-
-    camera.position.set(130,30,0);
-
-    if(typeof THREE.OrbitControls !== 'undefined'){
-      controls = new THREE.OrbitControls(camera, renderer.domElement);
-      controls.enableDamping = true;
-      controls.dampingFactor = 0.08;
-      controls.enablePan = false;
-      controls.minDistance = 5;
-      controls.maxDistance = 240;
-      controls.autoRotate = true;
-      controls.autoRotateSpeed = 0.6;
-      controls.target.set(0,0,0);
-      hasControls = true;
-    } else {
-      camera.lookAt(0,0,0);
-    }
-
-    buildStarfield();
-    buildGraph();
-
-    clock = new THREE.Clock();
-    ready = true;
-    animate();
-    window.addEventListener('resize', onResize);
-    if(window.ResizeObserver){ new ResizeObserver(onResize).observe(container); }
-
-    showLabel('root', new THREE.Vector3(0, SIZE.root+2.2, 0), 'Math is fun!', '✨', COLORS.root, [5.6,2.8]);
-  }
-
-  function onResize(){
-    if(!ready || !container.clientWidth) return;
-    camera.aspect = container.clientWidth/container.clientHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(container.clientWidth, container.clientHeight);
-  }
-
-  function buildStarfield(){
-    const n = 500;
-    const positions = new Float32Array(n*3);
-    for(let i=0;i<n;i++){
-      const r = 250 + Math.random()*350;
-      const theta = Math.random()*Math.PI*2;
-      const phi = Math.acos((Math.random()*2)-1);
-      positions[i*3] = r*Math.sin(phi)*Math.cos(theta);
-      positions[i*3+1] = r*Math.cos(phi);
-      positions[i*3+2] = r*Math.sin(phi)*Math.sin(theta);
-    }
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(positions,3));
-    const mat = new THREE.PointsMaterial({ color:0x4a4a68, size:1.1, transparent:true, opacity:0.5 });
-    scene.add(new THREE.Points(geo, mat));
-  }
-
-  function addNode(id, pos, level){
-    const geo = new THREE.SphereGeometry(SIZE[level], 16, 16);
-    const mat = new THREE.MeshBasicMaterial({ color: COLORS[level], transparent:true, opacity: level==='root'?1:0.92 });
-    const mesh = new THREE.Mesh(geo, mat);
-    mesh.position.copy(pos);
-    scene.add(mesh);
-    nodesById[id] = { mesh, pos: pos.clone(), level, mat };
-  }
-
-  function addEdge(idA, idB){
-    const a = nodesById[idA], b = nodesById[idB];
-    if(!a||!b) return;
-    const geo = new THREE.BufferGeometry().setFromPoints([a.pos, b.pos]);
-    const mat = new THREE.LineBasicMaterial({ color:0x50506c, transparent:true, opacity:0.35 });
-    scene.add(new THREE.Line(geo, mat));
-    edges.push({ a:idA, b:idB, mat });
-  }
-
-  function buildGraph(){
-    addNode('root', new THREE.Vector3(0,0,0), 'root');
-    GRADES.forEach((g, gi) => {
-      const theta = (gi/GRADES.length) * Math.PI*2;
-      const gpos = new THREE.Vector3(RG*Math.cos(theta), 9*Math.sin(theta*1.6+gi), RG*Math.sin(theta));
-      addNode('grade:'+g, gpos, 'grade');
-      addEdge('root', 'grade:'+g);
-
-      const doms = domainsForGrade(g);
-      doms.forEach((d, di) => {
-        const thetaD = (di/doms.length)*Math.PI*2 + gi*0.7;
-        const dpos = gpos.clone().add(new THREE.Vector3(
-          RD*Math.cos(thetaD), RD*0.55*Math.sin(thetaD*1.4+di), RD*Math.sin(thetaD)
-        ));
-        const domId = 'domain:'+g+':'+d.code;
-        addNode(domId, dpos, 'domain');
-        addEdge('grade:'+g, domId);
-
-        const terms = termsFor(g, d.code);
-        terms.forEach((t, ti) => {
-          const thetaT = (ti/terms.length)*Math.PI*2 + di*0.9;
-          const tpos = dpos.clone().add(new THREE.Vector3(
-            RT*Math.cos(thetaT), RT*0.6*Math.sin(thetaT*1.7+ti), RT*Math.sin(thetaT)
-          ));
-          addNode('term:'+t.id, tpos, 'term');
-          addEdge(domId, 'term:'+t.id);
-        });
-      });
-    });
-  }
-
-  function pathFor(st){
-    const ids = ['root'];
-    if(st.grade) ids.push('grade:'+st.grade);
-    if(st.grade && st.domainCode) ids.push('domain:'+st.grade+':'+st.domainCode);
-    if(st.grade && st.domainCode && st.term) ids.push('term:'+st.term);
-    return ids;
-  }
-
-  function setHighlight(st){
-    const activeIds = st.grade ? pathFor(st) : [];
-    const activeSet = new Set(activeIds);
-    Object.entries(nodesById).forEach(([id, n]) => {
-      if(id === 'root') return;
-      const active = activeSet.size===0 ? true : activeSet.has(id);
-      tween(n.mat, { opacity: active ? 0.95 : 0.06, duration:.4 });
-      tween(n.mesh.scale, { x: active?1:0.55, y: active?1:0.55, z: active?1:0.55, duration:.4 });
-    });
-    edges.forEach(e => {
-      const active = activeSet.size===0 ? true : (activeSet.has(e.a) && activeSet.has(e.b));
-      tween(e.mat, { opacity: active ? 0.75 : 0.04, duration:.4 });
-    });
-  }
-
-  function pulse(id){
-    if(typeof gsap === 'undefined') return;
-    const n = nodesById[id];
-    if(!n) return;
-    gsap.fromTo(n.mesh.scale, {x:1,y:1,z:1}, {x:1.7,y:1.7,z:1.7,duration:.18,yoyo:true,repeat:1,ease:'power2.out'});
-  }
-
-  function dirFrom(child, parent){
-    const d = child.clone().sub(parent);
-    if(d.lengthSq() < 0.0001) d.set(1,0,0);
-    return d.normalize();
-  }
-
-  function flyTo(camPos, lookAt, duration){
-    tween(camera.position, { x:camPos.x, y:camPos.y, z:camPos.z, duration, ease:'power2.inOut' });
-    if(hasControls){
-      tween(controls.target, { x:lookAt.x, y:lookAt.y, z:lookAt.z, duration, ease:'power2.inOut' });
-    } else {
-      camera.lookAt(lookAt);
-    }
-  }
-
-  function roundRect(ctx,x,y,w,h,r){
-    ctx.beginPath();
-    ctx.moveTo(x+r,y);
-    ctx.arcTo(x+w,y,x+w,y+h,r);
-    ctx.arcTo(x+w,y+h,x,y+h,r);
-    ctx.arcTo(x,y+h,x,y,r);
-    ctx.arcTo(x,y,x+w,y,r);
-    ctx.closePath();
-  }
-
-  function wrapText(ctx, text, cx, cy, maxWidth, lineHeight){
-    const words = String(text).split(' ');
-    let lines = []; let line='';
-    words.forEach(word=>{
-      const test = line ? line+' '+word : word;
-      if(ctx.measureText(test).width > maxWidth && line){ lines.push(line); line=word; }
-      else line = test;
-    });
-    if(line) lines.push(line);
-    lines = lines.slice(0,2);
-    const startY = cy - ((lines.length-1)*lineHeight)/2;
-    lines.forEach((l,i)=> ctx.fillText(l, cx, startY + i*lineHeight));
-  }
-
-  function makeSprite(text, icon, colorHex){
-    const w = 512, h = 256;
-    const canvas = document.createElement('canvas');
-    canvas.width = w; canvas.height = h;
-    const ctx = canvas.getContext('2d');
-    const cssColor = '#' + colorHex.toString(16).padStart(6,'0');
-
-    ctx.fillStyle = 'rgba(14,14,20,0.9)';
-    roundRect(ctx, 8,8,w-16,h-16,30); ctx.fill();
-    ctx.lineWidth = 6;
-    ctx.strokeStyle = cssColor;
-    ctx.shadowColor = cssColor; ctx.shadowBlur = 18;
-    roundRect(ctx, 8,8,w-16,h-16,30); ctx.stroke();
-    ctx.shadowBlur = 0;
-
-    if(icon){
-      ctx.font = '84px sans-serif';
-      ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.fillText(icon, w/2, h*0.36);
-    }
-    ctx.font = 'bold 40px -apple-system, Segoe UI, Roboto, Arial, sans-serif';
-    ctx.fillStyle = '#ffffff';
-    ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.shadowColor = cssColor; ctx.shadowBlur = 8;
-    wrapText(ctx, text, w/2, icon? h*0.78 : h/2, w-70, 46);
-
-    const tex = new THREE.CanvasTexture(canvas);
-    tex.minFilter = THREE.LinearFilter;
-    const mat = new THREE.SpriteMaterial({ map:tex, transparent:true, depthTest:false });
-    const sprite = new THREE.Sprite(mat);
-    sprite.renderOrder = 999;
-    return sprite;
-  }
-
-  function clearLabel(key){
-    const s = labelSprites[key];
-    if(!s) return;
-    tween(s.scale, { x:0.001, y:0.001, z:1, duration:.22, onComplete:()=>{
-      scene.remove(s); s.material.map.dispose(); s.material.dispose();
-    }});
-    labelSprites[key] = null;
-  }
-
-  function showLabel(key, position, text, icon, colorHex, targetScale){
-    clearLabel(key);
-    const sprite = makeSprite(text, icon, colorHex);
-    sprite.position.copy(position);
-    sprite.scale.set(0.001,0.001,1);
-    scene.add(sprite);
-    labelSprites[key] = sprite;
-    tween(sprite.scale, { x:targetScale[0], y:targetScale[1], z:1, duration:.6, ease:'back.out(1.7)' });
-  }
-
-  function updateLabels(st){
-    if(st.grade){
-      const n = nodesById['grade:'+st.grade];
-      const dir = dirFrom(n.pos, new THREE.Vector3(0,0,0));
-      const pos = n.pos.clone().add(dir.multiplyScalar(SIZE.grade+1.5));
-      showLabel('grade', pos, st.grade, '🎓', COLORS.grade, [3.6,1.8]);
-    } else { clearLabel('grade'); }
-
-    if(st.grade && st.domainCode){
-      const domId = 'domain:'+st.grade+':'+st.domainCode;
-      const n = nodesById[domId];
-      const parent = nodesById['grade:'+st.grade];
-      const dir = dirFrom(n.pos, parent.pos);
-      const pos = n.pos.clone().add(dir.multiplyScalar(SIZE.domain+1.3));
-      showLabel('domain', pos, DOMAIN_FULLNAME[st.domainCode], DOMAIN_ICONS[st.domainCode]||'📚', COLORS.domain, [3.0,1.5]);
-    } else { clearLabel('domain'); }
-
-    if(st.grade && st.domainCode && st.term){
-      const n = nodesById['term:'+st.term];
-      const parent = nodesById['domain:'+st.grade+':'+st.domainCode];
-      const dir = dirFrom(n.pos, parent.pos);
-      const pos = n.pos.clone().add(dir.multiplyScalar(SIZE.term+0.9));
-      const t = DATA.find(d => d.id === st.term);
-      showLabel('term', pos, t.term, iconForTerm(t), COLORS.term, [1.6,0.8]);
-    } else { clearLabel('term'); }
-  }
-
-  function focus(st){
-    if(!ready) return;
-    setHighlight(st);
-
-    if(st.grade && st.domainCode && st.term){
-      const n = nodesById['term:'+st.term];
-      const parent = nodesById['domain:'+st.grade+':'+st.domainCode];
-      const dir = dirFrom(n.pos, parent.pos);
-      flyTo(n.pos.clone().add(dir.multiplyScalar(4.6)).add(new THREE.Vector3(0,1.3,0)), n.pos.clone(), 1.0);
-      if(hasControls) controls.autoRotate = false;
-    } else if(st.grade && st.domainCode){
-      const n = nodesById['domain:'+st.grade+':'+st.domainCode];
-      const parent = nodesById['grade:'+st.grade];
-      const dir = dirFrom(n.pos, parent.pos);
-      flyTo(n.pos.clone().add(dir.multiplyScalar(15)).add(new THREE.Vector3(0,4.5,0)), n.pos.clone(), 1.0);
-      if(hasControls) controls.autoRotate = false;
-    } else if(st.grade){
-      const n = nodesById['grade:'+st.grade];
-      const dir = dirFrom(n.pos, new THREE.Vector3(0,0,0));
-      flyTo(n.pos.clone().add(dir.multiplyScalar(30)).add(new THREE.Vector3(0,9,0)), n.pos.clone(), 1.0);
-      if(hasControls) controls.autoRotate = false;
-    } else {
-      flyTo(new THREE.Vector3(130,30,0), new THREE.Vector3(0,0,0), 0.9);
-      if(hasControls) controls.autoRotate = true;
-    }
-
-    if(st.grade !== lastState.grade && st.grade) pulse('grade:'+st.grade);
-    if(st.domainCode !== lastState.domainCode && st.domainCode) pulse('domain:'+st.grade+':'+st.domainCode);
-    if(st.term !== lastState.term && st.term) pulse('term:'+st.term);
-    lastState = { grade:st.grade, domainCode:st.domainCode, term:st.term };
-
-    updateLabels(st);
-  }
-
-  function animate(){
-    requestAnimationFrame(animate);
-    const t = clock.getElapsedTime();
-
-    if(hasControls){ controls.update(); }
-    else if(!lastState.grade){
-      idleAngle += 0.006;
-      camera.position.set(130*Math.cos(idleAngle), 30, 130*Math.sin(idleAngle));
-      camera.lookAt(0,0,0);
-    }
-
-    const rootNode = nodesById['root'];
-    if(rootNode){ rootNode.mesh.scale.setScalar(1+0.08*Math.sin(t*1.4)); }
-
-    renderer.render(scene, camera);
-  }
-
-  return { init, focus };
-})();
-
-// ---------------------------------------------------------------
-// App / panel rendering
-// ---------------------------------------------------------------
-function renderGrades(){
-  const row = document.getElementById('gradeRow');
-  row.innerHTML = '';
-  GRADES.forEach(g => {
-    const el = document.createElement('div');
-    el.className = 'grade-node' + (state.grade === g ? ' active' : '');
-    el.textContent = g;
-    el.title = g === 'K' ? 'Kindergarten' : `Grade ${g}`;
-    el.onclick = () => selectGrade(g);
-    row.appendChild(el);
-  });
-}
-
-function renderTopics(){
-  const heading = document.getElementById('topicsHeadingText');
-  const headingWrap = document.getElementById('topicsHeading');
-  const list = document.getElementById('topicList');
-  list.innerHTML = '';
-  if(!state.grade){
-    heading.textContent = 'Select a grade above';
-    headingWrap.classList.add('dim');
-    list.innerHTML = '<div class="placeholder-text">Topics for the selected grade will appear here.</div>';
-    return;
-  }
-  headingWrap.classList.remove('dim');
-  heading.textContent = 'Select a topic';
-  domainsForGrade(state.grade).forEach(({code,name}) => {
-    const el = document.createElement('div');
-    el.className = 'topic-node' + (state.domainCode === code ? ' active' : '');
-    el.innerHTML = `<span class="topic-dot"></span><span><span class="topic-label">${name}</span><span class="topic-code">${state.grade}.${code} · ${termsFor(state.grade,code).length} terms</span></span>`;
-    el.onclick = () => selectDomain(code);
-    list.appendChild(el);
-  });
-}
-
-function renderVocabList(){
-  const heading = document.getElementById('vocabHeadingText');
-  const headingWrap = document.getElementById('vocabHeading');
-  const list = document.getElementById('vocabList');
-  list.innerHTML = '';
-
-  if(searchQuery){
-    const q = searchQuery.toLowerCase();
-    const matches = DATA.filter(d => d.term.toLowerCase().includes(q));
-    headingWrap.classList.remove('dim');
-    heading.textContent = `Search results (${matches.length})`;
-    if(matches.length===0){ list.innerHTML = '<div class="placeholder-text">No terms match your search.</div>'; return; }
-    matches.slice(0,150).forEach(t => {
-      const el = document.createElement('div');
-      el.className = 'vocab-row' + (state.term === t.id ? ' active' : '');
-      el.textContent = `${t.term} · G${t.grade}`;
-      el.onclick = () => jumpToTerm(t);
-      list.appendChild(el);
-    });
-    return;
-  }
-
-  if(!state.grade || !state.domainCode){
-    heading.textContent = state.grade ? 'Select a topic first' : 'Select a grade first';
-    headingWrap.classList.add('dim');
-    list.innerHTML = '<div class="placeholder-text">Vocabulary words will appear here once you pick a topic.</div>';
-    return;
-  }
-  headingWrap.classList.remove('dim');
-  heading.textContent = 'Select a vocabulary word';
-  termsFor(state.grade, state.domainCode).forEach(t => {
-    const el = document.createElement('div');
-    el.className = 'vocab-row' + (state.term === t.id ? ' active' : '');
-    el.textContent = t.term;
-    el.onclick = () => selectTermFn(t.id);
-    list.appendChild(el);
-  });
-}
-
-function renderDetail(){
-  const detail = document.getElementById('detail');
-  if(!state.term){
-    detail.innerHTML = '<div class="placeholder">Select a grade, then a topic, then a word to see its definition here.</div>';
-    return;
-  }
-  const t = DATA.find(d => d.id === state.term);
-  detail.innerHTML = `
-    <div class="breadcrumb">Grade ${t.grade} → ${t.domain}</div>
-    <h2>${t.term}</h2>
-    <span class="standard">${t.standard}</span>
-    <button id="listenBtn" type="button" aria-describedby="listenStatus"><span class="icon">🔊</span><span id="listenBtnText">Listen to an explanation</span></button>
-    <div id="listenStatus" role="status" aria-live="polite"></div>
-    <audio id="listenAudio" style="display:none;" preload="none"></audio>
-    <div class="block">
-      <div class="block-label">Definition</div>
-      <div class="block-body">${t.definition}</div>
-    </div>
-    <div class="block">
-      <div class="block-label">Example</div>
-      <div class="block-body">${t.example}</div>
-    </div>
-    ${t.misconception ? `<div class="block"><div class="block-label">Common misconception</div><div class="block-body misconception">${t.misconception}</div></div>` : ''}
-  `;
-  document.getElementById('listenBtn').onclick = () => speakTerm(t);
-}
-
-// ---------------------------------------------------------------
-// Fish Audio text-to-speech ("Listen to an explanation")
-// ---------------------------------------------------------------
-// IMPORTANT: no API key lives in this file. By default this calls the
-// same-origin /api/tts endpoint served by server.js. For a hosted static
-// copy, pass ?ttsProxy=https://your-worker.workers.dev once; that URL is
-// saved in localStorage for future visits.
-const TTS_PROXY_STORAGE_KEY = 'mathVocabTtsProxyUrl';
-const DEFAULT_TTS_PROXY_URL = '/api/tts';
-const TTS_PROXY_URL = readTtsProxyUrl();
-const TTS_VOICE_ID = "d38790551b0548ba9de248dbd10b74e1";
-const ttsCache = {}; // termId -> object URL, so replays don't re-call the API
-
-function readTtsProxyUrl(){
-  let configured = '';
-  try{
-    const params = new URLSearchParams(window.location.search);
-    const queryUrl = (params.get('ttsProxy') || '').trim();
-    if(queryUrl){
-      localStorage.setItem(TTS_PROXY_STORAGE_KEY, queryUrl);
-      configured = queryUrl;
-    } else {
-      configured = (localStorage.getItem(TTS_PROXY_STORAGE_KEY) || '').trim();
-    }
-  } catch(e){}
-  return configured || DEFAULT_TTS_PROXY_URL;
-}
-
-function speechScriptFor(t){
-  let s = `${t.term}. ${t.definition}`;
-  if(t.example){ s += ` For example: ${t.example}`; }
-  return s;
-}
-
-async function speakTerm(t){
-  const btn = document.getElementById('listenBtn');
-  const btnText = document.getElementById('listenBtnText');
-  const status = document.getElementById('listenStatus');
-  const audioEl = document.getElementById('listenAudio');
-  if(!btn) return;
-
-  if(!TTS_PROXY_URL){
-    status.textContent = "Voice explanations aren't configured yet.";
-    status.className = 'err';
-    return;
-  }
-
-  if(ttsCache[t.id]){
-    audioEl.src = ttsCache[t.id];
-    audioEl.play();
-    return;
-  }
-
-  btn.disabled = true;
-  btn.classList.add('loading');
-  btnText.textContent = 'Loading audio...';
-  status.textContent = '';
-  status.className = '';
-
-  try{
-    const res = await fetch(TTS_PROXY_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: speechScriptFor(t), reference_id: TTS_VOICE_ID }),
-    });
-    if(!res.ok){
-      let msg = `Request failed (${res.status}).`;
-      try{ const j = await res.json(); if(j && j.error) msg = j.error; }catch(e){}
-      throw new Error(msg);
-    }
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    ttsCache[t.id] = url;
-    audioEl.src = url;
-    await audioEl.play();
-  } catch(e){
-    const setupHint = TTS_PROXY_URL === DEFAULT_TTS_PROXY_URL
-      ? ' Start the local voice server with node server.js, or configure a Worker URL with ?ttsProxy=...'
-      : '';
-    status.textContent = 'Could not load audio: ' + e.message + setupHint;
-    status.className = 'err';
-  } finally {
-    btn.disabled = false;
-    btn.classList.remove('loading');
-    btnText.textContent = 'Listen to an explanation';
-  }
-}
-
-function updateInstruction(){
-  const overlay = document.getElementById('graphOverlay');
-  const instr = document.getElementById('graphInstruction');
-  const resetBtn = document.getElementById('resetViewBtn');
-  const breadcrumb = document.getElementById('breadcrumbFloat');
-
-  resetBtn.style.display = state.grade ? 'block' : 'none';
-
-  // Breadcrumb (bottom-left path readout) always shows once a word is
-  // picked, onboarded or not -- only the yellow guidance is one-time.
-  if(state.term){
-    const t = DATA.find(d => d.id === state.term);
-    breadcrumb.style.display = 'block';
-    breadcrumb.textContent = `Grade ${t.grade} → ${t.domain} → ${t.term}`;
-  } else {
-    breadcrumb.style.display = 'none';
-  }
-
-  if(onboarded){
-    overlay.style.display = 'none';
-    return;
-  }
-
-  if(!state.grade){
-    overlay.style.display = 'flex';
-    instr.textContent = 'Select a grade above to begin exploring the knowledge graph ↑';
-  } else if(!state.domainCode){
-    overlay.style.display = 'flex';
-    instr.textContent = 'Now select a topic on the left ←';
-  } else if(!state.term){
-    overlay.style.display = 'flex';
-    instr.textContent = 'Now select a vocabulary word on the left ←';
-  } else {
-    overlay.style.display = 'none';
-  }
-}
-
-function updateSpotlight(){
-  const ring = document.getElementById('spotlightRing');
-  if(onboarded){
-    ring.classList.remove('active');
-    tween(ring, { opacity:0, duration:.3 });
-    return;
-  }
-  let targetEl = null;
-  if(!state.grade) targetEl = document.getElementById('gradeRow');
-  else if(!state.domainCode) targetEl = document.getElementById('topicsSection');
-  else if(!state.term) targetEl = document.getElementById('vocabSection');
-
-  if(!targetEl){
-    ring.classList.remove('active');
-    tween(ring, { opacity:0, duration:.35 });
-    return;
-  }
-  const r = targetEl.getBoundingClientRect();
-  ring.classList.add('active');
-  tween(ring, { left:r.left-6, top:r.top-6, width:r.width+12, height:r.height+12, opacity:1, duration:.55, ease:'power2.inOut' });
-}
-window.addEventListener('resize', updateSpotlight);
-
-function renderAll(){
-  renderGrades();
-  renderTopics();
-  renderVocabList();
-  renderDetail();
-  if(state.term && !onboarded){
-    onboarded = true;
-    try { localStorage.setItem('mathGraphOnboarded', '1'); } catch(e){}
-  }
-  updateInstruction();
-  updateSpotlight();
-  Graph.focus(state);
-}
-
-function selectGrade(g){
-  state.grade = g; state.domainCode = null; state.term = null; searchQuery='';
-  document.getElementById('search').value='';
-  renderAll();
-}
-function selectDomain(code){
-  state.domainCode = code; state.term = null;
-  renderAll();
-}
-function selectTermFn(id){
-  state.term = id;
-  renderAll();
-}
-function jumpToTerm(t){
-  state.grade = t.grade; state.domainCode = t.domainCode; state.term = t.id;
-  searchQuery=''; document.getElementById('search').value='';
-  renderAll();
-}
-function resetAll(){
-  state = { grade:null, domainCode:null, term:null };
-  renderAll();
-}
-
-document.getElementById('resetViewBtn').addEventListener('click', resetAll);
-document.getElementById('search').addEventListener('input', (e) => {
-  searchQuery = e.target.value.trim();
-  renderVocabList();
-});
-
-renderAll();
-document.getElementById('stats').textContent =
-  `${DATA.length} terms · ${GRADES.length} grades · ${DOMAIN_ORDER.length} Common Core domains · CC BY-NC open access`;
-
-Graph.init(document.getElementById('graphContainer'));
+__SCRIPTS__
 </script>
 </body>
 </html>

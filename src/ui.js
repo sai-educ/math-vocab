@@ -1,0 +1,324 @@
+/* =========================================================================
+   Panel rendering: the grade row, topic list, vocabulary list and the
+   definition panel.
+
+   Every choice is a real <button> with an accessible name and pressed
+   state. In the first version these were bare <div onclick> elements, which
+   meant the whole app had exactly three keyboard-reachable controls and a
+   screen reader saw none of the 189 words.
+   ========================================================================= */
+
+// ---- progress ------------------------------------------------------------
+
+const visitedTerms = loadVisited();
+
+function loadVisited() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEYS.visited);
+    return new Set(raw ? JSON.parse(raw) : []);
+  } catch (e) {
+    return new Set();
+  }
+}
+
+function markVisited(id) {
+  if (visitedTerms.has(id)) return;
+  visitedTerms.add(id);
+  try {
+    localStorage.setItem(STORAGE_KEYS.visited, JSON.stringify([...visitedTerms]));
+  } catch (e) { /* private browsing — progress just won't persist */ }
+}
+
+function gradeProgress(g) {
+  const terms = byGrade(g);
+  if (!terms.length) return { seen: 0, total: 0, percent: 0 };
+  const seen = terms.filter((t) => visitedTerms.has(t.id)).length;
+  return { seen, total: terms.length, percent: Math.round((seen / terms.length) * 100) };
+}
+
+// ---- screen reader announcements ----------------------------------------
+
+let announceTimer = null;
+
+function announce(message) {
+  const region = document.getElementById('srAnnounce');
+  if (!region) return;
+  clearTimeout(announceTimer);
+  // Clearing first makes repeat announcements of the same text speak again.
+  region.textContent = '';
+  announceTimer = setTimeout(() => { region.textContent = message; }, 60);
+}
+
+// ---- roving tabindex ----------------------------------------------------
+
+/* Tab moves between the three groups; arrow keys move within a group. With
+   189 vocabulary buttons, plain tab-through-everything would be unusable. */
+function bindRovingGroup(containerEl, orientation) {
+  containerEl.addEventListener('keydown', (event) => {
+    const items = [...containerEl.querySelectorAll('button')];
+    if (!items.length) return;
+    const current = items.indexOf(document.activeElement);
+    if (current === -1) return;
+
+    const nextKeys = orientation === 'horizontal' ? ['ArrowRight', 'ArrowDown'] : ['ArrowDown', 'ArrowRight'];
+    const prevKeys = orientation === 'horizontal' ? ['ArrowLeft', 'ArrowUp'] : ['ArrowUp', 'ArrowLeft'];
+
+    let next = null;
+    if (nextKeys.includes(event.key)) next = (current + 1) % items.length;
+    else if (prevKeys.includes(event.key)) next = (current - 1 + items.length) % items.length;
+    else if (event.key === 'Home') next = 0;
+    else if (event.key === 'End') next = items.length - 1;
+    if (next === null) return;
+
+    event.preventDefault();
+    items.forEach((el, i) => { el.tabIndex = i === next ? 0 : -1; });
+    items[next].focus();
+  });
+}
+
+/* Exactly one button per group is in the tab order — the selected one, or
+   the first if nothing is selected yet. */
+function syncTabStops(containerEl) {
+  const items = [...containerEl.querySelectorAll('button')];
+  if (!items.length) return;
+  const selected = items.find((el) => el.getAttribute('aria-pressed') === 'true');
+  items.forEach((el) => { el.tabIndex = -1; });
+  (selected || items[0]).tabIndex = 0;
+}
+
+// ---- grade row ----------------------------------------------------------
+
+function renderGrades() {
+  const row = document.getElementById('gradeRow');
+  row.innerHTML = '';
+  GRADES.forEach((g) => {
+    const progress = gradeProgress(g);
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'grade-node';
+    btn.textContent = g;
+    btn.setAttribute('aria-pressed', state.grade === g ? 'true' : 'false');
+    btn.style.setProperty('--progress', progress.percent);
+    if (progress.seen > 0) btn.dataset.started = '1';
+    btn.setAttribute('aria-label', progress.seen > 0
+      ? `${gradeLabel(g)}. ${progress.seen} of ${progress.total} words explored.`
+      : `${gradeLabel(g)}. ${progress.total} words.`);
+    btn.addEventListener('click', () => selectGrade(g));
+    row.appendChild(btn);
+  });
+  syncTabStops(row);
+}
+
+// ---- topic list ---------------------------------------------------------
+
+function renderTopics() {
+  const headingText = document.getElementById('topicsHeadingText');
+  const heading = document.getElementById('topicsHeading');
+  const list = document.getElementById('topicList');
+  list.innerHTML = '';
+
+  if (!state.grade) {
+    headingText.textContent = 'Select a grade above';
+    heading.classList.add('dim');
+    list.innerHTML = '<p class="placeholder-text">Topics for the selected grade will appear here.</p>';
+    return;
+  }
+
+  heading.classList.remove('dim');
+  headingText.textContent = 'Select a topic';
+  domainsForGrade(state.grade).forEach(({ code, name }) => {
+    const count = termsFor(state.grade, code).length;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'topic-node';
+    btn.setAttribute('aria-pressed', state.domainCode === code ? 'true' : 'false');
+    btn.innerHTML = `<span class="topic-dot" aria-hidden="true"></span>`
+      + `<span class="topic-text">`
+      + `<span class="topic-label">${escapeHtml(name)}</span>`
+      + `<span class="topic-code">${escapeHtml(state.grade)}.${escapeHtml(code)} · ${count} terms</span>`
+      + `</span>`;
+    btn.setAttribute('aria-label', `${name}. Standard ${state.grade}.${code}. ${count} terms.`);
+    btn.addEventListener('click', () => selectDomain(code));
+    list.appendChild(btn);
+  });
+  syncTabStops(list);
+}
+
+// ---- vocabulary list ----------------------------------------------------
+
+function renderVocabList() {
+  const headingText = document.getElementById('vocabHeadingText');
+  const heading = document.getElementById('vocabHeading');
+  const list = document.getElementById('vocabList');
+  list.innerHTML = '';
+
+  if (searchQuery) {
+    renderSearchResults(list, heading, headingText);
+    return;
+  }
+
+  if (!state.grade || !state.domainCode) {
+    headingText.textContent = state.grade ? 'Select a topic first' : 'Select a grade first';
+    heading.classList.add('dim');
+    list.innerHTML = '<p class="placeholder-text">Vocabulary words will appear here once you pick a topic.</p>';
+    return;
+  }
+
+  heading.classList.remove('dim');
+  headingText.textContent = 'Select a vocabulary word';
+  termsFor(state.grade, state.domainCode).forEach((t) => {
+    list.appendChild(vocabButton(t, false));
+  });
+  syncTabStops(list);
+}
+
+function renderSearchResults(list, heading, headingText) {
+  const query = searchQuery.toLowerCase();
+  // Search covers definitions and examples too, not just the term itself —
+  // a child who remembers "the top number" should still find "numerator".
+  const matches = DATA.filter((d) => d.term.toLowerCase().includes(query)
+    || d.definition.toLowerCase().includes(query)
+    || (d.example || '').toLowerCase().includes(query));
+
+  heading.classList.remove('dim');
+  headingText.textContent = `Search results (${matches.length})`;
+
+  if (!matches.length) {
+    list.innerHTML = '<p class="placeholder-text">No terms match your search.</p>';
+    announce('No terms match your search.');
+    return;
+  }
+  matches.slice(0, 150).forEach((t) => { list.appendChild(vocabButton(t, true)); });
+  syncTabStops(list);
+  announce(`${matches.length} ${matches.length === 1 ? 'result' : 'results'}.`);
+}
+
+function vocabButton(t, showGrade) {
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'vocab-row';
+  btn.setAttribute('aria-pressed', state.term === t.id ? 'true' : 'false');
+
+  const seen = visitedTerms.has(t.id);
+  btn.innerHTML = `<span class="vocab-icon" aria-hidden="true">${escapeHtml(iconForTerm(t))}</span>`
+    + `<span class="vocab-name">${escapeHtml(t.term)}</span>`
+    + (showGrade ? `<span class="vocab-grade">${escapeHtml(gradeLabel(t.grade))}</span>` : '')
+    + (!showGrade && seen ? '<span class="vocab-seen" aria-hidden="true">✓</span>' : '');
+
+  btn.setAttribute('aria-label', showGrade
+    ? `${t.term}. ${gradeLabel(t.grade)}.`
+    : `${t.term}.${seen ? ' Already explored.' : ''}`);
+
+  btn.addEventListener('click', () => (showGrade ? jumpToTerm(t) : selectTerm(t.id)));
+  return btn;
+}
+
+// ---- definition panel ---------------------------------------------------
+
+function renderDetail() {
+  const detail = document.getElementById('detail');
+  if (!state.term) {
+    detail.innerHTML = '<p class="placeholder">Select a grade, then a topic, then a word to see its definition here.</p>';
+    return;
+  }
+  const t = termById(state.term);
+  if (!t) return;
+
+  detail.innerHTML = `
+    <p class="breadcrumb">${escapeHtml(gradeLabel(t.grade))} → ${escapeHtml(t.domain)}</p>
+    <h2>${escapeHtml(t.term)}</h2>
+    <span class="standard">${escapeHtml(t.standard)}</span>
+    <button id="listenBtn" type="button" aria-describedby="listenStatus">
+      <span class="icon" aria-hidden="true">🔊</span><span id="listenBtnText">Listen to an explanation</span>
+    </button>
+    <p id="listenStatus" role="status" aria-live="polite"></p>
+    <audio id="listenAudio" preload="none"></audio>
+    <div class="block">
+      <h3 class="block-label">Definition</h3>
+      <p class="block-body">${escapeHtml(t.definition)}</p>
+    </div>
+    <div class="block">
+      <h3 class="block-label">Example</h3>
+      <p class="block-body">${escapeHtml(t.example)}</p>
+    </div>
+    ${t.misconception ? `<div class="block">
+      <h3 class="block-label">Common misconception</h3>
+      <p class="block-body misconception">${escapeHtml(t.misconception)}</p>
+    </div>` : ''}
+  `;
+  document.getElementById('listenBtn').addEventListener('click', () => speakTerm(t));
+}
+
+// ---- onboarding hint + spotlight ---------------------------------------
+
+function updateInstruction() {
+  const hint = document.getElementById('graphHint');
+  const resetBtn = document.getElementById('resetViewBtn');
+  const breadcrumb = document.getElementById('breadcrumbFloat');
+
+  resetBtn.hidden = !state.grade;
+
+  if (state.term) {
+    const t = termById(state.term);
+    breadcrumb.hidden = false;
+    breadcrumb.textContent = `${gradeLabel(t.grade)} → ${t.domain} → ${t.term}`;
+  } else {
+    breadcrumb.hidden = true;
+  }
+
+  if (onboarded) { hint.hidden = true; return; }
+
+  if (!state.grade) {
+    hint.hidden = false;
+    hint.textContent = 'Pick a grade above to start exploring ↑';
+  } else if (!state.domainCode) {
+    hint.hidden = false;
+    hint.textContent = 'Now pick a topic on the left ←';
+  } else if (!state.term) {
+    hint.hidden = false;
+    hint.textContent = 'Now pick a vocabulary word on the left ←';
+  } else {
+    hint.hidden = true;
+  }
+}
+
+function updateSpotlight() {
+  const ring = document.getElementById('spotlightRing');
+  const hide = () => {
+    ring.classList.remove('active');
+    ring.style.opacity = '0';
+  };
+  if (onboarded) return hide();
+
+  let target = null;
+  if (!state.grade) target = document.getElementById('gradeRow');
+  else if (!state.domainCode) target = document.getElementById('topicsSection');
+  else if (!state.term) target = document.getElementById('vocabSection');
+  if (!target) return hide();
+
+  const r = target.getBoundingClientRect();
+  ring.classList.add('active');
+  ring.style.opacity = '1';
+  const vars = {
+    left: `${r.left - 6}px`, top: `${r.top - 6}px`,
+    width: `${r.width + 12}px`, height: `${r.height + 12}px`,
+  };
+  if (REDUCED_MOTION || typeof gsap === 'undefined') {
+    Object.assign(ring.style, vars);
+  } else {
+    gsap.to(ring, {
+      left: r.left - 6, top: r.top - 6, width: r.width + 12, height: r.height + 12,
+      duration: 0.55, ease: EASE_INOUT, overwrite: true,
+    });
+  }
+}
+
+// ---- footer -------------------------------------------------------------
+
+function renderStats() {
+  const total = DATA.length;
+  const seen = visitedTerms.size;
+  document.getElementById('statsText').textContent =
+    `${total} terms · ${GRADES.length} grades · ${DOMAIN_ORDER.length} Common Core domains`
+    + ` · ${seen} explored · CC BY-NC 4.0`;
+}

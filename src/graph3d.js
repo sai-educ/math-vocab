@@ -1,0 +1,729 @@
+/* =========================================================================
+   The 3D knowledge graph (Three.js).
+
+   Notable differences from the first version:
+
+   * Draw calls went from ~450 (one Mesh per node + one Line per edge) to
+     roughly a dozen, by instancing the nodes and merging every edge into a
+     single LineSegments. This is what makes it comfortable on an iPad.
+   * Highlighting is a per-frame lerp instead of ~700 simultaneous GSAP
+     tweens per click.
+   * Labels are HTML elements projected from 3D rather than canvas sprites:
+     always crisp, real selectable text, and they can be pushed apart when
+     they collide instead of stacking on top of each other.
+   * Nodes are pickable — tapping a node in the graph selects it.
+   * Materials are lit (MeshStandardMaterial + three lights + filmic tone
+     mapping) rather than flat unlit colour, so the nodes read as objects.
+   ========================================================================= */
+
+const Graph = (function () {
+  let scene, camera, renderer, controls, container, labelLayer, clock;
+  let ready = false;
+  let hasControls = false;
+  let idleAngle = 0.6;
+  let onSelect = null;
+
+  const nodes = {};            // id -> node record
+  const gradeIds = [];         // instance index -> node id
+  const termIds = [];
+  const domainIdsByCode = {};  // domainCode -> [node id]
+  let gradeMesh, termMesh, rootMesh;
+  const domainMeshes = {};     // domainCode -> InstancedMesh
+  const haloLayers = {};       // level -> { points, ids, colors }
+  let edgeGeometry, edgeColors;
+  const edgeList = [];
+
+  let state = { grade: null, domainCode: null, term: null };
+  let hoveredId = null;
+
+  const RG = 34, RD = 13, RT = 6.2;
+  const COLORS = { root: 0xffffff, grade: 0x7c9eff, domain: 0xff5fa8, term: 0x7cffb2 };
+  const SIZE = { root: 2.3, grade: 1.4, domain: 0.9, term: 0.45 };
+  const HALO_SIZE = { root: 16, grade: 11, domain: 7, term: 3.6 };
+  const DIM = 0.055;           // how far inactive nodes fade toward the background
+  const DIM_SCALE = 0.45;
+
+  // Allocated in init(), after THREE is confirmed present — this module has
+  // to stay loadable when the CDN is unreachable so the rest of the page
+  // keeps working offline.
+  let _m, _q, _s, _c, _v, ORIGIN;
+
+  function allocScratch() {
+    _m = new THREE.Matrix4();
+    _q = new THREE.Quaternion();
+    _s = new THREE.Vector3();
+    _c = new THREE.Color();
+    _v = new THREE.Vector3();
+    ORIGIN = new THREE.Vector3(0, 0, 0);
+  }
+
+  // ---------------------------------------------------------------------
+  // setup
+  // ---------------------------------------------------------------------
+
+  function init(containerEl, labelEl) {
+    if (typeof THREE === 'undefined') {
+      document.getElementById('graphFallback').style.display = 'flex';
+      return;
+    }
+    container = containerEl;
+    labelLayer = labelEl;
+    allocScratch();
+
+    const w = Math.max(container.clientWidth, 1);
+    const h = Math.max(container.clientHeight, 1);
+
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(50, w / h, 0.1, 2000);
+    camera.position.set(130, 30, 0);
+
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setSize(w, h);
+    if (THREE.sRGBEncoding !== undefined) renderer.outputEncoding = THREE.sRGBEncoding;
+    if (THREE.ACESFilmicToneMapping !== undefined) {
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 0.95;
+    }
+    container.appendChild(renderer.domElement);
+    renderer.domElement.setAttribute('aria-hidden', 'true');
+
+    addLights();
+    buildStarfield();
+    buildGraph();
+    buildLabels();
+
+    if (typeof THREE.OrbitControls !== 'undefined') {
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.075;
+      controls.enablePan = false;
+      controls.minDistance = 2.5;
+      controls.maxDistance = 320;
+      controls.autoRotate = !REDUCED_MOTION;
+      controls.autoRotateSpeed = 0.55;
+      controls.target.set(0, 0, 0);
+      hasControls = true;
+    } else {
+      camera.lookAt(ORIGIN);
+    }
+
+    clock = new THREE.Clock();
+    ready = true;
+
+    bindPicking();
+    window.addEventListener('resize', onResize);
+    if (window.ResizeObserver) new ResizeObserver(onResize).observe(container);
+
+    applyState(state, true);
+    animate();
+  }
+
+  /* Deliberately restrained. Bright white light plus additive halos washes
+     the blue/pink/green level colours out to near-white, which is exactly
+     the distinction the graph relies on. */
+  function addLights() {
+    scene.add(new THREE.AmbientLight(0x6a6a90, 0.55));
+
+    const key = new THREE.DirectionalLight(0xffffff, 0.75);
+    key.position.set(60, 90, 40);
+    scene.add(key);
+
+    const rim = new THREE.DirectionalLight(0x8fb0ff, 0.3);
+    rim.position.set(-70, -30, -50);
+    scene.add(rim);
+
+    // Sits inside the white root node so the centre of the graph glows.
+    const core = new THREE.PointLight(0xfff4e0, 0.9, 70, 2);
+    core.position.set(0, 0, 0);
+    scene.add(core);
+  }
+
+  function radialTexture() {
+    const size = 128;
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    const g = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+    g.addColorStop(0, 'rgba(255,255,255,1)');
+    g.addColorStop(0.35, 'rgba(255,255,255,0.5)');
+    g.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, size, size);
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.minFilter = THREE.LinearFilter;
+    return tex;
+  }
+
+  function buildStarfield() {
+    const n = 700;
+    const positions = new Float32Array(n * 3);
+    for (let i = 0; i < n; i++) {
+      const r = 260 + Math.random() * 380;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos((Math.random() * 2) - 1);
+      positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+      positions[i * 3 + 1] = r * Math.cos(phi);
+      positions[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    scene.add(new THREE.Points(geo, new THREE.PointsMaterial({
+      color: 0x5a5a7c, size: 1.3, transparent: true, opacity: 0.55, sizeAttenuation: true,
+    })));
+  }
+
+  function domainGeometry(code) {
+    const r = SIZE.domain;
+    switch (DOMAIN_SHAPES[code]) {
+      case 'octahedron': return new THREE.OctahedronGeometry(r * 1.15, 0);
+      case 'box': return new THREE.BoxGeometry(r * 1.5, r * 1.5, r * 1.5);
+      case 'torus': return new THREE.TorusGeometry(r * 0.8, r * 0.34, 10, 20);
+      case 'cylinder': return new THREE.CylinderGeometry(r * 0.75, r * 0.75, r * 1.7, 14);
+      case 'dodecahedron': return new THREE.DodecahedronGeometry(r * 1.1, 0);
+      default: return new THREE.IcosahedronGeometry(r * 1.15, 0);
+    }
+  }
+
+  function nodeMaterial() {
+    // Matte rather than glossy: a tight specular highlight on a small sphere
+    // reads as a white dot and hides the node's colour.
+    return new THREE.MeshStandardMaterial({ roughness: 0.62, metalness: 0 });
+  }
+
+  function register(id, pos, level, parentId) {
+    nodes[id] = {
+      id, level, parentId,
+      pos: pos.clone(),
+      baseColor: new THREE.Color(COLORS[level]),
+      target: 1, cur: 1,          // 0 = dimmed out, 1 = fully lit
+      targetScale: 1, curScale: 1,
+    };
+    if (parentId) edgeList.push([parentId, id]);
+  }
+
+  function buildGraph() {
+    register('root', ORIGIN, 'root', null);
+
+    const domainCounts = {};
+    GRADES.forEach((g, gi) => {
+      const theta = (gi / GRADES.length) * Math.PI * 2;
+      const gpos = new THREE.Vector3(
+        RG * Math.cos(theta), 9 * Math.sin(theta * 1.6 + gi), RG * Math.sin(theta),
+      );
+      const gradeId = 'grade:' + g;
+      register(gradeId, gpos, 'grade', 'root');
+      gradeIds.push(gradeId);
+
+      domainsForGrade(g).forEach((d, di) => {
+        const doms = domainsForGrade(g);
+        const thetaD = (di / doms.length) * Math.PI * 2 + gi * 0.7;
+        const dpos = gpos.clone().add(new THREE.Vector3(
+          RD * Math.cos(thetaD), RD * 0.55 * Math.sin(thetaD * 1.4 + di), RD * Math.sin(thetaD),
+        ));
+        const domId = 'domain:' + g + ':' + d.code;
+        register(domId, dpos, 'domain', gradeId);
+        if (!domainIdsByCode[d.code]) domainIdsByCode[d.code] = [];
+        nodes[domId].instanceIndex = domainIdsByCode[d.code].length;
+        nodes[domId].domainCode = d.code;
+        domainIdsByCode[d.code].push(domId);
+        domainCounts[d.code] = (domainCounts[d.code] || 0) + 1;
+
+        const terms = termsFor(g, d.code);
+        terms.forEach((t, ti) => {
+          const thetaT = (ti / terms.length) * Math.PI * 2 + di * 0.9;
+          const tpos = dpos.clone().add(new THREE.Vector3(
+            RT * Math.cos(thetaT), RT * 0.6 * Math.sin(thetaT * 1.7 + ti), RT * Math.sin(thetaT),
+          ));
+          const termId = 'term:' + t.id;
+          register(termId, tpos, 'term', domId);
+          nodes[termId].instanceIndex = termIds.length;
+          termIds.push(termId);
+        });
+      });
+    });
+
+    gradeIds.forEach((id, i) => { nodes[id].instanceIndex = i; });
+
+    rootMesh = new THREE.Mesh(new THREE.SphereGeometry(SIZE.root, 32, 32), nodeMaterial());
+    rootMesh.material.color.set(COLORS.root);
+    rootMesh.material.emissive = new THREE.Color(0x333344);
+    scene.add(rootMesh);
+
+    gradeMesh = new THREE.InstancedMesh(
+      new THREE.SphereGeometry(SIZE.grade, 24, 24), nodeMaterial(), gradeIds.length,
+    );
+    scene.add(gradeMesh);
+
+    Object.keys(domainIdsByCode).forEach((code) => {
+      const mesh = new THREE.InstancedMesh(
+        domainGeometry(code), nodeMaterial(), domainIdsByCode[code].length,
+      );
+      domainMeshes[code] = mesh;
+      scene.add(mesh);
+    });
+
+    termMesh = new THREE.InstancedMesh(
+      new THREE.SphereGeometry(SIZE.term, 12, 12), nodeMaterial(), termIds.length,
+    );
+    scene.add(termMesh);
+
+    buildHalos();
+    buildEdges();
+    writeInstances(true);
+  }
+
+  /* Additive point sprites behind each node. This is what produces the neon
+     glow without a post-processing pass (and without the extra CDN
+     dependency an EffectComposer bloom would need). */
+  function buildHalos() {
+    const tex = radialTexture();
+    const byLevel = { root: ['root'], grade: gradeIds, domain: [], term: termIds };
+    Object.keys(domainIdsByCode).forEach((code) => {
+      byLevel.domain = byLevel.domain.concat(domainIdsByCode[code]);
+    });
+
+    Object.keys(byLevel).forEach((level) => {
+      const ids = byLevel[level];
+      if (!ids.length) return;
+      const positions = new Float32Array(ids.length * 3);
+      const colors = new Float32Array(ids.length * 3);
+      ids.forEach((id, i) => {
+        const p = nodes[id].pos;
+        positions[i * 3] = p.x; positions[i * 3 + 1] = p.y; positions[i * 3 + 2] = p.z;
+      });
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+      const points = new THREE.Points(geo, new THREE.PointsMaterial({
+        size: HALO_SIZE[level], map: tex, vertexColors: true,
+        blending: THREE.AdditiveBlending, transparent: true,
+        depthWrite: false, sizeAttenuation: true,
+      }));
+      points.renderOrder = 2;
+      scene.add(points);
+      haloLayers[level] = { points, ids, colors };
+    });
+  }
+
+  function buildEdges() {
+    const positions = new Float32Array(edgeList.length * 6);
+    edgeColors = new Float32Array(edgeList.length * 6);
+    edgeList.forEach(([a, b], i) => {
+      const pa = nodes[a].pos, pb = nodes[b].pos;
+      positions.set([pa.x, pa.y, pa.z, pb.x, pb.y, pb.z], i * 6);
+    });
+    edgeGeometry = new THREE.BufferGeometry();
+    edgeGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    edgeGeometry.setAttribute('color', new THREE.BufferAttribute(edgeColors, 3));
+    scene.add(new THREE.LineSegments(edgeGeometry, new THREE.LineBasicMaterial({
+      vertexColors: true, transparent: true, opacity: 0.9,
+    })));
+  }
+
+  // ---------------------------------------------------------------------
+  // labels
+  // ---------------------------------------------------------------------
+
+  const labels = {};
+
+  function buildLabels() {
+    ['root', 'grade', 'domain', 'term', 'hover'].forEach((key) => {
+      const el = document.createElement('div');
+      el.className = 'graph-label lv-' + (key === 'hover' ? 'term' : key);
+      el.innerHTML = '<span class="gl-icon"></span><span class="gl-text"></span>';
+      labelLayer.appendChild(el);
+      labels[key] = { el, icon: el.querySelector('.gl-icon'), text: el.querySelector('.gl-text'), nodeId: null };
+    });
+  }
+
+  function setLabel(key, nodeId, text, icon) {
+    const l = labels[key];
+    l.nodeId = nodeId;
+    if (!nodeId) { l.el.classList.remove('visible'); return; }
+    if (l.text.textContent !== text) l.text.textContent = text;
+    if (l.icon.textContent !== (icon || '')) l.icon.textContent = icon || '';
+    l.el.classList.add('visible');
+  }
+
+  /* Project each visible label to screen space, then push colliding labels
+     apart vertically. Without this the grade/topic/word labels pile up on
+     top of one another as soon as the camera closes in. */
+  function positionLabels() {
+    const rect = container.getBoundingClientRect();
+    const placed = [];
+
+    Object.keys(labels).forEach((key) => {
+      const l = labels[key];
+      if (!l.nodeId || !nodes[l.nodeId]) return;
+      _v.copy(nodes[l.nodeId].pos).project(camera);
+      // Behind the camera, or so far outside the panel that clamping it to
+      // an edge would just be a label pinned to a corner pointing at nothing.
+      const offscreen = _v.z > 1 || Math.abs(_v.x) > 1.5 || Math.abs(_v.y) > 1.5;
+      if (offscreen) { l.el.classList.remove('visible'); return; }
+      l.el.classList.add('visible');
+      placed.push({
+        l,
+        x: (_v.x * 0.5 + 0.5) * rect.width,
+        y: (-_v.y * 0.5 + 0.5) * rect.height,
+        priority: key === 'term' || key === 'hover' ? 0 : 1,
+      });
+    });
+
+    placed.sort((a, b) => a.priority - b.priority || a.y - b.y);
+    const minGap = 42;
+    for (let i = 0; i < placed.length; i++) {
+      for (let j = 0; j < i; j++) {
+        const dy = placed[i].y - placed[j].y;
+        const dx = Math.abs(placed[i].x - placed[j].x);
+        if (dx < 190 && Math.abs(dy) < minGap) {
+          placed[i].y = placed[j].y + (dy >= 0 ? minGap : -minGap);
+        }
+      }
+    }
+    placed.forEach((p) => {
+      const y = Math.max(24, Math.min(rect.height - 24, p.y));
+      const x = Math.max(70, Math.min(rect.width - 70, p.x));
+      p.l.el.style.transform = `translate(-50%,-50%) translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
+    });
+  }
+
+  function updateLabels() {
+    const st = state;
+    const anySelection = !!st.grade;
+
+    setLabel('root', anySelection ? null : 'root', 'Math is fun!', '✨');
+
+    // Grade and topic labels give way once a word is chosen — the word is
+    // what matters at that point, and the breadcrumb still shows the path.
+    setLabel('grade', st.grade && !st.term ? 'grade:' + st.grade : null, gradeLabel(st.grade), '🎓');
+
+    const domId = st.grade && st.domainCode ? 'domain:' + st.grade + ':' + st.domainCode : null;
+    setLabel('domain', domId, DOMAIN_FULLNAME[st.domainCode] || '', DOMAIN_ICONS[st.domainCode] || '📚');
+
+    if (st.term) {
+      const t = termById(st.term);
+      setLabel('term', 'term:' + st.term, t ? t.term : '', t ? iconForTerm(t) : '');
+    } else {
+      setLabel('term', null, '', '');
+    }
+
+    if (hoveredId && hoveredId !== 'term:' + st.term && nodes[hoveredId]) {
+      setLabel('hover', hoveredId, describe(hoveredId), hoverIcon(hoveredId));
+    } else {
+      setLabel('hover', null, '', '');
+    }
+  }
+
+  function describe(id) {
+    const n = nodes[id];
+    if (!n) return '';
+    if (n.level === 'root') return 'Math is fun!';
+    if (n.level === 'grade') return gradeLabel(id.split(':')[1]);
+    if (n.level === 'domain') return DOMAIN_FULLNAME[id.split(':')[2]] || '';
+    const t = termById(id.slice(5));
+    return t ? t.term : '';
+  }
+
+  function hoverIcon(id) {
+    const n = nodes[id];
+    if (!n) return '';
+    if (n.level === 'root') return '✨';
+    if (n.level === 'grade') return '🎓';
+    if (n.level === 'domain') return DOMAIN_ICONS[id.split(':')[2]] || '📚';
+    const t = termById(id.slice(5));
+    return t ? iconForTerm(t) : '';
+  }
+
+  // ---------------------------------------------------------------------
+  // highlight state
+  // ---------------------------------------------------------------------
+
+  function pathFor(st) {
+    const ids = ['root'];
+    if (st.grade) ids.push('grade:' + st.grade);
+    if (st.grade && st.domainCode) ids.push('domain:' + st.grade + ':' + st.domainCode);
+    if (st.grade && st.domainCode && st.term) ids.push('term:' + st.term);
+    return ids;
+  }
+
+  function applyState(st, instant) {
+    const active = new Set(st.grade ? pathFor(st) : []);
+    const showAll = active.size === 0;
+
+    Object.keys(nodes).forEach((id) => {
+      const n = nodes[id];
+      const on = showAll || active.has(id) || id === 'root';
+      n.target = on ? 1 : DIM;
+      n.targetScale = on ? 1 : DIM_SCALE;
+      if (instant) { n.cur = n.target; n.curScale = n.targetScale; }
+    });
+
+    // The selected node gets a little extra presence.
+    const deepest = st.term ? 'term:' + st.term
+      : st.domainCode ? 'domain:' + st.grade + ':' + st.domainCode
+        : st.grade ? 'grade:' + st.grade : null;
+    if (deepest && nodes[deepest]) nodes[deepest].targetScale = 1.35;
+  }
+
+  function writeInstances() {
+    // grades
+    gradeIds.forEach((id, i) => writeInstance(gradeMesh, i, nodes[id]));
+    gradeMesh.instanceMatrix.needsUpdate = true;
+    if (gradeMesh.instanceColor) gradeMesh.instanceColor.needsUpdate = true;
+
+    // domains
+    Object.keys(domainIdsByCode).forEach((code) => {
+      const mesh = domainMeshes[code];
+      domainIdsByCode[code].forEach((id, i) => writeInstance(mesh, i, nodes[id]));
+      mesh.instanceMatrix.needsUpdate = true;
+      if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+    });
+
+    // terms
+    termIds.forEach((id, i) => writeInstance(termMesh, i, nodes[id]));
+    termMesh.instanceMatrix.needsUpdate = true;
+    if (termMesh.instanceColor) termMesh.instanceColor.needsUpdate = true;
+
+    // halos
+    Object.keys(haloLayers).forEach((level) => {
+      const layer = haloLayers[level];
+      layer.ids.forEach((id, i) => {
+        const n = nodes[id];
+        const boost = hoveredId === id ? 1.7 : 1;
+        _c.copy(n.baseColor).multiplyScalar(n.cur * 0.42 * boost);
+        layer.colors[i * 3] = _c.r; layer.colors[i * 3 + 1] = _c.g; layer.colors[i * 3 + 2] = _c.b;
+      });
+      layer.points.geometry.attributes.color.needsUpdate = true;
+    });
+
+    // edges
+    edgeList.forEach(([a, b], i) => {
+      const lit = Math.min(nodes[a].cur, nodes[b].cur);
+      const v = 0.34 * lit;
+      for (let k = 0; k < 2; k++) {
+        edgeColors[i * 6 + k * 3] = v * 0.72;
+        edgeColors[i * 6 + k * 3 + 1] = v * 0.75;
+        edgeColors[i * 6 + k * 3 + 2] = v;
+      }
+    });
+    edgeGeometry.attributes.color.needsUpdate = true;
+
+    const rootNode = nodes.root;
+    rootMesh.material.color.copy(rootNode.baseColor).multiplyScalar(Math.max(rootNode.cur, 0.3));
+  }
+
+  function writeInstance(mesh, i, n) {
+    const hover = hoveredId === n.id ? 1.25 : 1;
+    _s.setScalar(n.curScale * hover);
+    _m.compose(n.pos, _q, _s);
+    mesh.setMatrixAt(i, _m);
+    _c.copy(n.baseColor).multiplyScalar(n.cur);
+    mesh.setColorAt(i, _c);
+  }
+
+  // ---------------------------------------------------------------------
+  // camera
+  // ---------------------------------------------------------------------
+
+  /* Distance needed to fit a sphere of `radius` in view, accounting for the
+     panel's aspect ratio. On a tall narrow panel (iPad portrait) this pulls
+     the camera back so the subject and its label still fit horizontally. */
+  function frameDistance(radius) {
+    const vFov = (camera.fov * Math.PI) / 180;
+    const fitH = radius / Math.tan(vFov / 2);
+    const fitW = radius / (Math.tan(vFov / 2) * Math.max(camera.aspect, 0.001));
+    return Math.max(fitH, fitW) * 1.15;
+  }
+
+  function dirFrom(child, parent) {
+    const d = child.clone().sub(parent);
+    if (d.lengthSq() < 0.0001) d.set(1, 0, 0);
+    return d.normalize();
+  }
+
+  function flyTo(camPos, lookAt, duration) {
+    if (REDUCED_MOTION || typeof gsap === 'undefined') {
+      camera.position.copy(camPos);
+      if (hasControls) controls.target.copy(lookAt); else camera.lookAt(lookAt);
+      return;
+    }
+    gsap.to(camera.position, {
+      x: camPos.x, y: camPos.y, z: camPos.z, duration, ease: EASE_INOUT_STRONG, overwrite: true,
+    });
+    if (hasControls) {
+      gsap.to(controls.target, {
+        x: lookAt.x, y: lookAt.y, z: lookAt.z, duration, ease: EASE_INOUT_STRONG, overwrite: true,
+      });
+    } else {
+      camera.lookAt(lookAt);
+    }
+  }
+
+  function focus(st) {
+    state = { grade: st.grade, domainCode: st.domainCode, term: st.term };
+    if (!ready) return;
+
+    applyState(state, false);
+    updateLabels();
+
+    if (state.term) {
+      const n = nodes['term:' + state.term];
+      const parent = nodes['domain:' + state.grade + ':' + state.domainCode];
+      const dir = dirFrom(n.pos, parent.pos);
+      const dist = Math.max(frameDistance(2.6), 3.2);
+      flyTo(n.pos.clone().addScaledVector(dir, dist).add(new THREE.Vector3(0, dist * 0.25, 0)), n.pos.clone(), 1.15);
+      setAutoRotate(false);
+    } else if (state.domainCode) {
+      const n = nodes['domain:' + state.grade + ':' + state.domainCode];
+      const parent = nodes['grade:' + state.grade];
+      const dir = dirFrom(n.pos, parent.pos);
+      const dist = frameDistance(RT * 1.5);
+      flyTo(n.pos.clone().addScaledVector(dir, dist).add(new THREE.Vector3(0, dist * 0.28, 0)), n.pos.clone(), 1.15);
+      setAutoRotate(false);
+    } else if (state.grade) {
+      const n = nodes['grade:' + state.grade];
+      const dir = dirFrom(n.pos, ORIGIN);
+      const dist = frameDistance(RD * 1.55);
+      flyTo(n.pos.clone().addScaledVector(dir, dist).add(new THREE.Vector3(0, dist * 0.3, 0)), n.pos.clone(), 1.15);
+      setAutoRotate(false);
+    } else {
+      const dist = frameDistance(RG * 1.5);
+      flyTo(new THREE.Vector3(dist, dist * 0.24, 0), ORIGIN.clone(), 1.05);
+      setAutoRotate(true);
+    }
+  }
+
+  function setAutoRotate(on) {
+    if (hasControls) controls.autoRotate = on && !REDUCED_MOTION;
+  }
+
+  function onResize() {
+    if (!ready || !container.clientWidth) return;
+    camera.aspect = container.clientWidth / Math.max(container.clientHeight, 1);
+    camera.updateProjectionMatrix();
+    renderer.setSize(container.clientWidth, container.clientHeight);
+  }
+
+  // ---------------------------------------------------------------------
+  // picking — tapping a node in the graph selects it
+  // ---------------------------------------------------------------------
+
+  function bindPicking() {
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+    let downAt = null;
+    let pendingHover = false;
+
+    function pick(event) {
+      const rect = renderer.domElement.getBoundingClientRect();
+      pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera(pointer, camera);
+
+      const targets = [termMesh, gradeMesh, rootMesh].concat(Object.values(domainMeshes));
+      const hits = raycaster.intersectObjects(targets, false);
+      for (const hit of hits) {
+        const id = idForHit(hit);
+        if (id && nodes[id].cur > 0.3) return id;   // ignore dimmed-out nodes
+      }
+      return null;
+    }
+
+    function idForHit(hit) {
+      if (hit.object === rootMesh) return 'root';
+      if (hit.object === gradeMesh) return gradeIds[hit.instanceId];
+      if (hit.object === termMesh) return termIds[hit.instanceId];
+      const code = Object.keys(domainMeshes).find((k) => domainMeshes[k] === hit.object);
+      return code ? domainIdsByCode[code][hit.instanceId] : null;
+    }
+
+    renderer.domElement.addEventListener('pointermove', (e) => {
+      if (pendingHover) return;
+      pendingHover = true;
+      requestAnimationFrame(() => {
+        pendingHover = false;
+        const id = pick(e);
+        if (id !== hoveredId) {
+          hoveredId = id;
+          renderer.domElement.style.cursor = id ? 'pointer' : 'grab';
+          updateLabels();
+        }
+      });
+    });
+
+    renderer.domElement.addEventListener('pointerleave', () => {
+      hoveredId = null;
+      updateLabels();
+    });
+
+    renderer.domElement.addEventListener('pointerdown', (e) => {
+      downAt = { x: e.clientX, y: e.clientY, t: Date.now() };
+    });
+
+    // Only treat it as a tap if the pointer barely moved — otherwise the
+    // gesture was an orbit drag and must not change the selection.
+    renderer.domElement.addEventListener('pointerup', (e) => {
+      if (!downAt) return;
+      const moved = Math.hypot(e.clientX - downAt.x, e.clientY - downAt.y);
+      const elapsed = Date.now() - downAt.t;
+      downAt = null;
+      if (moved > 8 || elapsed > 700) return;
+      const id = pick(e);
+      if (id && onSelect) onSelect(id);
+    });
+  }
+
+  // ---------------------------------------------------------------------
+  // loop
+  // ---------------------------------------------------------------------
+
+  function animate() {
+    requestAnimationFrame(animate);
+    if (!ready) return;
+
+    const dt = Math.min(clock.getDelta(), 0.1);
+    const t = clock.getElapsedTime();
+
+    // Frame-rate independent easing toward the target highlight state.
+    const k = 1 - Math.pow(0.001, dt);
+    let changed = false;
+    Object.keys(nodes).forEach((id) => {
+      const n = nodes[id];
+      if (Math.abs(n.cur - n.target) > 0.001 || Math.abs(n.curScale - n.targetScale) > 0.001) {
+        n.cur += (n.target - n.cur) * k;
+        n.curScale += (n.targetScale - n.curScale) * k;
+        changed = true;
+      }
+    });
+    if (changed || hoveredId !== null) writeInstances();
+
+    if (hasControls) {
+      controls.update();
+    } else if (!state.grade && !REDUCED_MOTION) {
+      idleAngle += dt * 0.35;
+      camera.position.set(130 * Math.cos(idleAngle), 30, 130 * Math.sin(idleAngle));
+      camera.lookAt(ORIGIN);
+    }
+
+    if (!REDUCED_MOTION) {
+      rootMesh.scale.setScalar(1 + 0.06 * Math.sin(t * 1.1));
+    }
+
+    // project() reads camera.matrixWorldInverse, which render() is what
+    // normally refreshes — update it first so labels are never a frame
+    // behind the nodes they point at (and are not garbage on frame one).
+    camera.updateMatrixWorld();
+    camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
+    positionLabels();
+
+    renderer.render(scene, camera);
+  }
+
+  return {
+    init,
+    focus,
+    setOnSelect(cb) { onSelect = cb; },
+    isReady() { return ready; },
+  };
+}());
