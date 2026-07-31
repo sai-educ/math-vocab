@@ -1,0 +1,17 @@
+# Belt-and-braces: never upload secrets to Vercel.
+#
+# Deploying from a Git integration only ever sends committed files, and .env*
+# is gitignored, so this mainly protects the `vercel` CLI path, which uploads
+# the working directory. A .vercelignore replaces Vercel's defaults entirely,
+# so node_modules and .git are listed explicitly.
+.env
+.env.*
+!.env.example
+
+.git
+node_modules
+*.log
+.DS_Store
+
+# Local agent/editor config, not part of the site.
+.claude
