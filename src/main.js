@@ -46,18 +46,21 @@ function selectGrade(g) {
   state = { grade: g, domainCode: null, term: null };
   clearSearch();
   renderAll();
+  Sound.play('grade');
   announce(`${gradeLabel(g)} selected. Choose a topic.`);
 }
 
 function selectDomain(code) {
   state = { ...state, domainCode: code, term: null };
   renderAll();
+  Sound.play('topic');
   announce(`${DOMAIN_FULLNAME[code]} selected. Choose a vocabulary word.`);
 }
 
 function selectTerm(id) {
   state = { ...state, term: id };
   renderAll();
+  Sound.play('word');
   const t = termById(id);
   if (t) announce(`${t.term}. ${t.definition} For example: ${t.example}`);
 }
@@ -66,6 +69,7 @@ function jumpToTerm(t) {
   state = { grade: t.grade, domainCode: t.domainCode, term: t.id };
   clearSearch();
   renderAll();
+  Sound.play('word');
   announce(`${t.term}. ${t.definition}`);
 }
 
@@ -73,6 +77,7 @@ function resetAll() {
   state = { grade: null, domainCode: null, term: null };
   clearSearch();
   renderAll();
+  Sound.play('back');
   announce('Showing the full knowledge graph.');
 }
 
@@ -117,8 +122,10 @@ function bindControls() {
     clearTimeout(searchTimer);
     // Debounced so typing doesn't rebuild a 150-row list on every keystroke.
     searchTimer = setTimeout(() => {
+      const changed = searchQuery !== value;
       searchQuery = value;
       renderVocabList();
+      if (changed && value) Sound.play('search');
     }, 140);
   });
 
@@ -126,10 +133,29 @@ function bindControls() {
   bindRovingGroup(document.getElementById('topicList'), 'vertical');
   bindRovingGroup(document.getElementById('vocabList'), 'vertical');
 
+  bindSoundToggle();
   window.addEventListener('resize', updateSpotlight);
 }
 
+/* The toggle reflects state in its icon, its label and aria-pressed, so it
+   reads correctly by sight and by screen reader. */
+function bindSoundToggle() {
+  const btn = document.getElementById('soundBtn');
+
+  const sync = () => {
+    const on = Sound.isOn();
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    btn.setAttribute('aria-label', on ? 'Sound on. Turn sound off.' : 'Sound off. Turn sound on.');
+    btn.innerHTML = iconSvg(on ? 'soundOn' : 'soundOff', { size: 18 })
+      + `<span class="btn-text">${on ? 'Sound' : 'Muted'}</span>`;
+  };
+
+  btn.addEventListener('click', () => { Sound.toggle(); sync(); });
+  sync();
+}
+
 function boot() {
+  Sound.init();
   bindControls();
   About.init();
   renderAll();
