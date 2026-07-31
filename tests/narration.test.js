@@ -36,7 +36,7 @@ test('creates an inviting, complete narration for a noun concept', () => {
   assert.equal(
     speechScriptFor(fraction),
     'Let’s explore fraction. Fraction is a number that names part of a whole. '
-      + 'Picture this: Nina cuts a pie into 4 equal slices and takes 1. '
+      + 'Picture Nina as she cuts a pie into 4 equal slices and takes 1. '
       + 'In the end, she ate 1/4 of the pie. '
       + 'This example helps us see what fraction means.',
   );
@@ -51,6 +51,30 @@ test('preserves names and replaces written sequence words with spoken transition
   assert.match(exampleForSpeech(multiStep), /First, he multiplies to get 24\./);
   assert.match(exampleForSpeech(multiStep), /Finally, he subtracts to get 19\./);
   assert.doesNotMatch(exampleForSpeech(multiStep), /Then first|end, then/i);
+});
+
+test('avoids mechanical transitions and uninflected definition verbs across the corpus', () => {
+  for (const term of DATA) {
+    const script = speechScriptFor(term);
+    assert.doesNotMatch(script, /Then (?:Now|Every|First|Then|So)\b/i, term.id);
+    assert.doesNotMatch(script, /In the end, (?:Now|Then|So)\b/i, term.id);
+    assert.doesNotMatch(
+      script,
+      /means (?:say|join|start|line|trade|decide|work)\b/i,
+      term.id,
+    );
+  }
+});
+
+test('retells even one-sentence examples instead of embedding the displayed line verbatim', () => {
+  const oneSentenceTerms = DATA.filter((term) => (
+    term.example.replace(/([.!?])\s+(?=[A-Z])/g, '$1\n').split('\n').length === 1
+  ));
+
+  assert.ok(oneSentenceTerms.length > 0);
+  for (const term of oneSentenceTerms) {
+    assert.ok(!exampleForSpeech(term).includes(term.example), term.id);
+  }
 });
 
 test('keeps every narration within the Fish Audio text limit', () => {
