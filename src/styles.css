@@ -295,6 +295,25 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   opacity:1;transform:translate(-50%,-50%) scale(1);
 }
 
+/* Small live notation badges make the rotating overview visually meaningful
+   without trying to label all 189 vocabulary nodes at once. */
+.graph-ambient-symbol{
+  position:absolute;left:0;top:0;width:0;height:0;z-index:2;
+  pointer-events:none;will-change:transform;
+}
+.graph-ambient-symbol-disc{
+  position:absolute;left:0;top:0;width:27px;height:27px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:#123021;background:rgba(140,255,187,.9);
+  border:1px solid rgba(232,255,241,.88);
+  box-shadow:0 3px 10px rgba(5,18,11,.3);
+  opacity:0;transform:translate(-50%,-50%) scale(.76);
+  transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease);
+}
+.graph-ambient-symbol.visible.onscreen .graph-ambient-symbol-disc{
+  opacity:.92;transform:translate(-50%,-50%) scale(1);
+}
+
 /* The map is not merely decorative: this key explains its hierarchy in the
    same spatial language learners see in the graph. */
 #graphLegend{
@@ -577,6 +596,7 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   #graphLegend li{font-size:10px;gap:6px;}
   #breadcrumbFloat{left:174px;right:10px;bottom:10px;}
   .graph-term-symbol-disc{width:40px;height:40px;}
+  .graph-ambient-symbol-disc{width:23px;height:23px;}
 }
 
 /* =========================================================================
