@@ -92,8 +92,8 @@ function lowerNarrationStart(text) {
 
 function storyConnectorStart(text) {
   if (!text) return '';
-  const commonStart = /^(?:a|an|each|every|he|her|his|it|one|only|she|some|that|the|their|they|this|two|we|you)\b/i;
-  return commonStart.test(text) ? lowerNarrationStart(text) : text;
+  const properName = /^(?:Maya|Leo|Ana|Ivy|Zoe|Nina|Sam|Ben|Theo|Omar)(?:'s)?\b/;
+  return properName.test(text) ? text : lowerNarrationStart(text);
 }
 
 function narrationPeriod(text) {
@@ -113,20 +113,32 @@ function definitionForSpeech(term) {
   const first = parts.shift();
   const action = first.match(/^([A-Za-z]+)\b(.*)$/);
   const actionGerund = action && NARRATION_ACTION_GERUNDS[action[1].toLowerCase()];
+  const conceptName = spokenConceptName(term.term);
+  const termKey = String(term.term).toLowerCase();
   const nounPhrase = /^(?:a|an|the|one|two|part|how|when|where)\b/i.test(first);
 
   let explanation;
-  if (actionGerund) {
-    const actionDetails = action[2].replace(/\band keep\b/i, 'and keeping');
-    explanation = `${spokenConceptName(term.term)} means ${actionGerund}${actionDetails}`;
+  if (/^Words in a problem\b/i.test(first)) {
+    explanation = `${conceptName} is wording in a problem${first.slice('Words in a problem'.length)}`;
+  } else if (/^Another word for\b/i.test(first)) {
+    explanation = `${conceptName} is ${lowerNarrationStart(first)}`;
+  } else if (termKey === 'rows and columns') {
+    explanation = `${conceptName} describe two directions. ${first}`;
+  } else if (termKey === 'tenths' || termKey === 'hundredths') {
+    explanation = `${conceptName} are the equal parts made when ${lowerNarrationStart(first)}`;
+  } else if (actionGerund) {
+    const actionDetails = action[2]
+      .replace(/\band keep counting\b/i, 'and continuing to count')
+      .replace(/,\s+or find\b/i, ', or finding');
+    explanation = `${conceptName} means ${actionGerund}${actionDetails}`;
+  } else if (PLURAL_NARRATION_CONCEPTS.has(termKey)) {
+    explanation = `${conceptName} are ${lowerNarrationStart(first)}`;
   } else if (nounPhrase) {
-    explanation = `${spokenConceptName(term.term)} is ${lowerNarrationStart(first)}`;
-  } else if (PLURAL_NARRATION_CONCEPTS.has(String(term.term).toLowerCase())) {
-    explanation = `${spokenConceptName(term.term)} are ${lowerNarrationStart(first)}`;
+    explanation = `${conceptName} is ${lowerNarrationStart(first)}`;
   } else if (/^(?:goes|takes|weighs)\b/i.test(first)) {
-    explanation = `${spokenConceptName(term.term)} describes something that ${lowerNarrationStart(first)}`;
+    explanation = `${conceptName} describes something that ${lowerNarrationStart(first)}`;
   } else {
-    explanation = `${spokenConceptName(term.term)} means ${lowerNarrationStart(first)}`;
+    explanation = `${conceptName} means ${lowerNarrationStart(first)}`;
   }
 
   parts.forEach((part, index) => {
