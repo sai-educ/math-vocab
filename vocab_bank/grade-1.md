@@ -5,104 +5,114 @@
 
 ### addend
 
-**Definition:** A number being added to another number.
+**Definition:** A number you add to another number.
 
-**Example:** In 3 + 4 = 7, 3 and 4 are addends.
+**Example:** Leo writes 3 + 4 = 7. The 3 and the 4 are the addends. They are the parts he put together.
+
+**Common misconception:** The answer is not an addend. Only the numbers going in are addends.
 
 ### sum
 
-**Definition:** The answer when you add.
+**Definition:** The answer you get when you add.
 
-**Example:** The sum of 6 and 2 is 8.
+**Example:** Ana finds 6 shells, then 2 more. She adds them up. The sum is 8 shells.
 
 ### difference
 
-**Definition:** The answer when you subtract.
+**Definition:** The answer you get when you subtract.
 
-**Example:** The difference between 9 and 4 is 5.
+**Example:** Ben has 9 grapes and eats 4. He subtracts to find the difference. It is 5 grapes.
 
-**Common misconception:** Kids sometimes think 'difference' means 'how different' in a general sense rather than the subtraction answer.
+**Common misconception:** In math, 'difference' does not mean how two things are unlike. It is the subtraction answer.
 
 ### equation
 
-**Definition:** A math sentence with an equal sign showing two equal amounts.
+**Definition:** A math sentence with an equal sign. Both sides are worth the same.
 
-**Example:** 5 + 3 = 8 is an equation.
+**Example:** Ivy writes 5 + 3 = 8. Each side of the equal sign is worth 8, so the sentence balances.
+
+**Common misconception:** The equal sign does not mean 'here comes the answer'. It means both sides match.
 
 ### unknown
 
-**Definition:** The missing number in a problem you need to find.
+**Definition:** The missing number in a problem. You solve to find it.
 
-**Example:** Find the unknown: 4 + __ = 9.
+**Example:** Zoe sees 4 + ? = 9. The ? is the unknown. She counts up from 4 to 9 and finds 5.
 
 ### fact family
 
-**Definition:** A group of related addition and subtraction equations using the same three numbers.
+**Definition:** A set of facts built from the same three numbers.
 
-**Example:** 3 + 4 = 7 and 7 - 4 = 3 are in the same fact family.
+**Example:** Theo uses 3, 4, and 7. His fact family is 3 + 4 = 7, 4 + 3 = 7, 7 - 3 = 4, and 7 - 4 = 3.
 
 ### doubles
 
-**Definition:** Adding the same number to itself.
+**Definition:** Adding a number to itself.
 
-**Example:** 4 + 4 is a doubles fact.
+**Example:** Nina has 4 red beads and 4 blue beads. That is a double. She knows 4 + 4 = 8 right away.
 
 ### compare
 
-**Definition:** In word problems, figure out how much more or less one amount is than another.
+**Definition:** Look at two numbers. Tell which is bigger or smaller.
 
-**Example:** How many more apples does Sam have than Mia?
+**Example:** Omar compares 6 and 9 on the number line. The 9 sits farther right, so 9 is bigger.
 
 ### how many more
 
-**Definition:** A phrase that usually signals a comparison subtraction problem.
+**Definition:** Words that ask about the gap between two amounts.
 
-**Example:** How many more stickers does Ana need?
+**Example:** Maya has 8 stickers. Leo has 5. How many more does Maya have? She subtracts and finds 3.
 
 
 ## Number & Operations in Base Ten (1.NBT)
 
 ### place value
 
-**Definition:** The value of a digit based on its position in a number.
+**Definition:** The value a digit has because of where it sits.
 
-**Example:** In 42, the 4 is worth 4 tens.
+**Example:** Ana writes 47. The 4 sits in the tens place, so it is worth 40. The 7 is worth just 7.
+
+**Common misconception:** In 47, the 4 does not mean four. Its spot makes it worth forty.
 
 ### tens
 
 **Definition:** Groups of ten.
 
-**Example:** 30 has 3 tens.
+**Example:** Ben bundles his straws into groups of ten. He makes 3 bundles. That is 3 tens, or 30.
 
 ### ones
 
-**Definition:** Single units left over after grouping by ten.
+**Definition:** Single units left over after you make tens.
 
-**Example:** 23 has 2 tens and 3 ones.
+**Example:** Ivy has 25 beads. She makes 2 bundles of ten and has 5 ones left over.
 
 ### greater than (>)
 
-**Definition:** A symbol showing one number is bigger than another.
+**Definition:** A sign that points to the bigger number.
 
-**Example:** 12 > 8.
+**Example:** Zoe writes 8 > 5. The wide open side faces the 8, because 8 is the greater number.
 
 ### less than (<)
 
-**Definition:** A symbol showing one number is smaller than another.
+**Definition:** A sign that shows the first number is smaller.
 
-**Example:** 5 < 9.
+**Example:** Theo writes 3 < 7. The narrow point faces the 3, because 3 is less.
+
+**Common misconception:** Think of a hungry mouth. It always opens toward the bigger number.
 
 ### equal to (=)
 
-**Definition:** A symbol showing two amounts are the same.
+**Definition:** A sign that shows both sides are worth the same.
 
-**Example:** 10 = 10.
+**Example:** Nina writes 6 = 6. Both sides match exactly, so the equal sign fits.
 
 ### count on
 
-**Definition:** Start at a number and count up to add.
+**Definition:** Start at one number and keep counting up.
 
-**Example:** Count on from 5 to add 3: 6, 7, 8.
+**Example:** Omar has 6 marbles and gets 3 more. He counts on from 6: 7, 8, 9. He has 9.
+
+**Common misconception:** Do not start over at 1. Begin at the number you already have.
 
 
 ## Measurement & Data (1.MD)
@@ -111,99 +121,99 @@
 
 **Definition:** How long something is from end to end.
 
-**Example:** Measure the length of the table.
+**Example:** Maya measures her shoe with paper clips. She lays them end to end. The length is 5 clips.
 
 ### measure
 
-**Definition:** Use a tool or unit to find a size or amount.
+**Definition:** Find the size of something with a tool or a unit.
 
-**Example:** Measure the string with paper clips.
+**Example:** Leo measures his book with cubes. He lines them up with no gaps and counts 7.
 
 ### order by length
 
-**Definition:** Arrange objects from shortest to longest (or the reverse).
+**Definition:** Line things up from shortest to longest.
 
-**Example:** Order the pencils by length.
+**Example:** Ana holds three ribbons. She lines up one end of each, then orders them by length.
 
 ### hour
 
-**Definition:** A unit of time equal to 60 minutes.
+**Definition:** A unit of time. The short hand on a clock points to it.
 
-**Example:** The movie is one hour long.
+**Example:** Ben checks the clock. The short hand is on 3 and the long hand is on 12. It is 3 o'clock.
 
 ### half hour
 
-**Definition:** 30 minutes, or half of an hour.
+**Definition:** Thirty minutes. Half of one hour.
 
-**Example:** Recess is a half hour.
+**Example:** Ivy looks at the clock. The long hand points straight down at 6. It is half past 2.
 
 ### data
 
-**Definition:** Information collected, often shown in a chart or graph.
+**Definition:** Facts you collect and can count.
 
-**Example:** The class collected data about favorite fruits.
+**Example:** Zoe asks every classmate about their pet. She writes down each answer. Those answers are her data.
 
 ### tally chart
 
-**Definition:** A chart that uses marks to count things.
+**Definition:** A chart that counts with small marks.
 
-**Example:** Make a tally chart of pets in the class.
+**Example:** Theo makes a tally chart of bus riders. He draws one mark per rider. Every fifth mark crosses the other four.
 
 ### graph
 
-**Definition:** A picture that shows information so it's easy to compare.
+**Definition:** A picture that shows data so you can compare.
 
-**Example:** The graph shows how many books each student read.
+**Example:** Nina graphs the class pets. The dog bar is the tallest, so dogs are the most common pet.
 
 
 ## Geometry (1.G)
 
 ### partition
 
-**Definition:** Divide a shape into equal parts.
+**Definition:** Cut a shape into parts.
 
-**Example:** Partition the rectangle into 2 equal parts.
+**Example:** Omar partitions his sandwich. He cuts straight down the middle into 2 equal parts.
 
 ### equal shares
 
-**Definition:** Parts of a whole that are the same size.
+**Definition:** Parts that are all the same size.
 
-**Example:** Cut the pizza into 4 equal shares.
+**Example:** Maya splits a pancake with her sister. Each one gets an equal share. Neither piece is bigger.
+
+**Common misconception:** Same number of pieces is not enough. The pieces have to be the same size too.
 
 ### halves
 
-**Definition:** Two equal parts of a whole.
+**Definition:** Two equal parts of one whole.
 
-**Example:** Cut the apple into halves.
+**Example:** Leo cuts an apple into halves. Each piece is one of two equal parts.
 
 ### fourths
 
-**Definition:** Four equal parts of a whole.
+**Definition:** Four equal parts of one whole.
 
-**Example:** Fold the paper into fourths.
+**Example:** Ana cuts a pizza into fourths. She and 3 friends each take one part.
 
 ### quarters
 
-**Definition:** Another name for fourths — four equal parts.
+**Definition:** Another word for fourths.
 
-**Example:** Each quarter of the circle is the same size.
-
-**Common misconception:** Can be confused with the coin worth 25 cents.
+**Example:** Ben folds his paper in half, then in half again. He opens it up and finds 4 quarters.
 
 ### attribute
 
-**Definition:** A feature or characteristic of a shape, like number of sides.
+**Definition:** Something you can notice about a shape, like its sides or corners.
 
-**Example:** One attribute of a square is that it has 4 equal sides.
+**Example:** Ivy looks at a triangle. She names two attributes: 3 sides and 3 corners.
 
 ### 2D shape
 
-**Definition:** A flat shape with length and width, like a circle or square.
+**Definition:** A flat shape. It has length and width but no thickness.
 
-**Example:** A triangle is a 2D shape.
+**Example:** Zoe draws a square on paper. It lies flat on the page, so it is a 2D shape.
 
 ### 3D shape
 
-**Definition:** A solid shape with length, width, and height, like a cube.
+**Definition:** A solid shape you can hold. It takes up space.
 
-**Example:** A ball is a 3D shape.
+**Example:** Theo picks up a wooden cube. He can turn it over in his hand, so it is a 3D shape.
