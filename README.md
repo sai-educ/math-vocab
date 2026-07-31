@@ -1,139 +1,327 @@
-# Math Vocabulary Knowledge Graph (K–5, Common Core aligned)
+# Math Word Explorer
 
-An open-access, interactive vocabulary bank for elementary math word-problem terms — 189 terms across all 6 grade bands (K–5) and every Common Core math domain (Counting & Cardinality, Operations & Algebraic Thinking, Number & Operations in Base Ten, Number & Operations—Fractions, Measurement & Data, Geometry).
+**A free tool that explains the 189 math words children meet from Kindergarten
+to Grade 5 — in language they can actually read.**
 
-## How to use it
+Word problems are often hard for a reason that has nothing to do with the
+maths. They are full of words like *denominator*, *perimeter* and *regroup*. A
+child can know how to subtract and still be stuck, simply because they are not
+sure what *how many are left* is asking.
 
-Open `index.html` in any browser. A yellow pulsing highlight walks you through the flow: it starts on the grade row up top, moves to the topic list once a grade is picked, then to the vocabulary list once a topic is picked. The 3D graph in the center auto-rotates on its own and can also be freely dragged (mouse or touch/iPad) at any time. **Nodes in the graph are tappable** — touching a word, topic or grade sphere selects it and syncs the panels. As you drill down, the camera flies to frame the grade → topic → word you picked and labels it — the same info also appears in full on the right-hand definition panel.
+This tool explains every one of those words twice over: once as a short, plain
+definition, and once as a small story showing the word doing its job in a real
+situation.
 
-Everything is reachable from the keyboard: `Tab` moves between the grade row, the topic list and the word list; arrow keys (plus `Home`/`End`) move within a list; `Enter`/`Space` selects. Selections are announced to screen readers.
+Aligned to the Common Core State Standards for Mathematics. Free, open source,
+and it collects no data about anyone.
 
-## Files
+---
 
-- `index.html` — the built app: a single self-contained file with all CSS and JS inlined, so it can be opened straight from disk or dropped on any static host. **Generated — do not edit by hand.** Edit `src/` and re-run `build_html.py`.
-- `src/` — the actual source, split by concern:
-  - `styles.css` — layout, theme, responsive breakpoints, reduced-motion rules.
-  - `constants.js` — grade/domain ordering, icons, motion and storage settings, data helpers.
-  - `graph3d.js` — the Three.js knowledge graph (instanced nodes, merged edges, HTML labels, picking, camera framing).
-  - `ui.js` — panel rendering, keyboard roving-tabindex groups, screen-reader announcements, progress tracking.
-  - `tts.js` — the "Listen to an explanation" button.
-  - `about.js` — the About/licence dialog.
-  - `main.js` — application state and wiring.
-- `index_template.html` — the HTML shell, with three placeholders (`__STYLES__`, `__SCRIPTS__`, `__VOCAB_DATA__`) that the build fills in.
-- `build_html.py` — regenerates `index.html` from the template + `src/` + `vocab_data.json`. Run after `build_data.py` whenever anything changes: `python3 build_data.py && python3 build_html.py`.
-- `vocab_data.json` — the raw dataset (term, grade, Common Core domain/standard code, definition, example, misconception) that powers the app.
-- `vocab_bank/grade-*.md` — the same content as human-readable Markdown, one file per grade. This is the source of truth for editing/reviewing content and the most git-friendly format for tracking changes over time.
-- `build_data.py` — generates `vocab_data.json` and the Markdown files from a single Python data structure. To edit or extend the vocabulary bank, edit the `DATA` dictionary in this file and re-run it (`python3 build_data.py`).
-- `fish-audio-worker.js` — a small server-side proxy (Cloudflare Worker) that powers the "Listen to an explanation" button. See below for what it does and how to turn it on.
+## Contents
 
-The 3D graph loads Three.js, an OrbitControls add-on, and GSAP from CDNs, so it needs an internet connection the first time. If any of those fail the graph area shows a fallback message and the rest of the app — topics, vocabulary, definitions, search, the About dialog — keeps working fully offline. (Verified: with all three CDN tags removed the app still runs with no console errors.)
+- [Try it](#try-it)
+- [Who it is for](#who-it-is-for)
+- [What you get for every word](#what-you-get-for-every-word)
+- [Run it on your own computer](#run-it-on-your-own-computer)
+- [Turning on the read-aloud voice](#turning-on-the-read-aloud-voice)
+- [Putting it online](#putting-it-online)
+- [Editing the words](#editing-the-words)
+- [How the project is put together](#how-the-project-is-put-together)
+- [Accessibility](#accessibility)
+- [Privacy](#privacy)
+- [Credits and licence](#credits-and-licence)
 
-Icons in the lists and labels use Unicode emoji — a free, open, dependency-free icon set that renders natively on every platform including iPad, with no external asset loading. Common Core domains are additionally distinguished in 3D by *shape* (icosahedron, octahedron, cube, torus, cylinder, dodecahedron) so the branches are still tellable apart without relying on colour.
+---
 
-## Accessibility
+## Try it
 
-The app targets WCAG 2.1 AA:
+Open `index.html` in any browser. That is the welcome page; the **Open the
+Explorer** button takes you into the tool itself (`app.html`).
 
-- **Keyboard**: every grade, topic and word is a real `<button>` with an accessible name and `aria-pressed` state. Roving tabindex keeps the tab order to one stop per group, so 189 words don't mean 189 tab presses.
-- **Screen readers**: selecting a word announces the term, its definition and its example through a polite live region, since the definition panel is visually far from the list being operated.
-- **Zoom**: the viewport meta no longer sets `maximum-scale`/`user-scalable=no`, so pinch-zoom works (WCAG 1.4.4).
-- **Contrast**: all text meets AA (measured 5.09:1 or better against its own background).
-- **Touch targets**: interactive rows and buttons are at least 44 px tall, per Apple's HIG.
-- **Reduced motion**: with the OS "Reduce Motion" setting on, the graph stops auto-rotating, camera flights become cuts, and all pulses and transitions are disabled.
+Nothing to install and no sign-in. It works on a tablet, laptop or phone.
 
-## Performance
+**How a child uses it — three steps:**
 
-The graph draws 224 nodes and 223 edges. Nodes are drawn with `InstancedMesh` (one draw call per level, plus one per domain shape) and every edge lives in a single merged `LineSegments`, which takes the scene from roughly 450 draw calls to about a dozen. Highlighting is a frame-rate-independent lerp in the render loop rather than a per-click storm of tweens (the earlier version fired ~700 simultaneous GSAP tweens on every selection). This is what keeps it smooth on an iPad.
+1. **Pick a grade** along the top.
+2. **Pick a topic** on the left (these are the Common Core domains).
+3. **Pick a word** — its explanation appears on the right.
 
-## Voice explanations (Fish Audio text-to-speech)
+The 3D map in the middle shows where that word sits among all the others. You
+can spin it by dragging, and tapping any dot in it jumps straight to that word.
 
-Each word's detail panel has a **Listen to an explanation** button that reads the term, its definition, and its example out loud, using Fish Audio's `s2.1-pro-free` voice model.
+---
 
-**Why this needs a separate piece (`fish-audio-worker.js`) instead of just calling Fish Audio from `index.html` directly:** this site is a public, open-access static page. Anything written directly into `index.html` — including an API key — is visible to literally anyone who views the page source or looks at the GitHub repo. If we put a Fish Audio API key straight into the page, anyone could copy it and use it under your account. So instead, the key lives only inside a small proxy service that you deploy yourself; `index.html` talks to *that* proxy, and the proxy is the only thing that ever sees the real key.
+## Who it is for
 
-**First, rotate your API key.** The key that was shared while building this was typed into a chat conversation, which should be treated as exposed. Before deploying anything public, go to your Fish Audio dashboard and generate a new key. Use the new one in the steps that follow.
-
-### Troubleshooting: "Could not load audio: Voice server is missing FISH_API_KEY"
-
-This is not a bug — it is the server correctly reporting that it has no key. `server.js` checks for `FISH_API_KEY` and returns that message *before* it ever contacts Fish Audio, so you get a clear reason instead of a confusing network failure. The fix is always "supply the key", in whichever environment is showing the message:
-
-| Where you see it | What to set |
+| Who | How they use it |
 | --- | --- |
-| `localhost` | `FISH_API_KEY` in `.env.local` (see below) |
-| A Vercel deployment | `FISH_API_KEY` in Project Settings → Environment Variables, then **redeploy** |
-| A Cloudflare Worker | `FISH_API_KEY` as a Worker secret |
+| **Children** | Look a word up on their own. Big buttons, a read-aloud button, and a tick beside every word already explored. |
+| **Teachers** | Put a new word on the board, or let children look words up during independent work. Words are grouped by grade and Common Core domain. |
+| **Tutors** | Quickly tell whether a child is stuck on the vocabulary or on the method. |
+| **Parents and carers** | Help with homework without needing to remember the maths yourself — the explanation is written for both of you. |
 
-To tell a missing key from a bad one, call the endpoint directly:
+---
+
+## What you get for every word
+
+Each of the 189 words has four parts:
+
+- **What it means** — a plain definition, one or two short sentences.
+- **See it in an example** — a short story with a named child and a real
+  situation, showing the word being used.
+- **Watch out for** — the mistake children usually make with this word.
+- **Listen** — a button that reads the whole thing aloud.
+
+Here is one entry, as a child sees it:
+
+> ### denominator
+> **What it means** — The bottom number. It tells how many equal parts make the whole.
+>
+> **See it in an example** — Maya writes 3/8. The denominator 8 means the whole pie was cut into 8 equal parts.
+
+**Every explanation is checked for reading difficulty when the site is built.**
+The build prints a Flesch report, so the language stays within reach of the age
+it is written for instead of quietly drifting harder over time. The current
+bank averages a Flesch Reading Ease of about **90** ("very easy") and a
+Flesch-Kincaid grade level of about **2.5**.
+
+---
+
+## Run it on your own computer
+
+You only need this if you want to change something. To simply *use* the tool,
+open `index.html`.
+
+**What you need:** Python 3 and Node.js (version 18 or newer).
+
+```bash
+npm install
+```
+
+```bash
+npm run build
+```
+
+```bash
+npm start
+```
+
+Then open <http://localhost:4173>.
+
+`npm run build` regenerates everything: the word data, the Markdown copies, and
+the two HTML pages. Run it after any change to the words or the code.
+
+---
+
+## Turning on the read-aloud voice
+
+The **Listen to an explanation** button uses [Fish Audio](https://fish.audio)
+for speech. It needs an API key, and that key must never go in the page itself —
+this is a public site, so anything in the page is visible to everybody. Instead
+the key lives on the server, and the page asks the server to do the talking.
+
+**If you see "Could not load audio: Voice server is missing FISH_API_KEY"**,
+that is not a bug. It is the server telling you no key is set up yet. Set one:
+
+1. Copy `.env.example` to `.env.local`.
+2. Put your Fish Audio key in it as `FISH_API_KEY=...`.
+3. Restart the server (`npm start`) — the file is only read at startup.
+
+To check what is happening, call the endpoint directly:
 
 ```bash
 curl -s -X POST http://127.0.0.1:4173/api/tts -H 'Content-Type: application/json' -d '{"text":"hello"}'
 ```
 
-- `Voice server is missing FISH_API_KEY` → no key is configured.
-- `Fish Audio returned an error (401)` with `Invalid Token` → a key is configured but Fish Audio rejected it (wrong, revoked, or not yet rotated).
-- Binary audio data → it is working.
+| What comes back | What it means |
+| --- | --- |
+| `missing FISH_API_KEY` | No key is set up. |
+| `Fish Audio returned an error (401)` | A key is set, but Fish Audio rejected it. |
+| Binary gibberish | It is working. |
 
-### Local setup
+Everything else in the tool works fine without a key. Only the Listen button
+needs it.
 
-1. Copy `.env.example` to `.env.local`.
-2. Put your rotated Fish Audio key in `.env.local` as `FISH_API_KEY=...`.
-3. Run `node server.js`.
-4. Open `http://localhost:4173`.
+---
 
-The page calls `/api/tts`, and `server.js` calls Fish Audio with your server-side key. `.env.local` is ignored by git so the key does not get committed. **Restart `node server.js` after editing `.env.local`** — the file is read once at startup.
+## Putting it online
 
-If you ever opened the page with `?ttsProxy=...`, that URL is remembered in the browser and will keep overriding `/api/tts`. Clear it by visiting the page once with an empty value: `?ttsProxy=`.
+The site is two plain HTML files, so almost any host will do.
 
-### Vercel setup
+**On Vercel** (what this project uses):
 
-Yes, you can deploy this directly on Vercel. Vercel serves the static app and runs `api/tts.js` as a server-side Function, so the browser still calls `/api/tts` without seeing your Fish Audio key.
+1. Connect the GitHub repo to a new Vercel project.
+2. Use the default **Other** preset. No build command is needed — the HTML is
+   already built and committed.
+3. Under **Settings → Environment Variables**, add `FISH_API_KEY` and
+   `FISH_VOICE_ID`. Tick all three environments.
+4. **Redeploy.** Environment variables are only picked up at deploy time, so an
+   existing deployment keeps saying "missing FISH_API_KEY" until you redeploy.
 
-1. Push this folder to GitHub.
-2. In Vercel, create a new project from that GitHub repo.
-3. Use the default **Other** framework/static settings. No build command is required because `index.html` is already generated.
-4. In **Project Settings** -> **Environment Variables**, add:
-   - `FISH_API_KEY` -> your rotated Fish Audio API key.
-   - `FISH_VOICE_ID` -> `d38790551b0548ba9de248dbd10b74e1`.
-   - Optional: `FISH_TTS_MODEL` -> `s2.1-pro-free`.
-   Tick all three environments (Production, Preview, Development) or the button will work on the production URL but not on preview deployments.
-5. **Redeploy.** Environment variables are baked in at deploy time, so a project that was deployed before you added the key keeps returning the "missing FISH_API_KEY" message until you trigger a new deployment.
-6. Open the Vercel URL, select a word, and click **Listen to an explanation**.
+Vercel turns `api/tts.js` into the server-side function automatically.
+`.vercelignore` keeps `.env*` out of the upload.
 
-No `vercel.json` is needed: with the **Other** preset Vercel serves the static files from the repo root and automatically turns `api/tts.js` into a Node serverless function at `/api/tts`. `.vercelignore` keeps `.env*` out of the upload if you ever deploy with the `vercel` CLI instead of the Git integration.
+> **Before you make the URL public**, read
+> [Cost and abuse](#cost-and-abuse) below. The voice endpoint currently accepts
+> any text from anybody, which is fine for a private link and risky for a public
+> one.
 
-### Hosted setup with Cloudflare Worker
+### Cost and abuse
 
-1. Go to [dash.cloudflare.com](https://dash.cloudflare.com) and sign up for a free account if needed.
-2. In **Workers & Pages**, create a Worker, then replace the sample code with `fish-audio-worker.js`.
-3. In the Worker's **Settings** -> **Variables and Secrets**, add:
-   - `FISH_API_KEY` -> your rotated Fish Audio API key, as a secret.
-   - `FISH_VOICE_ID` -> `d38790551b0548ba9de248dbd10b74e1`.
-   - Optional: `FISH_TTS_MODEL` -> `s2.1-pro-free`.
-4. Copy the Worker URL, for example `https://fish-audio-proxy.<your-subdomain>.workers.dev`.
-5. Open the app once with `?ttsProxy=<WORKER_URL>` appended to the page URL. The app stores that proxy URL in the browser and uses it for future Listen requests.
+`/api/tts` accepts arbitrary text (up to 2,000 characters) from anyone, with
+`Access-Control-Allow-Origin: *`. Once the address is public, anyone who finds
+it has a free text-to-speech API billed to your Fish Audio account.
 
-### Cost and abuse — read before making the URL public
+Fixes, cheapest first:
 
-The proxy currently accepts **arbitrary `text`** (up to 2,000 characters) from **anyone**, with `Access-Control-Allow-Origin: *`. On a private or lightly-shared URL that is fine, and the browser-side cache means replaying a word costs nothing. But once the address is public, anyone who finds `/api/tts` has a free text-to-speech API billed to your Fish Audio account, and they are not limited to the 189 vocabulary words.
+1. Set `CORS_ORIGIN` to your real site address instead of leaving it `*`.
+2. Add rate limiting (Vercel firewall rules, or Cloudflare on the Worker route).
+3. **The durable fix:** make the endpoint take a word id (`{"termId":
+   "k-cc-count"}`) instead of free text, and build the sentence server-side from
+   `vocab_data.json`. It could then only ever say one of 189 fixed things, which
+   also makes the audio cacheable and nearly free. This needs changes in
+   `server.js`, `api/tts.js`, `fish-audio-worker.js` and `src/tts.js`.
 
-Mitigations, cheapest first:
+Also prefer a key limited to the free `s2.1-pro-free` model, so a leak cannot
+run up a bill.
 
-1. **Set `CORS_ORIGIN`** to your real site origin (e.g. `https://mathvocab.vercel.app`) instead of leaving it `*`. This stops casual in-browser use from other sites, though it does not stop `curl`.
-2. **Add rate limiting** — Cloudflare rate limiting on the Worker route, or Vercel's firewall rules.
-3. **Accept a term id instead of free text** (the durable fix). Have the endpoint take `{"termId": "k-cc-count"}`, look the term up in `vocab_data.json` server-side, and build the sentence there. The endpoint can then only ever synthesize one of 189 fixed strings, which also makes the audio safely cacheable at the CDN edge and drops the per-request cost close to zero. This needs matching changes in `server.js`, `api/tts.js`, `fish-audio-worker.js` and `src/tts.js`.
+---
 
-Also note that a Fish Audio key restricted to the free `s2.1-pro-free` model limits the blast radius of a leak, so prefer that over a key with billing enabled.
+## Editing the words
 
-## Design notes
+**All 189 words live in one place: the `DATA` table at the top of
+`build_data.py`.** Each entry is four pieces of text:
 
-- **Model-agnostic by design.** This dataset doesn't depend on any particular AI model or vendor. It can back a chatbot (Estella or otherwise), a printed handout, an LMS plug-in, or stand alone as a reference — the content survives regardless of what platform is doing the "explaining."
-- **Grounded in Common Core.** Each term is tagged with its grade and domain code (e.g. `3.NF` for Grade 3 Number & Operations—Fractions) so it maps directly onto standard curriculum scope-and-sequence documents.
-- **Extensible.** Add rows to `build_data.py`, add new fields (e.g. Spanish translations, audio links, Polya-stage tags), or fork per district to match local curriculum pacing.
+```python
+("denominator",
+ "The bottom number. It tells how many equal parts make the whole.",
+ "Maya writes 3/8. The denominator 8 means the whole pie was cut into 8 equal parts.",
+ ""),   # <- the "watch out for" note, or "" if there isn't one
+```
+
+Change it, then run `npm run build`. That rewrites `vocab_data.json`, the
+Markdown files in `vocab_bank/`, and both HTML pages.
+
+**Writing guidance** (also at the top of `build_data.py`):
+
+- Keep sentences short. Sentence length matters more for readability than
+  anything else.
+- Use everyday words *around* the hard word. "Denominator" is five syllables and
+  cannot be avoided; everything else in the sentence can be one or two.
+- Examples should be *situated*: a named child, a real setting, and the thinking
+  made visible. There is a small recurring cast (Maya, Leo, Ana, Ben, Ivy, Zoe,
+  Theo, Nina, Omar, Sam) so the bank reads as one world.
+- Name the mistake children actually make, not the abstract error.
+
+The build prints a readability report and flags anything that drifted too hard.
+
+---
+
+## How the project is put together
+
+The two HTML files are **built**, not hand-edited. Edit the sources, then run
+the build.
+
+```
+build_data.py        the 189 words + the writing guidance   <- edit words here
+readability.py       the Flesch reading-level checker
+build_html.py        assembles the two HTML pages
+
+src/                 the app's source                       <- edit code here
+  styles.css           layout, theme, responsive rules
+  landing.css          the welcome page's styles
+  constants.js         grades, domains, shared helpers
+  icons.js             the SVG icon set
+  sound.js             interaction sounds
+  graph3d.js           the 3D map (Three.js)
+  ui.js                panels, keyboard support, announcements
+  tts.js               the Listen button
+  about.js             the About dialog
+  main.js              app state and wiring
+
+landing_template.html  page shell for the welcome page
+app_template.html      page shell for the tool
+
+index.html           BUILT - the welcome page
+app.html             BUILT - the tool
+vocab_data.json      BUILT - the word data
+vocab_bank/*.md      BUILT - one readable Markdown file per grade
+
+server.js            local web server + voice proxy
+api/tts.js           the same voice proxy, for Vercel
+fish-audio-worker.js  the same voice proxy, for Cloudflare
+```
+
+`index.html` and `app.html` are each a single self-contained file with all the
+CSS and JavaScript inlined. That means you can email one to a teacher, put it on
+a USB stick, or drop it on any static host, and it just works.
+
+**What loads from the internet:** the 3D map uses Three.js and GSAP from a CDN.
+If those cannot load — no internet, a school firewall — the map area shows a
+short message and *everything else keeps working*: the words, the definitions,
+the examples, the search, the sounds, the About dialog. This is tested.
+
+**Performance.** The map draws 224 dots and 223 connecting lines. They are drawn
+with instancing and a single merged line object, so the whole scene is about a
+dozen draw calls rather than 450. Highlighting is a smooth per-frame blend
+rather than hundreds of simultaneous animations. This is what keeps it smooth on
+a school iPad.
+
+**Sounds.** Clicking makes a small sound that tells you *what* happened — a warm
+swell for a grade, a downward drop for a topic, a bright chime for a word, a
+paper flick for going back. They are synthesized live by
+[cuelume](https://github.com/Danilaa1/cuelume), so there are no audio files to
+download and they work offline. The Listen button is deliberately silent, so
+nothing steps on the first word of the speech. **Sound can be turned off with
+the button in the header**, and the choice is remembered.
+
+---
+
+## Accessibility
+
+Built to WCAG 2.1 AA.
+
+- **Keyboard** — every grade, topic and word is a real button. `Tab` moves
+  between the three lists; arrow keys (and `Home`/`End`) move within a list;
+  `Enter` or `Space` selects.
+- **Screen readers** — choosing a word reads out the word, its meaning and its
+  example, because the explanation appears far from the list you are using.
+- **Zoom** — pinch-to-zoom works. Nothing blocks it.
+- **Contrast** — all text is at least 5:1 against its background.
+- **Touch targets** — every button is at least 44px tall.
+- **Reduced motion** — with the system "Reduce Motion" setting on, the map stops
+  spinning, camera moves become instant, and animations are switched off.
+- **Colour is never the only signal** — each Common Core domain also has its own
+  3D shape and its own icon.
+
+---
+
+## Privacy
+
+**This site collects no data at all.** No sign-in, no analytics, no cookies, no
+advertising, no tracking of any kind. Nothing about a child is sent anywhere or
+stored on any server.
+
+Two things are saved on your own device, in your own browser: which words have
+been opened, and whether sound is on. Clearing your browser data erases both.
+
+The one time anything leaves your device is when you press **Listen** — the
+sentence to be spoken is sent to the voice server so it can be turned into
+audio. Nothing is stored.
+
+---
 
 ## Credits and licence
 
-Developed by the **Usable Math** team at the University of Massachusetts Amherst ([usablemath.org](https://usablemath.org)), in collaboration with the **Society & AI** research group ([societyandai.org](https://societyandai.org)).
+Made by the **Usable Math** team at the University of Massachusetts Amherst
+([usablemath.org](https://usablemath.org)), with the **Society & AI** research
+group ([societyandai.org](https://societyandai.org)).
 
-Released as an Open Educational Resource under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) — share and adapt for non-commercial purposes with attribution.
+Released as an Open Educational Resource under
+[CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) — share it and
+adapt it for non-commercial use, with credit.
 
-This is surfaced in the app itself via the **About** button in the header (and the **About & licence** link in the footer), which opens a dialog with both organisation links and the licence.
+Source: [github.com/sai-educ/math-vocab](https://github.com/sai-educ/math-vocab)
+
+Also uses [Three.js](https://threejs.org) and [GSAP](https://gsap.com) for the
+3D map, and [cuelume](https://github.com/Danilaa1/cuelume) (MIT) for the sounds.
