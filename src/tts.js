@@ -36,12 +36,6 @@ function readTtsProxyUrl() {
   return configured || DEFAULT_TTS_PROXY_URL;
 }
 
-function speechScriptFor(t) {
-  let script = `${t.term}. ${t.definition}`;
-  if (t.example) script += ` For example: ${t.example}`;
-  return script;
-}
-
 async function speakTerm(t) {
   const btn = document.getElementById('listenBtn');
   const btnText = document.getElementById('listenBtnText');

@@ -35,6 +35,7 @@ APP_SCRIPTS = (
     "icons.js",
     "sound.js",
     "graph3d.js",
+    "narration.js",
     "tts.js",
     "ui.js",
     "about.js",

@@ -179,7 +179,7 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
 #rightRegion{display:contents;}
 
 #leftPanel{
-  width:280px;flex:0 0 280px;border-right:1px solid var(--line);background:var(--panel);
+  width:264px;flex:0 0 264px;border-right:1px solid var(--line);background:var(--panel);
   display:flex;flex-direction:column;min-height:0;
 }
 #topicsSection{
@@ -280,10 +280,61 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
 .gl-text{min-width:0;}
 .gl-icon{flex:0 0 auto;font-size:15px;line-height:1;}
 .gl-icon:empty{display:none;}
-.lv-root .gl-box{border:2px solid rgba(255,255,255,.85);box-shadow:0 0 16px rgba(255,255,255,.22);}
+.lv-root .gl-box{
+  border:2px solid rgba(255,255,255,.85);box-shadow:0 0 16px rgba(255,255,255,.22);
+  font-size:17px;font-weight:750;padding:10px 16px;border-radius:14px;letter-spacing:-.1px;
+  white-space:nowrap;
+}
 .lv-grade .gl-box{border:2px solid var(--accent);box-shadow:0 0 16px rgba(124,158,255,.35);}
 .lv-domain .gl-box{border:2px solid var(--accent2);box-shadow:0 0 16px rgba(255,95,168,.35);}
 .lv-term .gl-box{border:2px solid var(--accent3);box-shadow:0 0 18px rgba(124,255,178,.4);font-size:15px;padding:8px 14px;}
+
+/* A single term symbol is projected onto the active or hovered green node.
+   The outer element follows the camera with no transition; the disc handles
+   the visual entrance so it never lags behind its sphere. */
+#graphTermSymbol{
+  position:absolute;left:0;top:0;width:0;height:0;z-index:4;
+  pointer-events:none;will-change:transform;
+}
+.graph-term-symbol-disc{
+  position:absolute;left:0;top:0;width:44px;height:44px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:#10251b;background:rgba(145,255,190,.96);
+  border:2px solid rgba(232,255,241,.96);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 7px 18px rgba(5,18,11,.35);
+  opacity:0;transform:translate(-50%,-50%) scale(.72);
+  transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease);
+}
+#graphTermSymbol.visible.onscreen .graph-term-symbol-disc{
+  opacity:1;transform:translate(-50%,-50%) scale(1);
+}
+
+/* The map is not merely decorative: this key explains its hierarchy in the
+   same spatial language learners see in the graph. */
+#graphLegend{
+  position:absolute;left:14px;bottom:14px;z-index:5;
+  width:178px;padding:10px 12px 11px;border-radius:12px;
+  color:var(--text);background:rgba(15,15,22,.82);
+  border:1px solid rgba(154,154,176,.34);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  pointer-events:none;
+}
+#graphLegend p{
+  margin:0 0 7px;font-size:10px;font-weight:750;letter-spacing:.9px;
+  text-transform:uppercase;color:var(--text-dim);
+}
+#graphLegend ul{list-style:none;margin:0;padding:0;display:grid;gap:6px;}
+#graphLegend li{display:flex;align-items:center;gap:8px;font-size:11.5px;line-height:1.2;}
+.legend-node{
+  display:block;flex:0 0 auto;width:11px;height:11px;
+  border:1px solid rgba(255,255,255,.62);
+  box-shadow:0 0 8px currentColor;
+}
+.legend-root{color:#fff;background:#fff;border-radius:50%;}
+.legend-grade{color:var(--accent);background:var(--accent);border-radius:50%;}
+.legend-domain{color:var(--accent2);background:var(--accent2);transform:rotate(45deg);border-radius:2px;}
+.legend-term{color:var(--accent3);background:var(--accent3);border-radius:50%;}
 
 #graphHint{
   position:absolute;left:50%;top:16px;transform:translateX(-50%);
@@ -311,7 +362,7 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
 #resetViewBtn[hidden]{display:none;}
 
 #breadcrumbFloat{
-  position:absolute;bottom:14px;left:14px;right:14px;
+  position:absolute;bottom:14px;left:204px;right:14px;
   font-size:12px;color:var(--text-dim);
   background:rgba(15,15,22,.72);padding:8px 12px;border-radius:9px;
   border:1px solid var(--line);pointer-events:none;
@@ -327,7 +378,7 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
 /* ---------- detail panel ---------- */
 
 #detail{
-  width:360px;flex:0 0 360px;border-left:1px solid var(--line);background:var(--panel2);
+  width:340px;flex:0 0 340px;border-left:1px solid var(--line);background:var(--panel2);
   padding:20px;padding-right:calc(20px + var(--safe-r));
   overflow-y:auto;-webkit-overflow-scrolling:touch;
 }
@@ -502,7 +553,7 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   #rightRegion{flex:1 1 auto;min-width:0;min-height:0;display:flex;flex-direction:column;}
   /* The definition is the payoff, so it gets the larger share and the graph
      is capped — otherwise the definition lands below the fold on an iPad. */
-  #graphPanel{flex:0 0 44%;min-height:230px;}
+  #graphPanel{flex:0 0 48%;min-height:260px;}
   #detail{
     width:auto;flex:1 1 auto;min-height:0;max-height:none;
     border-left:none;border-top:1px solid var(--line);
@@ -525,14 +576,21 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   #topicsSection{flex:0 0 auto;max-height:210px;}
   #vocabSection{flex:0 0 auto;max-height:280px;}
   #rightRegion{display:flex;flex-direction:column;width:100%;}
-  #graphPanel{flex:0 0 auto;height:min(72vw, 320px);min-height:200px;}
+  #graphPanel{flex:0 0 auto;height:min(78vw, 360px);min-height:240px;}
   #resetViewBtn{font-size:11.5px;padding:8px 10px;}
   #detail{width:100%;flex:0 0 auto;max-height:none;border-left:none;border-top:1px solid var(--line);}
   header{gap:10px;}
   header h1{font-size:15.5px;}
   header p{font-size:11.5px;}
   .gl-box{font-size:12px;max-width:62vw;}
+  .lv-root .gl-box{font-size:14px;padding:8px 12px;}
   .lv-term .gl-box{font-size:13.5px;}
+  #graphLegend{left:10px;bottom:10px;width:154px;padding:8px 10px;}
+  #graphLegend p{display:none;}
+  #graphLegend ul{grid-template-columns:1fr 1fr;gap:6px 9px;}
+  #graphLegend li{font-size:10px;gap:6px;}
+  #breadcrumbFloat{left:174px;right:10px;bottom:10px;}
+  .graph-term-symbol-disc{width:40px;height:40px;}
 }
 
 /* =========================================================================
@@ -605,6 +663,16 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       <div id="graphPanel">
         <div id="graphContainer"></div>
         <div id="graphLabels" aria-hidden="true"></div>
+        <div id="graphTermSymbol" aria-hidden="true"></div>
+        <aside id="graphLegend" aria-label="Knowledge graph map key">
+          <p>Map key</p>
+          <ul>
+            <li><span class="legend-node legend-root" aria-hidden="true"></span><span>All K–5 words</span></li>
+            <li><span class="legend-node legend-grade" aria-hidden="true"></span><span>Grades</span></li>
+            <li><span class="legend-node legend-domain" aria-hidden="true"></span><span>Math topics</span></li>
+            <li><span class="legend-node legend-term" aria-hidden="true"></span><span>Vocabulary words</span></li>
+          </ul>
+        </aside>
         <div id="graphFallback">
           The 3D graph could not load (it needs an internet connection the first time, for Three.js from a CDN).<br>
           Everything else on this page still works fully offline.
@@ -3528,7 +3596,7 @@ const Sound = (function () {
    ========================================================================= */
 
 const Graph = (function () {
-  let scene, camera, renderer, controls, container, labelLayer, clock;
+  let scene, camera, renderer, controls, container, labelLayer, termSymbolEl, clock;
   let ready = false;
   let hasControls = false;
   let idleAngle = 0.6;
@@ -3549,8 +3617,8 @@ const Graph = (function () {
 
   const RG = 34, RD = 13, RT = 6.2;
   const COLORS = { root: 0xffffff, grade: 0x7c9eff, domain: 0xff5fa8, term: 0x7cffb2 };
-  const SIZE = { root: 2.3, grade: 1.4, domain: 0.9, term: 0.45 };
-  const HALO_SIZE = { root: 16, grade: 11, domain: 7, term: 3.6 };
+  const SIZE = { root: 2.8, grade: 1.7, domain: 1.08, term: 0.58 };
+  const HALO_SIZE = { root: 19, grade: 13, domain: 8.5, term: 4.6 };
   const DIM = 0.055;           // how far inactive nodes fade toward the background
   const DIM_SCALE = 0.45;
 
@@ -3579,6 +3647,7 @@ const Graph = (function () {
     }
     container = containerEl;
     labelLayer = labelEl;
+    termSymbolEl = document.getElementById('graphTermSymbol');
     allocScratch();
 
     const w = Math.max(container.clientWidth, 1);
@@ -3927,7 +3996,7 @@ const Graph = (function () {
     const st = state;
     const anySelection = !!st.grade;
 
-    setLabel('root', anySelection ? null : 'root', 'Every math word, K to 5', 'spark');
+    setLabel('root', anySelection ? null : 'root', 'Every math word · K–5', 'spark');
 
     // Grade and topic labels give way once a word is chosen — the word is
     // what matters at that point, and the breadcrumb still shows the path.
@@ -3949,12 +4018,54 @@ const Graph = (function () {
     } else {
       setLabel('hover', null, '', '');
     }
+    updateTermSymbol();
+  }
+
+  /* The active vocabulary symbol sits directly on the green sphere. Showing
+     one at a time keeps the full 189-node map legible while still building a
+     visual association between each word and its mathematical notation. */
+  function updateTermSymbol() {
+    if (!termSymbolEl) return;
+    const hoverTerm = hoveredId && nodes[hoveredId] && nodes[hoveredId].level === 'term'
+      ? hoveredId
+      : null;
+    const nodeId = hoverTerm || (state.term ? 'term:' + state.term : null);
+    const t = nodeId ? termById(nodeId.slice(5)) : null;
+
+    if (!t) {
+      termSymbolEl.dataset.nodeId = '';
+      termSymbolEl.classList.remove('visible');
+      return;
+    }
+    if (termSymbolEl.dataset.termId !== t.id) {
+      termSymbolEl.dataset.termId = t.id;
+      termSymbolEl.innerHTML = `<span class="graph-term-symbol-disc">${termIconSvg(t, { size: 30 })}</span>`;
+    }
+    termSymbolEl.dataset.nodeId = nodeId;
+    termSymbolEl.classList.add('visible');
+  }
+
+  function positionTermSymbol() {
+    if (!termSymbolEl || !termSymbolEl.dataset.nodeId) return;
+    const n = nodes[termSymbolEl.dataset.nodeId];
+    if (!n) return;
+    const rect = container.getBoundingClientRect();
+    _v.copy(n.pos).project(camera);
+    const offscreen = _v.z > 1 || Math.abs(_v.x) > 1.05 || Math.abs(_v.y) > 1.05;
+    if (offscreen) {
+      termSymbolEl.classList.remove('onscreen');
+      return;
+    }
+    termSymbolEl.classList.add('onscreen');
+    const x = (_v.x * 0.5 + 0.5) * rect.width;
+    const y = (-_v.y * 0.5 + 0.5) * rect.height;
+    termSymbolEl.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
   }
 
   function describe(id) {
     const n = nodes[id];
     if (!n) return '';
-    if (n.level === 'root') return 'Every math word, K to 5';
+    if (n.level === 'root') return 'Every math word · K–5';
     if (n.level === 'grade') return gradeLabel(id.split(':')[1]);
     if (n.level === 'domain') return DOMAIN_FULLNAME[id.split(':')[2]] || '';
     const t = termById(id.slice(5));
@@ -4069,7 +4180,7 @@ const Graph = (function () {
     const vFov = (camera.fov * Math.PI) / 180;
     const fitH = radius / Math.tan(vFov / 2);
     const fitW = radius / (Math.tan(vFov / 2) * Math.max(camera.aspect, 0.001));
-    return Math.max(fitH, fitW) * 1.15;
+    return Math.max(fitH, fitW) * 1.08;
   }
 
   function dirFrom(child, parent) {
@@ -4124,7 +4235,7 @@ const Graph = (function () {
       flyTo(n.pos.clone().addScaledVector(dir, dist).add(new THREE.Vector3(0, dist * 0.3, 0)), n.pos.clone(), 1.15);
       setAutoRotate(false);
     } else {
-      const dist = frameDistance(RG * 1.5);
+      const dist = frameDistance(RG * 1.46);
       flyTo(new THREE.Vector3(dist, dist * 0.24, 0), ORIGIN.clone(), 1.05);
       setAutoRotate(true);
     }
@@ -4252,6 +4363,7 @@ const Graph = (function () {
     camera.updateMatrixWorld();
     camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
     positionLabels();
+    positionTermSymbol();
 
     renderer.render(scene, camera);
   }
@@ -4263,6 +4375,171 @@ const Graph = (function () {
     isReady() { return ready; },
   };
 }());
+
+/* ---------- src/narration.js ---------- */
+/* =========================================================================
+   Spoken narration.
+
+   The text in the definition panel is deliberately concise. Fish Audio gets
+   a separate script that connects those ideas into natural sentences and
+   retells the example as a small story instead of reading the card verbatim.
+   ========================================================================= */
+
+const NARRATION_ACTION_GERUNDS = {
+  add: 'adding',
+  arrange: 'arranging',
+  break: 'breaking',
+  change: 'changing',
+  compare: 'comparing',
+  count: 'counting',
+  cut: 'cutting',
+  divide: 'dividing',
+  draw: 'drawing',
+  estimate: 'estimating',
+  find: 'finding',
+  group: 'grouping',
+  look: 'looking',
+  make: 'making',
+  measure: 'measuring',
+  move: 'moving',
+  multiply: 'multiplying',
+  name: 'naming',
+  order: 'ordering',
+  put: 'putting',
+  round: 'rounding',
+  share: 'sharing',
+  show: 'showing',
+  sort: 'sorting',
+  split: 'splitting',
+  subtract: 'subtracting',
+  take: 'taking',
+  tell: 'telling',
+  use: 'using',
+  write: 'writing',
+};
+
+function narrationSentences(text) {
+  return String(text || '')
+    .replace(/([.!?])\s+(?=[A-Z])/g, '$1\n')
+    .split('\n')
+    .map((sentence) => sentence.trim().replace(/[.!?]+$/, ''))
+    .filter(Boolean);
+}
+
+function lowerNarrationStart(text) {
+  return text ? text.charAt(0).toLowerCase() + text.slice(1) : '';
+}
+
+function storyConnectorStart(text) {
+  if (!text) return '';
+  const commonStart = /^(?:a|an|each|he|her|his|it|one|she|some|that|the|their|they|this|two|we|you)\b/i;
+  return commonStart.test(text) ? lowerNarrationStart(text) : text;
+}
+
+function narrationPeriod(text) {
+  const clean = String(text || '').trim().replace(/[.!?]+$/, '');
+  return clean ? clean + '.' : '';
+}
+
+function spokenConceptName(term) {
+  const value = String(term || '').trim();
+  return value ? value.charAt(0).toUpperCase() + value.slice(1) : 'This word';
+}
+
+function definitionForSpeech(term) {
+  const parts = narrationSentences(term && term.definition);
+  if (!parts.length) return `${spokenConceptName(term && term.term)} is a math idea.`;
+
+  const first = parts.shift();
+  const action = first.match(/^([A-Za-z]+)\b(.*)$/);
+  const actionGerund = action && NARRATION_ACTION_GERUNDS[action[1].toLowerCase()];
+  const nounPhrase = /^(?:a|an|the|one|two|part|how|when|where)\b/i.test(first);
+
+  let explanation;
+  if (actionGerund) {
+    explanation = `${spokenConceptName(term.term)} means ${actionGerund}${action[2]}`;
+  } else if (nounPhrase) {
+    explanation = `${spokenConceptName(term.term)} is ${lowerNarrationStart(first)}`;
+  } else {
+    explanation = `${spokenConceptName(term.term)} means ${lowerNarrationStart(first)}`;
+  }
+
+  parts.forEach((part, index) => {
+    const you = part.match(/^You (?:can )?(.+)$/i);
+    if (index === 0 && you) {
+      explanation += `, so you can ${lowerNarrationStart(you[1])}`;
+    } else if (/^Not\b/i.test(part)) {
+      explanation += `. It is ${lowerNarrationStart(part)}`;
+    } else {
+      explanation += `. ${part}`;
+    }
+  });
+
+  return narrationPeriod(explanation);
+}
+
+function exampleForSpeech(term) {
+  const parts = narrationSentences(term && term.example);
+  if (!parts.length) {
+    return `This example helps us see what ${term.term} means.`;
+  }
+
+  let storySubject = '';
+  const first = parts.shift();
+  const hasOpening = first.match(/^([A-Z][a-z]+) has (.+)$/);
+  const namedOpening = first.match(/^([A-Z][a-z]+)\b/);
+  let story;
+
+  if (hasOpening) {
+    storySubject = hasOpening[1];
+    story = `Picture ${storySubject} with ${hasOpening[2]}.`;
+  } else {
+    storySubject = namedOpening ? namedOpening[1] : '';
+    story = `Picture this: ${narrationPeriod(first)}`;
+  }
+
+  parts.forEach((part, index) => {
+    const isLast = index === parts.length - 1;
+    const remaining = part.match(/^Now (.+?) (?:is|are) left$/i);
+    const firstStep = part.match(/^First,?\s+(.+)$/i);
+    const nextStep = part.match(/^Then,?\s+(.+)$/i);
+    const actionConcept = NARRATION_ACTION_GERUNDS[String(term.term).toLowerCase()];
+    let sentence;
+
+    if (remaining) {
+      const owner = storySubject ? `${storySubject} with ` : '';
+      sentence = `That leaves ${owner}${remaining[1]}`;
+    } else if (firstStep) {
+      sentence = `First, ${storyConnectorStart(firstStep[1])}`;
+    } else if (nextStep) {
+      sentence = `${isLast ? 'Finally' : 'Next'}, ${storyConnectorStart(nextStep[1])}`;
+    } else if (part.toLowerCase().includes(String(term.term).toLowerCase())) {
+      sentence = actionConcept
+        ? `To make sense of what happened, ${storyConnectorStart(part)}`
+        : `Notice that ${lowerNarrationStart(part)}`;
+    } else if (isLast) {
+      sentence = `In the end, ${storyConnectorStart(part)}`;
+    } else {
+      sentence = `Then ${storyConnectorStart(part)}`;
+    }
+    story += ` ${narrationPeriod(sentence)}`;
+  });
+
+  story += ` This example helps us see what ${term.term} means.`;
+  return story;
+}
+
+function speechScriptFor(term) {
+  return `Let’s explore ${term.term}. ${definitionForSpeech(term)} ${exampleForSpeech(term)}`;
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    definitionForSpeech,
+    exampleForSpeech,
+    speechScriptFor,
+  };
+}
 
 /* ---------- src/tts.js ---------- */
 /* =========================================================================
@@ -4301,12 +4578,6 @@ function readTtsProxyUrl() {
     }
   } catch (e) { /* storage unavailable — fall back to the default endpoint */ }
   return configured || DEFAULT_TTS_PROXY_URL;
-}
-
-function speechScriptFor(t) {
-  let script = `${t.term}. ${t.definition}`;
-  if (t.example) script += ` For example: ${t.example}`;
-  return script;
 }
 
 async function speakTerm(t) {

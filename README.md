@@ -235,6 +235,7 @@ src/                 the app's source                       <- edit code here
   icons.js             the SVG icon set
   sound.js             interaction sounds
   graph3d.js           the 3D map (Three.js)
+  narration.js         story-like scripts for Fish Audio
   ui.js                panels, keyboard support, announcements
   tts.js               the Listen button
   about.js             the About dialog
@@ -251,6 +252,7 @@ vocab_bank/*.md      BUILT - one readable Markdown file per grade
 server.js            local web server + voice proxy
 api/tts.js           the same voice proxy, for Vercel
 fish-audio-worker.js  the same voice proxy, for Cloudflare
+tests/                Node tests for generated narration
 ```
 
 `index.html` and `app.html` are each a single self-contained file with all the

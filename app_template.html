@@ -67,6 +67,16 @@ __STYLES__
       <div id="graphPanel">
         <div id="graphContainer"></div>
         <div id="graphLabels" aria-hidden="true"></div>
+        <div id="graphTermSymbol" aria-hidden="true"></div>
+        <aside id="graphLegend" aria-label="Knowledge graph map key">
+          <p>Map key</p>
+          <ul>
+            <li><span class="legend-node legend-root" aria-hidden="true"></span><span>All K–5 words</span></li>
+            <li><span class="legend-node legend-grade" aria-hidden="true"></span><span>Grades</span></li>
+            <li><span class="legend-node legend-domain" aria-hidden="true"></span><span>Math topics</span></li>
+            <li><span class="legend-node legend-term" aria-hidden="true"></span><span>Vocabulary words</span></li>
+          </ul>
+        </aside>
         <div id="graphFallback">
           The 3D graph could not load (it needs an internet connection the first time, for Three.js from a CDN).<br>
           Everything else on this page still works fully offline.

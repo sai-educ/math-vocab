@@ -17,7 +17,7 @@
    ========================================================================= */
 
 const Graph = (function () {
-  let scene, camera, renderer, controls, container, labelLayer, clock;
+  let scene, camera, renderer, controls, container, labelLayer, termSymbolEl, clock;
   let ready = false;
   let hasControls = false;
   let idleAngle = 0.6;
@@ -38,8 +38,8 @@ const Graph = (function () {
 
   const RG = 34, RD = 13, RT = 6.2;
   const COLORS = { root: 0xffffff, grade: 0x7c9eff, domain: 0xff5fa8, term: 0x7cffb2 };
-  const SIZE = { root: 2.3, grade: 1.4, domain: 0.9, term: 0.45 };
-  const HALO_SIZE = { root: 16, grade: 11, domain: 7, term: 3.6 };
+  const SIZE = { root: 2.8, grade: 1.7, domain: 1.08, term: 0.58 };
+  const HALO_SIZE = { root: 19, grade: 13, domain: 8.5, term: 4.6 };
   const DIM = 0.055;           // how far inactive nodes fade toward the background
   const DIM_SCALE = 0.45;
 
@@ -68,6 +68,7 @@ const Graph = (function () {
     }
     container = containerEl;
     labelLayer = labelEl;
+    termSymbolEl = document.getElementById('graphTermSymbol');
     allocScratch();
 
     const w = Math.max(container.clientWidth, 1);
@@ -416,7 +417,7 @@ const Graph = (function () {
     const st = state;
     const anySelection = !!st.grade;
 
-    setLabel('root', anySelection ? null : 'root', 'Every math word, K to 5', 'spark');
+    setLabel('root', anySelection ? null : 'root', 'Every math word · K–5', 'spark');
 
     // Grade and topic labels give way once a word is chosen — the word is
     // what matters at that point, and the breadcrumb still shows the path.
@@ -438,12 +439,54 @@ const Graph = (function () {
     } else {
       setLabel('hover', null, '', '');
     }
+    updateTermSymbol();
+  }
+
+  /* The active vocabulary symbol sits directly on the green sphere. Showing
+     one at a time keeps the full 189-node map legible while still building a
+     visual association between each word and its mathematical notation. */
+  function updateTermSymbol() {
+    if (!termSymbolEl) return;
+    const hoverTerm = hoveredId && nodes[hoveredId] && nodes[hoveredId].level === 'term'
+      ? hoveredId
+      : null;
+    const nodeId = hoverTerm || (state.term ? 'term:' + state.term : null);
+    const t = nodeId ? termById(nodeId.slice(5)) : null;
+
+    if (!t) {
+      termSymbolEl.dataset.nodeId = '';
+      termSymbolEl.classList.remove('visible');
+      return;
+    }
+    if (termSymbolEl.dataset.termId !== t.id) {
+      termSymbolEl.dataset.termId = t.id;
+      termSymbolEl.innerHTML = `<span class="graph-term-symbol-disc">${termIconSvg(t, { size: 30 })}</span>`;
+    }
+    termSymbolEl.dataset.nodeId = nodeId;
+    termSymbolEl.classList.add('visible');
+  }
+
+  function positionTermSymbol() {
+    if (!termSymbolEl || !termSymbolEl.dataset.nodeId) return;
+    const n = nodes[termSymbolEl.dataset.nodeId];
+    if (!n) return;
+    const rect = container.getBoundingClientRect();
+    _v.copy(n.pos).project(camera);
+    const offscreen = _v.z > 1 || Math.abs(_v.x) > 1.05 || Math.abs(_v.y) > 1.05;
+    if (offscreen) {
+      termSymbolEl.classList.remove('onscreen');
+      return;
+    }
+    termSymbolEl.classList.add('onscreen');
+    const x = (_v.x * 0.5 + 0.5) * rect.width;
+    const y = (-_v.y * 0.5 + 0.5) * rect.height;
+    termSymbolEl.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
   }
 
   function describe(id) {
     const n = nodes[id];
     if (!n) return '';
-    if (n.level === 'root') return 'Every math word, K to 5';
+    if (n.level === 'root') return 'Every math word · K–5';
     if (n.level === 'grade') return gradeLabel(id.split(':')[1]);
     if (n.level === 'domain') return DOMAIN_FULLNAME[id.split(':')[2]] || '';
     const t = termById(id.slice(5));
@@ -558,7 +601,7 @@ const Graph = (function () {
     const vFov = (camera.fov * Math.PI) / 180;
     const fitH = radius / Math.tan(vFov / 2);
     const fitW = radius / (Math.tan(vFov / 2) * Math.max(camera.aspect, 0.001));
-    return Math.max(fitH, fitW) * 1.15;
+    return Math.max(fitH, fitW) * 1.08;
   }
 
   function dirFrom(child, parent) {
@@ -613,7 +656,7 @@ const Graph = (function () {
       flyTo(n.pos.clone().addScaledVector(dir, dist).add(new THREE.Vector3(0, dist * 0.3, 0)), n.pos.clone(), 1.15);
       setAutoRotate(false);
     } else {
-      const dist = frameDistance(RG * 1.5);
+      const dist = frameDistance(RG * 1.46);
       flyTo(new THREE.Vector3(dist, dist * 0.24, 0), ORIGIN.clone(), 1.05);
       setAutoRotate(true);
     }
@@ -741,6 +784,7 @@ const Graph = (function () {
     camera.updateMatrixWorld();
     camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
     positionLabels();
+    positionTermSymbol();
 
     renderer.render(scene, camera);
   }

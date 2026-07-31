@@ -165,7 +165,7 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
 #rightRegion{display:contents;}
 
 #leftPanel{
-  width:280px;flex:0 0 280px;border-right:1px solid var(--line);background:var(--panel);
+  width:264px;flex:0 0 264px;border-right:1px solid var(--line);background:var(--panel);
   display:flex;flex-direction:column;min-height:0;
 }
 #topicsSection{
@@ -266,10 +266,61 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
 .gl-text{min-width:0;}
 .gl-icon{flex:0 0 auto;font-size:15px;line-height:1;}
 .gl-icon:empty{display:none;}
-.lv-root .gl-box{border:2px solid rgba(255,255,255,.85);box-shadow:0 0 16px rgba(255,255,255,.22);}
+.lv-root .gl-box{
+  border:2px solid rgba(255,255,255,.85);box-shadow:0 0 16px rgba(255,255,255,.22);
+  font-size:17px;font-weight:750;padding:10px 16px;border-radius:14px;letter-spacing:-.1px;
+  white-space:nowrap;
+}
 .lv-grade .gl-box{border:2px solid var(--accent);box-shadow:0 0 16px rgba(124,158,255,.35);}
 .lv-domain .gl-box{border:2px solid var(--accent2);box-shadow:0 0 16px rgba(255,95,168,.35);}
 .lv-term .gl-box{border:2px solid var(--accent3);box-shadow:0 0 18px rgba(124,255,178,.4);font-size:15px;padding:8px 14px;}
+
+/* A single term symbol is projected onto the active or hovered green node.
+   The outer element follows the camera with no transition; the disc handles
+   the visual entrance so it never lags behind its sphere. */
+#graphTermSymbol{
+  position:absolute;left:0;top:0;width:0;height:0;z-index:4;
+  pointer-events:none;will-change:transform;
+}
+.graph-term-symbol-disc{
+  position:absolute;left:0;top:0;width:44px;height:44px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:#10251b;background:rgba(145,255,190,.96);
+  border:2px solid rgba(232,255,241,.96);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 7px 18px rgba(5,18,11,.35);
+  opacity:0;transform:translate(-50%,-50%) scale(.72);
+  transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease);
+}
+#graphTermSymbol.visible.onscreen .graph-term-symbol-disc{
+  opacity:1;transform:translate(-50%,-50%) scale(1);
+}
+
+/* The map is not merely decorative: this key explains its hierarchy in the
+   same spatial language learners see in the graph. */
+#graphLegend{
+  position:absolute;left:14px;bottom:14px;z-index:5;
+  width:178px;padding:10px 12px 11px;border-radius:12px;
+  color:var(--text);background:rgba(15,15,22,.82);
+  border:1px solid rgba(154,154,176,.34);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  pointer-events:none;
+}
+#graphLegend p{
+  margin:0 0 7px;font-size:10px;font-weight:750;letter-spacing:.9px;
+  text-transform:uppercase;color:var(--text-dim);
+}
+#graphLegend ul{list-style:none;margin:0;padding:0;display:grid;gap:6px;}
+#graphLegend li{display:flex;align-items:center;gap:8px;font-size:11.5px;line-height:1.2;}
+.legend-node{
+  display:block;flex:0 0 auto;width:11px;height:11px;
+  border:1px solid rgba(255,255,255,.62);
+  box-shadow:0 0 8px currentColor;
+}
+.legend-root{color:#fff;background:#fff;border-radius:50%;}
+.legend-grade{color:var(--accent);background:var(--accent);border-radius:50%;}
+.legend-domain{color:var(--accent2);background:var(--accent2);transform:rotate(45deg);border-radius:2px;}
+.legend-term{color:var(--accent3);background:var(--accent3);border-radius:50%;}
 
 #graphHint{
   position:absolute;left:50%;top:16px;transform:translateX(-50%);
@@ -297,7 +348,7 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
 #resetViewBtn[hidden]{display:none;}
 
 #breadcrumbFloat{
-  position:absolute;bottom:14px;left:14px;right:14px;
+  position:absolute;bottom:14px;left:204px;right:14px;
   font-size:12px;color:var(--text-dim);
   background:rgba(15,15,22,.72);padding:8px 12px;border-radius:9px;
   border:1px solid var(--line);pointer-events:none;
@@ -313,7 +364,7 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
 /* ---------- detail panel ---------- */
 
 #detail{
-  width:360px;flex:0 0 360px;border-left:1px solid var(--line);background:var(--panel2);
+  width:340px;flex:0 0 340px;border-left:1px solid var(--line);background:var(--panel2);
   padding:20px;padding-right:calc(20px + var(--safe-r));
   overflow-y:auto;-webkit-overflow-scrolling:touch;
 }
@@ -488,7 +539,7 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   #rightRegion{flex:1 1 auto;min-width:0;min-height:0;display:flex;flex-direction:column;}
   /* The definition is the payoff, so it gets the larger share and the graph
      is capped — otherwise the definition lands below the fold on an iPad. */
-  #graphPanel{flex:0 0 44%;min-height:230px;}
+  #graphPanel{flex:0 0 48%;min-height:260px;}
   #detail{
     width:auto;flex:1 1 auto;min-height:0;max-height:none;
     border-left:none;border-top:1px solid var(--line);
@@ -511,14 +562,21 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   #topicsSection{flex:0 0 auto;max-height:210px;}
   #vocabSection{flex:0 0 auto;max-height:280px;}
   #rightRegion{display:flex;flex-direction:column;width:100%;}
-  #graphPanel{flex:0 0 auto;height:min(72vw, 320px);min-height:200px;}
+  #graphPanel{flex:0 0 auto;height:min(78vw, 360px);min-height:240px;}
   #resetViewBtn{font-size:11.5px;padding:8px 10px;}
   #detail{width:100%;flex:0 0 auto;max-height:none;border-left:none;border-top:1px solid var(--line);}
   header{gap:10px;}
   header h1{font-size:15.5px;}
   header p{font-size:11.5px;}
   .gl-box{font-size:12px;max-width:62vw;}
+  .lv-root .gl-box{font-size:14px;padding:8px 12px;}
   .lv-term .gl-box{font-size:13.5px;}
+  #graphLegend{left:10px;bottom:10px;width:154px;padding:8px 10px;}
+  #graphLegend p{display:none;}
+  #graphLegend ul{grid-template-columns:1fr 1fr;gap:6px 9px;}
+  #graphLegend li{font-size:10px;gap:6px;}
+  #breadcrumbFloat{left:174px;right:10px;bottom:10px;}
+  .graph-term-symbol-disc{width:40px;height:40px;}
 }
 
 /* =========================================================================
