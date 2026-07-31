@@ -87,6 +87,15 @@ test('keeps tricky definitions and story grammar natural', () => {
     exampleForSpeech(byId('5-oa-evaluate')),
     /First, the work inside the parentheses gives 5/,
   );
+  assert.equal(
+    definitionForSpeech(byId('1-md-half-hour')),
+    'Half hour means thirty minutes, which is half of one hour.',
+  );
+  assert.equal(
+    definitionForSpeech(byId('3-nf-whole')),
+    'Whole means all of the parts together, forming one complete thing.',
+  );
+  assert.match(exampleForSpeech(byId('k-cc-number')), /how many stars there are/);
 });
 
 test('retells even one-sentence examples instead of embedding the displayed line verbatim', () => {
