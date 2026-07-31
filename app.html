@@ -309,6 +309,25 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   opacity:1;transform:translate(-50%,-50%) scale(1);
 }
 
+/* Small live notation badges make the rotating overview visually meaningful
+   without trying to label all 189 vocabulary nodes at once. */
+.graph-ambient-symbol{
+  position:absolute;left:0;top:0;width:0;height:0;z-index:2;
+  pointer-events:none;will-change:transform;
+}
+.graph-ambient-symbol-disc{
+  position:absolute;left:0;top:0;width:27px;height:27px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:#123021;background:rgba(140,255,187,.9);
+  border:1px solid rgba(232,255,241,.88);
+  box-shadow:0 3px 10px rgba(5,18,11,.3);
+  opacity:0;transform:translate(-50%,-50%) scale(.76);
+  transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease);
+}
+.graph-ambient-symbol.visible.onscreen .graph-ambient-symbol-disc{
+  opacity:.92;transform:translate(-50%,-50%) scale(1);
+}
+
 /* The map is not merely decorative: this key explains its hierarchy in the
    same spatial language learners see in the graph. */
 #graphLegend{
@@ -591,6 +610,7 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   #graphLegend li{font-size:10px;gap:6px;}
   #breadcrumbFloat{left:174px;right:10px;bottom:10px;}
   .graph-term-symbol-disc{width:40px;height:40px;}
+  .graph-ambient-symbol-disc{width:23px;height:23px;}
 }
 
 /* =========================================================================
@@ -3601,6 +3621,7 @@ const Graph = (function () {
   let hasControls = false;
   let idleAngle = 0.6;
   let onSelect = null;
+  let ambientSymbolFrame = 0;
 
   const nodes = {};            // id -> node record
   const gradeIds = [];         // instance index -> node id
@@ -3611,6 +3632,7 @@ const Graph = (function () {
   const haloLayers = {};       // level -> { points, ids, colors }
   let edgeGeometry, edgeColors;
   const edgeList = [];
+  const ambientSymbolEls = [];
 
   let state = { grade: null, domainCode: null, term: null };
   let hoveredId = null;
@@ -3913,6 +3935,7 @@ const Graph = (function () {
   // Lower number = more important. A short graph panel only has room for one.
   const LABEL_PRIORITY = { hover: 0, term: 1, domain: 2, grade: 3, root: 4 };
   const SHORT_PANEL_HEIGHT = 280;
+  const AMBIENT_SYMBOL_MAX = 8;
 
   function buildLabels() {
     ['root', 'grade', 'domain', 'term', 'hover'].forEach((key) => {
@@ -3922,6 +3945,14 @@ const Graph = (function () {
       labelLayer.appendChild(el);
       labels[key] = { el, icon: el.querySelector('.gl-icon'), text: el.querySelector('.gl-text'), nodeId: null };
     });
+
+    for (let i = 0; i < AMBIENT_SYMBOL_MAX; i++) {
+      const el = document.createElement('div');
+      el.className = 'graph-ambient-symbol';
+      el.innerHTML = '<span class="graph-ambient-symbol-disc"></span>';
+      labelLayer.appendChild(el);
+      ambientSymbolEls.push(el);
+    }
   }
 
   function setLabel(key, nodeId, text, iconName) {
@@ -3992,6 +4023,81 @@ const Graph = (function () {
     });
   }
 
+  /* A handful of symbols ride on the nearest visible vocabulary nodes in the
+     whole-map view. Showing every symbol at once would turn 189 nodes into a
+     wall of badges, so this chooses a well-spaced sample and refreshes it as
+     the map turns. */
+  function refreshAmbientSymbols() {
+    if (state.grade) {
+      ambientSymbolEls.forEach((el) => {
+        el.dataset.nodeId = '';
+        el.classList.remove('visible', 'onscreen');
+      });
+      return;
+    }
+
+    const rect = container.getBoundingClientRect();
+    const limit = rect.width < 600 ? 5 : AMBIENT_SYMBOL_MAX;
+    const candidates = [];
+
+    termIds.forEach((id) => {
+      if (id === hoveredId) return;
+      _v.copy(nodes[id].pos).project(camera);
+      if (_v.z > 1 || Math.abs(_v.x) > 0.92 || Math.abs(_v.y) > 0.84) return;
+
+      const x = (_v.x * 0.5 + 0.5) * rect.width;
+      const y = (-_v.y * 0.5 + 0.5) * rect.height;
+      // Keep the root label and the map key easy to read.
+      if (Math.abs(_v.x) < 0.24 && Math.abs(_v.y) < 0.2) return;
+      if (x < 220 && y > rect.height - 150) return;
+      candidates.push({ id, x, y, depth: _v.z });
+    });
+
+    candidates.sort((a, b) => a.depth - b.depth);
+    const selected = [];
+    for (const candidate of candidates) {
+      const clear = selected.every((item) => Math.hypot(
+        candidate.x - item.x, candidate.y - item.y,
+      ) > 64);
+      if (clear) selected.push(candidate);
+      if (selected.length === limit) break;
+    }
+
+    ambientSymbolEls.forEach((el, index) => {
+      const item = selected[index];
+      if (!item) {
+        el.dataset.nodeId = '';
+        el.classList.remove('visible', 'onscreen');
+        return;
+      }
+      if (el.dataset.nodeId !== item.id) {
+        const term = termById(item.id.slice(5));
+        el.dataset.nodeId = item.id;
+        el.firstElementChild.innerHTML = term ? termIconSvg(term, { size: 17 }) : '';
+      }
+      el.classList.add('visible');
+    });
+  }
+
+  function positionAmbientSymbols() {
+    if (state.grade) return;
+    const rect = container.getBoundingClientRect();
+    ambientSymbolEls.forEach((el) => {
+      const n = nodes[el.dataset.nodeId];
+      if (!n) return;
+      _v.copy(n.pos).project(camera);
+      const x = (_v.x * 0.5 + 0.5) * rect.width;
+      const y = (-_v.y * 0.5 + 0.5) * rect.height;
+      const obscuresRoot = Math.abs(_v.x) < 0.3 && Math.abs(_v.y) < 0.24;
+      const obscuresLegend = x < 220 && y > rect.height - 150;
+      const offscreen = _v.z > 1 || Math.abs(_v.x) > 1.02 || Math.abs(_v.y) > 1.02
+        || obscuresRoot || obscuresLegend;
+      el.classList.toggle('onscreen', !offscreen);
+      if (offscreen) return;
+      el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
+    });
+  }
+
   function updateLabels() {
     const st = state;
     const anySelection = !!st.grade;
@@ -4019,6 +4125,7 @@ const Graph = (function () {
       setLabel('hover', null, '', '');
     }
     updateTermSymbol();
+    refreshAmbientSymbols();
   }
 
   /* The active vocabulary symbol sits directly on the green sphere. Showing
@@ -4364,6 +4471,8 @@ const Graph = (function () {
     camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
     positionLabels();
     positionTermSymbol();
+    if ((ambientSymbolFrame++ % 24) === 0) refreshAmbientSymbols();
+    positionAmbientSymbols();
 
     renderer.render(scene, camera);
   }
@@ -4393,11 +4502,15 @@ const NARRATION_ACTION_GERUNDS = {
   compare: 'comparing',
   count: 'counting',
   cut: 'cutting',
+  decide: 'deciding',
   divide: 'dividing',
   draw: 'drawing',
   estimate: 'estimating',
   find: 'finding',
   group: 'grouping',
+  join: 'joining',
+  keep: 'keeping',
+  line: 'lining',
   look: 'looking',
   make: 'making',
   measure: 'measuring',
@@ -4407,16 +4520,51 @@ const NARRATION_ACTION_GERUNDS = {
   order: 'ordering',
   put: 'putting',
   round: 'rounding',
+  say: 'saying',
   share: 'sharing',
   show: 'showing',
   sort: 'sorting',
   split: 'splitting',
+  start: 'starting',
   subtract: 'subtracting',
   take: 'taking',
   tell: 'telling',
+  trade: 'trading',
   use: 'using',
+  work: 'working',
   write: 'writing',
 };
+
+const NARRATION_PRONOUNS = {
+  Maya: 'she',
+  Leo: 'he',
+  Ana: 'she',
+  Ivy: 'she',
+  Zoe: 'she',
+  Nina: 'she',
+  Sam: 'they',
+  Ben: 'he',
+  Theo: 'he',
+  Omar: 'he',
+};
+
+const PLURAL_NARRATION_CONCEPTS = new Set([
+  'ones',
+  'tens',
+  'hundreds',
+  'equal shares',
+  'halves',
+  'fourths',
+  'quarters',
+  'rows and columns',
+  'equal groups',
+  'equivalent fractions',
+  'tenths',
+  'hundredths',
+  'parallel lines',
+  'perpendicular lines',
+  'parentheses',
+]);
 
 function narrationSentences(text) {
   return String(text || '')
@@ -4432,7 +4580,7 @@ function lowerNarrationStart(text) {
 
 function storyConnectorStart(text) {
   if (!text) return '';
-  const commonStart = /^(?:a|an|each|he|her|his|it|one|she|some|that|the|their|they|this|two|we|you)\b/i;
+  const commonStart = /^(?:a|an|each|every|he|her|his|it|one|only|she|some|that|the|their|they|this|two|we|you)\b/i;
   return commonStart.test(text) ? lowerNarrationStart(text) : text;
 }
 
@@ -4457,9 +4605,14 @@ function definitionForSpeech(term) {
 
   let explanation;
   if (actionGerund) {
-    explanation = `${spokenConceptName(term.term)} means ${actionGerund}${action[2]}`;
+    const actionDetails = action[2].replace(/\band keep\b/i, 'and keeping');
+    explanation = `${spokenConceptName(term.term)} means ${actionGerund}${actionDetails}`;
   } else if (nounPhrase) {
     explanation = `${spokenConceptName(term.term)} is ${lowerNarrationStart(first)}`;
+  } else if (PLURAL_NARRATION_CONCEPTS.has(String(term.term).toLowerCase())) {
+    explanation = `${spokenConceptName(term.term)} are ${lowerNarrationStart(first)}`;
+  } else if (/^(?:goes|takes|weighs)\b/i.test(first)) {
+    explanation = `${spokenConceptName(term.term)} describes something that ${lowerNarrationStart(first)}`;
   } else {
     explanation = `${spokenConceptName(term.term)} means ${lowerNarrationStart(first)}`;
   }
@@ -4487,32 +4640,54 @@ function exampleForSpeech(term) {
   let storySubject = '';
   const first = parts.shift();
   const hasOpening = first.match(/^([A-Z][a-z]+) has (.+)$/);
-  const namedOpening = first.match(/^([A-Z][a-z]+)\b/);
+  const namedOpening = first.match(/^([A-Z][a-z]+)\s+(.+)$/);
   let story;
 
   if (hasOpening) {
     storySubject = hasOpening[1];
-    story = `Picture ${storySubject} with ${hasOpening[2]}.`;
+    const pronoun = NARRATION_PRONOUNS[storySubject] || 'they';
+    const splitAction = hasOpening[2].match(/^(.+?) and (eats|gets|needs|shares) (.+)$/i);
+    if (splitAction) {
+      story = `Picture ${storySubject} with ${splitAction[1]}. `
+        + `Then ${pronoun} ${splitAction[2].toLowerCase()} ${splitAction[3]}.`;
+    } else {
+      story = `Picture ${storySubject} with ${hasOpening[2]}.`;
+    }
+  } else if (namedOpening && NARRATION_PRONOUNS[namedOpening[1]]) {
+    storySubject = namedOpening[1];
+    story = `Picture ${storySubject} as ${NARRATION_PRONOUNS[storySubject]} `
+      + `${narrationPeriod(namedOpening[2])}`;
   } else {
-    storySubject = namedOpening ? namedOpening[1] : '';
-    story = `Picture this: ${narrationPeriod(first)}`;
+    story = `Imagine a situation where ${narrationPeriod(lowerNarrationStart(first))}`;
   }
 
   parts.forEach((part, index) => {
     const isLast = index === parts.length - 1;
+    const thereRemaining = part.match(/^Now there (?:is|are) (.+?) left$/i);
     const remaining = part.match(/^Now (.+?) (?:is|are) left$/i);
     const firstStep = part.match(/^First,?\s+(.+)$/i);
     const nextStep = part.match(/^Then,?\s+(.+)$/i);
+    const nowStep = part.match(/^Now,?\s+(.+)$/i);
+    const soStep = part.match(/^So,?\s+(.+)$/i);
+    const observation = part.match(/^(?:Every|Only)\b/i);
     const actionConcept = NARRATION_ACTION_GERUNDS[String(term.term).toLowerCase()];
     let sentence;
 
-    if (remaining) {
+    if (thereRemaining) {
+      sentence = `That leaves ${thereRemaining[1]}`;
+    } else if (remaining) {
       const owner = storySubject ? `${storySubject} with ` : '';
       sentence = `That leaves ${owner}${remaining[1]}`;
     } else if (firstStep) {
       sentence = `First, ${storyConnectorStart(firstStep[1])}`;
     } else if (nextStep) {
       sentence = `${isLast ? 'Finally' : 'Next'}, ${storyConnectorStart(nextStep[1])}`;
+    } else if (nowStep) {
+      sentence = `Now, ${storyConnectorStart(nowStep[1])}`;
+    } else if (soStep) {
+      sentence = `So, ${storyConnectorStart(soStep[1])}`;
+    } else if (observation) {
+      sentence = `Notice how ${lowerNarrationStart(part)}`;
     } else if (part.toLowerCase().includes(String(term.term).toLowerCase())) {
       sentence = actionConcept
         ? `To make sense of what happened, ${storyConnectorStart(part)}`
