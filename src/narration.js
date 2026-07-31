@@ -165,9 +165,14 @@ function exampleForSpeech(term) {
   const first = parts.shift();
   const hasOpening = first.match(/^([A-Z][a-z]+) has (.+)$/);
   const namedOpening = first.match(/^([A-Z][a-z]+)\s+(.+)$/);
+  const possessiveOpening = first.match(/^([A-Z][a-z]+)'s (.+?) (sits|stands|rests|lies) (.+)$/);
   let story;
 
-  if (hasOpening) {
+  if (possessiveOpening && NARRATION_PRONOUNS[possessiveOpening[1]]) {
+    storySubject = possessiveOpening[1];
+    story = `Picture ${storySubject}'s ${possessiveOpening[2]} as it `
+      + `${possessiveOpening[3]} ${possessiveOpening[4]}.`;
+  } else if (hasOpening) {
     storySubject = hasOpening[1];
     const pronoun = NARRATION_PRONOUNS[storySubject] || 'they';
     const splitAction = hasOpening[2].match(/^(.+?) and (eats|gets|needs|shares) (.+)$/i);
@@ -179,8 +184,11 @@ function exampleForSpeech(term) {
     }
   } else if (namedOpening && NARRATION_PRONOUNS[namedOpening[1]]) {
     storySubject = namedOpening[1];
-    story = `Picture ${storySubject} as ${NARRATION_PRONOUNS[storySubject]} `
-      + `${narrationPeriod(namedOpening[2])}`;
+    const pronoun = NARRATION_PRONOUNS[storySubject];
+    const action = pronoun === 'they'
+      ? namedOpening[2].replace(/^counts\b/i, 'count')
+      : namedOpening[2];
+    story = `Picture ${storySubject} as ${pronoun} ${narrationPeriod(action)}`;
   } else {
     story = `Imagine a situation where ${narrationPeriod(lowerNarrationStart(first))}`;
   }
@@ -194,6 +202,9 @@ function exampleForSpeech(term) {
     const nowStep = part.match(/^Now,?\s+(.+)$/i);
     const soStep = part.match(/^So,?\s+(.+)$/i);
     const observation = part.match(/^(?:Every|Only)\b/i);
+    const howManyMore = part.match(/^How many more does ([A-Z][a-z]+) have$/i);
+    const howManyDo = part.match(/^How many do (.+)$/i);
+    const howManyAre = part.match(/^How many are (.+)$/i);
     const actionConcept = NARRATION_ACTION_GERUNDS[String(term.term).toLowerCase()];
     let sentence;
 
@@ -210,12 +221,18 @@ function exampleForSpeech(term) {
       sentence = `Now, ${storyConnectorStart(nowStep[1])}`;
     } else if (soStep) {
       sentence = `So, ${storyConnectorStart(soStep[1])}`;
+    } else if (howManyMore) {
+      sentence = `Now we can ask how many more ${howManyMore[1]} has`;
+    } else if (howManyDo) {
+      sentence = `Now we can ask how many ${storyConnectorStart(howManyDo[1])}`;
+    } else if (howManyAre) {
+      sentence = `Now we can ask how many are ${lowerNarrationStart(howManyAre[1])}`;
     } else if (observation) {
       sentence = `Notice how ${lowerNarrationStart(part)}`;
     } else if (part.toLowerCase().includes(String(term.term).toLowerCase())) {
       sentence = actionConcept
         ? `To make sense of what happened, ${storyConnectorStart(part)}`
-        : `Notice that ${lowerNarrationStart(part)}`;
+        : `Notice that ${storyConnectorStart(part)}`;
     } else if (isLast) {
       sentence = `In the end, ${storyConnectorStart(part)}`;
     } else {
@@ -224,7 +241,7 @@ function exampleForSpeech(term) {
     story += ` ${narrationPeriod(sentence)}`;
   });
 
-  story += ` This example helps us see what ${term.term} means.`;
+  story += ` This story helps make the idea of ${term.term} clear.`;
   return story;
 }
 
