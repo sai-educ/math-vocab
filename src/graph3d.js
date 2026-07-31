@@ -22,6 +22,7 @@ const Graph = (function () {
   let hasControls = false;
   let idleAngle = 0.6;
   let onSelect = null;
+  let ambientSymbolFrame = 0;
 
   const nodes = {};            // id -> node record
   const gradeIds = [];         // instance index -> node id
@@ -32,6 +33,7 @@ const Graph = (function () {
   const haloLayers = {};       // level -> { points, ids, colors }
   let edgeGeometry, edgeColors;
   const edgeList = [];
+  const ambientSymbolEls = [];
 
   let state = { grade: null, domainCode: null, term: null };
   let hoveredId = null;
@@ -334,6 +336,7 @@ const Graph = (function () {
   // Lower number = more important. A short graph panel only has room for one.
   const LABEL_PRIORITY = { hover: 0, term: 1, domain: 2, grade: 3, root: 4 };
   const SHORT_PANEL_HEIGHT = 280;
+  const AMBIENT_SYMBOL_MAX = 8;
 
   function buildLabels() {
     ['root', 'grade', 'domain', 'term', 'hover'].forEach((key) => {
@@ -343,6 +346,14 @@ const Graph = (function () {
       labelLayer.appendChild(el);
       labels[key] = { el, icon: el.querySelector('.gl-icon'), text: el.querySelector('.gl-text'), nodeId: null };
     });
+
+    for (let i = 0; i < AMBIENT_SYMBOL_MAX; i++) {
+      const el = document.createElement('div');
+      el.className = 'graph-ambient-symbol';
+      el.innerHTML = '<span class="graph-ambient-symbol-disc"></span>';
+      labelLayer.appendChild(el);
+      ambientSymbolEls.push(el);
+    }
   }
 
   function setLabel(key, nodeId, text, iconName) {
@@ -413,6 +424,81 @@ const Graph = (function () {
     });
   }
 
+  /* A handful of symbols ride on the nearest visible vocabulary nodes in the
+     whole-map view. Showing every symbol at once would turn 189 nodes into a
+     wall of badges, so this chooses a well-spaced sample and refreshes it as
+     the map turns. */
+  function refreshAmbientSymbols() {
+    if (state.grade) {
+      ambientSymbolEls.forEach((el) => {
+        el.dataset.nodeId = '';
+        el.classList.remove('visible', 'onscreen');
+      });
+      return;
+    }
+
+    const rect = container.getBoundingClientRect();
+    const limit = rect.width < 600 ? 5 : AMBIENT_SYMBOL_MAX;
+    const candidates = [];
+
+    termIds.forEach((id) => {
+      if (id === hoveredId) return;
+      _v.copy(nodes[id].pos).project(camera);
+      if (_v.z > 1 || Math.abs(_v.x) > 0.92 || Math.abs(_v.y) > 0.84) return;
+
+      const x = (_v.x * 0.5 + 0.5) * rect.width;
+      const y = (-_v.y * 0.5 + 0.5) * rect.height;
+      // Keep the root label and the map key easy to read.
+      if (Math.abs(_v.x) < 0.24 && Math.abs(_v.y) < 0.2) return;
+      if (x < 220 && y > rect.height - 150) return;
+      candidates.push({ id, x, y, depth: _v.z });
+    });
+
+    candidates.sort((a, b) => a.depth - b.depth);
+    const selected = [];
+    for (const candidate of candidates) {
+      const clear = selected.every((item) => Math.hypot(
+        candidate.x - item.x, candidate.y - item.y,
+      ) > 64);
+      if (clear) selected.push(candidate);
+      if (selected.length === limit) break;
+    }
+
+    ambientSymbolEls.forEach((el, index) => {
+      const item = selected[index];
+      if (!item) {
+        el.dataset.nodeId = '';
+        el.classList.remove('visible', 'onscreen');
+        return;
+      }
+      if (el.dataset.nodeId !== item.id) {
+        const term = termById(item.id.slice(5));
+        el.dataset.nodeId = item.id;
+        el.firstElementChild.innerHTML = term ? termIconSvg(term, { size: 17 }) : '';
+      }
+      el.classList.add('visible');
+    });
+  }
+
+  function positionAmbientSymbols() {
+    if (state.grade) return;
+    const rect = container.getBoundingClientRect();
+    ambientSymbolEls.forEach((el) => {
+      const n = nodes[el.dataset.nodeId];
+      if (!n) return;
+      _v.copy(n.pos).project(camera);
+      const x = (_v.x * 0.5 + 0.5) * rect.width;
+      const y = (-_v.y * 0.5 + 0.5) * rect.height;
+      const obscuresRoot = Math.abs(_v.x) < 0.3 && Math.abs(_v.y) < 0.24;
+      const obscuresLegend = x < 220 && y > rect.height - 150;
+      const offscreen = _v.z > 1 || Math.abs(_v.x) > 1.02 || Math.abs(_v.y) > 1.02
+        || obscuresRoot || obscuresLegend;
+      el.classList.toggle('onscreen', !offscreen);
+      if (offscreen) return;
+      el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
+    });
+  }
+
   function updateLabels() {
     const st = state;
     const anySelection = !!st.grade;
@@ -440,6 +526,7 @@ const Graph = (function () {
       setLabel('hover', null, '', '');
     }
     updateTermSymbol();
+    refreshAmbientSymbols();
   }
 
   /* The active vocabulary symbol sits directly on the green sphere. Showing
@@ -785,6 +872,8 @@ const Graph = (function () {
     camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
     positionLabels();
     positionTermSymbol();
+    if ((ambientSymbolFrame++ % 24) === 0) refreshAmbientSymbols();
+    positionAmbientSymbols();
 
     renderer.render(scene, camera);
   }
