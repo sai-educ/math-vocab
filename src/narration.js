@@ -122,6 +122,12 @@ function definitionForSpeech(term) {
     explanation = 'The words in all tell us to find the total';
   } else if (termKey === 'left') {
     explanation = 'The word left asks what is still there';
+  } else if (termKey === 'half hour') {
+    explanation = 'Half hour means thirty minutes, which is half of one hour';
+    parts.length = 0;
+  } else if (termKey === 'whole') {
+    explanation = 'Whole means all of the parts together, forming one complete thing';
+    parts.length = 0;
   } else if (/^Another word for\b/i.test(first)) {
     explanation = `The word ${term.term} is ${lowerNarrationStart(first)}`;
   } else if (termKey === 'rows and columns') {
@@ -145,7 +151,11 @@ function definitionForSpeech(term) {
     explanation = `${conceptName} means ${lowerNarrationStart(first)}`;
   }
 
-  parts.forEach((part, index) => {
+  parts.forEach((rawPart, index) => {
+    const part = rawPart.replace(
+      /\bhow many (.+?) are there\b/i,
+      (_match, subject) => `how many ${subject} there are`,
+    );
     const you = part.match(/^You (?:can )?(.+)$/i);
     if (index === 0 && you) {
       explanation += `, so you can ${lowerNarrationStart(you[1])}`;
