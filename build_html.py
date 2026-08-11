@@ -21,6 +21,7 @@ node_modules or adding a bundler, its two needed modules are concatenated in
 dependency order, their import/export syntax stripped, and the result wrapped
 in an IIFE exposed as `window.Cuelume`.
 """
+import base64
 import json
 import os
 import re
@@ -28,6 +29,7 @@ import re
 HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(HERE, "src")
 CUELUME = os.path.join(HERE, "node_modules", "cuelume", "dist")
+INTER_FILES = os.path.join(HERE, "node_modules", "@fontsource", "inter", "files")
 
 # Order matters: each file uses names defined by the ones before it.
 APP_SCRIPTS = (
@@ -39,11 +41,17 @@ APP_SCRIPTS = (
     "tts.js",
     "ui.js",
     "about.js",
+    "panelResize.js",
     "main.js",
 )
 
 # recipes defines the palette; engine plays it. bind() is unused here.
 CUELUME_MODULES = ("sounds/recipes.js", "audio/engine.js")
+
+# Only the weights actually used in the CSS (400 is the implicit body
+# default; 650/750/800 fall back to 700, which the browser handles on its
+# own without a dedicated file).
+INTER_WEIGHTS = (400, 600, 700)
 
 _IMPORT_RE = re.compile(r"^import\s[\s\S]*?;\s*$", re.MULTILINE)
 _EXPORT_RE = re.compile(r"^export\s+(?=(?:const|let|var|function|class)\b)", re.MULTILINE)
@@ -75,6 +83,30 @@ def bundle_cuelume() -> str:
         f"{body}\n"
         "return { play, setEnabled, setVolume, sounds };\n"
         "}());"
+    )
+
+
+def bundle_inter_fonts() -> str:
+    """Inline Inter (OFL) as base64 @font-face rules, so typography survives
+    offline use and no request ever leaves the page to Google Fonts."""
+    if not os.path.isdir(INTER_FILES):
+        raise SystemExit(
+            "node_modules/@fontsource/inter is missing. Run `npm install` before building."
+        )
+
+    faces = []
+    for weight in INTER_WEIGHTS:
+        path = os.path.join(INTER_FILES, f"inter-latin-{weight}-normal.woff2")
+        with open(path, "rb") as handle:
+            encoded = base64.b64encode(handle.read()).decode("ascii")
+        faces.append(
+            "@font-face{font-family:'Inter';font-style:normal;"
+            f"font-weight:{weight};font-display:swap;"
+            f"src:url(data:font/woff2;base64,{encoded}) format('woff2');}}"
+        )
+    return (
+        "/* ---------- Inter (OFL, fonts.google.com/specimen/Inter) ---------- */\n"
+        + "\n".join(faces)
     )
 
 
@@ -111,14 +143,16 @@ def main() -> None:
     data = read(HERE, "vocab_data.json")
     json.loads(data)  # fail fast if the JSON is malformed
 
+    fonts_css = bundle_inter_fonts()
+
     app_html = render("app_template.html", {
-        "__STYLES__": read(SRC, "styles.css").strip(),
+        "__STYLES__": fonts_css + "\n\n" + read(SRC, "styles.css").strip(),
         "__SCRIPTS__": bundle_app_scripts(),
         "__VOCAB_DATA__": data,
     })
 
     index_html = render("landing_template.html", {
-        "__STYLES__": read(SRC, "landing.css").strip(),
+        "__STYLES__": fonts_css + "\n\n" + read(SRC, "landing.css").strip(),
         "__TERM_COUNT__": str(len(json.loads(data))),
     })
 
