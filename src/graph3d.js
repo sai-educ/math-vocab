@@ -991,6 +991,7 @@ const Graph = (function () {
     camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
     positionLabels();
     positionTermSymbol();
+    positionGradeLabels();
     if ((ambientSymbolFrame++ % 24) === 0) refreshAmbientSymbols();
     positionAmbientSymbols();
 
