@@ -37,6 +37,13 @@ const Graph = (function () {
 
   let state = { grade: null, domainCode: null, term: null };
   let hoveredId = null;
+  let showAllGradeLabels = false;
+  const gradeLabelEls = [];
+
+  const AUTO_ROTATE_NORMAL = 0.55;
+  const AUTO_ROTATE_SLOW = 0.09;
+  let autoRotateTargetSpeed = AUTO_ROTATE_NORMAL;
+  let autoRotateCurSpeed = AUTO_ROTATE_NORMAL;
 
   const RG = 34, RD = 13, RT = 6.2;
   const COLORS = { root: 0xffffff, grade: 0x7c9eff, domain: 0xff5fa8, term: 0x7cffb2 };
@@ -111,7 +118,7 @@ const Graph = (function () {
         controls.minDistance = 2.5;
         controls.maxDistance = 320;
         controls.autoRotate = !REDUCED_MOTION;
-        controls.autoRotateSpeed = 0.55;
+        controls.autoRotateSpeed = AUTO_ROTATE_NORMAL;
         controls.target.set(0, 0, 0);
         hasControls = true;
       } else {
@@ -356,14 +363,24 @@ const Graph = (function () {
   const LABEL_PRIORITY = { hover: 0, term: 1, domain: 2, grade: 3, root: 4 };
   const SHORT_PANEL_HEIGHT = 280;
   const AMBIENT_SYMBOL_MAX = 8;
+  // Concrete rather than "Every math word" — a real number is meaningful in
+  // a way a summary phrase is not, and it stays correct if the bank grows.
+  const ROOT_LABEL_TEXT = DATA.length + ' math words · K–5';
 
   function buildLabels() {
     ['root', 'grade', 'domain', 'term', 'hover'].forEach((key) => {
       const el = document.createElement('div');
-      el.className = 'graph-label lv-' + (key === 'hover' ? 'term' : key);
+      const levelClass = 'lv-' + (key === 'hover' ? 'term' : key);
+      el.className = 'graph-label ' + levelClass;
       el.innerHTML = '<div class="gl-box"><span class="gl-icon"></span><span class="gl-text"></span></div>';
       labelLayer.appendChild(el);
-      labels[key] = { el, icon: el.querySelector('.gl-icon'), text: el.querySelector('.gl-text'), nodeId: null };
+      labels[key] = {
+        el, icon: el.querySelector('.gl-icon'), text: el.querySelector('.gl-text'), nodeId: null,
+        // Tracked separately from the others because this is the one label
+        // whose colour class has to change at runtime, to match whatever
+        // level of node is currently under the pointer.
+        levelClass: key === 'hover' ? levelClass : null,
+      };
     });
 
     for (let i = 0; i < AMBIENT_SYMBOL_MAX; i++) {
@@ -373,12 +390,33 @@ const Graph = (function () {
       labelLayer.appendChild(el);
       ambientSymbolEls.push(el);
     }
+
+    // One always-in-the-DOM label per grade, shown all at once when the
+    // "Show grade labels" toggle is on — independent of the single 'grade'
+    // slot above, which only ever shows the one currently selected grade.
+    gradeIds.forEach((id) => {
+      const el = document.createElement('div');
+      el.className = 'graph-label lv-grade';
+      el.innerHTML = '<div class="gl-box"><span class="gl-icon"></span><span class="gl-text"></span></div>';
+      el.querySelector('.gl-text').textContent = gradeLabel(id.split(':')[1]);
+      el.querySelector('.gl-icon').innerHTML = iconSvg('cap', { size: 16 });
+      labelLayer.appendChild(el);
+      gradeLabelEls.push({ id, el });
+    });
   }
 
-  function setLabel(key, nodeId, text, iconName) {
+  function setLabel(key, nodeId, text, iconName, level) {
     const l = labels[key];
     l.nodeId = nodeId;
     if (!nodeId) { l.el.classList.remove('visible'); return; }
+    if (key === 'hover') {
+      const nextClass = 'lv-' + (level || 'term');
+      if (l.levelClass !== nextClass) {
+        if (l.levelClass) l.el.classList.remove(l.levelClass);
+        l.el.classList.add(nextClass);
+        l.levelClass = nextClass;
+      }
+    }
     if (l.text.textContent !== text) l.text.textContent = text;
     // Only re-render the SVG when the glyph actually changes — this runs
     // inside a per-frame update path.
@@ -387,6 +425,29 @@ const Graph = (function () {
       l.icon.innerHTML = iconName ? iconSvg(iconName, { size: 16 }) : '';
     }
     l.el.classList.add('visible');
+  }
+
+  function updateGradeLabels() {
+    gradeLabelEls.forEach(({ el }) => el.classList.toggle('visible', showAllGradeLabels));
+  }
+
+  /* Positioned independently of positionLabels()'s collision system — grade
+     nodes already sit spread around the root at even angles, so at normal
+     framing they don't need the pairwise nudge-apart pass the other labels
+     use, and giving all six a dedicated pass keeps that pass itself simple. */
+  function positionGradeLabels() {
+    if (!showAllGradeLabels) return;
+    const rect = container.getBoundingClientRect();
+    gradeLabelEls.forEach(({ id, el }) => {
+      const n = nodes[id];
+      _v.copy(n.pos).project(camera);
+      const offscreen = _v.z > 1 || Math.abs(_v.x) > 1.05 || Math.abs(_v.y) > 1.05;
+      el.classList.toggle('visible', showAllGradeLabels && !offscreen);
+      if (offscreen) return;
+      const x = (_v.x * 0.5 + 0.5) * rect.width;
+      const y = (-_v.y * 0.5 + 0.5) * rect.height - LABEL_OFFSET_Y * 0.55;
+      el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
+    });
   }
 
   /* Project each visible label to screen space, then push colliding labels
@@ -530,11 +591,15 @@ const Graph = (function () {
     const st = state;
     const anySelection = !!st.grade;
 
-    setLabel('root', anySelection ? null : 'root', 'Every math word · K–5', 'spark');
+    setLabel('root', anySelection ? null : 'root', ROOT_LABEL_TEXT, 'spark');
 
     // Grade and topic labels give way once a word is chosen — the word is
     // what matters at that point, and the breadcrumb still shows the path.
-    setLabel('grade', st.grade && !st.term ? 'grade:' + st.grade : null, gradeLabel(st.grade), 'cap');
+    // The single grade slot also gives way to the "show all" toggle, which
+    // covers the selected grade too — showing both would just be the same
+    // text twice.
+    const showSingleGrade = st.grade && !st.term && !showAllGradeLabels;
+    setLabel('grade', showSingleGrade ? 'grade:' + st.grade : null, gradeLabel(st.grade), 'cap');
 
     const domId = st.grade && st.domainCode ? 'domain:' + st.grade + ':' + st.domainCode : null;
     setLabel('domain', domId, DOMAIN_FULLNAME[st.domainCode] || '',
@@ -547,13 +612,26 @@ const Graph = (function () {
       setLabel('term', null, '', '');
     }
 
-    if (hoveredId && hoveredId !== 'term:' + st.term && nodes[hoveredId]) {
-      setLabel('hover', hoveredId, describe(hoveredId), hoverIcon(hoveredId));
+    // The hover label exists to name whatever has no other label on screen
+    // yet. Every branch below is a case where something is already saying
+    // the same thing — hovering root previously produced two overlapping
+    // boxes with identical text, which is the bug this guards against.
+    const hoveredNode = hoveredId ? nodes[hoveredId] : null;
+    const hoverIsRedundant = hoveredNode && (
+      hoveredId === 'root'
+      || hoveredId === 'term:' + st.term
+      || (domId && hoveredId === domId)
+      || (showSingleGrade && hoveredId === 'grade:' + st.grade)
+      || (showAllGradeLabels && hoveredNode.level === 'grade')
+    );
+    if (hoveredNode && !hoverIsRedundant) {
+      setLabel('hover', hoveredId, describe(hoveredId), hoverIcon(hoveredId), hoveredNode.level);
     } else {
       setLabel('hover', null, '', '');
     }
     updateTermSymbol();
     refreshAmbientSymbols();
+    updateGradeLabels();
   }
 
   /* The active vocabulary symbol sits directly on the green sphere. Showing
@@ -600,7 +678,7 @@ const Graph = (function () {
   function describe(id) {
     const n = nodes[id];
     if (!n) return '';
-    if (n.level === 'root') return 'Every math word · K–5';
+    if (n.level === 'root') return ROOT_LABEL_TEXT;
     if (n.level === 'grade') return gradeLabel(id.split(':')[1]);
     if (n.level === 'domain') return DOMAIN_FULLNAME[id.split(':')[2]] || '';
     const t = termById(id.slice(5));
@@ -837,6 +915,15 @@ const Graph = (function () {
     renderer.domElement.addEventListener('pointerleave', () => {
       hoveredId = null;
       updateLabels();
+      autoRotateTargetSpeed = AUTO_ROTATE_NORMAL;
+    });
+
+    // Slows the idle spin the moment the pointer is anywhere over the
+    // canvas — not just on a node — because a graph spinning at full speed
+    // is nearly impossible to aim a hover at. Eased in animate(), not set
+    // instantly, so the change itself doesn't feel like a jump cut.
+    renderer.domElement.addEventListener('pointerenter', () => {
+      autoRotateTargetSpeed = AUTO_ROTATE_SLOW;
     });
 
     renderer.domElement.addEventListener('pointerdown', (e) => {
@@ -880,10 +967,15 @@ const Graph = (function () {
     });
     if (changed || hoveredId !== null) writeInstances();
 
+    if (Math.abs(autoRotateCurSpeed - autoRotateTargetSpeed) > 0.0005) {
+      autoRotateCurSpeed += (autoRotateTargetSpeed - autoRotateCurSpeed) * k;
+    }
+
     if (hasControls) {
+      controls.autoRotateSpeed = autoRotateCurSpeed;
       controls.update();
     } else if (!state.grade && !REDUCED_MOTION) {
-      idleAngle += dt * 0.35;
+      idleAngle += dt * 0.35 * (autoRotateCurSpeed / AUTO_ROTATE_NORMAL);
       camera.position.set(130 * Math.cos(idleAngle), 30, 130 * Math.sin(idleAngle));
       camera.lookAt(ORIGIN);
     }
