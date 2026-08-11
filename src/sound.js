@@ -3,14 +3,15 @@
    build_html.py — synthesized live, so there are no audio files to load and
    it still works with no network).
 
-   The design rule here is that a sound reports *what happened*, so a child
-   can tell a grade from a topic from a word without looking:
+   Grade, topic and word selection all share one cue — the same warm swell
+   — so the sound answers one question only: did my tap register? Splitting
+   it three ways (an earlier version tried grade/topic/word as distinct
+   sounds) added a sound *identity* to memorise for no real benefit, since
+   the screen already shows which of the three just changed.
 
-     grade   bloom    a warm swell — something big opened
-     topic   droplet  a downward glide — you went one level deeper
-     word    chime    the payoff, the brightest sound in the set
-     back    page     a paper flick — you left, you did not arrive
-     search  whisper  the quietest cue, because results fire while typing
+     grade/topic/word   bloom    a warm swell — your tap registered
+     back               page     a paper flick — you left, you did not arrive
+     search             whisper  the quietest cue, because results fire while typing
 
    The Listen button is deliberately silent. Its job is speech, and a chime
    in front of the voice would step on the first word.
@@ -24,8 +25,8 @@ const SOUND_VOLUME = 0.55;
 
 const CUES = {
   grade: 'bloom',
-  topic: 'droplet',
-  word: 'chime',
+  topic: 'bloom',
+  word: 'bloom',
   back: 'page',
   search: 'whisper',
   open: 'ready',
