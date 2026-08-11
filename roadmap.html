@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Roadmap — Math Word Explorer</title>
+<style>
+:root{
+  --bg:#0f0f16;
+  --panel:#1b1b26;
+  --panel2:#20202e;
+  --line:#3a3a52;
+  --line-active:#7c9eff;
+  --text:#e7e7ee;
+  --text-dim:#a3a3ba;
+  --text-muted:#9090aa;
+  --accent:#7c9eff;
+  --accent2:#ff5fa8;
+  --accent3:#7cffb2;
+  --yellow:#ffd23f;
+  --ease:cubic-bezier(.65,0,.35,1);
+  --ease-soft:cubic-bezier(.4,0,.2,1);
+  --dur-fast:.22s;
+  --dur:.34s;
+  --tap:44px;
+  --safe-l:env(safe-area-inset-left,0px);
+  --safe-r:env(safe-area-inset-right,0px);
+  --safe-b:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;min-height:100%;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  -webkit-text-size-adjust:100%;}
+body{
+  background:
+    radial-gradient(ellipse 900px 520px at 50% -10%, rgba(124,158,255,.14), transparent 70%),
+    radial-gradient(ellipse 700px 460px at 90% 12%, rgba(255,95,168,.08), transparent 70%),
+    var(--bg);
+}
+
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;}
+.skip-link{position:absolute;left:8px;top:-60px;z-index:200;background:var(--yellow);color:#141208;
+  font-weight:700;font-size:14px;padding:10px 16px;border-radius:0 0 10px 10px;text-decoration:none;
+  transition:top var(--dur) var(--ease);}
+.skip-link:focus{top:0;}
+:focus{outline:none;}
+:focus-visible{outline:3px solid var(--yellow);outline-offset:2px;border-radius:8px;}
+
+header{
+  padding:20px max(20px,var(--safe-r)) 16px max(20px,var(--safe-l));
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,#181822,#14141c);
+  display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;
+}
+header h1{margin:0 0 4px;font-size:20px;font-weight:700;letter-spacing:-.01em;}
+header p{margin:0;font-size:13.5px;color:var(--text-dim);max-width:56ch;}
+.storage-note{font-size:12px;color:var(--text-muted);margin:8px 0 0;}
+
+main{padding:22px max(20px,var(--safe-r)) calc(40px + var(--safe-b)) max(20px,var(--safe-l));max-width:1280px;margin:0 auto;}
+
+.board{display:grid;grid-template-columns:repeat(3,minmax(260px,1fr));gap:18px;align-items:start;}
+@media (max-width:860px){.board{grid-template-columns:1fr;}}
+
+.column{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:120px;}
+.column-head{display:flex;align-items:center;justify-content:space-between;padding:2px 4px 4px;}
+.column-head h2{margin:0;font-size:14.5px;font-weight:700;letter-spacing:.2px;text-transform:uppercase;}
+.column[data-status="todo"] .column-head h2{color:var(--text-dim);}
+.column[data-status="inprogress"] .column-head h2{color:var(--accent);}
+.column[data-status="done"] .column-head h2{color:var(--accent3);}
+.count{font-size:12px;font-weight:700;color:var(--text-muted);background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:2px 9px;min-width:22px;text-align:center;}
+
+.card-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;min-height:36px;border-radius:12px;transition:background var(--dur-fast) var(--ease);}
+.card-list.drag-over{background:rgba(124,158,255,.08);outline:2px dashed var(--line-active);outline-offset:4px;}
+.empty-hint{margin:2px 4px;font-size:12.5px;color:var(--text-muted);}
+
+.card{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 12px 10px;cursor:grab;
+  transition:border-color var(--dur-fast) var(--ease),transform var(--dur-fast) var(--ease),box-shadow var(--dur-fast) var(--ease);}
+.card:hover{border-color:var(--line-active);}
+.card.dragging{opacity:.45;cursor:grabbing;}
+.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+.card h3{margin:0;font-size:14px;font-weight:650;line-height:1.35;}
+.card-menu{display:flex;gap:4px;flex:0 0 auto;}
+.icon-btn{width:26px;height:26px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--text-muted);
+  font-size:13px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:background var(--dur-fast) var(--ease),color var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease);}
+.icon-btn:hover{background:var(--panel);color:var(--text);border-color:var(--line);}
+.card-desc{margin:8px 0 0;font-size:12.5px;line-height:1.5;color:var(--text-dim);white-space:pre-wrap;}
+.card-meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px;}
+.pill{font-size:11px;font-weight:700;color:var(--accent);background:rgba(124,158,255,.12);border:1px solid rgba(124,158,255,.3);
+  border-radius:999px;padding:2px 9px;}
+.card-link{font-size:12px;color:var(--accent3);text-decoration:none;}
+.card-link:hover{text-decoration:underline;}
+.card-move{display:flex;gap:6px;margin-top:10px;}
+.move-btn{min-height:30px;padding:0 10px;border-radius:8px;background:var(--panel);border:1px solid var(--line);color:var(--text-dim);
+  font-size:12px;cursor:pointer;transition:border-color var(--dur-fast) var(--ease),color var(--dur-fast) var(--ease);}
+.move-btn:hover:not(:disabled){border-color:var(--accent);color:var(--text);}
+.move-btn:disabled{opacity:.35;cursor:default;}
+
+.add-card-btn{min-height:var(--tap);border-radius:10px;border:1px dashed var(--line);background:transparent;color:var(--text-dim);
+  font-size:13px;font-weight:600;cursor:pointer;transition:border-color var(--dur-fast) var(--ease),color var(--dur-fast) var(--ease),background var(--dur-fast) var(--ease);}
+.add-card-btn:hover{border-color:var(--accent);color:var(--text);background:rgba(124,158,255,.06);}
+
+.modal-backdrop{position:fixed;inset:0;background:rgba(8,8,12,.6);display:flex;align-items:center;justify-content:center;
+  padding:20px;z-index:100;}
+.modal-backdrop[hidden]{display:none;}
+.modal{width:100%;max-width:440px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;
+  display:flex;flex-direction:column;gap:12px;}
+.modal h2{margin:0 0 4px;font-size:17px;}
+.modal label{display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:600;color:var(--text-dim);}
+.modal input,.modal textarea{
+  font:inherit;font-size:14px;color:var(--text);background:var(--panel2);border:1px solid var(--line);border-radius:9px;
+  padding:9px 11px;resize:vertical;
+}
+.modal input:focus,.modal textarea:focus{border-color:var(--accent);}
+.modal textarea{min-height:70px;}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:6px;}
+.btn{min-height:var(--tap);padding:0 18px;border-radius:999px;font-size:13.5px;font-weight:700;cursor:pointer;
+  transition:border-color var(--dur-fast) var(--ease),background var(--dur-fast) var(--ease),color var(--dur-fast) var(--ease);}
+.btn-ghost{background:transparent;border:1px solid var(--line);color:var(--text-dim);}
+.btn-ghost:hover{color:var(--text);border-color:var(--accent);}
+.btn-primary{background:linear-gradient(135deg,#5b7cff,#8a5bff);border:1px solid transparent;color:#fff;}
+.btn-primary:hover{box-shadow:0 8px 22px rgba(91,124,255,.35);}
+.btn-danger{background:transparent;border:1px solid rgba(255,95,168,.4);color:var(--accent2);}
+.btn-danger:hover{background:rgba(255,95,168,.1);}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#board">Skip to board</a>
+
+<header>
+  <div class="titles">
+    <h1>Math Word Explorer — Roadmap</h1>
+    <p>Internal tracker for the visual-integration work with Bob &amp; Sharon. Drag cards between columns, or use the arrow buttons on a card.</p>
+  </div>
+</header>
+
+<main id="board">
+  <div class="board" role="group" aria-label="Kanban board">
+
+    <section class="column" data-status="todo" aria-labelledby="col-todo-h">
+      <div class="column-head">
+        <h2 id="col-todo-h">To Do</h2>
+        <span class="count" id="count-todo">0</span>
+      </div>
+      <ul class="card-list" id="list-todo" data-status="todo" aria-labelledby="col-todo-h"></ul>
+      <button class="add-card-btn" data-status="todo" type="button">+ Add card</button>
+    </section>
+
+    <section class="column" data-status="inprogress" aria-labelledby="col-inprogress-h">
+      <div class="column-head">
+        <h2 id="col-inprogress-h">In Progress</h2>
+        <span class="count" id="count-inprogress">0</span>
+      </div>
+      <ul class="card-list" id="list-inprogress" data-status="inprogress" aria-labelledby="col-inprogress-h"></ul>
+      <button class="add-card-btn" data-status="inprogress" type="button">+ Add card</button>
+    </section>
+
+    <section class="column" data-status="done" aria-labelledby="col-done-h">
+      <div class="column-head">
+        <h2 id="col-done-h">Done / Deployed</h2>
+        <span class="count" id="count-done">0</span>
+      </div>
+      <ul class="card-list" id="list-done" data-status="done" aria-labelledby="col-done-h"></ul>
+      <button class="add-card-btn" data-status="done" type="button">+ Add card</button>
+    </section>
+
+  </div>
+  <p class="storage-note">Saved in this browser only (localStorage) — it won't sync across devices or be visible to Bob and Sharon unless they open this same browser.</p>
+</main>
+
+<div class="modal-backdrop" id="modalBackdrop" hidden>
+  <form class="modal" id="cardForm" aria-labelledby="modalTitle" novalidate>
+    <h2 id="modalTitle">Add card</h2>
+    <label>Title
+      <input id="fieldTitle" maxlength="80" required autocomplete="off">
+    </label>
+    <label>Short description
+      <textarea id="fieldDesc" maxlength="400"></textarea>
+    </label>
+    <label>Link (optional)
+      <input id="fieldLink" type="url" placeholder="https://…" autocomplete="off">
+    </label>
+    <label>Owner (optional)
+      <input id="fieldOwner" maxlength="40" placeholder="Sai, or Bob &amp; Sharon" autocomplete="off">
+    </label>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-danger" id="deleteBtn" hidden>Delete</button>
+      <span style="flex:1"></span>
+      <button type="button" class="btn btn-ghost" id="cancelBtn">Cancel</button>
+      <button type="submit" class="btn btn-primary" id="saveBtn">Save</button>
+    </div>
+  </form>
+</div>
+
+<div class="sr-only" aria-live="polite" id="announce"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  var STORAGE_KEY = "mwe_roadmap_board_v1";
+  var STATUSES = ["todo", "inprogress", "done"];
+  var STATUS_LABEL = { todo: "To Do", inprogress: "In Progress", done: "Done / Deployed" };
+
+  var DEFAULT_BOARD = {
+    todo: [
+      card("Collect Visual Vicuna assets from Bob & Sharon",
+        "Export animations/charts for: division (Amelia Strawberries, Slide 11; Daniel Cupcakes, Slide 19), How Many More/Add/Take Away (Wildwood Gym, Slide 3), dollar/price (Money module, Slide 18).",
+        "", "Bob & Sharon"),
+      card("Send Bob & Sharon the full 189-word list",
+        "They want to go through Usable Math and match more coach visuals to words.",
+        "", "Sai"),
+      card("Design a “Use it in solving a problem” card type",
+        "Bob's idea: a second usage panel, like “See it in an example,” showing the word inside an actual Usable Math problem alongside the coach visual.",
+        "", "Sai"),
+      card("Mini 3D map preview on the home page",
+        "Aubrey and Bob both like how the map looks. Show a smaller, non-interactive version on index.html to hook visitors before “Open the Explorer.”",
+        "", "Sai")
+    ],
+    inprogress: [
+      card("Add a visual field to the word data",
+        "Extend the DATA table in build_data.py and the vocab_data.json schema with an optional visual reference per word.",
+        "", "Sai"),
+      card("Render the visual panel in the word view",
+        "Show the image/animation in ui.js / app_template.html, alongside the definition and example.",
+        "", "Sai")
+    ],
+    done: []
+  };
+
+  var boardEl = {
+    todo: document.getElementById("list-todo"),
+    inprogress: document.getElementById("list-inprogress"),
+    done: document.getElementById("list-done")
+  };
+  var countEl = {
+    todo: document.getElementById("count-todo"),
+    inprogress: document.getElementById("count-inprogress"),
+    done: document.getElementById("count-done")
+  };
+  var announceEl = document.getElementById("announce");
+  var modalBackdrop = document.getElementById("modalBackdrop");
+  var cardForm = document.getElementById("cardForm");
+  var modalTitle = document.getElementById("modalTitle");
+  var fieldTitle = document.getElementById("fieldTitle");
+  var fieldDesc = document.getElementById("fieldDesc");
+  var fieldLink = document.getElementById("fieldLink");
+  var fieldOwner = document.getElementById("fieldOwner");
+  var deleteBtn = document.getElementById("deleteBtn");
+  var cancelBtn = document.getElementById("cancelBtn");
+
+  var state = loadBoard();
+  var editing = null; // { status, id } while the modal is open for an existing card
+  var dragCardId = null;
+
+  render();
+
+  document.querySelectorAll(".add-card-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      openModal(btn.getAttribute("data-status"), null);
+    });
+  });
+  cancelBtn.addEventListener("click", closeModal);
+  deleteBtn.addEventListener("click", function () {
+    if (!editing) return;
+    state = removeCard(state, editing.status, editing.id);
+    saveBoard(state);
+    closeModal();
+    render();
+    announce("Card deleted.");
+  });
+  cardForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    var title = fieldTitle.value.trim();
+    if (!title) {
+      fieldTitle.focus();
+      return;
+    }
+    var fields = {
+      title: title,
+      description: fieldDesc.value.trim(),
+      link: fieldLink.value.trim(),
+      owner: fieldOwner.value.trim()
+    };
+    if (editing) {
+      state = updateCard(state, editing.status, editing.id, fields);
+      announce("Card updated.");
+    } else {
+      state = addCard(state, editing ? editing.status : pendingStatus, fields);
+      announce("Card added to " + STATUS_LABEL[pendingStatus] + ".");
+    }
+    saveBoard(state);
+    closeModal();
+    render();
+  });
+  modalBackdrop.addEventListener("click", function (event) {
+    if (event.target === modalBackdrop) closeModal();
+  });
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" && !modalBackdrop.hidden) closeModal();
+  });
+
+  var pendingStatus = "todo";
+
+  function openModal(status, cardId) {
+    pendingStatus = status;
+    if (cardId) {
+      var found = findCard(state, cardId);
+      editing = { status: found.status, id: cardId };
+      modalTitle.textContent = "Edit card";
+      fieldTitle.value = found.card.title;
+      fieldDesc.value = found.card.description;
+      fieldLink.value = found.card.link;
+      fieldOwner.value = found.card.owner;
+      deleteBtn.hidden = false;
+    } else {
+      editing = null;
+      modalTitle.textContent = "Add card — " + STATUS_LABEL[status];
+      cardForm.reset();
+      deleteBtn.hidden = true;
+    }
+    modalBackdrop.hidden = false;
+    fieldTitle.focus();
+  }
+
+  function closeModal() {
+    modalBackdrop.hidden = true;
+    editing = null;
+  }
+
+  function render() {
+    STATUSES.forEach(function (status) {
+      var list = boardEl[status];
+      var cards = state[status];
+      list.innerHTML = "";
+      countEl[status].textContent = String(cards.length);
+
+      if (cards.length === 0) {
+        var hint = document.createElement("li");
+        hint.className = "empty-hint";
+        hint.textContent = "No cards yet.";
+        list.appendChild(hint);
+      }
+
+      cards.forEach(function (item) {
+        list.appendChild(renderCard(item, status));
+      });
+
+      list.addEventListener("dragover", onDragOver);
+      list.addEventListener("dragleave", onDragLeave);
+      list.addEventListener("drop", onDrop);
+    });
+  }
+
+  function renderCard(item, status) {
+    var li = document.createElement("li");
+    li.className = "card";
+    li.draggable = true;
+    li.dataset.id = item.id;
+    li.dataset.status = status;
+
+    var head = document.createElement("div");
+    head.className = "card-head";
+    var h3 = document.createElement("h3");
+    h3.textContent = item.title;
+    var menu = document.createElement("div");
+    menu.className = "card-menu";
+    var editBtn = iconButton("✎", "Edit “" + item.title + "”");
+    editBtn.addEventListener("click", function () { openModal(status, item.id); });
+    menu.appendChild(editBtn);
+    head.appendChild(h3);
+    head.appendChild(menu);
+    li.appendChild(head);
+
+    if (item.description) {
+      var desc = document.createElement("p");
+      desc.className = "card-desc";
+      desc.textContent = item.description;
+      li.appendChild(desc);
+    }
+
+    var meta = document.createElement("div");
+    meta.className = "card-meta";
+    var hasMeta = false;
+    if (item.owner) {
+      var pill = document.createElement("span");
+      pill.className = "pill";
+      pill.textContent = item.owner;
+      meta.appendChild(pill);
+      hasMeta = true;
+    }
+    if (item.link) {
+      var link = document.createElement("a");
+      link.className = "card-link";
+      link.href = item.link;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = "Open link ↗";
+      meta.appendChild(link);
+      hasMeta = true;
+    }
+    if (hasMeta) li.appendChild(meta);
+
+    var moveRow = document.createElement("div");
+    moveRow.className = "card-move";
+    var index = STATUSES.indexOf(status);
+
+    var backBtn = document.createElement("button");
+    backBtn.type = "button";
+    backBtn.className = "move-btn";
+    backBtn.textContent = "← " + (index > 0 ? STATUS_LABEL[STATUSES[index - 1]] : "");
+    backBtn.disabled = index === 0;
+    backBtn.setAttribute("aria-label", "Move “" + item.title + "” to " + (index > 0 ? STATUS_LABEL[STATUSES[index - 1]] : ""));
+    backBtn.addEventListener("click", function () { moveCardBy(item.id, status, -1); });
+
+    var fwdBtn = document.createElement("button");
+    fwdBtn.type = "button";
+    fwdBtn.className = "move-btn";
+    fwdBtn.textContent = (index < STATUSES.length - 1 ? STATUS_LABEL[STATUSES[index + 1]] : "") + " →";
+    fwdBtn.disabled = index === STATUSES.length - 1;
+    fwdBtn.setAttribute("aria-label", "Move “" + item.title + "” to " + (index < STATUSES.length - 1 ? STATUS_LABEL[STATUSES[index + 1]] : ""));
+    fwdBtn.addEventListener("click", function () { moveCardBy(item.id, status, 1); });
+
+    moveRow.appendChild(backBtn);
+    moveRow.appendChild(fwdBtn);
+    li.appendChild(moveRow);
+
+    li.addEventListener("dragstart", function () {
+      dragCardId = item.id;
+      li.classList.add("dragging");
+    });
+    li.addEventListener("dragend", function () {
+      dragCardId = null;
+      li.classList.remove("dragging");
+    });
+
+    return li;
+  }
+
+  function iconButton(glyph, label) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "icon-btn";
+    btn.textContent = glyph;
+    btn.setAttribute("aria-label", label);
+    return btn;
+  }
+
+  function moveCardBy(cardId, fromStatus, delta) {
+    var index = STATUSES.indexOf(fromStatus);
+    var toStatus = STATUSES[index + delta];
+    if (!toStatus) return;
+    state = moveCard(state, cardId, fromStatus, toStatus, state[toStatus].length);
+    saveBoard(state);
+    render();
+    announce("Moved to " + STATUS_LABEL[toStatus] + ".");
+    var moved = document.querySelector('.card[data-id="' + cssEscape(cardId) + '"]');
+    if (moved) {
+      var focusTarget = delta < 0 ? moved.querySelector(".move-btn") : moved.querySelectorAll(".move-btn")[1];
+      if (focusTarget) focusTarget.focus();
+    }
+  }
+
+  function onDragOver(event) {
+    event.preventDefault();
+    event.currentTarget.classList.add("drag-over");
+  }
+  function onDragLeave(event) {
+    event.currentTarget.classList.remove("drag-over");
+  }
+  function onDrop(event) {
+    event.preventDefault();
+    var list = event.currentTarget;
+    list.classList.remove("drag-over");
+    if (!dragCardId) return;
+    var toStatus = list.dataset.status;
+    var found = findCard(state, dragCardId);
+    if (!found) return;
+    state = moveCard(state, dragCardId, found.status, toStatus, state[toStatus].length);
+    saveBoard(state);
+    render();
+    announce("Moved to " + STATUS_LABEL[toStatus] + ".");
+  }
+
+  function card(title, description, link, owner) {
+    return { id: makeId(), title: title, description: description || "", link: link || "", owner: owner || "" };
+  }
+
+  function makeId() {
+    return "c" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  }
+
+  function findCard(board, cardId) {
+    for (var i = 0; i < STATUSES.length; i++) {
+      var status = STATUSES[i];
+      var match = board[status].find(function (c) { return c.id === cardId; });
+      if (match) return { status: status, card: match };
+    }
+    return null;
+  }
+
+  function addCard(board, status, fields) {
+    var next = {};
+    STATUSES.forEach(function (s) { next[s] = board[s]; });
+    next[status] = board[status].concat([{ id: makeId(), title: fields.title, description: fields.description, link: fields.link, owner: fields.owner }]);
+    return next;
+  }
+
+  function updateCard(board, status, cardId, fields) {
+    var next = {};
+    STATUSES.forEach(function (s) { next[s] = board[s]; });
+    next[status] = board[status].map(function (c) {
+      return c.id === cardId ? Object.assign({}, c, fields) : c;
+    });
+    return next;
+  }
+
+  function removeCard(board, status, cardId) {
+    var next = {};
+    STATUSES.forEach(function (s) { next[s] = board[s]; });
+    next[status] = board[status].filter(function (c) { return c.id !== cardId; });
+    return next;
+  }
+
+  function moveCard(board, cardId, fromStatus, toStatus, toIndex) {
+    var moving = board[fromStatus].find(function (c) { return c.id === cardId; });
+    if (!moving) return board;
+    var next = {};
+    STATUSES.forEach(function (s) { next[s] = board[s]; });
+    next[fromStatus] = board[fromStatus].filter(function (c) { return c.id !== cardId; });
+    if (fromStatus === toStatus) {
+      var withoutMoved = next[fromStatus];
+      next[toStatus] = withoutMoved.slice(0, toIndex).concat([moving], withoutMoved.slice(toIndex));
+    } else {
+      var target = next[toStatus].slice();
+      target.splice(toIndex, 0, moving);
+      next[toStatus] = target;
+    }
+    return next;
+  }
+
+  function loadBoard() {
+    try {
+      var raw = window.localStorage.getItem(STORAGE_KEY);
+      if (!raw) return DEFAULT_BOARD;
+      var parsed = JSON.parse(raw);
+      var valid = STATUSES.every(function (s) { return Array.isArray(parsed[s]); });
+      return valid ? parsed : DEFAULT_BOARD;
+    } catch (error) {
+      return DEFAULT_BOARD;
+    }
+  }
+
+  function saveBoard(board) {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(board));
+    } catch (error) {
+      // Storage unavailable (e.g. private browsing) — board still works for this session.
+    }
+  }
+
+  function announce(message) {
+    announceEl.textContent = "";
+    window.setTimeout(function () { announceEl.textContent = message; }, 30);
+  }
+
+  function cssEscape(value) {
+    return window.CSS && CSS.escape ? CSS.escape(value) : value.replace(/[^a-zA-Z0-9_-]/g, "\\$&");
+  }
+}());
+</script>
+</body>
+</html>

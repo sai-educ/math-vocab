@@ -153,7 +153,10 @@ function serveStatic(request, response, pathname) {
     return json(response, 400, { error: "Invalid path." });
   }
 
-  const relativePath = decodedPath === "/" ? "./index.html" : `.${decodedPath}`;
+  const relativePath =
+    decodedPath === "/" ? "./index.html" :
+    decodedPath === "/roadmap" ? "./roadmap.html" :
+    `.${decodedPath}`;
   const filePath = path.resolve(ROOT, relativePath);
   if (filePath !== ROOT && !filePath.startsWith(ROOT + path.sep)) {
     return json(response, 403, { error: "Forbidden." });
