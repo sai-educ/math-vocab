@@ -153,7 +153,13 @@ function bindSoundToggle() {
       + `<span class="btn-text">${on ? 'Sound' : 'Muted'}</span>`;
   };
 
-  btn.addEventListener('click', () => { Sound.toggle(); sync(); });
+  btn.addEventListener('click', () => {
+    Sound.toggle();
+    // "Sound" is meant as one switch for everything audible, including
+    // whatever Fish Audio is mid-sentence on — not just the UI chimes.
+    if (!Sound.isOn()) stopSpeaking();
+    sync();
+  });
   sync();
 }
 
