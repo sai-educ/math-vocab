@@ -5,7 +5,7 @@
 <!-- No maximum-scale / user-scalable=no: blocking pinch-zoom fails WCAG 1.4.4
      and is exactly the gesture a low-vision child reaches for on an iPad. -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="color-scheme" content="dark">
+<meta name="color-scheme" content="light">
 <meta name="description" content="An open-access, interactive K-5 math vocabulary bank aligned to the Common Core standards, with a 3D knowledge graph, definitions, examples and common misconceptions.">
 <title>Math Word Explorer — K-5 math vocabulary</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -63,6 +63,9 @@ __STYLES__
       </div>
     </div>
 
+    <div class="panel-resizer" id="resizerLeft" role="separator" aria-orientation="vertical"
+         aria-label="Resize the topic and word list panel" tabindex="0"></div>
+
     <div id="rightRegion">
       <div id="graphPanel">
         <div id="graphContainer"></div>
@@ -86,6 +89,9 @@ __STYLES__
         <button id="resetViewBtn" class="graph-btn" type="button" hidden>See the whole map</button>
       </div>
 
+      <div class="panel-resizer" id="resizerDetail" role="separator" aria-orientation="vertical"
+           aria-label="Resize the definition panel" tabindex="0"></div>
+
       <div id="detail" aria-label="Word definition">
         <p class="placeholder">Select a grade, then a topic, then a word to see its definition here.</p>
       </div>
@@ -104,6 +110,8 @@ __STYLES__
 
 <div id="aboutOverlay" hidden>
   <div id="aboutDialog" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
+    <button id="aboutCloseX" type="button" aria-label="Close"></button>
+    <div id="aboutScroll">
     <h2 id="aboutTitle">About this resource</h2>
     <p class="about-sub">An open educational resource for elementary math vocabulary.</p>
 
@@ -164,6 +172,7 @@ __STYLES__
     </p>
 
     <button id="aboutClose" type="button">Close</button>
+    </div>
   </div>
 </div>
 
