@@ -115,6 +115,9 @@ function selectFromGraphNode(nodeId) {
 
 function bindControls() {
   document.getElementById('resetViewBtn').addEventListener('click', resetAll);
+  document.getElementById('zoomInBtn').addEventListener('click', () => Graph.zoomIn());
+  document.getElementById('zoomOutBtn').addEventListener('click', () => Graph.zoomOut());
+  bindGradeLabelsToggle();
 
   let searchTimer = null;
   document.getElementById('search').addEventListener('input', (event) => {
@@ -152,6 +155,22 @@ function bindSoundToggle() {
 
   btn.addEventListener('click', () => { Sound.toggle(); sync(); });
   sync();
+}
+
+function bindGradeLabelsToggle() {
+  const checkbox = document.getElementById('gradeLabelsCheckbox');
+  let on = false;
+  try { on = localStorage.getItem(STORAGE_KEYS.showGradeLabels) === '1'; } catch (e) { /* ignore */ }
+
+  checkbox.checked = on;
+  Graph.setShowGradeLabels(on);
+
+  checkbox.addEventListener('change', () => {
+    Graph.setShowGradeLabels(checkbox.checked);
+    try {
+      localStorage.setItem(STORAGE_KEYS.showGradeLabels, checkbox.checked ? '1' : '0');
+    } catch (e) { /* private browsing */ }
+  });
 }
 
 function boot() {
