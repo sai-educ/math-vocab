@@ -42,6 +42,8 @@ const STORAGE_KEYS = {
   ttsProxy: 'mathVocabTtsProxyUrl',
   leftPanelWidth: 'mathVocabLeftPanelWidth',
   detailPanelWidth: 'mathVocabDetailPanelWidth',
+  topicsSectionHeight: 'mathVocabTopicsSectionHeight',
+  showGradeLabels: 'mathVocabShowGradeLabels',
 };
 
 // ---- data helpers -------------------------------------------------------
