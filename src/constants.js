@@ -40,6 +40,8 @@ const STORAGE_KEYS = {
   onboarded: 'mathGraphOnboarded',
   visited: 'mathVocabVisitedTerms',
   ttsProxy: 'mathVocabTtsProxyUrl',
+  leftPanelWidth: 'mathVocabLeftPanelWidth',
+  detailPanelWidth: 'mathVocabDetailPanelWidth',
 };
 
 // ---- data helpers -------------------------------------------------------
