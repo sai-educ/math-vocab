@@ -49,8 +49,14 @@ const Graph = (function () {
   const COLORS = { root: 0xffffff, grade: 0x7c9eff, domain: 0xff5fa8, term: 0x7cffb2 };
   const SIZE = { root: 2.8, grade: 1.7, domain: 1.08, term: 0.58 };
   const HALO_SIZE = { root: 19, grade: 13, domain: 8.5, term: 4.6 };
-  const DIM = 0.055;           // how far inactive nodes fade toward the background
-  const DIM_SCALE = 0.45;
+  // How far inactive nodes fade toward the background. Was 0.055 — nodes at
+  // that level are practically black against the panel's near-black bg,
+  // which reads as "gone" rather than "not selected right now" and fails a
+  // useful contrast floor. 0.24 keeps the same sense of hierarchy (the
+  // active path still reads far brighter) while keeping everything else
+  // legible enough to navigate by on an iPad.
+  const DIM = 0.24;
+  const DIM_SCALE = 0.6;
 
   // Allocated in init(), after THREE is confirmed present — this module has
   // to stay loadable when the CDN is unreachable so the rest of the page
@@ -858,6 +864,28 @@ const Graph = (function () {
     if (hasControls) controls.autoRotate = on && !REDUCED_MOTION;
   }
 
+  /* On-screen +/- buttons, for a discoverable alternative to pinch-zoom —
+     useful on a shared classroom iPad where a first-time student may not
+     think to try pinching a 3D scene. Dollies the camera along its current
+     line to the target rather than jumping to a fixed distance, so it
+     composes naturally with whatever the student has already framed. */
+  function dolly(scale) {
+    if (!ready) return;
+    const target = hasControls ? controls.target : ORIGIN;
+    const offset = camera.position.clone().sub(target);
+    const dist = Math.max(controls ? controls.minDistance : 2.5,
+      Math.min(controls ? controls.maxDistance : 320, offset.length() * scale));
+    offset.setLength(dist);
+    const nextPos = target.clone().add(offset);
+    if (REDUCED_MOTION || typeof gsap === 'undefined') {
+      camera.position.copy(nextPos);
+    } else {
+      gsap.to(camera.position, {
+        x: nextPos.x, y: nextPos.y, z: nextPos.z, duration: 0.4, ease: EASE_INOUT, overwrite: true,
+      });
+    }
+  }
+
   function onResize() {
     if (!ready || !container.clientWidth) return;
     camera.aspect = container.clientWidth / Math.max(container.clientHeight, 1);
@@ -1003,5 +1031,11 @@ const Graph = (function () {
     focus,
     setOnSelect(cb) { onSelect = cb; },
     isReady() { return ready; },
+    setShowGradeLabels(value) {
+      showAllGradeLabels = !!value;
+      if (ready) updateLabels();
+    },
+    zoomIn() { dolly(0.72); },
+    zoomOut() { dolly(1.32); },
   };
 }());
