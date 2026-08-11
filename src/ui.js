@@ -225,6 +225,10 @@ function vocabButton(t, showGrade) {
 
 function renderDetail() {
   const detail = document.getElementById('detail');
+  // The panel is about to be replaced wholesale — including #listenAudio —
+  // so anything still playing or in flight has to be stopped here, not left
+  // to keep running on an element that is no longer even on screen.
+  stopSpeaking();
   if (!state.term) {
     detail.innerHTML = '<p class="placeholder">Select a grade, then a topic, then a word to see its definition here.</p>';
     return;
