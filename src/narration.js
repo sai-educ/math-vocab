@@ -258,7 +258,6 @@ function exampleForSpeech(term) {
     story += ` ${narrationPeriod(sentence)}`;
   });
 
-  story += ` This story helps make the idea of ${term.term} clear.`;
   return story;
 }
 
