@@ -14,6 +14,23 @@ const TTS_PROXY_URL = readTtsProxyUrl();
 // termId -> object URL, so replaying a word doesn't call the API again.
 const ttsCache = {};
 
+// Tracks whatever is currently in flight or playing, so a stale response —
+// or a mute toggle, or picking a different word — can actually stop it
+// instead of leaving a detached button's audio playing into the void.
+let activeAbortController = null;
+let activeAudioEl = null;
+
+function stopSpeaking() {
+  if (activeAbortController) {
+    activeAbortController.abort();
+    activeAbortController = null;
+  }
+  if (activeAudioEl) {
+    activeAudioEl.pause();
+    activeAudioEl = null;
+  }
+}
+
 function readTtsProxyUrl() {
   let configured = '';
   try {
@@ -38,21 +55,35 @@ function readTtsProxyUrl() {
 
 async function speakTerm(t) {
   const btn = document.getElementById('listenBtn');
-  const btnText = document.getElementById('listenBtnText');
   const status = document.getElementById('listenStatus');
   const audioEl = document.getElementById('listenAudio');
   if (!btn || !audioEl) return;
 
+  // A second tap — or a fresh word — always cancels whatever came before,
+  // rather than letting two requests race for the same audio element.
+  stopSpeaking();
+
+  if (!Sound.isOn()) {
+    status.textContent = 'Sound is off — turn it on to listen.';
+    status.className = '';
+    return;
+  }
+
   if (ttsCache[t.id]) {
     audioEl.src = ttsCache[t.id];
+    activeAudioEl = audioEl;
     playQuietly(audioEl, status);
     return;
   }
 
+  const controller = new AbortController();
+  activeAbortController = controller;
+
   btn.disabled = true;
-  btn.classList.add('loading');
-  btnText.textContent = 'Loading audio…';
-  status.textContent = '';
+  // The button itself never changes — no spin, no label swap. The loading
+  // state lives entirely in this status line, which is already wired up to
+  // be announced to screen readers.
+  status.textContent = 'Loading, please wait…';
   status.className = '';
 
   try {
@@ -60,6 +91,7 @@ async function speakTerm(t) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text: speechScriptFor(t), reference_id: TTS_VOICE_ID }),
+      signal: controller.signal,
     });
     if (!res.ok) {
       let message = `Request failed (${res.status}).`;
@@ -71,9 +103,15 @@ async function speakTerm(t) {
     }
     const url = URL.createObjectURL(await res.blob());
     ttsCache[t.id] = url;
+    // Superseded while the request was in flight (a newer word, a mute, a
+    // second tap) — the fetch finished, but nothing should play it.
+    if (activeAbortController !== controller) return;
     audioEl.src = url;
+    activeAudioEl = audioEl;
+    status.textContent = '';
     await audioEl.play();
   } catch (error) {
+    if (error.name === 'AbortError') return;
     const hint = TTS_PROXY_URL === DEFAULT_TTS_PROXY_URL
       ? ' Start the local voice server with node server.js, or configure a Worker URL with ?ttsProxy=…'
       : '';
@@ -81,9 +119,8 @@ async function speakTerm(t) {
     status.className = 'err';
     Sound.play('error');
   } finally {
+    if (activeAbortController === controller) activeAbortController = null;
     btn.disabled = false;
-    btn.classList.remove('loading');
-    btnText.textContent = 'Listen to an explanation';
   }
 }
 
@@ -91,6 +128,7 @@ function playQuietly(audioEl, status) {
   const attempt = audioEl.play();
   if (!attempt || !attempt.catch) return;
   attempt.catch((error) => {
+    if (error.name === 'AbortError') return;
     status.textContent = `Could not play audio: ${error.message}`;
     status.className = 'err';
   });
