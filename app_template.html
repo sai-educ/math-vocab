@@ -72,14 +72,27 @@ __STYLES__
         <div id="graphLabels" aria-hidden="true"></div>
         <div id="graphTermSymbol" aria-hidden="true"></div>
         <aside id="graphLegend" aria-label="Knowledge graph map key" hidden>
-          <p>Map key</p>
+          <p class="legend-title">Map key</p>
           <ul>
             <li><span class="legend-node legend-root" aria-hidden="true"></span><span>All K–5 words</span></li>
             <li><span class="legend-node legend-grade" aria-hidden="true"></span><span>Grades</span></li>
             <li><span class="legend-node legend-domain" aria-hidden="true"></span><span>Math topics</span></li>
             <li><span class="legend-node legend-term" aria-hidden="true"></span><span>Vocabulary words</span></li>
           </ul>
+          <p class="legend-gesture">Drag to rotate · Pinch to zoom · Tap a dot to select</p>
         </aside>
+        <label class="graph-toggle" id="gradeLabelsToggle">
+          <input type="checkbox" id="gradeLabelsCheckbox">
+          <span>Show grade labels</span>
+        </label>
+        <div id="zoomControls">
+          <button id="zoomInBtn" class="zoom-btn" type="button" aria-label="Zoom in">
+            <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+          </button>
+          <button id="zoomOutBtn" class="zoom-btn" type="button" aria-label="Zoom out">
+            <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg>
+          </button>
+        </div>
         <div id="graphFallback">
           The 3D graph could not load (it needs an internet connection the first time, for Three.js from a CDN).<br>
           Everything else on this page still works fully offline.
