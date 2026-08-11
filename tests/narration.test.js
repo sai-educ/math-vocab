@@ -25,7 +25,7 @@ test('retells the subtract example as a short story rather than reading it verba
     story,
     'Picture Ivy with 5 balloons. Then two of them pop. '
       + 'To make sense of what happened, she subtracts 2 from 5. '
-      + 'That leaves Ivy with 3 balloons. This story helps make the idea of subtract clear.',
+      + 'That leaves Ivy with 3 balloons.',
   );
   assert.notEqual(story, subtract.example);
 });
@@ -37,8 +37,7 @@ test('creates an inviting, complete narration for a noun concept', () => {
     speechScriptFor(fraction),
     'Let’s explore fraction. Fraction is a number that names part of a whole. '
       + 'Picture Nina as she cuts a pie into 4 equal slices and takes 1. '
-      + 'In the end, she ate 1/4 of the pie. '
-      + 'This story helps make the idea of fraction clear.',
+      + 'In the end, she ate 1/4 of the pie.',
   );
 });
 
