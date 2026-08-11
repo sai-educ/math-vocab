@@ -209,6 +209,9 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
 #topicsSection{
   flex:0 0 clamp(120px, 40%, 320px);min-height:0;overflow-y:auto;padding:14px 0;
   -webkit-overflow-scrolling:touch;
+  /* Fallback divider for ≤760px, where .panel-resizer-h (and its own line)
+     is hidden entirely — this is the only line at that size. */
+  border-bottom:1px solid var(--line);
 }
 #vocabSection{flex:1 1 auto;min-height:80px;overflow-y:auto;padding:14px 0;-webkit-overflow-scrolling:touch;}
 
@@ -219,15 +222,28 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   flex:0 0 auto;height:14px;margin:-7px 0;position:relative;z-index:3;
   cursor:row-resize;background:transparent;touch-action:none;
 }
+.panel-resizer-h::before{
+  content:"";position:absolute;top:50%;left:0;right:0;height:1px;
+  transform:translateY(-50%);background:var(--line);
+  transition:background var(--dur-fast) var(--ease);
+}
 .panel-resizer-h::after{
   content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
   height:4px;width:36px;border-radius:3px;background:var(--line);
   transition:background var(--dur-fast) var(--ease),width var(--dur-fast) var(--ease);
 }
+.panel-resizer-h:hover::before,
+.panel-resizer-h:focus-visible::before,
+.panel-resizer-h.dragging::before,
 .panel-resizer-h:hover::after,
 .panel-resizer-h:focus-visible::after,
 .panel-resizer-h.dragging::after{
-  background:var(--accent);width:52px;
+  background:var(--accent);
+}
+.panel-resizer-h:hover::after,
+.panel-resizer-h:focus-visible::after,
+.panel-resizer-h.dragging::after{
+  width:52px;
 }
 .panel-resizer-h:focus-visible{outline:none;}
 .panel-resizer-h:focus-visible::after{outline:3px solid var(--focus-ring);outline-offset:3px;}
@@ -242,15 +258,30 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   flex:0 0 auto;width:14px;margin:0 -7px;position:relative;z-index:3;
   cursor:col-resize;background:transparent;touch-action:none;
 }
+/* The persistent divider line, visible at rest — the grip pill below is
+   only a drag affordance, not a substitute for a line marking the edge. */
+.panel-resizer::before{
+  content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;
+  transform:translateX(-50%);background:var(--line);
+  transition:background var(--dur-fast) var(--ease);
+}
 .panel-resizer::after{
   content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
   width:4px;height:40px;border-radius:3px;background:var(--line);
   transition:background var(--dur-fast) var(--ease),height var(--dur-fast) var(--ease);
 }
+.panel-resizer:hover::before,
+.panel-resizer:focus-visible::before,
+.panel-resizer.dragging::before,
 .panel-resizer:hover::after,
 .panel-resizer:focus-visible::after,
 .panel-resizer.dragging::after{
-  background:var(--accent);height:60px;
+  background:var(--accent);
+}
+.panel-resizer:hover::after,
+.panel-resizer:focus-visible::after,
+.panel-resizer.dragging::after{
+  height:60px;
 }
 .panel-resizer:focus-visible{outline:none;}
 .panel-resizer:focus-visible::after{outline:3px solid var(--focus-ring);outline-offset:3px;}
@@ -569,16 +600,14 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
 #listenBtn{
   display:flex;align-items:center;justify-content:center;gap:8px;
   width:100%;min-height:var(--tap);padding:12px 14px;border-radius:11px;
-  background:linear-gradient(90deg,#5b7cff,#8a5bff);
+  background:var(--accent-ink);
   border:1px solid transparent;color:#fff;font-size:14px;font-weight:600;
   font-family:inherit;cursor:pointer;margin-bottom:14px;box-shadow:var(--shadow-sm);
-  transition:box-shadow var(--dur) var(--ease),transform var(--dur) var(--ease);
+  transition:background var(--dur) var(--ease),box-shadow var(--dur) var(--ease),transform var(--dur) var(--ease);
 }
-#listenBtn:hover:not(:disabled){box-shadow:0 8px 22px rgba(91,124,255,.35);transform:translateY(-1px);}
+#listenBtn:hover:not(:disabled){background:#2d47c2;box-shadow:0 8px 22px rgba(56,85,214,.3);transform:translateY(-1px);}
 #listenBtn:disabled{opacity:.55;cursor:default;}
 #listenBtn .icon{display:flex;}
-#listenBtn.loading .icon{animation:spin 1.1s var(--ease-soft) infinite;}
-@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
 #listenStatus{font-size:12px;color:var(--text-dim);margin:-8px 0 14px;min-height:14px;line-height:1.5;}
 #listenStatus.err{color:#b8391a;}
 
@@ -5085,7 +5114,6 @@ function exampleForSpeech(term) {
     story += ` ${narrationPeriod(sentence)}`;
   });
 
-  story += ` This story helps make the idea of ${term.term} clear.`;
   return story;
 }
 
@@ -5118,6 +5146,23 @@ const TTS_PROXY_URL = readTtsProxyUrl();
 // termId -> object URL, so replaying a word doesn't call the API again.
 const ttsCache = {};
 
+// Tracks whatever is currently in flight or playing, so a stale response —
+// or a mute toggle, or picking a different word — can actually stop it
+// instead of leaving a detached button's audio playing into the void.
+let activeAbortController = null;
+let activeAudioEl = null;
+
+function stopSpeaking() {
+  if (activeAbortController) {
+    activeAbortController.abort();
+    activeAbortController = null;
+  }
+  if (activeAudioEl) {
+    activeAudioEl.pause();
+    activeAudioEl = null;
+  }
+}
+
 function readTtsProxyUrl() {
   let configured = '';
   try {
@@ -5142,21 +5187,35 @@ function readTtsProxyUrl() {
 
 async function speakTerm(t) {
   const btn = document.getElementById('listenBtn');
-  const btnText = document.getElementById('listenBtnText');
   const status = document.getElementById('listenStatus');
   const audioEl = document.getElementById('listenAudio');
   if (!btn || !audioEl) return;
 
+  // A second tap — or a fresh word — always cancels whatever came before,
+  // rather than letting two requests race for the same audio element.
+  stopSpeaking();
+
+  if (!Sound.isOn()) {
+    status.textContent = 'Sound is off — turn it on to listen.';
+    status.className = '';
+    return;
+  }
+
   if (ttsCache[t.id]) {
     audioEl.src = ttsCache[t.id];
+    activeAudioEl = audioEl;
     playQuietly(audioEl, status);
     return;
   }
 
+  const controller = new AbortController();
+  activeAbortController = controller;
+
   btn.disabled = true;
-  btn.classList.add('loading');
-  btnText.textContent = 'Loading audio…';
-  status.textContent = '';
+  // The button itself never changes — no spin, no label swap. The loading
+  // state lives entirely in this status line, which is already wired up to
+  // be announced to screen readers.
+  status.textContent = 'Loading, please wait…';
   status.className = '';
 
   try {
@@ -5164,6 +5223,7 @@ async function speakTerm(t) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text: speechScriptFor(t), reference_id: TTS_VOICE_ID }),
+      signal: controller.signal,
     });
     if (!res.ok) {
       let message = `Request failed (${res.status}).`;
@@ -5175,9 +5235,15 @@ async function speakTerm(t) {
     }
     const url = URL.createObjectURL(await res.blob());
     ttsCache[t.id] = url;
+    // Superseded while the request was in flight (a newer word, a mute, a
+    // second tap) — the fetch finished, but nothing should play it.
+    if (activeAbortController !== controller) return;
     audioEl.src = url;
+    activeAudioEl = audioEl;
+    status.textContent = '';
     await audioEl.play();
   } catch (error) {
+    if (error.name === 'AbortError') return;
     const hint = TTS_PROXY_URL === DEFAULT_TTS_PROXY_URL
       ? ' Start the local voice server with node server.js, or configure a Worker URL with ?ttsProxy=…'
       : '';
@@ -5185,9 +5251,8 @@ async function speakTerm(t) {
     status.className = 'err';
     Sound.play('error');
   } finally {
+    if (activeAbortController === controller) activeAbortController = null;
     btn.disabled = false;
-    btn.classList.remove('loading');
-    btnText.textContent = 'Listen to an explanation';
   }
 }
 
@@ -5195,6 +5260,7 @@ function playQuietly(audioEl, status) {
   const attempt = audioEl.play();
   if (!attempt || !attempt.catch) return;
   attempt.catch((error) => {
+    if (error.name === 'AbortError') return;
     status.textContent = `Could not play audio: ${error.message}`;
     status.className = 'err';
   });
@@ -5433,6 +5499,10 @@ function vocabButton(t, showGrade) {
 
 function renderDetail() {
   const detail = document.getElementById('detail');
+  // The panel is about to be replaced wholesale — including #listenAudio —
+  // so anything still playing or in flight has to be stopped here, not left
+  // to keep running on an element that is no longer even on screen.
+  stopSpeaking();
   if (!state.term) {
     detail.innerHTML = '<p class="placeholder">Select a grade, then a topic, then a word to see its definition here.</p>';
     return;
@@ -5947,7 +6017,13 @@ function bindSoundToggle() {
       + `<span class="btn-text">${on ? 'Sound' : 'Muted'}</span>`;
   };
 
-  btn.addEventListener('click', () => { Sound.toggle(); sync(); });
+  btn.addEventListener('click', () => {
+    Sound.toggle();
+    // "Sound" is meant as one switch for everything audible, including
+    // whatever Fish Audio is mid-sentence on — not just the UI chimes.
+    if (!Sound.isOn()) stopSpeaking();
+    sync();
+  });
   sync();
 }
 
