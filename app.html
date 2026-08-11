@@ -10,6 +10,16 @@
 <title>Math Word Explorer — K-5 math vocabulary</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<!-- Bloom post-processing (UnrealBloomPass). Loaded after the core three.js
+     build; if any of these fail, the graph falls back to direct rendering
+     with its sprite-halo glow, so bloom is an enhancement, not a dependency. -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/Pass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <style>
 /* ---------- Inter (OFL, fonts.google.com/specimen/Inter) ---------- */
@@ -367,8 +377,28 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   flex:1;min-width:0;position:relative;overflow:hidden;
   background:radial-gradient(ellipse at center, #16161f 0%, #0f0f16 75%);
 }
+
+/* Layered atmosphere behind the transparent WebGL canvas: two faint colour
+   fields give the dark space a nebula feel, and the vignette keeps the eye
+   on the graph's core instead of the panel's hard edges. Both are pure CSS
+   so they cost nothing per frame and need no extra textures. */
+#graphPanel::before{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(42% 38% at 27% 24%, rgba(96,86,200,.16), transparent 70%),
+    radial-gradient(46% 42% at 74% 34%, rgba(255,95,168,.10), transparent 70%),
+    radial-gradient(60% 55% at 50% 74%, rgba(52,142,214,.10), transparent 72%);
+}
 #graphContainer{position:absolute;inset:0;}
+/* Keep the canvas a normal child so the container stays below the HTML
+   label layer (#graphLabels, z-index auto, later in the DOM). The vignette
+   sits above the canvas but below every label, so it can darken the scene
+   edges without ever dimming the projected labels or controls. */
 #graphContainer canvas{display:block;touch-action:none;}
+#graphContainer::after{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(125% 95% at 50% 45%, transparent 55%, rgba(4,4,10,.42) 100%);
+}
 
 /* HTML labels projected from 3D positions. These replaced canvas sprites:
    they stay crisp at any pixel ratio, never overlap the way the sprites did,
@@ -3827,10 +3857,14 @@ const Sound = (function () {
    * Nodes are pickable — tapping a node in the graph selects it.
    * Materials are lit (MeshStandardMaterial + three lights + filmic tone
      mapping) rather than flat unlit colour, so the nodes read as objects.
+   * Bloom is an optional post-processing pass on top of the additive halos;
+     if its CDN add-ons fail to load, the graph renders directly with the
+     halos as the glow, so it never becomes a hard dependency.
    ========================================================================= */
 
 const Graph = (function () {
   let scene, camera, renderer, controls, container, labelLayer, termSymbolEl, clock;
+  let composer = null, bloomPass = null;
   let ready = false;
   let hasControls = false;
   let idleAngle = 0.6;
@@ -3844,7 +3878,7 @@ const Graph = (function () {
   let gradeMesh, termMesh, rootMesh;
   const domainMeshes = {};     // domainCode -> InstancedMesh
   const haloLayers = {};       // level -> { points, ids, colors }
-  let edgeGeometry, edgeColors;
+  let edgeGeometry, edgeColors, edgeBaseColors;
   const edgeList = [];
   const ambientSymbolEls = [];
 
@@ -3862,6 +3896,7 @@ const Graph = (function () {
   const COLORS = { root: 0xffffff, grade: 0x7c9eff, domain: 0xff5fa8, term: 0x7cffb2 };
   const SIZE = { root: 2.8, grade: 1.7, domain: 1.08, term: 0.58 };
   const HALO_SIZE = { root: 19, grade: 13, domain: 8.5, term: 4.6 };
+  const EDGE_SEGMENTS = 8;
   // How far inactive nodes fade toward the background. Was 0.055 — nodes at
   // that level are practically black against the panel's near-black bg,
   // which reads as "gone" rather than "not selected right now" and fails a
@@ -3942,6 +3977,25 @@ const Graph = (function () {
         hasControls = true;
       } else {
         camera.lookAt(ORIGIN);
+      }
+
+        /* UnrealBloomPass post-processing. Wired defensively: if any of the
+           CDN add-on scripts are missing, the graph renders directly and the
+           additive sprite halos remain the glow. The pass halves its own
+           internal targets, so an iPad doesn't pay the full-scaled cost. */
+      if (typeof THREE.EffectComposer !== 'undefined'
+          && typeof THREE.RenderPass !== 'undefined'
+          && typeof THREE.UnrealBloomPass !== 'undefined') {
+        composer = new THREE.EffectComposer(renderer);
+        composer.setPixelRatio(renderer.getPixelRatio());
+        composer.setSize(w, h);
+        composer.addPass(new THREE.RenderPass(scene, camera));
+        const bloomStrength = w < 600 ? 0.55 : 0.75;
+        bloomPass = new THREE.UnrealBloomPass(
+          new THREE.Vector2(w, h),
+          bloomStrength, 0.55, 0.6,
+        );
+        composer.addPass(bloomPass);
       }
 
       clock = new THREE.Clock();
@@ -4046,6 +4100,8 @@ const Graph = (function () {
     nodes[id] = {
       id, level, parentId,
       pos: pos.clone(),
+      // Exact legend colours: the 3D nodes must read the same blue/pink/
+      // green as the map key, not a tinted or lightened variant of them.
       baseColor: new THREE.Color(COLORS[level]),
       target: 1, cur: 1,          // 0 = dimmed out, 1 = fully lit
       targetScale: 1, curScale: 1,
@@ -4124,9 +4180,9 @@ const Graph = (function () {
     writeInstances(true);
   }
 
-  /* Additive point sprites behind each node. This is what produces the neon
-     glow without a post-processing pass (and without the extra CDN
-     dependency an EffectComposer bloom would need). */
+  /* Additive point sprites behind each node. These are the glow when bloom
+     is unavailable, and they also feed the bloom pass its bright signal
+     when the post-processing add-ons are present. */
   function buildHalos() {
     const tex = radialTexture();
     const byLevel = { root: ['root'], grade: gradeIds, domain: [], term: termIds };
@@ -4157,12 +4213,59 @@ const Graph = (function () {
     });
   }
 
+  /* Quadratic bezier between a, ctrl and b. Local helper so buildEdges()
+     can sample curves without allocating a Vector3 per sample. */
+  function quadraticBezier(a, ctrl, b, t, out) {
+    const mt = 1 - t;
+    out.set(
+      mt * mt * a.x + 2 * mt * t * ctrl.x + t * t * b.x,
+      mt * mt * a.y + 2 * mt * t * ctrl.y + t * t * b.y,
+      mt * mt * a.z + 2 * mt * t * ctrl.z + t * t * b.z,
+    );
+  }
+
+  /* Curved edges with a per-vertex gradient from parent colour to child
+     colour. Sampling each edge as several short segments keeps everything
+     in the same single LineSegments draw call as the old straight lines —
+     ~190 edges × 8 segments is still one buffer, so draw calls don't move. */
   function buildEdges() {
-    const positions = new Float32Array(edgeList.length * 6);
-    edgeColors = new Float32Array(edgeList.length * 6);
+    const vertsPerEdge = EDGE_SEGMENTS * 2;
+    const positions = new Float32Array(edgeList.length * vertsPerEdge * 3);
+    edgeColors = new Float32Array(edgeList.length * vertsPerEdge * 3);
+    edgeBaseColors = new Float32Array(edgeList.length * vertsPerEdge * 3);
+    const pa = new THREE.Vector3();
+    const pb = new THREE.Vector3();
+    const mid = new THREE.Vector3();
+    const bowDir = new THREE.Vector3();
+    const ctrl = new THREE.Vector3();
+    const p0 = new THREE.Vector3();
+    const p1 = new THREE.Vector3();
+    const col = new THREE.Color();
     edgeList.forEach(([a, b], i) => {
-      const pa = nodes[a].pos, pb = nodes[b].pos;
-      positions.set([pa.x, pa.y, pa.z, pb.x, pb.y, pb.z], i * 6);
+      pa.copy(nodes[a].pos);
+      pb.copy(nodes[b].pos);
+      mid.addVectors(pa, pb).multiplyScalar(0.5);
+      // Bow every edge outward from the centre so the graph reads as petals
+      // around the root instead of a tangle of straight spokes.
+      if (mid.lengthSq() < 0.0001) bowDir.set(0, 1, 0);
+      else bowDir.copy(mid).normalize();
+      ctrl.copy(mid).addScaledVector(bowDir, pa.distanceTo(pb) * 0.24);
+
+      const ca = nodes[a].baseColor;
+      const cb = nodes[b].baseColor;
+      for (let s = 0; s < EDGE_SEGMENTS; s++) {
+        const t0 = s / EDGE_SEGMENTS;
+        const t1 = (s + 1) / EDGE_SEGMENTS;
+        quadraticBezier(pa, ctrl, pb, t0, p0);
+        quadraticBezier(pa, ctrl, pb, t1, p1);
+        const vi = (i * vertsPerEdge + s * 2) * 3;
+        positions[vi] = p0.x; positions[vi + 1] = p0.y; positions[vi + 2] = p0.z;
+        positions[vi + 3] = p1.x; positions[vi + 4] = p1.y; positions[vi + 5] = p1.z;
+        col.copy(ca).lerp(cb, t0);
+        edgeBaseColors[vi] = col.r; edgeBaseColors[vi + 1] = col.g; edgeBaseColors[vi + 2] = col.b;
+        col.copy(ca).lerp(cb, t1);
+        edgeBaseColors[vi + 3] = col.r; edgeBaseColors[vi + 4] = col.g; edgeBaseColors[vi + 5] = col.b;
+      }
     });
     edgeGeometry = new THREE.BufferGeometry();
     edgeGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
@@ -4570,20 +4673,22 @@ const Graph = (function () {
       layer.ids.forEach((id, i) => {
         const n = nodes[id];
         const boost = hoveredId === id ? 1.7 : 1;
-        _c.copy(n.baseColor).multiplyScalar(n.cur * 0.42 * boost);
+        // A touch brighter than the old 0.42 so the bloom pass has real
+        // signal to work with while staying far below the lit nodes.
+        _c.copy(n.baseColor).multiplyScalar(n.cur * 0.5 * boost);
         layer.colors[i * 3] = _c.r; layer.colors[i * 3 + 1] = _c.g; layer.colors[i * 3 + 2] = _c.b;
       });
       layer.points.geometry.attributes.color.needsUpdate = true;
     });
 
     // edges
+    const vertsPerEdge = EDGE_SEGMENTS * 2;
     edgeList.forEach(([a, b], i) => {
       const lit = Math.min(nodes[a].cur, nodes[b].cur);
       const v = 0.34 * lit;
-      for (let k = 0; k < 2; k++) {
-        edgeColors[i * 6 + k * 3] = v * 0.72;
-        edgeColors[i * 6 + k * 3 + 1] = v * 0.75;
-        edgeColors[i * 6 + k * 3 + 2] = v;
+      const base = i * vertsPerEdge * 3;
+      for (let k = 0; k < vertsPerEdge * 3; k++) {
+        edgeColors[base + k] = edgeBaseColors[base + k] * v;
       }
     });
     edgeGeometry.attributes.color.needsUpdate = true;
@@ -4704,6 +4809,7 @@ const Graph = (function () {
     camera.aspect = container.clientWidth / Math.max(container.clientHeight, 1);
     camera.updateProjectionMatrix();
     renderer.setSize(container.clientWidth, container.clientHeight);
+    if (composer) composer.setSize(container.clientWidth, container.clientHeight);
   }
 
   // ---------------------------------------------------------------------
@@ -4836,7 +4942,8 @@ const Graph = (function () {
     if ((ambientSymbolFrame++ % 24) === 0) refreshAmbientSymbols();
     positionAmbientSymbols();
 
-    renderer.render(scene, camera);
+    if (composer) composer.render();
+    else renderer.render(scene, camera);
   }
 
   return {
