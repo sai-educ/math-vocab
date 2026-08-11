@@ -348,8 +348,28 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   flex:1;min-width:0;position:relative;overflow:hidden;
   background:radial-gradient(ellipse at center, #16161f 0%, #0f0f16 75%);
 }
+
+/* Layered atmosphere behind the transparent WebGL canvas: two faint colour
+   fields give the dark space a nebula feel, and the vignette keeps the eye
+   on the graph's core instead of the panel's hard edges. Both are pure CSS
+   so they cost nothing per frame and need no extra textures. */
+#graphPanel::before{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(42% 38% at 27% 24%, rgba(96,86,200,.16), transparent 70%),
+    radial-gradient(46% 42% at 74% 34%, rgba(255,95,168,.10), transparent 70%),
+    radial-gradient(60% 55% at 50% 74%, rgba(52,142,214,.10), transparent 72%);
+}
 #graphContainer{position:absolute;inset:0;}
+/* Keep the canvas a normal child so the container stays below the HTML
+   label layer (#graphLabels, z-index auto, later in the DOM). The vignette
+   sits above the canvas but below every label, so it can darken the scene
+   edges without ever dimming the projected labels or controls. */
 #graphContainer canvas{display:block;touch-action:none;}
+#graphContainer::after{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(125% 95% at 50% 45%, transparent 55%, rgba(4,4,10,.42) 100%);
+}
 
 /* HTML labels projected from 3D positions. These replaced canvas sprites:
    they stay crisp at any pixel ratio, never overlap the way the sprites did,
