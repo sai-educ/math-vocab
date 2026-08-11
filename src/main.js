@@ -158,6 +158,7 @@ function boot() {
   Sound.init();
   bindControls();
   About.init();
+  initPanelResizers();
   renderAll();
 
   Graph.setOnSelect(selectFromGraphNode);
