@@ -3,21 +3,26 @@
 
    Deliberately separate from the app's stylesheet: this page carries no
    Three.js, no GSAP and no application JavaScript, so it opens instantly on
-   a school tablet even on a slow connection. It shares the app's palette so
-   the two do not feel like different products.
+   a school tablet even on a slow connection. It shares the app's light
+   palette so the two do not feel like different products.
    ========================================================================= */
 
 :root{
-  --bg:#0f0f16;
-  --panel:#1b1b26;
-  --panel2:#20202e;
-  --line:#3a3a52;
-  --text:#e7e7ee;
-  --text-dim:#a3a3ba;
+  --bg:#f4f5fa;
+  --panel:#ffffff;
+  --panel2:#ffffff;
+  --line:#e1e3ef;
+  --text:#14141c;
+  --text-dim:#4b4d61;
   --accent:#7c9eff;
   --accent2:#ff5fa8;
   --accent3:#7cffb2;
+  --accent-ink:#3855d6;
+  --accent2-ink:#c81f6b;
+  --accent3-ink:#0f8a5a;
   --yellow:#ffd23f;
+  --focus-ring:#a86a00;
+  --font-sans:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   --ease:cubic-bezier(.65,0,.35,1);
   --dur:.34s;
   --safe-l:env(safe-area-inset-left,0px);
@@ -31,11 +36,11 @@ html{scroll-behavior:smooth;}
 body{
   margin:0;
   background:
-    radial-gradient(ellipse 900px 520px at 50% -10%, rgba(124,158,255,.16), transparent 70%),
-    radial-gradient(ellipse 700px 460px at 90% 12%, rgba(255,95,168,.10), transparent 70%),
+    radial-gradient(ellipse 900px 520px at 50% -10%, rgba(124,158,255,.14), transparent 70%),
+    radial-gradient(ellipse 700px 460px at 90% 12%, rgba(255,95,168,.08), transparent 70%),
     var(--bg);
   color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-family:var(--font-sans);
   line-height:1.65;
   -webkit-text-size-adjust:100%;
 }
@@ -46,7 +51,7 @@ main{
 }
 
 :focus{outline:none;}
-:focus-visible{outline:3px solid var(--yellow);outline-offset:3px;border-radius:10px;}
+:focus-visible{outline:3px solid var(--focus-ring);outline-offset:3px;border-radius:10px;}
 
 .skip-link{
   position:absolute;left:8px;top:-60px;z-index:20;
@@ -56,19 +61,19 @@ main{
 }
 .skip-link:focus{top:0;}
 
-a{color:var(--accent);text-underline-offset:2px;}
-a:hover{color:var(--accent3);}
+a{color:var(--accent-ink);text-underline-offset:2px;}
+a:hover{color:var(--accent3-ink);}
 
 /* ---------- hero ---------- */
 
 .hero{padding:72px 0 8px;text-align:center;}
 .eyebrow{
   margin:0 0 14px;font-size:12.5px;font-weight:700;letter-spacing:1.6px;
-  text-transform:uppercase;color:var(--accent3);
+  text-transform:uppercase;color:var(--accent3-ink);
 }
 .hero h1{
   margin:0 0 20px;font-size:clamp(34px, 7vw, 58px);line-height:1.08;
-  letter-spacing:-.02em;font-weight:700;
+  letter-spacing:-.02em;font-weight:800;
 }
 .lede{
   margin:0 auto;max-width:620px;font-size:clamp(16.5px, 2.2vw, 19px);
@@ -86,12 +91,12 @@ a:hover{color:var(--accent3);}
   min-height:60px;padding:0 34px;border-radius:16px;
   background:linear-gradient(135deg,#5b7cff,#8a5bff);
   color:#fff;font-size:19px;font-weight:700;text-decoration:none;
-  box-shadow:0 12px 34px rgba(91,124,255,.34);
+  box-shadow:0 12px 34px rgba(91,124,255,.28);
   transition:transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
 }
 .launch:hover{
   color:#fff;transform:translateY(-2px);
-  box-shadow:0 16px 42px rgba(91,124,255,.46);
+  box-shadow:0 16px 42px rgba(91,124,255,.38);
 }
 .launch:active{transform:translateY(0);}
 
@@ -102,17 +107,18 @@ a:hover{color:var(--accent3);}
 .panel{
   margin:34px 0 0;padding:28px 30px;
   background:var(--panel);border:1px solid var(--line);border-radius:18px;
+  box-shadow:0 1px 2px rgba(20,20,40,.05);
 }
 .panel h2{
-  margin:0 0 14px;font-size:clamp(21px, 3.4vw, 26px);letter-spacing:-.01em;
+  margin:0 0 14px;font-size:clamp(21px, 3.4vw, 26px);letter-spacing:-.01em;font-weight:700;
 }
 .panel p{margin:0 0 14px;color:var(--text-dim);font-size:16px;}
 .panel p:last-child{margin-bottom:0;}
 .panel p em{color:var(--text);font-style:normal;font-weight:600;}
 .panel strong{color:var(--text);}
 
-.privacy{border-color:rgba(124,255,178,.34);background:rgba(124,255,178,.05);}
-.privacy h2{color:var(--accent3);}
+.privacy{border-color:rgba(15,138,90,.3);background:rgba(15,138,90,.05);}
+.privacy h2{color:var(--accent3-ink);}
 
 /* ---------- feature list ---------- */
 
@@ -122,12 +128,12 @@ a:hover{color:var(--accent3);}
   grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
 }
 .feature-list h3{
-  margin:0 0 4px;font-size:15.5px;color:var(--text);
+  margin:0 0 4px;font-size:15.5px;color:var(--text);font-weight:700;
   display:flex;align-items:center;gap:8px;
 }
 .feature-list h3::before{
   content:"";width:7px;height:7px;border-radius:50%;
-  background:var(--accent);flex:0 0 auto;
+  background:var(--accent-ink);flex:0 0 auto;
 }
 .feature-list p{margin:0;font-size:14.5px;}
 
@@ -139,9 +145,9 @@ a:hover{color:var(--accent3);}
 }
 .audience article{
   padding:18px 20px;border-radius:14px;
-  background:var(--panel2);border:1px solid var(--line);
+  background:var(--bg);border:1px solid var(--line);
 }
-.audience h3{margin:0 0 8px;font-size:15px;color:var(--accent);letter-spacing:.2px;}
+.audience h3{margin:0 0 8px;font-size:15px;color:var(--accent-ink);letter-spacing:.2px;font-weight:700;}
 .audience p{margin:0;font-size:14.5px;}
 
 /* ---------- footer ---------- */
