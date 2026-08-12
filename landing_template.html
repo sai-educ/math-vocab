@@ -32,7 +32,14 @@ __STYLES__
           <path d="M4 12h15"/><path d="m13 6 6 6-6 6"/>
         </svg>
       </a>
-      <p class="cta-note">Works on a tablet, laptop or phone. Nothing to install.</p>
+      <p class="cta-note">Works on a tablet, laptop, or any browser. Nothing to install.</p>
+      <p class="cta-note cta-note-sound">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/>
+        </svg>
+        Turn up the volume — sound effects help guide the way.
+      </p>
     </div>
   </section>
 
@@ -101,7 +108,9 @@ __STYLES__
         <p>
           <strong>Teachers.</strong> Put it on the board when a new word comes up, or let
           children look words up themselves during independent work. Words are grouped by
-          grade and by Common Core domain, so it lines up with what you are already teaching.
+          grade and topic and cited to their standard — Common Core by default, with the UK
+          National Curriculum and India's NCERT a tap away — so it lines up with what you are
+          already teaching, wherever you teach it.
         </p>
       </article>
       <article>
@@ -160,7 +169,75 @@ __STYLES__
 </main>
 
 <footer>
-  <p>__TERM_COUNT__ words · 6 grades · 6 Common Core domains · CC BY-NC 4.0</p>
+  <p>__TERM_COUNT__ words · 6 grades · US, UK &amp; India curricula · CC BY-NC 4.0</p>
 </footer>
+
+<div id="deviceNoticeOverlay" hidden>
+  <div id="deviceNoticeDialog" role="dialog" aria-modal="true" aria-labelledby="deviceNoticeTitle">
+    <h2 id="deviceNoticeTitle">Best viewed on a larger screen</h2>
+    <p>
+      Math Word Explorer's 3D knowledge graph and resizable panels are built for a tablet
+      or laptop display. On a phone screen, some controls will be difficult to use. For the
+      best experience, please continue on an iPad, tablet, or computer.
+    </p>
+    <div class="device-notice-actions">
+      <button id="deviceNoticeStay" type="button" class="device-notice-secondary">Stay on this page</button>
+      <a id="deviceNoticeContinue" class="device-notice-primary" href="app.html">Continue anyway</a>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var PHONE_QUERY = '(max-width: 760px)';
+  var overlay = document.getElementById('deviceNoticeOverlay');
+  var dialog = document.getElementById('deviceNoticeDialog');
+  var stayBtn = document.getElementById('deviceNoticeStay');
+  var lastFocused = null;
+
+  function isPhoneWidth() {
+    return window.matchMedia && window.matchMedia(PHONE_QUERY).matches;
+  }
+
+  function open() {
+    lastFocused = document.activeElement;
+    overlay.hidden = false;
+    requestAnimationFrame(function () { overlay.classList.add('open'); });
+    stayBtn.focus();
+    document.addEventListener('keydown', onKeydown);
+  }
+
+  function close() {
+    overlay.classList.remove('open');
+    document.removeEventListener('keydown', onKeydown);
+    setTimeout(function () {
+      overlay.hidden = true;
+      if (lastFocused && lastFocused.focus) lastFocused.focus();
+    }, 180);
+  }
+
+  function onKeydown(event) {
+    if (event.key === 'Escape') { close(); return; }
+    if (event.key !== 'Tab') return;
+    var items = dialog.querySelectorAll('a[href],button:not([disabled])');
+    var first = items[0], last = items[items.length - 1];
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  }
+
+  document.querySelectorAll('a.launch').forEach(function (link) {
+    link.addEventListener('click', function (event) {
+      if (!isPhoneWidth()) return;
+      event.preventDefault();
+      open();
+    });
+  });
+
+  stayBtn.addEventListener('click', close);
+  overlay.addEventListener('click', function (event) {
+    if (event.target === overlay) close();
+  });
+}());
+</script>
 </body>
 </html>
