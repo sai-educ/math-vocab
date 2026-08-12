@@ -72,6 +72,22 @@ DATA = {
   ("in order", "Lined up from smallest to biggest.",
    "Ana drops her number cards and they get mixed up. She puts them back in order: 1, 2, 3, 4, 5.",
    ""),
+  ("ordinal number", "A word that tells the order, like first, second, or third.",
+   "Leo lines up his toy cars. The red car is first. The blue car is second. The green car is third.",
+   "",
+   [("UK", "KS1 glossary")]),
+  ("before", "Coming earlier in a line or a count.",
+   "Ana counts to 10. She knows 4 comes before 5.",
+   "",
+   [("UK", "KS1 position language")]),
+  ("after", "Coming later in a line or a count.",
+   "Ben counts his blocks. He knows 6 comes after 5.",
+   "",
+   [("UK", "KS1 position language")]),
+  ("between", "In the middle of two other things.",
+   "Ivy looks at the number line. She sees that 5 sits between 4 and 6.",
+   "",
+   [("UK", "KS1 position language")]),
  ],
  "OA": [
   ("add", "Put groups together. You find how many there are in all.",
@@ -101,6 +117,10 @@ DATA = {
   ("left", "Words in a problem that ask what is still there.",
    "Ana bakes 6 muffins and eats 2. How many are left? She subtracts and finds 4.",
    "Hunting for key words alone can trick you. Always picture what is really happening in the story."),
+  ("pattern", "A set of shapes, colors, or numbers that repeat in the same order.",
+   "Theo lines up blocks: red, blue, red, blue. He says the pattern will keep going: red, blue, red.",
+   "A pattern needs to repeat more than once. Two shapes in a row are not a pattern yet.",
+   [("IN", "Class I · 1.M.LO7"), ("UK", "KS1 glossary")]),
  ],
  "NBT": [
   ("ten", "A group of ten ones.",
@@ -182,6 +202,14 @@ DATA = {
   ("corner", "The point where two sides meet.",
    "Maya runs her finger around a square tile. She feels a sharp point at each corner and counts 4.",
    ""),
+  ("cuboid", "A solid, box-like shape with 6 flat, rectangle faces.",
+   "Theo stacks a tissue box on the shelf. It has 6 flat sides shaped like rectangles. It is a cuboid.",
+   "A cuboid can be tall, short, or a cube. As long as it has 6 rectangle faces, it counts.",
+   [("UK", "Y1 · KS1 glossary"), ("IN", "Class II · 2.M.LO2.1")]),
+  ("solid shape", "A shape you can pick up and hold. It takes up space. Another name for it is a 3D shape.",
+   "Omar holds a wooden block. He can turn it over in his hands, so it is a solid shape.",
+   "",
+   [("US", "K.G.A.1"), ("IN", "Class I · 1.M.LO5")]),
  ],
 },
 "1": {
@@ -262,6 +290,14 @@ DATA = {
   ("graph", "A picture that shows data so you can compare.",
    "Nina graphs the class pets. The dog bar is the tallest, so dogs are the most common pet.",
    ""),
+  ("capacity", "How much a container can hold.",
+   "Leo pours water into a jug until it is full. The amount it holds is its capacity.",
+   "",
+   [("UK", "Y1 programme of study"), ("IN", "Class II · 2.M.LO3")]),
+  ("Carroll diagram", "A sorting chart with boxes that shows whether something has a property or not.",
+   "Zoe sorts her buttons in a Carroll diagram: one box for round buttons, one box for buttons that are not round.",
+   "",
+   [("UK", "KS1 glossary")]),
  ],
  "G": [
   ("partition", "Cut a shape into parts.",
@@ -288,6 +324,18 @@ DATA = {
   ("3D shape", "A solid shape you can hold. It takes up space.",
    "Theo picks up a wooden cube. He can turn it over in his hand, so it is a 3D shape.",
    ""),
+  ("vertex (vertices)", "The point where two sides of a shape meet. The plural is vertices.",
+   "Zoe traces a triangle with her finger. She counts 3 corners, or vertices, where the sides meet.",
+   "",
+   [("US", "1.G.A.1"), ("UK", "KS1 glossary")]),
+  ("quarter turn", "A turn of one-fourth of the way around, like turning to face a new wall.",
+   "Omar faces the window. He makes a quarter turn and now faces the door.",
+   "",
+   [("UK", "Y1 · KS1 glossary")]),
+  ("half turn", "A turn of halfway around, so you end up facing the opposite way.",
+   "Maya faces the front of the room. She makes a half turn and now faces the back wall.",
+   "",
+   [("UK", "KS1 glossary 'turn'")]),
  ],
 },
 "2": {
@@ -310,6 +358,10 @@ DATA = {
   ("unknown number", "The number you are missing. A letter or a box can stand in for it.",
    "Ivy sees 12 - ? = 7. She asks herself what takes 12 down to 7. The unknown number is 5.",
    ""),
+  ("number bond", "A pair of numbers that add up to a target number.",
+   "Omar learns the number bonds for 10: 6 and 4, 7 and 3, 8 and 2. Each pair adds up to 10.",
+   "",
+   [("UK", "KS1 glossary")]),
  ],
  "NBT": [
   ("hundreds", "Groups of one hundred.",
@@ -327,6 +379,18 @@ DATA = {
   ("compare numbers", "Decide which number is bigger by checking place value.",
    "Maya compares 431 and 419. The hundreds match, so she checks the tens. 3 beats 1, so 431 is bigger.",
    "More digits usually means bigger, but only when you start from the biggest place. Compare left to right."),
+  ("hundred chart", "A grid that shows the numbers 1 to 100 in order.",
+   "Leo uses a hundred chart to skip count by 10s. He taps 10, 20, 30, all the way down one column.",
+   "",
+   [("UK", "KS1 glossary 'hundred square'")]),
+  ("greatest number", "The biggest number you can make or find in a group.",
+   "Ana has the digits 3, 7, and 1. She arranges them to make 731, the greatest number she can build.",
+   "",
+   [("IN", "Class II · 2.M.LO1.3")]),
+  ("smallest number", "The tiniest number you can make or find in a group.",
+   "Ben has the digits 3, 7, and 1. He arranges them to make 137, the smallest number he can build.",
+   "",
+   [("IN", "Class II · 2.M.LO1.3")]),
  ],
  "MD": [
   ("centimeter", "A small unit of length. It is about as wide as your fingernail.",
@@ -356,6 +420,22 @@ DATA = {
   ("quarter (coin)", "A coin worth 25 cents.",
    "Maya has 3 quarters. She counts 25, 50, 75. She has 75 cents.",
    ""),
+  ("Venn diagram", "Two circles that overlap, used to sort things and show what they share.",
+   "Leo draws a Venn diagram. One circle is red things, one circle is round things. The apple goes where the circles overlap.",
+   "",
+   [("UK", "KS1/KS2 sorting tool")]),
+  ("rupee", "India's unit of money.",
+   "Ana saves 50 rupees from her allowance.",
+   "",
+   [("IN", "Class II · 2.M.LO1.6")]),
+  ("paise", "A small unit of Indian money. 100 paise make 1 rupee.",
+   "Ben has 1 rupee, which is the same as 100 paise.",
+   "",
+   [("IN", "Class II · 2.M.LO1.6")]),
+  ("denomination", "The value printed on a coin or bill.",
+   "Ivy sorts her play money by denomination: all the $1 bills together, all the $5 bills together.",
+   "",
+   [("UK", "KS1 glossary"), ("IN", "Class II · 2.M.LO1.6")]),
  ],
  "G": [
   ("quadrilateral", "A closed shape with 4 straight sides.",
@@ -401,6 +481,14 @@ DATA = {
   ("unknown factor", "The missing number in a multiplication fact.",
    "Ivy sees 4 × ? = 28. She counts by fours until she reaches 28. The unknown factor is 7.",
    ""),
+  ("multiplication table", "A chart of multiplication facts, also called a times table.",
+   "Theo studies the multiplication table for 5s to learn 5 x 1 up to 5 x 12 by heart.",
+   "",
+   [("US", "3.OA.C.7"), ("IN", "Class III · 3.M.LO1.4")]),
+  ("rate chart", "A list that shows the price of items, used to find the total cost.",
+   "Ana uses a rate chart to see that pencils cost 5 rupees each, then finds that 3 pencils cost 15 rupees.",
+   "",
+   [("IN", "Class III · 3.M.LO3")]),
  ],
  "NBT": [
   ("round", "Change a number to a nearby easier one.",
@@ -458,6 +546,18 @@ DATA = {
   ("scaled graph", "A graph where one picture or step stands for more than one thing.",
    "Ivy makes a graph where each square stands for 5 books. A bar 4 squares tall means 20 books.",
    "Count the value of each step, not the number of steps."),
+  ("kilogram", "A metric unit of mass equal to 1,000 grams.",
+   "Zoe weighs a bag of rice. It has a mass of 2 kilograms.",
+   "",
+   [("US", "3.MD.A.2"), ("IN", "Class III · 3.M.LO6")]),
+  ("standard unit", "A fixed unit of measurement that everyone agrees on, like a centimeter.",
+   "Nina measures her desk in centimeters, a standard unit, so her measurement means the same thing to everyone.",
+   "",
+   [("IN", "Class III · 3.M.LO5")]),
+  ("non-standard unit", "An everyday object used to measure, like a hand span or a paperclip, before using standard units.",
+   "Omar measures his desk using hand spans, a non-standard unit, before he learns to use a ruler.",
+   "A hand span is different for every person, so measurements made with it will not match.",
+   [("IN", "Class I–III · 1.M.LO6, 3.M.LO7")]),
  ],
  "G": [
   ("quadrilateral", "A closed shape with exactly 4 straight sides.",
@@ -469,6 +569,18 @@ DATA = {
   ("attribute", "A feature of a shape you can name.",
    "Nina looks at a rectangle. She names two attributes. It has 4 square corners, and the sides across from each other match.",
    ""),
+  ("polygon", "A closed flat shape made only of straight sides.",
+   "Maya sorts shapes into a group of polygons: triangles, squares, and hexagons, because they all have straight sides.",
+   "A circle is not a polygon because its side is curved, not straight.",
+   [("UK", "KS2 glossary"), ("US", "supports 3.G.A.1")]),
+  ("diagonal", "A line that connects two corners of a shape that are not already next to each other.",
+   "Leo draws a diagonal across a rectangle. It joins two corners that are not next to each other.",
+   "",
+   [("UK", "KS2 glossary"), ("IN", "Class III · 3.M.LO4.2")]),
+  ("tessellation", "Covering a flat surface with shapes that fit together with no gaps or overlaps.",
+   "Ana notices the tiles on the floor form a tessellation. The squares fit together perfectly with no gaps.",
+   "",
+   [("UK", "KS2 glossary"), ("IN", "Class III · 3.M.LO4.3")]),
  ],
 },
 "4": {
@@ -494,6 +606,10 @@ DATA = {
   ("variable", "A letter that stands for a number you do not know yet.",
    "Zoe writes 6 × n = 42. The letter n is the variable. She solves it and finds n = 7.",
    ""),
+  ("factor pair", "Two numbers that multiply together to make a given number.",
+   "Ben finds the factor pairs of 12: 1 and 12, 2 and 6, 3 and 4.",
+   "",
+   [("US", "4.OA.B.4"), ("UK", "Y4")]),
  ],
  "NBT": [
   ("place value", "What each digit is worth based on its position.",
@@ -551,6 +667,14 @@ DATA = {
   ("conversion", "Changing a measure into a different unit.",
    "Zoe has 3 feet of ribbon and needs inches. She multiplies 3 × 12 and gets 36 inches.",
    ""),
+  ("AM and PM", "The two 12-hour halves of the day. A.M. is before noon. P.M. is after noon.",
+   "Maya wakes up at 7 A.M. and goes to bed at 8 P.M.",
+   "Noon is 12 P.M. and midnight is 12 A.M., which trips kids up since there is no 12 in between.",
+   [("IN", "Class IV · 4.M.LO8")]),
+  ("24-hour clock", "A way of telling time using the numbers 00:00 to 23:59, with no A.M. or P.M.",
+   "Leo reads a train schedule that uses the 24-hour clock. 14:00 means 2 P.M.",
+   "",
+   [("IN", "Class IV · 4.M.LO9"), ("UK", "Y4")]),
  ],
  "G": [
   ("point", "An exact spot. It has no size at all.",
@@ -580,6 +704,30 @@ DATA = {
   ("line of symmetry", "A line that folds a shape into two matching halves.",
    "Zoe folds a paper heart down the middle. The two halves match exactly, so the fold is a line of symmetry.",
    "Not every fold works. The halves have to land on each other exactly."),
+  ("radius", "The distance from the center of a circle to its edge.",
+   "Theo measures from the center of a pizza to its crust. That distance is the radius.",
+   "",
+   [("IN", "Class IV · 4.M.LO3.1"), ("UK", "Y6 preview")]),
+  ("diameter", "The distance across a circle, through its center. It is twice the radius.",
+   "Nina measures straight across a round table, through the middle. That distance is the diameter.",
+   "The diameter has to pass through the center. Any line across the circle that misses the center is shorter.",
+   [("IN", "Class IV · 4.M.LO3.1"), ("UK", "Y6 preview")]),
+  ("circumference", "The distance around a circle.",
+   "Omar wraps a string around a can to measure the circumference.",
+   "",
+   [("UK", "Y6 preview")]),
+  ("net (of a solid)", "A flat pattern that can be folded up to make a solid shape.",
+   "Maya cuts out a net of six squares and folds it up into a cube.",
+   "",
+   [("IN", "Class IV · 4.M.LO3.3"), ("UK", "Y6")]),
+  ("reflection symmetry", "When one half of a shape is the mirror image of the other half.",
+   "Leo folds a paper butterfly down the middle. Both wings match exactly, so it has reflection symmetry.",
+   "",
+   [("IN", "Class IV · 4.M.LO3.4"), ("UK", "glossary")]),
+  ("top, front & side view", "Drawings that show what a solid object looks like from different directions.",
+   "Ana draws her toy box from the top, from the front, and from the side to show all three views.",
+   "",
+   [("IN", "Class IV · 4.M.LO3.5")]),
  ],
 },
 "5": {
@@ -602,6 +750,18 @@ DATA = {
   ("coordinate pair", "Two numbers that locate a point on a grid.",
    "Ana plots (4, 3). She moves 4 across, then 3 up, and marks the spot.",
    ""),
+  ("square number", "A number made by multiplying a whole number by itself.",
+   "Zoe multiplies 6 x 6 and gets 36. 36 is a square number.",
+   "",
+   [("UK", "Y5 glossary"), ("IN", "Class V · 5.M.LO7")]),
+  ("cube number", "A number made by multiplying a whole number by itself three times.",
+   "Theo multiplies 3 x 3 x 3 and gets 27. 27 is a cube number.",
+   "",
+   [("UK", "Y5 glossary")]),
+  ("triangular number", "A number that can be arranged as dots in a triangle, like 1, 3, 6, 10.",
+   "Nina stacks dots in rows of 1, then 2, then 3. The running totals, 1, 3, 6, are triangular numbers.",
+   "",
+   [("UK", "glossary"), ("IN", "Class V · 5.M.LO7")]),
  ],
  "NBT": [
   ("exponent", "A small raised number. It tells how many times to multiply the base by itself.",
@@ -619,6 +779,18 @@ DATA = {
   ("divide decimals", "Split a decimal into equal parts.",
    "Nina pours 4.5 liters into 3 bottles evenly. Each bottle gets 1.5 liters.",
    ""),
+  ("thousandths", "A place value equal to one-thousandth of a whole. It is the third digit after the decimal point.",
+   "Omar writes 0.125. The 5 is in the thousandths place.",
+   "",
+   [("US", "5.NBT.A.1"), ("UK", "Y5")]),
+  ("lakh", "An Indian place-value unit equal to 100,000.",
+   "Maya reads that a car costs 5 lakh rupees, which means 500,000 rupees.",
+   "",
+   [("IN", "Class V · 5.M.LO1.1")]),
+  ("crore", "An Indian place-value unit equal to 10,000,000.",
+   "Leo reads that a stadium cost 50 crore rupees to build, which means 500,000,000 rupees.",
+   "",
+   [("IN", "Class V · 5.M.LO1.1")]),
  ],
  "NF": [
   ("common denominator", "A shared bottom number that lets you add or compare fractions.",
@@ -639,6 +811,10 @@ DATA = {
   ("reciprocal", "The fraction you get when you flip one over.",
    "Ivy flips 2/5 and gets 5/2. That is the reciprocal. The two of them multiply to 1.",
    ""),
+  ("percentage", "A fraction expressed as parts per hundred, written with a % sign.",
+   "Ana scores 90% on her spelling test. Out of 100 equal parts, she got 90 of them right.",
+   "",
+   [("UK", "Y5 programme of study")]),
  ],
  "MD": [
   ("volume", "The amount of space a solid takes up.",
@@ -673,6 +849,26 @@ DATA = {
   ("hierarchy of shapes", "A way to order shape groups. Smaller groups fit inside bigger ones.",
    "Zoe draws a chart of shapes. Squares fit inside rectangles, and rectangles fit inside quadrilaterals.",
    "Every square is a rectangle, but not every rectangle is a square."),
+  ("quadrant", "One of the four sections made when a coordinate plane is divided by its axes.",
+   "Theo plots a point with two positive coordinates. It lands in the first quadrant.",
+   "",
+   [("US", "5.G.A.1"), ("UK", "Y4")]),
+  ("rotation symmetry", "When a shape looks the same after being turned part of the way around its center.",
+   "Omar spins a pinwheel shape a third of the way around. It looks exactly the same, so it has rotation symmetry.",
+   "",
+   [("IN", "Class V · 5.M.LO3.2"), ("UK", "glossary")]),
+  ("regular polygon", "A polygon where all the sides and all the angles are equal.",
+   "Maya checks a hexagon tile. All the sides and all the angles match, so it is a regular polygon.",
+   "",
+   [("UK", "Y5 programme of study")]),
+  ("irregular polygon", "A polygon where the sides and angles are not all equal.",
+   "Leo draws a five-sided shape. Its sides are not all the same length, so it is an irregular polygon.",
+   "",
+   [("UK", "Y5 programme of study")]),
+  ("reflex angle", "An angle greater than 180 degrees but less than 360 degrees.",
+   "A door swings almost all the way open. Ana measures the angle: 300 degrees. That is a reflex angle.",
+   "Kids often measure the small angle instead of the wide one. A reflex angle is always the bigger way around.",
+   [("UK", "Y5 programme of study")]),
  ],
 },
 }
@@ -687,7 +883,18 @@ def build_entries() -> list[dict]:
     entries = []
     for grade, domains in DATA.items():
         for dcode, terms in domains.items():
-            for term, definition, example, misconception in terms:
+            for item in terms:
+                # Plain 4-tuples are Common Core terms, the historical norm:
+                # their one standard is derived, US-only, from grade + domain.
+                # A 5th element opts a term into the international model
+                # instead — one or more (country, code) citations, for terms
+                # sourced from the UK National Curriculum or India's NCERT
+                # rather than (or in addition to) Common Core.
+                if len(item) == 5:
+                    term, definition, example, misconception, standards = item
+                else:
+                    term, definition, example, misconception = item
+                    standards = [("US", f"{grade}.{dcode}")]
                 entries.append({
                     "id": slugify(f"{grade}-{dcode}-{term}"),
                     "term": term,
@@ -695,6 +902,7 @@ def build_entries() -> list[dict]:
                     "domainCode": dcode,
                     "domain": DOMAIN_NAMES[dcode],
                     "standard": f"{grade}.{dcode}",
+                    "standards": [{"country": c, "code": code} for c, code in standards],
                     "definition": definition,
                     "example": example,
                     "misconception": misconception,
@@ -710,12 +918,22 @@ def write_markdown(out_dir: str) -> None:
         lines = [f"# Grade {grade} Math Vocabulary\n"]
         for dcode, terms in domains.items():
             lines.append(f"\n## {DOMAIN_NAMES[dcode]} ({grade}.{dcode})\n")
-            for term, definition, example, misconception in terms:
+            for item in terms:
+                if len(item) == 5:
+                    term, definition, example, misconception, standards = item
+                else:
+                    term, definition, example, misconception = item
+                    standards = [("US", f"{grade}.{dcode}")]
                 lines.append(f"### {term}\n")
                 lines.append(f"**Definition:** {definition}\n")
                 lines.append(f"**Example:** {example}\n")
                 if misconception:
                     lines.append(f"**Common misconception:** {misconception}\n")
+                lines.append(
+                    "**Standards:** "
+                    + ", ".join(f"{c} {code}" for c, code in standards)
+                    + "\n"
+                )
         with open(os.path.join(md_dir, f"grade-{grade}.md"), "w", encoding="utf-8") as f:
             f.write("\n".join(lines))
 
