@@ -154,7 +154,8 @@ function renderTopics() {
     btn.innerHTML = `<span class="topic-icon" aria-hidden="true">${domainIconSvg(code, { size: 20 })}</span>`
       + `<span class="topic-text">`
       + `<span class="topic-label">${escapeHtml(name)}</span>`
-      + `<span class="topic-code">${badgesHtml}<span class="topic-count">${count} terms</span></span>`
+      + `<span class="topic-badges">${badgesHtml}</span>`
+      + `<span class="topic-count">${count} terms</span>`
       + `</span>`;
     btn.setAttribute('aria-label', `${name}. ${badges.map((b) => b.label).join(', ')}. ${count} terms.`);
     btn.addEventListener('click', () => selectDomain(code));
