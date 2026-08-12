@@ -10,6 +10,10 @@ Output:
     app.html            the local tool itself   (app_template.html + src/*)
     public/index.html   the deployable landing page
     public/app.html     the deployable tool
+    public/roadmap.html the deployable roadmap (copied as-is; public/ is
+                         gitignored, so Vercel only ever sees this file
+                         through a build step — it is never committed there)
+    public/assets/sun.glb  the root node's 3D model, copied as-is
 
 Both are single self-contained files with all CSS and JS inlined, so they can
 be opened straight from disk, dropped on any static host, and used offline
@@ -25,6 +29,7 @@ import base64
 import json
 import os
 import re
+import shutil
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(HERE, "src")
@@ -41,6 +46,7 @@ APP_SCRIPTS = (
     "tts.js",
     "ui.js",
     "about.js",
+    "curriculum.js",
     "panelResize.js",
     "main.js",
 )
@@ -160,6 +166,27 @@ def main() -> None:
     for output_dir in (HERE, public_dir):
         write(output_dir, "app.html", app_html)
         write(output_dir, "index.html", index_html)
+
+    # roadmap.html is hand-authored and already self-contained (no template
+    # placeholders), so it only needs copying into the deploy output — but it
+    # does need that, since public/ is gitignored and Vercel builds from a
+    # clean checkout that has never heard of it otherwise.
+    roadmap_src = os.path.join(HERE, "roadmap.html")
+    if os.path.exists(roadmap_src):
+        os.makedirs(public_dir, exist_ok=True)
+        shutil.copyfile(roadmap_src, os.path.join(public_dir, "roadmap.html"))
+        print(f"Copied {roadmap_src} -> {os.path.join(public_dir, 'roadmap.html')}")
+    else:
+        print("Warning: roadmap.html not found at repo root; public/roadmap.html was not updated.")
+
+    sun_src = os.path.join(HERE, "assets", "sun.glb")
+    if os.path.exists(sun_src):
+        public_assets_dir = os.path.join(public_dir, "assets")
+        os.makedirs(public_assets_dir, exist_ok=True)
+        shutil.copyfile(sun_src, os.path.join(public_assets_dir, "sun.glb"))
+        print(f"Copied {sun_src} -> {os.path.join(public_assets_dir, 'sun.glb')}")
+    else:
+        print("Warning: assets/sun.glb not found; the root node will fall back to its plain sphere.")
 
 
 if __name__ == "__main__":
