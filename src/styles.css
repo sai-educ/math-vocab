@@ -210,13 +210,13 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   display:flex;flex-direction:column;min-height:0;
 }
 #topicsSection{
-  flex:0 0 clamp(120px, 40%, 320px);min-height:0;overflow-y:auto;padding:14px 0;
+  flex:0 0 clamp(120px, 40%, 320px);min-height:0;overflow-y:auto;padding-bottom:14px;
   -webkit-overflow-scrolling:touch;
   /* Fallback divider for ≤760px, where .panel-resizer-h (and its own line)
      is hidden entirely — this is the only line at that size. */
   border-bottom:1px solid var(--line);
 }
-#vocabSection{flex:1 1 auto;min-height:80px;overflow-y:auto;padding:14px 0;-webkit-overflow-scrolling:touch;}
+#vocabSection{flex:1 1 auto;min-height:80px;overflow-y:auto;padding-bottom:14px;-webkit-overflow-scrolling:touch;}
 
 /* Horizontal separator between the topic and word lists — same splitter
    pattern as .panel-resizer, rotated: a row-resize cursor, a horizontal
