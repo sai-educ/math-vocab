@@ -9,11 +9,15 @@
 
 **Example:** Zoe packs 6 boxes with 4 markers in each. Instead of adding six times, she multiplies 6 × 4 and gets 24.
 
+**Standards:** US 3.OA
+
 ### factor
 
 **Definition:** A number you multiply.
 
 **Example:** Theo writes 3 × 8 = 24. The 3 and the 8 are the factors.
+
+**Standards:** US 3.OA
 
 ### product
 
@@ -21,11 +25,15 @@
 
 **Example:** Nina multiplies 5 × 7. The product is 35.
 
+**Standards:** US 3.OA
+
 ### divide
 
 **Definition:** Split into equal groups.
 
 **Example:** Omar has 12 grapes and 3 friends. He divides them evenly, so each friend gets 4.
+
+**Standards:** US 3.OA
 
 ### quotient
 
@@ -33,11 +41,15 @@
 
 **Example:** Maya divides 20 by 4. The quotient is 5.
 
+**Standards:** US 3.OA
+
 ### equal groups
 
 **Definition:** Groups that all hold the same amount.
 
 **Example:** Leo sorts 15 crayons into 3 equal groups. Each group holds 5 crayons.
+
+**Standards:** US 3.OA
 
 ### array
 
@@ -45,17 +57,39 @@
 
 **Example:** Ana draws 4 rows of 6 dots. Her array shows 4 × 6 = 24.
 
+**Standards:** US 3.OA
+
 ### area model
 
 **Definition:** A rectangle drawing that shows a multiplication problem.
 
 **Example:** Ben draws a rectangle 3 units tall and 5 units wide. He counts 15 squares inside. His area model shows 3 × 5 = 15.
 
+**Standards:** US 3.OA
+
 ### unknown factor
 
 **Definition:** The missing number in a multiplication fact.
 
 **Example:** Ivy sees 4 × ? = 28. She counts by fours until she reaches 28. The unknown factor is 7.
+
+**Standards:** US 3.OA
+
+### multiplication table
+
+**Definition:** A chart of multiplication facts, also called a times table.
+
+**Example:** Theo studies the multiplication table for 5s to learn 5 x 1 up to 5 x 12 by heart.
+
+**Standards:** US 3.OA.C.7, IN Class III · 3.M.LO1.4
+
+### rate chart
+
+**Definition:** A list that shows the price of items, used to find the total cost.
+
+**Example:** Ana uses a rate chart to see that pencils cost 5 rupees each, then finds that 3 pencils cost 15 rupees.
+
+**Standards:** IN Class III · 3.M.LO3
 
 
 ## Number & Operations in Base Ten (3.NBT)
@@ -68,11 +102,15 @@
 
 **Common misconception:** Look at where the number really sits. Do not just chop the last digit off.
 
+**Standards:** US 3.NBT
+
 ### place value
 
 **Definition:** What a digit is worth because of its spot.
 
 **Example:** Theo looks at 528. The 2 sits in the tens place, so it is worth 20.
+
+**Standards:** US 3.NBT
 
 
 ## Number & Operations—Fractions (3.NF)
@@ -85,11 +123,15 @@
 
 **Common misconception:** The parts have to be equal. Four uneven slices do not make fourths.
 
+**Standards:** US 3.NF
+
 ### numerator
 
 **Definition:** The top number. It counts the parts you have.
 
 **Example:** Omar eats 3 slices out of 8. He writes 3/8. The numerator 3 is how many he ate.
+
+**Standards:** US 3.NF
 
 ### denominator
 
@@ -97,11 +139,15 @@
 
 **Example:** Maya writes 3/8. The denominator 8 means the whole pie was cut into 8 equal parts.
 
+**Standards:** US 3.NF
+
 ### unit fraction
 
 **Definition:** A fraction with 1 on top. It is one single part.
 
 **Example:** Leo cuts a ribbon into 5 equal pieces and picks up one. He holds 1/5, a unit fraction.
+
+**Standards:** US 3.NF
 
 ### equivalent fractions
 
@@ -109,17 +155,23 @@
 
 **Example:** Ana eats 1/2 of a pizza. Ben eats 2/4 of a pizza the same size. They both ate the same amount.
 
+**Standards:** US 3.NF
+
 ### whole
 
 **Definition:** All of the parts together. One complete thing.
 
 **Example:** Ivy has 4 quarter slices of an orange. Put back together they make one whole orange.
 
+**Standards:** US 3.NF
+
 ### partition
 
 **Definition:** Split something into equal parts.
 
 **Example:** Zoe partitions a paper strip into 6 equal parts. Now each part is 1/6 of the strip.
+
+**Standards:** US 3.NF
 
 ### compare fractions
 
@@ -128,6 +180,8 @@
 **Example:** Theo compares 1/3 and 1/5 of the same cake. Fewer slices means bigger slices, so 1/3 is more.
 
 **Common misconception:** A bigger bottom number does not mean a bigger piece. It means the whole was cut into more, smaller parts.
+
+**Standards:** US 3.NF
 
 
 ## Measurement & Data (3.MD)
@@ -140,11 +194,15 @@
 
 **Common misconception:** Area is the space inside. Perimeter is the trip around the edge.
 
+**Standards:** US 3.MD
+
 ### perimeter
 
 **Definition:** The distance all the way around a shape.
 
 **Example:** Omar walks around a square garden. Each side takes 5 steps, so the perimeter is 20 steps.
+
+**Standards:** US 3.MD
 
 ### square unit
 
@@ -152,11 +210,15 @@
 
 **Example:** Maya covers a card with squares, leaving no gaps. Each one is a square unit. She counts 12.
 
+**Standards:** US 3.MD
+
 ### elapsed time
 
 **Definition:** How much time has passed.
 
 **Example:** Leo starts reading at 2:00 and stops at 2:45. The elapsed time is 45 minutes.
+
+**Standards:** US 3.MD
 
 ### liquid volume
 
@@ -164,11 +226,15 @@
 
 **Example:** Ana fills a bottle from the jug. The bottle holds 1 liter, so that is its liquid volume.
 
+**Standards:** US 3.MD
+
 ### mass
 
 **Definition:** How much matter is in an object.
 
 **Example:** Ben sets an apple on the scale. Its mass is 150 grams.
+
+**Standards:** US 3.MD
 
 ### scaled graph
 
@@ -177,6 +243,34 @@
 **Example:** Ivy makes a graph where each square stands for 5 books. A bar 4 squares tall means 20 books.
 
 **Common misconception:** Count the value of each step, not the number of steps.
+
+**Standards:** US 3.MD
+
+### kilogram
+
+**Definition:** A metric unit of mass equal to 1,000 grams.
+
+**Example:** Zoe weighs a bag of rice. It has a mass of 2 kilograms.
+
+**Standards:** US 3.MD.A.2, IN Class III · 3.M.LO6
+
+### standard unit
+
+**Definition:** A fixed unit of measurement that everyone agrees on, like a centimeter.
+
+**Example:** Nina measures her desk in centimeters, a standard unit, so her measurement means the same thing to everyone.
+
+**Standards:** IN Class III · 3.M.LO5
+
+### non-standard unit
+
+**Definition:** An everyday object used to measure, like a hand span or a paperclip, before using standard units.
+
+**Example:** Omar measures his desk using hand spans, a non-standard unit, before he learns to use a ruler.
+
+**Common misconception:** A hand span is different for every person, so measurements made with it will not match.
+
+**Standards:** IN Class I–III · 1.M.LO6, 3.M.LO7
 
 
 ## Geometry (3.G)
@@ -187,14 +281,46 @@
 
 **Example:** Zoe drops shapes into a hoop labeled 4 sides. Squares, rectangles, and rhombuses all belong.
 
+**Standards:** US 3.G
+
 ### category
 
 **Definition:** A group whose members share a trait.
 
 **Example:** Theo makes a category for shapes with 4 sides. The square and the rectangle both belong in it.
 
+**Standards:** US 3.G
+
 ### attribute
 
 **Definition:** A feature of a shape you can name.
 
 **Example:** Nina looks at a rectangle. She names two attributes. It has 4 square corners, and the sides across from each other match.
+
+**Standards:** US 3.G
+
+### polygon
+
+**Definition:** A closed flat shape made only of straight sides.
+
+**Example:** Maya sorts shapes into a group of polygons: triangles, squares, and hexagons, because they all have straight sides.
+
+**Common misconception:** A circle is not a polygon because its side is curved, not straight.
+
+**Standards:** UK KS2 glossary, US supports 3.G.A.1
+
+### diagonal
+
+**Definition:** A line that connects two corners of a shape that are not already next to each other.
+
+**Example:** Leo draws a diagonal across a rectangle. It joins two corners that are not next to each other.
+
+**Standards:** UK KS2 glossary, IN Class III · 3.M.LO4.2
+
+### tessellation
+
+**Definition:** Covering a flat surface with shapes that fit together with no gaps or overlaps.
+
+**Example:** Ana notices the tiles on the floor form a tessellation. The squares fit together perfectly with no gaps.
+
+**Standards:** UK KS2 glossary, IN Class III · 3.M.LO4.3
