@@ -289,13 +289,17 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
 .panel-resizer:focus-visible{outline:none;}
 .panel-resizer:focus-visible::after{outline:3px solid var(--focus-ring);outline-offset:3px;}
 
-/* Sticky so the step number stays visible while its list scrolls — the
-   selected item is auto-scrolled into view, which would otherwise push the
-   "Select a topic" heading out of sight. */
+/* Sticky at the scroll container's own top edge — top:0 rather than a
+   negative offset paired with the container's own padding, which is the
+   more fragile version of this and the one Safari does not always honour.
+   The container carries no top padding of its own any more (see
+   #topicsSection/#vocabSection); this heading's padding-top stands in for
+   it, so the spacing looks identical but belongs to the element that is
+   actually being stuck in place. */
 .panel-heading{
-  position:sticky;top:-14px;z-index:2;
+  position:sticky;top:0;z-index:2;
   font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);
-  margin:0 0 10px;padding:0 16px 8px;font-weight:700;
+  margin:0 0 10px;padding:14px 16px 8px;font-weight:700;
   display:flex;align-items:center;gap:6px;
   background:linear-gradient(180deg, var(--panel) 72%, rgba(255,255,255,0));
   transition:color var(--dur) var(--ease);
