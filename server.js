@@ -34,6 +34,7 @@ const MIME_TYPES = {
   ".jpeg": "image/jpeg",
   ".svg": "image/svg+xml",
   ".webp": "image/webp",
+  ".glb": "model/gltf-binary",
 };
 
 const server = http.createServer(async (request, response) => {
