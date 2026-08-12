@@ -81,6 +81,30 @@ function resetAll() {
   announce('Showing the full knowledge graph.');
 }
 
+// ---- curriculum filter ---------------------------------------------------
+
+/* Called after activeStandards changes (see curriculum.js). The current
+   selection may no longer exist under the new filter — a term that just
+   lost its only active curriculum, or a topic with nothing left in it — so
+   it is dropped back to the deepest level that still resolves, rather than
+   pointing at a word the panels can no longer show. */
+function applyStandardsChange() {
+  let { grade, domainCode, term } = state;
+
+  if (term) {
+    const t = termById(term);
+    if (!t || !isTermVisible(t)) term = null;
+  }
+  if (domainCode && grade && !domainsForGrade(grade).some((d) => d.code === domainCode)) {
+    domainCode = null;
+    term = null;
+  }
+
+  state = { grade, domainCode, term };
+  renderAll();
+  announce(`Showing ${[...activeStandards].map((c) => STANDARD_LABELS[c]).join(', ')}.`);
+}
+
 function clearSearch() {
   searchQuery = '';
   const input = document.getElementById('search');
@@ -98,6 +122,11 @@ function selectFromGraphNode(nodeId) {
   if (parts[0] === 'grade') return selectGrade(parts[1]);
 
   if (parts[0] === 'domain') {
+    // The node exists structurally even when every term inside it is
+    // filtered out (see graph3d.js's *All build) — faded almost to nothing
+    // in that case, but still technically tappable, so this checks the
+    // filtered list rather than trusting the tap.
+    if (!domainsForGrade(parts[1]).some((d) => d.code === parts[2])) return;
     state = { grade: parts[1], domainCode: parts[2], term: null };
     clearSearch();
     renderAll();
@@ -107,7 +136,7 @@ function selectFromGraphNode(nodeId) {
 
   if (parts[0] === 'term') {
     const t = termById(nodeId.slice(5));
-    if (t) jumpToTerm(t);
+    if (t && isTermVisible(t)) jumpToTerm(t);
   }
 }
 
@@ -183,6 +212,7 @@ function boot() {
   Sound.init();
   bindControls();
   About.init();
+  Curriculum.init();
   initPanelResizers();
   renderAll();
 
