@@ -131,9 +131,22 @@ function renderTopics() {
   }
 
   heading.classList.remove('dim');
+  const domains = domainsForGrade(state.grade);
+
+  if (!domains.length) {
+    headingText.textContent = 'Select a topic';
+    list.innerHTML = '<p class="placeholder-text">'
+      + `No topics for ${escapeHtml(gradeLabel(state.grade))} under the curricula you’ve selected. `
+      + 'Turn on another curriculum above the graph to see more.</p>';
+    announce(`No topics for ${gradeLabel(state.grade)} under the current curriculum selection.`);
+    return;
+  }
+
   headingText.textContent = 'Select a topic';
-  domainsForGrade(state.grade).forEach(({ code, name }) => {
+  domains.forEach(({ code, name }) => {
     const count = termsFor(state.grade, code).length;
+    const badges = standardBadgesFor(state.grade, code);
+    const badgesHtml = badges.map((b) => `<span class="standard-badge standard-badge-${b.country.toLowerCase()}">${escapeHtml(b.label)}</span>`).join('');
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'topic-node';
@@ -141,9 +154,9 @@ function renderTopics() {
     btn.innerHTML = `<span class="topic-icon" aria-hidden="true">${domainIconSvg(code, { size: 20 })}</span>`
       + `<span class="topic-text">`
       + `<span class="topic-label">${escapeHtml(name)}</span>`
-      + `<span class="topic-code">${escapeHtml(state.grade)}.${escapeHtml(code)} · ${count} terms</span>`
+      + `<span class="topic-code">${badgesHtml}<span class="topic-count">${count} terms</span></span>`
       + `</span>`;
-    btn.setAttribute('aria-label', `${name}. Standard ${state.grade}.${code}. ${count} terms.`);
+    btn.setAttribute('aria-label', `${name}. ${badges.map((b) => b.label).join(', ')}. ${count} terms.`);
     btn.addEventListener('click', () => selectDomain(code));
     list.appendChild(btn);
   });
@@ -182,9 +195,10 @@ function renderSearchResults(list, heading, headingText) {
   const query = searchQuery.toLowerCase();
   // Search covers definitions and examples too, not just the term itself —
   // a child who remembers "the top number" should still find "numerator".
-  const matches = DATA.filter((d) => d.term.toLowerCase().includes(query)
+  // Scoped to the active curricula, same as every other list in the app.
+  const matches = DATA.filter((d) => isTermVisible(d) && (d.term.toLowerCase().includes(query)
     || d.definition.toLowerCase().includes(query)
-    || (d.example || '').toLowerCase().includes(query));
+    || (d.example || '').toLowerCase().includes(query)));
 
   heading.classList.remove('dim');
   headingText.textContent = `Search results (${matches.length})`;
@@ -246,7 +260,7 @@ function renderDetail() {
       <span class="term-mark" aria-hidden="true">${termIconSvg(t, { size: 30 })}</span>
       <div>
         <h2>${escapeHtml(t.term)}</h2>
-        <span class="standard">${escapeHtml(t.standard)}</span>
+        <span class="standard">${t.standards.map((s) => `<span class="standard-badge standard-badge-${s.country.toLowerCase()}">${escapeHtml(s.country)} · ${escapeHtml(s.code)}</span>`).join('')}</span>
       </div>
     </div>
 
@@ -346,9 +360,19 @@ function updateSpotlight() {
 // ---- footer -------------------------------------------------------------
 
 function renderStats() {
-  const total = DATA.length;
+  const total = DATA.filter(isTermVisible).length;
   const seen = visitedTerms.size;
+  const curricula = STANDARD_COUNTRIES.filter((c) => activeStandards.has(c))
+    .map((c) => STANDARD_LABELS[c]).join(', ');
   document.getElementById('statsText').textContent =
-    `${total} words · ${GRADES.length} grades · ${DOMAIN_ORDER.length} Common Core domains`
+    `${total} words · ${GRADES.length} grades · Standards covered: ${curricula}`
     + ` · ${seen} explored · CC BY-NC 4.0`;
+
+  // The header count and search copy track the same live, filtered total —
+  // both are user-facing claims about how many words are here right now.
+  document.getElementById('headerWordCount').textContent = total;
+  const searchLabel = document.getElementById('searchLabel');
+  const searchInput = document.getElementById('search');
+  searchLabel.textContent = `Search all ${total} math words, Kindergarten through Grade 5`;
+  searchInput.placeholder = `Search all ${total} words, K–5…`;
 }
