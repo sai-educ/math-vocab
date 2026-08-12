@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light">
-<meta name="description" content="Math Word Explorer: a free, open tool that explains the 189 math words children meet in Kindergarten through Grade 5, in language they can actually read.">
+<meta name="description" content="Math Word Explorer: a free, open tool that explains the 238 math words children meet in Kindergarten through Grade 5, in language they can actually read.">
 <title>Math Word Explorer — math words, explained simply</title>
 <style>
 /* ---------- Inter (OFL, fonts.google.com/specimen/Inter) ---------- */
@@ -115,6 +115,11 @@ a:hover{color:var(--accent3-ink);}
 .launch:active{transform:translateY(0);}
 
 .cta-note{margin:14px 0 0;font-size:13.5px;color:var(--text-dim);}
+.cta-note-sound{
+  display:flex;align-items:flex-start;justify-content:center;gap:6px;margin-top:6px;
+  max-width:280px;margin-left:auto;margin-right:auto;
+}
+.cta-note-sound svg{flex:0 0 auto;opacity:.75;margin-top:2px;}
 
 /* ---------- content panels ---------- */
 
@@ -173,6 +178,37 @@ footer{
 }
 footer p{margin:0;font-size:13px;color:var(--text-dim);}
 
+/* ---------- device notice ----------
+   The one exception to "no application JavaScript" on this page (see file
+   header): a phone-width visitor tapping "Open the Explorer" sees this
+   instead of the app, since the app itself is built for a tablet or larger.
+   ------------------------------------------------------------------------ */
+#deviceNoticeOverlay{
+  position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;
+  padding:20px;background:rgba(15,15,26,.46);opacity:0;
+  transition:opacity var(--dur) var(--ease);
+}
+#deviceNoticeOverlay.open{opacity:1;}
+#deviceNoticeOverlay[hidden]{display:none;}
+#deviceNoticeDialog{
+  width:100%;max-width:400px;background:var(--panel);border:1px solid var(--line);
+  border-radius:18px;padding:26px 26px 22px;box-shadow:0 24px 60px rgba(20,20,40,.22);
+  transform:translateY(8px) scale(.98);transition:transform var(--dur) var(--ease);
+}
+#deviceNoticeOverlay.open #deviceNoticeDialog{transform:translateY(0) scale(1);}
+#deviceNoticeDialog h2{margin:0 0 10px;font-size:19px;letter-spacing:-.01em;}
+#deviceNoticeDialog p{margin:0 0 20px;font-size:14.5px;color:var(--text-dim);}
+.device-notice-actions{display:flex;flex-direction:column;gap:10px;}
+.device-notice-primary,.device-notice-secondary{
+  min-height:46px;border-radius:11px;font:inherit;font-weight:600;font-size:14.5px;
+  display:flex;align-items:center;justify-content:center;text-decoration:none;cursor:pointer;
+  transition:background var(--dur) var(--ease),color var(--dur) var(--ease);
+}
+.device-notice-secondary{background:var(--bg);border:1px solid var(--line);color:var(--text);}
+.device-notice-secondary:hover{background:var(--line);}
+.device-notice-primary{background:transparent;border:1px solid var(--line);color:var(--text-dim);}
+.device-notice-primary:hover{color:var(--text);border-color:var(--text-dim);}
+
 /* ---------- responsive ---------- */
 
 @media (max-width: 620px){
@@ -188,6 +224,8 @@ footer p{margin:0;font-size:13px;color:var(--text-dim);}
     transition-duration:.001ms !important;
   }
   .launch:hover{transform:none;}
+  #deviceNoticeOverlay,#deviceNoticeDialog{transition-duration:.001ms;}
+  #deviceNoticeOverlay.open #deviceNoticeDialog{transform:none;}
 }
 </style>
 </head>
@@ -201,7 +239,7 @@ footer p{margin:0;font-size:13px;color:var(--text-dim);}
     <p class="lede">
       Word problems are often hard for a reason that has nothing to do with the maths.
       They are full of words like <em>denominator</em>, <em>perimeter</em> and <em>regroup</em>.
-      This tool explains all 189 of those words, from Kindergarten to Grade 5,
+      This tool explains all 238 of those words, from Kindergarten to Grade 5,
       in plain language a child can read on their own.
     </p>
 
@@ -213,7 +251,14 @@ footer p{margin:0;font-size:13px;color:var(--text-dim);}
           <path d="M4 12h15"/><path d="m13 6 6 6-6 6"/>
         </svg>
       </a>
-      <p class="cta-note">Works on a tablet, laptop or phone. Nothing to install.</p>
+      <p class="cta-note">Works on a tablet, laptop, or any browser. Nothing to install.</p>
+      <p class="cta-note cta-note-sound">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/>
+        </svg>
+        Turn up the volume — sound effects help guide the way.
+      </p>
     </div>
   </section>
 
@@ -282,7 +327,9 @@ footer p{margin:0;font-size:13px;color:var(--text-dim);}
         <p>
           <strong>Teachers.</strong> Put it on the board when a new word comes up, or let
           children look words up themselves during independent work. Words are grouped by
-          grade and by Common Core domain, so it lines up with what you are already teaching.
+          grade and topic and cited to their standard — Common Core by default, with the UK
+          National Curriculum and India's NCERT a tap away — so it lines up with what you are
+          already teaching, wherever you teach it.
         </p>
       </article>
       <article>
@@ -341,7 +388,75 @@ footer p{margin:0;font-size:13px;color:var(--text-dim);}
 </main>
 
 <footer>
-  <p>189 words · 6 grades · 6 Common Core domains · CC BY-NC 4.0</p>
+  <p>238 words · 6 grades · US, UK &amp; India curricula · CC BY-NC 4.0</p>
 </footer>
+
+<div id="deviceNoticeOverlay" hidden>
+  <div id="deviceNoticeDialog" role="dialog" aria-modal="true" aria-labelledby="deviceNoticeTitle">
+    <h2 id="deviceNoticeTitle">Best viewed on a larger screen</h2>
+    <p>
+      Math Word Explorer's 3D knowledge graph and resizable panels are built for a tablet
+      or laptop display. On a phone screen, some controls will be difficult to use. For the
+      best experience, please continue on an iPad, tablet, or computer.
+    </p>
+    <div class="device-notice-actions">
+      <button id="deviceNoticeStay" type="button" class="device-notice-secondary">Stay on this page</button>
+      <a id="deviceNoticeContinue" class="device-notice-primary" href="app.html">Continue anyway</a>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var PHONE_QUERY = '(max-width: 760px)';
+  var overlay = document.getElementById('deviceNoticeOverlay');
+  var dialog = document.getElementById('deviceNoticeDialog');
+  var stayBtn = document.getElementById('deviceNoticeStay');
+  var lastFocused = null;
+
+  function isPhoneWidth() {
+    return window.matchMedia && window.matchMedia(PHONE_QUERY).matches;
+  }
+
+  function open() {
+    lastFocused = document.activeElement;
+    overlay.hidden = false;
+    requestAnimationFrame(function () { overlay.classList.add('open'); });
+    stayBtn.focus();
+    document.addEventListener('keydown', onKeydown);
+  }
+
+  function close() {
+    overlay.classList.remove('open');
+    document.removeEventListener('keydown', onKeydown);
+    setTimeout(function () {
+      overlay.hidden = true;
+      if (lastFocused && lastFocused.focus) lastFocused.focus();
+    }, 180);
+  }
+
+  function onKeydown(event) {
+    if (event.key === 'Escape') { close(); return; }
+    if (event.key !== 'Tab') return;
+    var items = dialog.querySelectorAll('a[href],button:not([disabled])');
+    var first = items[0], last = items[items.length - 1];
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  }
+
+  document.querySelectorAll('a.launch').forEach(function (link) {
+    link.addEventListener('click', function (event) {
+      if (!isPhoneWidth()) return;
+      event.preventDefault();
+      open();
+    });
+  });
+
+  stayBtn.addEventListener('click', close);
+  overlay.addEventListener('click', function (event) {
+    if (event.target === overlay) close();
+  });
+}());
+</script>
 </body>
 </html>
