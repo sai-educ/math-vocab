@@ -6,6 +6,12 @@
     "domainCode": "CC",
     "domain": "Counting & Cardinality",
     "standard": "K.CC",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.CC"
+      }
+    ],
     "definition": "Say number words in order. Touch one thing for each word you say.",
     "example": "Maya has a bowl of grapes. She touches each one and says: 1, 2, 3, 4, 5. She counted 5 grapes.",
     "misconception": "Kids often skip a number, or touch the same grape twice."
@@ -17,6 +23,12 @@
     "domainCode": "CC",
     "domain": "Counting & Cardinality",
     "standard": "K.CC",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.CC"
+      }
+    ],
     "definition": "A word or sign that tells how many.",
     "example": "Leo draws 3 stars on his paper. Next to them he writes the number 3. The 3 tells how many stars are there.",
     "misconception": ""
@@ -28,6 +40,12 @@
     "domainCode": "CC",
     "domain": "Counting & Cardinality",
     "standard": "K.CC",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.CC"
+      }
+    ],
     "definition": "A bigger amount. One group has extra.",
     "example": "Ana has 7 stickers. Sam has 4 stickers. Ana has more, because 7 is a bigger amount than 4.",
     "misconception": "Kids may think 'more' means bigger in size. A group of 7 tiny beads is still more than 4 big ones."
@@ -39,6 +57,12 @@
     "domainCode": "CC",
     "domain": "Counting & Cardinality",
     "standard": "K.CC",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.CC"
+      }
+    ],
     "definition": "A smaller amount. One group has less than the other.",
     "example": "Ivy picks 3 apples. Ben picks 6 apples. Ivy has fewer apples than Ben.",
     "misconception": "'Fewer' is for things you count one by one. 'Less' is for things you measure, like water."
@@ -50,6 +74,12 @@
     "domainCode": "CC",
     "domain": "Counting & Cardinality",
     "standard": "K.CC",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.CC"
+      }
+    ],
     "definition": "The same amount. Not more and not less.",
     "example": "Zoe has 3 red blocks. Omar has 3 blue blocks. The groups are equal. Each one has 3.",
     "misconception": ""
@@ -61,6 +91,12 @@
     "domainCode": "CC",
     "domain": "Counting & Cardinality",
     "standard": "K.CC",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.CC"
+      }
+    ],
     "definition": "A bigger value than another number.",
     "example": "Nina rolls an 8. Theo rolls a 5. Nina's number is greater than Theo's, so she moves first.",
     "misconception": ""
@@ -72,6 +108,12 @@
     "domainCode": "CC",
     "domain": "Counting & Cardinality",
     "standard": "K.CC",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.CC"
+      }
+    ],
     "definition": "A smaller value than another number.",
     "example": "Sam counts 2 birds on the wire. Maya counts 9. Sam's number is less than Maya's.",
     "misconception": ""
@@ -83,6 +125,12 @@
     "domainCode": "CC",
     "domain": "Counting & Cardinality",
     "standard": "K.CC",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.CC"
+      }
+    ],
     "definition": "The very next number when you count up.",
     "example": "Leo has 4 marbles. His mom hands him 1 more. Now he has 5. One more than 4 is 5.",
     "misconception": ""
@@ -94,6 +142,12 @@
     "domainCode": "CC",
     "domain": "Counting & Cardinality",
     "standard": "K.CC",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.CC"
+      }
+    ],
     "definition": "A number that means none at all.",
     "example": "The cookie jar had 3 cookies. Ana's family ate every one. Now there are zero cookies left.",
     "misconception": "Zero is a real number, not an empty space. It tells you the amount is none."
@@ -105,8 +159,82 @@
     "domainCode": "CC",
     "domain": "Counting & Cardinality",
     "standard": "K.CC",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.CC"
+      }
+    ],
     "definition": "Lined up from smallest to biggest.",
     "example": "Ana drops her number cards and they get mixed up. She puts them back in order: 1, 2, 3, 4, 5.",
+    "misconception": ""
+  },
+  {
+    "id": "k-cc-ordinal-number",
+    "term": "ordinal number",
+    "grade": "K",
+    "domainCode": "CC",
+    "domain": "Counting & Cardinality",
+    "standard": "K.CC",
+    "standards": [
+      {
+        "country": "UK",
+        "code": "KS1 glossary"
+      }
+    ],
+    "definition": "A word that tells the order, like first, second, or third.",
+    "example": "Leo lines up his toy cars. The red car is first. The blue car is second. The green car is third.",
+    "misconception": ""
+  },
+  {
+    "id": "k-cc-before",
+    "term": "before",
+    "grade": "K",
+    "domainCode": "CC",
+    "domain": "Counting & Cardinality",
+    "standard": "K.CC",
+    "standards": [
+      {
+        "country": "UK",
+        "code": "KS1 position language"
+      }
+    ],
+    "definition": "Coming earlier in a line or a count.",
+    "example": "Ana counts to 10. She knows 4 comes before 5.",
+    "misconception": ""
+  },
+  {
+    "id": "k-cc-after",
+    "term": "after",
+    "grade": "K",
+    "domainCode": "CC",
+    "domain": "Counting & Cardinality",
+    "standard": "K.CC",
+    "standards": [
+      {
+        "country": "UK",
+        "code": "KS1 position language"
+      }
+    ],
+    "definition": "Coming later in a line or a count.",
+    "example": "Ben counts his blocks. He knows 6 comes after 5.",
+    "misconception": ""
+  },
+  {
+    "id": "k-cc-between",
+    "term": "between",
+    "grade": "K",
+    "domainCode": "CC",
+    "domain": "Counting & Cardinality",
+    "standard": "K.CC",
+    "standards": [
+      {
+        "country": "UK",
+        "code": "KS1 position language"
+      }
+    ],
+    "definition": "In the middle of two other things.",
+    "example": "Ivy looks at the number line. She sees that 5 sits between 4 and 6.",
     "misconception": ""
   },
   {
@@ -116,6 +244,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "K.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.OA"
+      }
+    ],
     "definition": "Put groups together. You find how many there are in all.",
     "example": "Ben has 2 red cars. He gets 3 blue cars. He adds them together: 2 and 3 make 5 cars.",
     "misconception": ""
@@ -127,6 +261,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "K.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.OA"
+      }
+    ],
     "definition": "Take some away. You find how many are left.",
     "example": "Ivy has 5 balloons. Two of them pop. She subtracts 2 from 5. Now 3 balloons are left.",
     "misconception": ""
@@ -138,6 +278,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "K.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.OA"
+      }
+    ],
     "definition": "The total you get when you add.",
     "example": "Zoe finds 2 shells, then 3 more. She adds them. The sum is 5 shells.",
     "misconception": "'Sum' means the answer to adding. Kids sometimes use it for any answer."
@@ -149,6 +295,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "K.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.OA"
+      }
+    ],
     "definition": "Join two groups to make one bigger group.",
     "example": "Theo puts together 3 red blocks and 2 blue blocks. Now he has one tower of 5 blocks.",
     "misconception": ""
@@ -160,6 +312,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "K.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.OA"
+      }
+    ],
     "definition": "Split one group into smaller groups.",
     "example": "Nina has 5 crackers. She takes them apart into a group of 2 and a group of 3.",
     "misconception": ""
@@ -171,6 +329,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "K.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.OA"
+      }
+    ],
     "definition": "Break a number into smaller parts. It is a big word for 'break apart'.",
     "example": "Omar holds 5 pennies. He decomposes 5 into 4 and 1. He puts 4 in one hand and 1 in the other.",
     "misconception": "The word sounds hard, but the job is easy. It just means breaking a number into parts."
@@ -182,6 +346,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "K.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.OA"
+      }
+    ],
     "definition": "A math sentence with an equal sign. It shows two sides that match.",
     "example": "Maya writes 3 + 2 = 5. That is an equation. The left side and the right side are worth the same.",
     "misconception": ""
@@ -193,6 +363,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "K.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.OA"
+      }
+    ],
     "definition": "Words in a problem that ask for the total.",
     "example": "Leo has 4 toy cars. Sam has 2. How many do they have in all? The boys add and find 6.",
     "misconception": ""
@@ -204,9 +380,36 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "K.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.OA"
+      }
+    ],
     "definition": "Words in a problem that ask what is still there.",
     "example": "Ana bakes 6 muffins and eats 2. How many are left? She subtracts and finds 4.",
     "misconception": "Hunting for key words alone can trick you. Always picture what is really happening in the story."
+  },
+  {
+    "id": "k-oa-pattern",
+    "term": "pattern",
+    "grade": "K",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "K.OA",
+    "standards": [
+      {
+        "country": "IN",
+        "code": "Class I · 1.M.LO7"
+      },
+      {
+        "country": "UK",
+        "code": "KS1 glossary"
+      }
+    ],
+    "definition": "A set of shapes, colors, or numbers that repeat in the same order.",
+    "example": "Theo lines up blocks: red, blue, red, blue. He says the pattern will keep going: red, blue, red.",
+    "misconception": "A pattern needs to repeat more than once. Two shapes in a row are not a pattern yet."
   },
   {
     "id": "k-nbt-ten",
@@ -215,6 +418,12 @@
     "domainCode": "NBT",
     "domain": "Number & Operations in Base Ten",
     "standard": "K.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.NBT"
+      }
+    ],
     "definition": "A group of ten ones.",
     "example": "Ben lines up 10 straws and wraps a band around them. Now he holds 1 ten.",
     "misconception": ""
@@ -226,6 +435,12 @@
     "domainCode": "NBT",
     "domain": "Number & Operations in Base Ten",
     "standard": "K.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.NBT"
+      }
+    ],
     "definition": "Single things. You count them one at a time.",
     "example": "Ivy builds 13 with straws. She uses 1 bundle of ten, and 3 loose ones.",
     "misconception": ""
@@ -237,6 +452,12 @@
     "domainCode": "NBT",
     "domain": "Number & Operations in Base Ten",
     "standard": "K.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.NBT"
+      }
+    ],
     "definition": "A number from 11 to 19. Each one is a ten plus some ones.",
     "example": "Zoe counts 14 beads. 14 is a teen number. It is 1 ten and 4 ones.",
     "misconception": ""
@@ -248,6 +469,12 @@
     "domainCode": "NBT",
     "domain": "Number & Operations in Base Ten",
     "standard": "K.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.NBT"
+      }
+    ],
     "definition": "Put parts together to build a number.",
     "example": "Theo composes 12. He takes 1 bundle of ten and adds 2 loose ones.",
     "misconception": ""
@@ -259,6 +486,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "K.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.MD"
+      }
+    ],
     "definition": "Goes on for more length.",
     "example": "Nina lays her pencil beside her eraser. The pencil reaches farther, so the pencil is longer.",
     "misconception": "Line up the ends first. If one thing starts ahead, the test is not fair."
@@ -270,6 +503,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "K.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.MD"
+      }
+    ],
     "definition": "Takes up less length.",
     "example": "Omar puts his crayon next to a ruler. The crayon stops sooner, so the crayon is shorter.",
     "misconception": ""
@@ -281,6 +520,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "K.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.MD"
+      }
+    ],
     "definition": "Goes up higher.",
     "example": "Maya stands beside a young tree. The tree rises above her head, so the tree is taller.",
     "misconception": ""
@@ -292,6 +537,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "K.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.MD"
+      }
+    ],
     "definition": "Weighs more. It pulls down harder.",
     "example": "Leo holds a rock in one hand and a leaf in the other. The rock pulls his hand down. The rock is heavier.",
     "misconception": "Big does not always mean heavy. A huge pillow weighs less than a small stone."
@@ -303,6 +554,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "K.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.MD"
+      }
+    ],
     "definition": "Weighs less.",
     "example": "Ana holds a feather and a book. The feather is easy to lift, so the feather is lighter.",
     "misconception": ""
@@ -314,6 +571,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "K.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.MD"
+      }
+    ],
     "definition": "Find out how big, how long, or how much.",
     "example": "Ben measures his desk with blocks. He lays them end to end with no gaps. The desk is 8 blocks long.",
     "misconception": "Leave no gaps and no overlaps. Sloppy spacing gives the wrong count."
@@ -325,6 +588,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "K.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.MD"
+      }
+    ],
     "definition": "Look at two things. See how they are the same or different.",
     "example": "Ivy compares two ribbons. She lines up the ends. The red one reaches farther, so it is longer.",
     "misconception": ""
@@ -336,6 +605,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "K.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.MD"
+      }
+    ],
     "definition": "Put things in groups that go together.",
     "example": "Zoe sorts her buttons by color. Red buttons go in one pile. Blue buttons go in another.",
     "misconception": ""
@@ -347,6 +622,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "K.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.MD"
+      }
+    ],
     "definition": "A group of things that share something.",
     "example": "Theo makes a category for round things. The ball and the coin both go in it.",
     "misconception": ""
@@ -358,6 +639,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "K.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.G"
+      }
+    ],
     "definition": "The form of a thing. It is the outline you see.",
     "example": "Nina traces the lid of a jar onto paper. The shape she draws is a circle.",
     "misconception": ""
@@ -369,6 +656,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "K.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.G"
+      }
+    ],
     "definition": "A round shape. It has no corners and no straight sides.",
     "example": "Omar looks at the clock on the wall. His finger slides all the way around the face with no bumps. It is a circle.",
     "misconception": ""
@@ -380,6 +673,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "K.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.G"
+      }
+    ],
     "definition": "A shape with 3 straight sides and 3 corners.",
     "example": "Maya folds her napkin into a triangle. She counts 3 sides and 3 corners.",
     "misconception": "A triangle can be tall, wide, or tipped over. It still counts as long as it has 3 straight sides."
@@ -391,6 +690,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "K.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.G"
+      }
+    ],
     "definition": "A shape with 4 straight sides. All 4 sides are the same length.",
     "example": "Leo checks a sticky note against his ruler. All 4 sides match, so it is a square.",
     "misconception": ""
@@ -402,6 +707,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "K.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.G"
+      }
+    ],
     "definition": "A shape with 4 straight sides and 4 corners. The sides across from each other match.",
     "example": "Ana measures the door. The two tall sides match. The two short sides match too. The door is a rectangle.",
     "misconception": "A square is a rectangle too. It is just a special one with all 4 sides the same."
@@ -413,6 +724,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "K.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.G"
+      }
+    ],
     "definition": "A shape with 6 straight sides.",
     "example": "Ben studies a honeycomb up close. Each little cell has 6 sides, so each cell is a hexagon.",
     "misconception": ""
@@ -424,6 +741,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "K.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.G"
+      }
+    ],
     "definition": "A solid shape with 6 square faces.",
     "example": "Ivy rolls a number cube. Every face she lands on is a square. She counts 6 faces in all.",
     "misconception": ""
@@ -435,6 +758,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "K.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.G"
+      }
+    ],
     "definition": "A solid shape that is round all over, like a ball.",
     "example": "Zoe spins a basketball on her finger. It looks round from every side. It is a sphere.",
     "misconception": "A circle is flat. A sphere is solid. A plate is a circle, a marble is a sphere."
@@ -446,6 +775,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "K.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.G"
+      }
+    ],
     "definition": "Higher up than something else.",
     "example": "Theo watches a bird land on a branch. The bird is above the grass.",
     "misconception": ""
@@ -457,6 +792,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "K.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.G"
+      }
+    ],
     "definition": "Lower down than something else.",
     "example": "Nina digs in the garden. She finds the roots growing below the soil.",
     "misconception": ""
@@ -468,6 +809,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "K.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.G"
+      }
+    ],
     "definition": "Right next to something.",
     "example": "Omar's cat sits beside the dog. The two of them rest side by side on the rug.",
     "misconception": ""
@@ -479,8 +826,56 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "K.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.G"
+      }
+    ],
     "definition": "The point where two sides meet.",
     "example": "Maya runs her finger around a square tile. She feels a sharp point at each corner and counts 4.",
+    "misconception": ""
+  },
+  {
+    "id": "k-g-cuboid",
+    "term": "cuboid",
+    "grade": "K",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "K.G",
+    "standards": [
+      {
+        "country": "UK",
+        "code": "Y1 · KS1 glossary"
+      },
+      {
+        "country": "IN",
+        "code": "Class II · 2.M.LO2.1"
+      }
+    ],
+    "definition": "A solid, box-like shape with 6 flat, rectangle faces.",
+    "example": "Theo stacks a tissue box on the shelf. It has 6 flat sides shaped like rectangles. It is a cuboid.",
+    "misconception": "A cuboid can be tall, short, or a cube. As long as it has 6 rectangle faces, it counts."
+  },
+  {
+    "id": "k-g-solid-shape",
+    "term": "solid shape",
+    "grade": "K",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "K.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.G.A.1"
+      },
+      {
+        "country": "IN",
+        "code": "Class I · 1.M.LO5"
+      }
+    ],
+    "definition": "A shape you can pick up and hold. It takes up space. Another name for it is a 3D shape.",
+    "example": "Omar holds a wooden block. He can turn it over in his hands, so it is a solid shape.",
     "misconception": ""
   },
   {
@@ -490,6 +885,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "1.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.OA"
+      }
+    ],
     "definition": "A number you add to another number.",
     "example": "Leo writes 3 + 4 = 7. The 3 and the 4 are the addends. They are the parts he put together.",
     "misconception": "The answer is not an addend. Only the numbers going in are addends."
@@ -501,6 +902,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "1.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.OA"
+      }
+    ],
     "definition": "The answer you get when you add.",
     "example": "Ana finds 6 shells, then 2 more. She adds them up. The sum is 8 shells.",
     "misconception": ""
@@ -512,6 +919,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "1.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.OA"
+      }
+    ],
     "definition": "The answer you get when you subtract.",
     "example": "Ben has 9 grapes and eats 4. He subtracts to find the difference. It is 5 grapes.",
     "misconception": "In math, 'difference' does not mean how two things are unlike. It is the subtraction answer."
@@ -523,6 +936,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "1.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.OA"
+      }
+    ],
     "definition": "A math sentence with an equal sign. Both sides are worth the same.",
     "example": "Ivy writes 5 + 3 = 8. Each side of the equal sign is worth 8, so the sentence balances.",
     "misconception": "The equal sign does not mean 'here comes the answer'. It means both sides match."
@@ -534,6 +953,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "1.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.OA"
+      }
+    ],
     "definition": "The missing number in a problem. You solve to find it.",
     "example": "Zoe sees 4 + ? = 9. The ? is the unknown. She counts up from 4 to 9 and finds 5.",
     "misconception": ""
@@ -545,6 +970,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "1.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.OA"
+      }
+    ],
     "definition": "A set of facts built from the same three numbers.",
     "example": "Theo uses 3, 4, and 7. His fact family is 3 + 4 = 7, 4 + 3 = 7, 7 - 3 = 4, and 7 - 4 = 3.",
     "misconception": ""
@@ -556,6 +987,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "1.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.OA"
+      }
+    ],
     "definition": "Adding a number to itself.",
     "example": "Nina has 4 red beads and 4 blue beads. That is a double. She knows 4 + 4 = 8 right away.",
     "misconception": ""
@@ -567,6 +1004,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "1.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.OA"
+      }
+    ],
     "definition": "Look at two numbers. Tell which is bigger or smaller.",
     "example": "Omar compares 6 and 9 on the number line. The 9 sits farther right, so 9 is bigger.",
     "misconception": ""
@@ -578,6 +1021,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "1.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.OA"
+      }
+    ],
     "definition": "Words that ask about the gap between two amounts.",
     "example": "Maya has 8 stickers. Leo has 5. How many more does Maya have? She subtracts and finds 3.",
     "misconception": ""
@@ -589,6 +1038,12 @@
     "domainCode": "NBT",
     "domain": "Number & Operations in Base Ten",
     "standard": "1.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.NBT"
+      }
+    ],
     "definition": "The value a digit has because of where it sits.",
     "example": "Ana writes 47. The 4 sits in the tens place, so it is worth 40. The 7 is worth just 7.",
     "misconception": "In 47, the 4 does not mean four. Its spot makes it worth forty."
@@ -600,6 +1055,12 @@
     "domainCode": "NBT",
     "domain": "Number & Operations in Base Ten",
     "standard": "1.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.NBT"
+      }
+    ],
     "definition": "Groups of ten.",
     "example": "Ben bundles his straws into groups of ten. He makes 3 bundles. That is 3 tens, or 30.",
     "misconception": ""
@@ -611,6 +1072,12 @@
     "domainCode": "NBT",
     "domain": "Number & Operations in Base Ten",
     "standard": "1.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.NBT"
+      }
+    ],
     "definition": "Single units left over after you make tens.",
     "example": "Ivy has 25 beads. She makes 2 bundles of ten and has 5 ones left over.",
     "misconception": ""
@@ -622,6 +1089,12 @@
     "domainCode": "NBT",
     "domain": "Number & Operations in Base Ten",
     "standard": "1.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.NBT"
+      }
+    ],
     "definition": "A sign that points to the bigger number.",
     "example": "Zoe writes 8 > 5. The wide open side faces the 8, because 8 is the greater number.",
     "misconception": ""
@@ -633,6 +1106,12 @@
     "domainCode": "NBT",
     "domain": "Number & Operations in Base Ten",
     "standard": "1.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.NBT"
+      }
+    ],
     "definition": "A sign that shows the first number is smaller.",
     "example": "Theo writes 3 < 7. The narrow point faces the 3, because 3 is less.",
     "misconception": "Think of a hungry mouth. It always opens toward the bigger number."
@@ -644,6 +1123,12 @@
     "domainCode": "NBT",
     "domain": "Number & Operations in Base Ten",
     "standard": "1.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.NBT"
+      }
+    ],
     "definition": "A sign that shows both sides are worth the same.",
     "example": "Nina writes 6 = 6. Both sides match exactly, so the equal sign fits.",
     "misconception": ""
@@ -655,6 +1140,12 @@
     "domainCode": "NBT",
     "domain": "Number & Operations in Base Ten",
     "standard": "1.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.NBT"
+      }
+    ],
     "definition": "Start at one number and keep counting up.",
     "example": "Omar has 6 marbles and gets 3 more. He counts on from 6: 7, 8, 9. He has 9.",
     "misconception": "Do not start over at 1. Begin at the number you already have."
@@ -666,6 +1157,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "1.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.MD"
+      }
+    ],
     "definition": "How long something is from end to end.",
     "example": "Maya measures her shoe with paper clips. She lays them end to end. The length is 5 clips.",
     "misconception": ""
@@ -677,6 +1174,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "1.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.MD"
+      }
+    ],
     "definition": "Find the size of something with a tool or a unit.",
     "example": "Leo measures his book with cubes. He lines them up with no gaps and counts 7.",
     "misconception": ""
@@ -688,6 +1191,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "1.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.MD"
+      }
+    ],
     "definition": "Line things up from shortest to longest.",
     "example": "Ana holds three ribbons. She lines up one end of each, then orders them by length.",
     "misconception": ""
@@ -699,6 +1208,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "1.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.MD"
+      }
+    ],
     "definition": "A unit of time. The short hand on a clock points to it.",
     "example": "Ben checks the clock. The short hand is on 3 and the long hand is on 12. It is 3 o'clock.",
     "misconception": ""
@@ -710,6 +1225,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "1.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.MD"
+      }
+    ],
     "definition": "Thirty minutes. Half of one hour.",
     "example": "Ivy looks at the clock. The long hand points straight down at 6. It is half past 2.",
     "misconception": ""
@@ -721,6 +1242,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "1.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.MD"
+      }
+    ],
     "definition": "Facts you collect and can count.",
     "example": "Zoe asks every classmate about their pet. She writes down each answer. Those answers are her data.",
     "misconception": ""
@@ -732,6 +1259,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "1.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.MD"
+      }
+    ],
     "definition": "A chart that counts with small marks.",
     "example": "Theo makes a tally chart of bus riders. He draws one mark per rider. Every fifth mark crosses the other four.",
     "misconception": ""
@@ -743,8 +1276,52 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "1.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.MD"
+      }
+    ],
     "definition": "A picture that shows data so you can compare.",
     "example": "Nina graphs the class pets. The dog bar is the tallest, so dogs are the most common pet.",
+    "misconception": ""
+  },
+  {
+    "id": "1-md-capacity",
+    "term": "capacity",
+    "grade": "1",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "1.MD",
+    "standards": [
+      {
+        "country": "UK",
+        "code": "Y1 programme of study"
+      },
+      {
+        "country": "IN",
+        "code": "Class II · 2.M.LO3"
+      }
+    ],
+    "definition": "How much a container can hold.",
+    "example": "Leo pours water into a jug until it is full. The amount it holds is its capacity.",
+    "misconception": ""
+  },
+  {
+    "id": "1-md-carroll-diagram",
+    "term": "Carroll diagram",
+    "grade": "1",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "1.MD",
+    "standards": [
+      {
+        "country": "UK",
+        "code": "KS1 glossary"
+      }
+    ],
+    "definition": "A sorting chart with boxes that shows whether something has a property or not.",
+    "example": "Zoe sorts her buttons in a Carroll diagram: one box for round buttons, one box for buttons that are not round.",
     "misconception": ""
   },
   {
@@ -754,6 +1331,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "1.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.G"
+      }
+    ],
     "definition": "Cut a shape into parts.",
     "example": "Omar partitions his sandwich. He cuts straight down the middle into 2 equal parts.",
     "misconception": ""
@@ -765,6 +1348,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "1.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.G"
+      }
+    ],
     "definition": "Parts that are all the same size.",
     "example": "Maya splits a pancake with her sister. Each one gets an equal share. Neither piece is bigger.",
     "misconception": "Same number of pieces is not enough. The pieces have to be the same size too."
@@ -776,6 +1365,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "1.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.G"
+      }
+    ],
     "definition": "Two equal parts of one whole.",
     "example": "Leo cuts an apple into halves. Each piece is one of two equal parts.",
     "misconception": ""
@@ -787,6 +1382,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "1.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.G"
+      }
+    ],
     "definition": "Four equal parts of one whole.",
     "example": "Ana cuts a pizza into fourths. She and 3 friends each take one part.",
     "misconception": ""
@@ -798,6 +1399,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "1.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.G"
+      }
+    ],
     "definition": "Another word for fourths.",
     "example": "Ben folds his paper in half, then in half again. He opens it up and finds 4 quarters.",
     "misconception": ""
@@ -809,6 +1416,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "1.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.G"
+      }
+    ],
     "definition": "Something you can notice about a shape, like its sides or corners.",
     "example": "Ivy looks at a triangle. She names two attributes: 3 sides and 3 corners.",
     "misconception": ""
@@ -820,6 +1433,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "1.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.G"
+      }
+    ],
     "definition": "A flat shape. It has length and width but no thickness.",
     "example": "Zoe draws a square on paper. It lies flat on the page, so it is a 2D shape.",
     "misconception": ""
@@ -831,8 +1450,69 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "1.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.G"
+      }
+    ],
     "definition": "A solid shape you can hold. It takes up space.",
     "example": "Theo picks up a wooden cube. He can turn it over in his hand, so it is a 3D shape.",
+    "misconception": ""
+  },
+  {
+    "id": "1-g-vertex-vertices",
+    "term": "vertex (vertices)",
+    "grade": "1",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "1.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.G.A.1"
+      },
+      {
+        "country": "UK",
+        "code": "KS1 glossary"
+      }
+    ],
+    "definition": "The point where two sides of a shape meet. The plural is vertices.",
+    "example": "Zoe traces a triangle with her finger. She counts 3 corners, or vertices, where the sides meet.",
+    "misconception": ""
+  },
+  {
+    "id": "1-g-quarter-turn",
+    "term": "quarter turn",
+    "grade": "1",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "1.G",
+    "standards": [
+      {
+        "country": "UK",
+        "code": "Y1 · KS1 glossary"
+      }
+    ],
+    "definition": "A turn of one-fourth of the way around, like turning to face a new wall.",
+    "example": "Omar faces the window. He makes a quarter turn and now faces the door.",
+    "misconception": ""
+  },
+  {
+    "id": "1-g-half-turn",
+    "term": "half turn",
+    "grade": "1",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "1.G",
+    "standards": [
+      {
+        "country": "UK",
+        "code": "KS1 glossary 'turn'"
+      }
+    ],
+    "definition": "A turn of halfway around, so you end up facing the opposite way.",
+    "example": "Maya faces the front of the room. She makes a half turn and now faces the back wall.",
     "misconception": ""
   },
   {
@@ -842,6 +1522,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "2.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.OA"
+      }
+    ],
     "definition": "Adding the same number again and again.",
     "example": "Nina sets out 4 plates and puts 3 grapes on each. She adds 3 + 3 + 3 + 3 and gets 12 grapes.",
     "misconception": ""
@@ -853,6 +1539,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "2.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.OA"
+      }
+    ],
     "definition": "Objects set out in equal rows and columns.",
     "example": "Omar lines up his stickers in 3 rows of 5. That is an array. He counts 15 stickers.",
     "misconception": "Every row must hold the same amount. A ragged grid is not an array."
@@ -864,6 +1556,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "2.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.OA"
+      }
+    ],
     "definition": "A number that splits into two equal groups with none left over.",
     "example": "Maya pairs up her 8 socks. She makes 4 pairs with nothing left over, so 8 is even.",
     "misconception": ""
@@ -875,6 +1573,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "2.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.OA"
+      }
+    ],
     "definition": "A number that leaves one extra when you split it in two.",
     "example": "Leo tries to pair up 7 crackers. He makes 3 pairs and 1 is left alone, so 7 is odd.",
     "misconception": ""
@@ -886,6 +1590,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "2.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.OA"
+      }
+    ],
     "definition": "A problem you solve in two moves.",
     "example": "Ana has 10 pencils. She buys 5 more, then gives 3 to Ben. First she adds to get 15. Then she subtracts to get 12.",
     "misconception": "Stopping after the first step is the usual slip. Reread the question to check you finished."
@@ -897,8 +1607,31 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "2.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.OA"
+      }
+    ],
     "definition": "The number you are missing. A letter or a box can stand in for it.",
     "example": "Ivy sees 12 - ? = 7. She asks herself what takes 12 down to 7. The unknown number is 5.",
+    "misconception": ""
+  },
+  {
+    "id": "2-oa-number-bond",
+    "term": "number bond",
+    "grade": "2",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "2.OA",
+    "standards": [
+      {
+        "country": "UK",
+        "code": "KS1 glossary"
+      }
+    ],
+    "definition": "A pair of numbers that add up to a target number.",
+    "example": "Omar learns the number bonds for 10: 6 and 4, 7 and 3, 8 and 2. Each pair adds up to 10.",
     "misconception": ""
   },
   {
@@ -908,6 +1641,12 @@
     "domainCode": "NBT",
     "domain": "Number & Operations in Base Ten",
     "standard": "2.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.NBT"
+      }
+    ],
     "definition": "Groups of one hundred.",
     "example": "Zoe counts 342 pennies. She stacks them and finds 3 hundreds, 4 tens, and 2 ones.",
     "misconception": ""
@@ -919,6 +1658,12 @@
     "domainCode": "NBT",
     "domain": "Number & Operations in Base Ten",
     "standard": "2.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.NBT"
+      }
+    ],
     "definition": "A number written as the sum of what each digit is worth.",
     "example": "Theo writes 254 in expanded form: 200 + 50 + 4.",
     "misconception": ""
@@ -930,6 +1675,12 @@
     "domainCode": "NBT",
     "domain": "Number & Operations in Base Ten",
     "standard": "2.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.NBT"
+      }
+    ],
     "definition": "What a digit is worth based on its spot.",
     "example": "Nina looks at 528. The 5 sits in the hundreds place, so it is worth 500.",
     "misconception": ""
@@ -941,6 +1692,12 @@
     "domainCode": "NBT",
     "domain": "Number & Operations in Base Ten",
     "standard": "2.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.NBT"
+      }
+    ],
     "definition": "Trade ten of one unit for one of the next unit.",
     "example": "Omar adds 27 + 15. The ones make 12. He regroups 10 of them into 1 ten and writes 42.",
     "misconception": ""
@@ -952,9 +1709,66 @@
     "domainCode": "NBT",
     "domain": "Number & Operations in Base Ten",
     "standard": "2.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.NBT"
+      }
+    ],
     "definition": "Decide which number is bigger by checking place value.",
     "example": "Maya compares 431 and 419. The hundreds match, so she checks the tens. 3 beats 1, so 431 is bigger.",
     "misconception": "More digits usually means bigger, but only when you start from the biggest place. Compare left to right."
+  },
+  {
+    "id": "2-nbt-hundred-chart",
+    "term": "hundred chart",
+    "grade": "2",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "2.NBT",
+    "standards": [
+      {
+        "country": "UK",
+        "code": "KS1 glossary 'hundred square'"
+      }
+    ],
+    "definition": "A grid that shows the numbers 1 to 100 in order.",
+    "example": "Leo uses a hundred chart to skip count by 10s. He taps 10, 20, 30, all the way down one column.",
+    "misconception": ""
+  },
+  {
+    "id": "2-nbt-greatest-number",
+    "term": "greatest number",
+    "grade": "2",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "2.NBT",
+    "standards": [
+      {
+        "country": "IN",
+        "code": "Class II · 2.M.LO1.3"
+      }
+    ],
+    "definition": "The biggest number you can make or find in a group.",
+    "example": "Ana has the digits 3, 7, and 1. She arranges them to make 731, the greatest number she can build.",
+    "misconception": ""
+  },
+  {
+    "id": "2-nbt-smallest-number",
+    "term": "smallest number",
+    "grade": "2",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "2.NBT",
+    "standards": [
+      {
+        "country": "IN",
+        "code": "Class II · 2.M.LO1.3"
+      }
+    ],
+    "definition": "The tiniest number you can make or find in a group.",
+    "example": "Ben has the digits 3, 7, and 1. He arranges them to make 137, the smallest number he can build.",
+    "misconception": ""
   },
   {
     "id": "2-md-centimeter",
@@ -963,6 +1777,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "2.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.MD"
+      }
+    ],
     "definition": "A small unit of length. It is about as wide as your fingernail.",
     "example": "Leo lays his crayon along a ruler. The crayon is 9 centimeters long.",
     "misconception": ""
@@ -974,6 +1794,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "2.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.MD"
+      }
+    ],
     "definition": "A larger unit of length. It is about as wide as a door.",
     "example": "Ana measures the rug with a meter stick. She steps it out twice, so the rug is 2 meters long.",
     "misconception": ""
@@ -985,6 +1811,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "2.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.MD"
+      }
+    ],
     "definition": "A smart guess that is close, not exact.",
     "example": "Ben looks at a jar of beans and guesses about 50. The real count is 46, so his estimate was close.",
     "misconception": "An estimate is not a wild guess. Use what you know to get near the real amount."
@@ -996,6 +1828,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "2.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.MD"
+      }
+    ],
     "definition": "A line with numbers spaced out in order.",
     "example": "Ivy starts at 8 on the number line and hops to 13. She counts 5 hops.",
     "misconception": ""
@@ -1007,6 +1845,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "2.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.MD"
+      }
+    ],
     "definition": "A graph that uses bars to show amounts.",
     "example": "Zoe makes a bar graph of favorite fruits. The apple bar rises highest, so apples won.",
     "misconception": ""
@@ -1018,6 +1862,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "2.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.MD"
+      }
+    ],
     "definition": "A graph that uses pictures to stand for amounts.",
     "example": "Theo draws a picture graph of books read. Each little book stands for 1 real book.",
     "misconception": ""
@@ -1029,6 +1879,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "2.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.MD"
+      }
+    ],
     "definition": "A graph that stacks marks above a number line.",
     "example": "Nina measures 10 leaves and marks an X above each length. Most of the X's stack above 4 centimeters.",
     "misconception": ""
@@ -1040,6 +1896,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "2.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.MD"
+      }
+    ],
     "definition": "A unit of money worth 100 cents.",
     "example": "Omar saves 4 quarters in a jar. Together they make 1 dollar.",
     "misconception": ""
@@ -1051,8 +1913,86 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "2.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.MD"
+      }
+    ],
     "definition": "A coin worth 25 cents.",
     "example": "Maya has 3 quarters. She counts 25, 50, 75. She has 75 cents.",
+    "misconception": ""
+  },
+  {
+    "id": "2-md-venn-diagram",
+    "term": "Venn diagram",
+    "grade": "2",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "2.MD",
+    "standards": [
+      {
+        "country": "UK",
+        "code": "KS1/KS2 sorting tool"
+      }
+    ],
+    "definition": "Two circles that overlap, used to sort things and show what they share.",
+    "example": "Leo draws a Venn diagram. One circle is red things, one circle is round things. The apple goes where the circles overlap.",
+    "misconception": ""
+  },
+  {
+    "id": "2-md-rupee",
+    "term": "rupee",
+    "grade": "2",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "2.MD",
+    "standards": [
+      {
+        "country": "IN",
+        "code": "Class II · 2.M.LO1.6"
+      }
+    ],
+    "definition": "India's unit of money.",
+    "example": "Ana saves 50 rupees from her allowance.",
+    "misconception": ""
+  },
+  {
+    "id": "2-md-paise",
+    "term": "paise",
+    "grade": "2",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "2.MD",
+    "standards": [
+      {
+        "country": "IN",
+        "code": "Class II · 2.M.LO1.6"
+      }
+    ],
+    "definition": "A small unit of Indian money. 100 paise make 1 rupee.",
+    "example": "Ben has 1 rupee, which is the same as 100 paise.",
+    "misconception": ""
+  },
+  {
+    "id": "2-md-denomination",
+    "term": "denomination",
+    "grade": "2",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "2.MD",
+    "standards": [
+      {
+        "country": "UK",
+        "code": "KS1 glossary"
+      },
+      {
+        "country": "IN",
+        "code": "Class II · 2.M.LO1.6"
+      }
+    ],
+    "definition": "The value printed on a coin or bill.",
+    "example": "Ivy sorts her play money by denomination: all the $1 bills together, all the $5 bills together.",
     "misconception": ""
   },
   {
@@ -1062,6 +2002,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "2.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.G"
+      }
+    ],
     "definition": "A closed shape with 4 straight sides.",
     "example": "Leo sorts his shape cards. The square, the rectangle, and the kite all go in one pile. Each has 4 sides.",
     "misconception": ""
@@ -1073,6 +2019,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "2.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.G"
+      }
+    ],
     "definition": "A closed shape with 5 straight sides.",
     "example": "Ana traces home plate at the ball field. She counts 5 sides, so it is a pentagon.",
     "misconception": ""
@@ -1084,6 +2036,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "2.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.G"
+      }
+    ],
     "definition": "Rows go across. Columns go up and down.",
     "example": "Ben sets up chairs in 4 rows and 6 columns. He counts 24 chairs in all.",
     "misconception": ""
@@ -1095,6 +2053,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "2.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.G"
+      }
+    ],
     "definition": "Parts of one whole that are all the same size.",
     "example": "Ivy cuts a brownie into 4 equal shares. Each friend gets a piece the same size.",
     "misconception": ""
@@ -1106,6 +2070,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "3.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.OA"
+      }
+    ],
     "definition": "Add equal groups the fast way.",
     "example": "Zoe packs 6 boxes with 4 markers in each. Instead of adding six times, she multiplies 6 × 4 and gets 24.",
     "misconception": ""
@@ -1117,6 +2087,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "3.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.OA"
+      }
+    ],
     "definition": "A number you multiply.",
     "example": "Theo writes 3 × 8 = 24. The 3 and the 8 are the factors.",
     "misconception": ""
@@ -1128,6 +2104,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "3.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.OA"
+      }
+    ],
     "definition": "The answer when you multiply.",
     "example": "Nina multiplies 5 × 7. The product is 35.",
     "misconception": ""
@@ -1139,6 +2121,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "3.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.OA"
+      }
+    ],
     "definition": "Split into equal groups.",
     "example": "Omar has 12 grapes and 3 friends. He divides them evenly, so each friend gets 4.",
     "misconception": ""
@@ -1150,6 +2138,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "3.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.OA"
+      }
+    ],
     "definition": "The answer when you divide.",
     "example": "Maya divides 20 by 4. The quotient is 5.",
     "misconception": ""
@@ -1161,6 +2155,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "3.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.OA"
+      }
+    ],
     "definition": "Groups that all hold the same amount.",
     "example": "Leo sorts 15 crayons into 3 equal groups. Each group holds 5 crayons.",
     "misconception": ""
@@ -1172,6 +2172,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "3.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.OA"
+      }
+    ],
     "definition": "Objects in equal rows and columns. It shows a multiplication fact.",
     "example": "Ana draws 4 rows of 6 dots. Her array shows 4 × 6 = 24.",
     "misconception": ""
@@ -1183,6 +2189,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "3.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.OA"
+      }
+    ],
     "definition": "A rectangle drawing that shows a multiplication problem.",
     "example": "Ben draws a rectangle 3 units tall and 5 units wide. He counts 15 squares inside. His area model shows 3 × 5 = 15.",
     "misconception": ""
@@ -1194,8 +2206,52 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "3.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.OA"
+      }
+    ],
     "definition": "The missing number in a multiplication fact.",
     "example": "Ivy sees 4 × ? = 28. She counts by fours until she reaches 28. The unknown factor is 7.",
+    "misconception": ""
+  },
+  {
+    "id": "3-oa-multiplication-table",
+    "term": "multiplication table",
+    "grade": "3",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "3.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.OA.C.7"
+      },
+      {
+        "country": "IN",
+        "code": "Class III · 3.M.LO1.4"
+      }
+    ],
+    "definition": "A chart of multiplication facts, also called a times table.",
+    "example": "Theo studies the multiplication table for 5s to learn 5 x 1 up to 5 x 12 by heart.",
+    "misconception": ""
+  },
+  {
+    "id": "3-oa-rate-chart",
+    "term": "rate chart",
+    "grade": "3",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "3.OA",
+    "standards": [
+      {
+        "country": "IN",
+        "code": "Class III · 3.M.LO3"
+      }
+    ],
+    "definition": "A list that shows the price of items, used to find the total cost.",
+    "example": "Ana uses a rate chart to see that pencils cost 5 rupees each, then finds that 3 pencils cost 15 rupees.",
     "misconception": ""
   },
   {
@@ -1205,6 +2261,12 @@
     "domainCode": "NBT",
     "domain": "Number & Operations in Base Ten",
     "standard": "3.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.NBT"
+      }
+    ],
     "definition": "Change a number to a nearby easier one.",
     "example": "Zoe rounds 47 to the nearest ten. On the number line 47 sits closer to 50 than to 40, so she rounds up.",
     "misconception": "Look at where the number really sits. Do not just chop the last digit off."
@@ -1216,6 +2278,12 @@
     "domainCode": "NBT",
     "domain": "Number & Operations in Base Ten",
     "standard": "3.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.NBT"
+      }
+    ],
     "definition": "What a digit is worth because of its spot.",
     "example": "Theo looks at 528. The 2 sits in the tens place, so it is worth 20.",
     "misconception": ""
@@ -1227,6 +2295,12 @@
     "domainCode": "NF",
     "domain": "Number & Operations—Fractions",
     "standard": "3.NF",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.NF"
+      }
+    ],
     "definition": "A number that names part of a whole.",
     "example": "Nina cuts a pie into 4 equal slices and takes 1. She ate 1/4 of the pie.",
     "misconception": "The parts have to be equal. Four uneven slices do not make fourths."
@@ -1238,6 +2312,12 @@
     "domainCode": "NF",
     "domain": "Number & Operations—Fractions",
     "standard": "3.NF",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.NF"
+      }
+    ],
     "definition": "The top number. It counts the parts you have.",
     "example": "Omar eats 3 slices out of 8. He writes 3/8. The numerator 3 is how many he ate.",
     "misconception": ""
@@ -1249,6 +2329,12 @@
     "domainCode": "NF",
     "domain": "Number & Operations—Fractions",
     "standard": "3.NF",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.NF"
+      }
+    ],
     "definition": "The bottom number. It tells how many equal parts make the whole.",
     "example": "Maya writes 3/8. The denominator 8 means the whole pie was cut into 8 equal parts.",
     "misconception": ""
@@ -1260,6 +2346,12 @@
     "domainCode": "NF",
     "domain": "Number & Operations—Fractions",
     "standard": "3.NF",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.NF"
+      }
+    ],
     "definition": "A fraction with 1 on top. It is one single part.",
     "example": "Leo cuts a ribbon into 5 equal pieces and picks up one. He holds 1/5, a unit fraction.",
     "misconception": ""
@@ -1271,6 +2363,12 @@
     "domainCode": "NF",
     "domain": "Number & Operations—Fractions",
     "standard": "3.NF",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.NF"
+      }
+    ],
     "definition": "Different fractions that name the same amount.",
     "example": "Ana eats 1/2 of a pizza. Ben eats 2/4 of a pizza the same size. They both ate the same amount.",
     "misconception": ""
@@ -1282,6 +2380,12 @@
     "domainCode": "NF",
     "domain": "Number & Operations—Fractions",
     "standard": "3.NF",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.NF"
+      }
+    ],
     "definition": "All of the parts together. One complete thing.",
     "example": "Ivy has 4 quarter slices of an orange. Put back together they make one whole orange.",
     "misconception": ""
@@ -1293,6 +2397,12 @@
     "domainCode": "NF",
     "domain": "Number & Operations—Fractions",
     "standard": "3.NF",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.NF"
+      }
+    ],
     "definition": "Split something into equal parts.",
     "example": "Zoe partitions a paper strip into 6 equal parts. Now each part is 1/6 of the strip.",
     "misconception": ""
@@ -1304,6 +2414,12 @@
     "domainCode": "NF",
     "domain": "Number & Operations—Fractions",
     "standard": "3.NF",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.NF"
+      }
+    ],
     "definition": "Decide which fraction is larger.",
     "example": "Theo compares 1/3 and 1/5 of the same cake. Fewer slices means bigger slices, so 1/3 is more.",
     "misconception": "A bigger bottom number does not mean a bigger piece. It means the whole was cut into more, smaller parts."
@@ -1315,6 +2431,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "3.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.MD"
+      }
+    ],
     "definition": "The amount of flat space a shape covers.",
     "example": "Nina tiles a table top with square tiles. She counts 24 tiles, so the area is 24 square units.",
     "misconception": "Area is the space inside. Perimeter is the trip around the edge."
@@ -1326,6 +2448,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "3.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.MD"
+      }
+    ],
     "definition": "The distance all the way around a shape.",
     "example": "Omar walks around a square garden. Each side takes 5 steps, so the perimeter is 20 steps.",
     "misconception": ""
@@ -1337,6 +2465,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "3.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.MD"
+      }
+    ],
     "definition": "One square used to measure area.",
     "example": "Maya covers a card with squares, leaving no gaps. Each one is a square unit. She counts 12.",
     "misconception": ""
@@ -1348,6 +2482,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "3.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.MD"
+      }
+    ],
     "definition": "How much time has passed.",
     "example": "Leo starts reading at 2:00 and stops at 2:45. The elapsed time is 45 minutes.",
     "misconception": ""
@@ -1359,6 +2499,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "3.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.MD"
+      }
+    ],
     "definition": "How much liquid a container holds.",
     "example": "Ana fills a bottle from the jug. The bottle holds 1 liter, so that is its liquid volume.",
     "misconception": ""
@@ -1370,6 +2516,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "3.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.MD"
+      }
+    ],
     "definition": "How much matter is in an object.",
     "example": "Ben sets an apple on the scale. Its mass is 150 grams.",
     "misconception": ""
@@ -1381,9 +2533,70 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "3.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.MD"
+      }
+    ],
     "definition": "A graph where one picture or step stands for more than one thing.",
     "example": "Ivy makes a graph where each square stands for 5 books. A bar 4 squares tall means 20 books.",
     "misconception": "Count the value of each step, not the number of steps."
+  },
+  {
+    "id": "3-md-kilogram",
+    "term": "kilogram",
+    "grade": "3",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "3.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.MD.A.2"
+      },
+      {
+        "country": "IN",
+        "code": "Class III · 3.M.LO6"
+      }
+    ],
+    "definition": "A metric unit of mass equal to 1,000 grams.",
+    "example": "Zoe weighs a bag of rice. It has a mass of 2 kilograms.",
+    "misconception": ""
+  },
+  {
+    "id": "3-md-standard-unit",
+    "term": "standard unit",
+    "grade": "3",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "3.MD",
+    "standards": [
+      {
+        "country": "IN",
+        "code": "Class III · 3.M.LO5"
+      }
+    ],
+    "definition": "A fixed unit of measurement that everyone agrees on, like a centimeter.",
+    "example": "Nina measures her desk in centimeters, a standard unit, so her measurement means the same thing to everyone.",
+    "misconception": ""
+  },
+  {
+    "id": "3-md-non-standard-unit",
+    "term": "non-standard unit",
+    "grade": "3",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "3.MD",
+    "standards": [
+      {
+        "country": "IN",
+        "code": "Class I–III · 1.M.LO6, 3.M.LO7"
+      }
+    ],
+    "definition": "An everyday object used to measure, like a hand span or a paperclip, before using standard units.",
+    "example": "Omar measures his desk using hand spans, a non-standard unit, before he learns to use a ruler.",
+    "misconception": "A hand span is different for every person, so measurements made with it will not match."
   },
   {
     "id": "3-g-quadrilateral",
@@ -1392,6 +2605,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "3.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.G"
+      }
+    ],
     "definition": "A closed shape with exactly 4 straight sides.",
     "example": "Zoe drops shapes into a hoop labeled 4 sides. Squares, rectangles, and rhombuses all belong.",
     "misconception": ""
@@ -1403,6 +2622,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "3.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.G"
+      }
+    ],
     "definition": "A group whose members share a trait.",
     "example": "Theo makes a category for shapes with 4 sides. The square and the rectangle both belong in it.",
     "misconception": ""
@@ -1414,8 +2639,77 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "3.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.G"
+      }
+    ],
     "definition": "A feature of a shape you can name.",
     "example": "Nina looks at a rectangle. She names two attributes. It has 4 square corners, and the sides across from each other match.",
+    "misconception": ""
+  },
+  {
+    "id": "3-g-polygon",
+    "term": "polygon",
+    "grade": "3",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "3.G",
+    "standards": [
+      {
+        "country": "UK",
+        "code": "KS2 glossary"
+      },
+      {
+        "country": "US",
+        "code": "supports 3.G.A.1"
+      }
+    ],
+    "definition": "A closed flat shape made only of straight sides.",
+    "example": "Maya sorts shapes into a group of polygons: triangles, squares, and hexagons, because they all have straight sides.",
+    "misconception": "A circle is not a polygon because its side is curved, not straight."
+  },
+  {
+    "id": "3-g-diagonal",
+    "term": "diagonal",
+    "grade": "3",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "3.G",
+    "standards": [
+      {
+        "country": "UK",
+        "code": "KS2 glossary"
+      },
+      {
+        "country": "IN",
+        "code": "Class III · 3.M.LO4.2"
+      }
+    ],
+    "definition": "A line that connects two corners of a shape that are not already next to each other.",
+    "example": "Leo draws a diagonal across a rectangle. It joins two corners that are not next to each other.",
+    "misconception": ""
+  },
+  {
+    "id": "3-g-tessellation",
+    "term": "tessellation",
+    "grade": "3",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "3.G",
+    "standards": [
+      {
+        "country": "UK",
+        "code": "KS2 glossary"
+      },
+      {
+        "country": "IN",
+        "code": "Class III · 3.M.LO4.3"
+      }
+    ],
+    "definition": "Covering a flat surface with shapes that fit together with no gaps or overlaps.",
+    "example": "Ana notices the tiles on the floor form a tessellation. The squares fit together perfectly with no gaps.",
     "misconception": ""
   },
   {
@@ -1425,6 +2719,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "4.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.OA"
+      }
+    ],
     "definition": "A number that divides into another with nothing left over.",
     "example": "Omar tests 12. He finds 1, 2, 3, 4, 6, and 12 all divide it evenly. Those are the factors of 12.",
     "misconception": ""
@@ -1436,6 +2736,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "4.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.OA"
+      }
+    ],
     "definition": "What you get when you multiply a number by a whole number.",
     "example": "Maya skip counts by 4: 4, 8, 12, 16. Each number she lands on is a multiple of 4.",
     "misconception": "Factors are smaller and divide in. Multiples are bigger and count up."
@@ -1447,6 +2753,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "4.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.OA"
+      }
+    ],
     "definition": "A number with exactly two factors: 1 and itself.",
     "example": "Leo tries to split 7 counters into equal groups. Only 1 group of 7 works. So 7 is prime.",
     "misconception": "The number 1 is not prime. It has only one factor, not two."
@@ -1458,6 +2770,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "4.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.OA"
+      }
+    ],
     "definition": "A number with more than two factors.",
     "example": "Ana splits 12 counters into 2 groups of 6, then into 3 groups of 4. Many splits work, so 12 is composite.",
     "misconception": ""
@@ -1469,6 +2787,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "4.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.OA"
+      }
+    ],
     "definition": "A problem that needs more than one step.",
     "example": "Ben buys 3 packs of 8 pencils, then gives 5 away. First he multiplies to get 24. Then he subtracts to get 19.",
     "misconception": ""
@@ -1480,6 +2804,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "4.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.OA"
+      }
+    ],
     "definition": "The amount left over after dividing.",
     "example": "Ivy shares 17 stickers with 5 friends. Each one gets 3, and the remainder is 2.",
     "misconception": ""
@@ -1491,8 +2821,35 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "4.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.OA"
+      }
+    ],
     "definition": "A letter that stands for a number you do not know yet.",
     "example": "Zoe writes 6 × n = 42. The letter n is the variable. She solves it and finds n = 7.",
+    "misconception": ""
+  },
+  {
+    "id": "4-oa-factor-pair",
+    "term": "factor pair",
+    "grade": "4",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "4.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.OA.B.4"
+      },
+      {
+        "country": "UK",
+        "code": "Y4"
+      }
+    ],
+    "definition": "Two numbers that multiply together to make a given number.",
+    "example": "Ben finds the factor pairs of 12: 1 and 12, 2 and 6, 3 and 4.",
     "misconception": ""
   },
   {
@@ -1502,6 +2859,12 @@
     "domainCode": "NBT",
     "domain": "Number & Operations in Base Ten",
     "standard": "4.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.NBT"
+      }
+    ],
     "definition": "What each digit is worth based on its position.",
     "example": "Theo studies 5,283. The 5 sits in the thousands place, so it is worth 5,000.",
     "misconception": ""
@@ -1513,6 +2876,12 @@
     "domainCode": "NBT",
     "domain": "Number & Operations in Base Ten",
     "standard": "4.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.NBT"
+      }
+    ],
     "definition": "A number with more than one digit.",
     "example": "Nina adds 3,472 and 1,915. Both are multi-digit numbers, so she lines up the places before she starts.",
     "misconception": ""
@@ -1524,6 +2893,12 @@
     "domainCode": "NBT",
     "domain": "Number & Operations in Base Ten",
     "standard": "4.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.NBT"
+      }
+    ],
     "definition": "The usual step by step way to work a problem on paper.",
     "example": "Omar multiplies 34 × 26. He uses the standard algorithm, working one place at a time and carrying when needed.",
     "misconception": ""
@@ -1535,6 +2910,12 @@
     "domainCode": "NF",
     "domain": "Number & Operations—Fractions",
     "standard": "4.NF",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.NF"
+      }
+    ],
     "definition": "A fraction that names the same amount as another.",
     "example": "Maya has 2/4 of a chocolate bar. Leo has 1/2 of the same bar. Their pieces are exactly the same size.",
     "misconception": ""
@@ -1546,6 +2927,12 @@
     "domainCode": "NF",
     "domain": "Number & Operations—Fractions",
     "standard": "4.NF",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.NF"
+      }
+    ],
     "definition": "A whole number joined with a fraction.",
     "example": "Ana pours 2 full glasses of juice and half of a third. She has 2 1/2 glasses.",
     "misconception": ""
@@ -1557,6 +2944,12 @@
     "domainCode": "NF",
     "domain": "Number & Operations—Fractions",
     "standard": "4.NF",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.NF"
+      }
+    ],
     "definition": "A fraction whose top number is bigger than its bottom.",
     "example": "Ben has 5 quarter slices of pie. He writes 5/4, which is more than one whole pie.",
     "misconception": "An improper fraction is not wrong. It is just written as parts instead of wholes."
@@ -1568,6 +2961,12 @@
     "domainCode": "NF",
     "domain": "Number & Operations—Fractions",
     "standard": "4.NF",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.NF"
+      }
+    ],
     "definition": "A shared bottom number for two fractions.",
     "example": "Ivy adds 1/3 and 1/4. She rewrites them as 4/12 and 3/12. Now they share a denominator, so she can add.",
     "misconception": ""
@@ -1579,6 +2978,12 @@
     "domainCode": "NF",
     "domain": "Number & Operations—Fractions",
     "standard": "4.NF",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.NF"
+      }
+    ],
     "definition": "A number that uses a dot to show parts smaller than one.",
     "example": "Zoe reads a price tag: $2.75. The dot separates the whole dollars from the cents.",
     "misconception": ""
@@ -1590,6 +2995,12 @@
     "domainCode": "NF",
     "domain": "Number & Operations—Fractions",
     "standard": "4.NF",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.NF"
+      }
+    ],
     "definition": "One whole split into 10 equal parts.",
     "example": "Theo shades 3 strips out of 10. He shaded 3 tenths, which he writes as 0.3.",
     "misconception": ""
@@ -1601,6 +3012,12 @@
     "domainCode": "NF",
     "domain": "Number & Operations—Fractions",
     "standard": "4.NF",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.NF"
+      }
+    ],
     "definition": "One whole split into 100 equal parts.",
     "example": "Nina shades 25 little squares on a grid of 100. She shaded 25 hundredths, or 0.25.",
     "misconception": ""
@@ -1612,6 +3029,12 @@
     "domainCode": "NF",
     "domain": "Number & Operations—Fractions",
     "standard": "4.NF",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.NF"
+      }
+    ],
     "definition": "A well known fraction you use to judge others.",
     "example": "Omar wonders how big 5/8 is. He compares it to 1/2, a benchmark. 5/8 is a little more than half.",
     "misconception": ""
@@ -1623,6 +3046,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "4.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.MD"
+      }
+    ],
     "definition": "The corner shape made where two rays meet.",
     "example": "Maya opens a pair of scissors. The space between the blades forms an angle.",
     "misconception": "Longer arms do not make a bigger angle. Only the spread between them counts."
@@ -1634,6 +3063,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "4.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.MD"
+      }
+    ],
     "definition": "The unit used to measure an angle.",
     "example": "Leo measures a square corner with his protractor. It reads 90 degrees.",
     "misconception": ""
@@ -1645,6 +3080,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "4.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.MD"
+      }
+    ],
     "definition": "A tool for measuring angles.",
     "example": "Ana lines up the middle of her protractor with the corner. She reads 45 degrees.",
     "misconception": ""
@@ -1656,6 +3097,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "4.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.MD"
+      }
+    ],
     "definition": "The total distance around the outside of a shape.",
     "example": "Ben fences a garden 8 feet by 3 feet. He adds 8 + 3 + 8 + 3 and needs 22 feet of fence.",
     "misconception": ""
@@ -1667,6 +3114,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "4.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.MD"
+      }
+    ],
     "definition": "A rule written with symbols that works every time.",
     "example": "Ivy uses the formula for area: length × width. Her rug is 6 by 4, so the area is 24.",
     "misconception": ""
@@ -1678,8 +3131,52 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "4.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.MD"
+      }
+    ],
     "definition": "Changing a measure into a different unit.",
     "example": "Zoe has 3 feet of ribbon and needs inches. She multiplies 3 × 12 and gets 36 inches.",
+    "misconception": ""
+  },
+  {
+    "id": "4-md-am-and-pm",
+    "term": "AM and PM",
+    "grade": "4",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "4.MD",
+    "standards": [
+      {
+        "country": "IN",
+        "code": "Class IV · 4.M.LO8"
+      }
+    ],
+    "definition": "The two 12-hour halves of the day. A.M. is before noon. P.M. is after noon.",
+    "example": "Maya wakes up at 7 A.M. and goes to bed at 8 P.M.",
+    "misconception": "Noon is 12 P.M. and midnight is 12 A.M., which trips kids up since there is no 12 in between."
+  },
+  {
+    "id": "4-md-24-hour-clock",
+    "term": "24-hour clock",
+    "grade": "4",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "4.MD",
+    "standards": [
+      {
+        "country": "IN",
+        "code": "Class IV · 4.M.LO9"
+      },
+      {
+        "country": "UK",
+        "code": "Y4"
+      }
+    ],
+    "definition": "A way of telling time using the numbers 00:00 to 23:59, with no A.M. or P.M.",
+    "example": "Leo reads a train schedule that uses the 24-hour clock. 14:00 means 2 P.M.",
     "misconception": ""
   },
   {
@@ -1689,6 +3186,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "4.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.G"
+      }
+    ],
     "definition": "An exact spot. It has no size at all.",
     "example": "Theo marks a dot on the map where the library sits. That dot is a point.",
     "misconception": ""
@@ -1700,6 +3203,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "4.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.G"
+      }
+    ],
     "definition": "A straight path that goes on forever both ways.",
     "example": "Nina draws a straight path and puts an arrow on each end. The arrows show the line never stops.",
     "misconception": ""
@@ -1711,6 +3220,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "4.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.G"
+      }
+    ],
     "definition": "A straight path with one end. It goes on forever the other way.",
     "example": "Omar shines a flashlight. The beam starts at the bulb and keeps going, much like a ray.",
     "misconception": ""
@@ -1722,6 +3237,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "4.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.G"
+      }
+    ],
     "definition": "An angle smaller than a square corner.",
     "example": "Maya opens a book just a crack. The narrow angle at the spine is acute.",
     "misconception": ""
@@ -1733,6 +3254,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "4.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.G"
+      }
+    ],
     "definition": "An angle bigger than a square corner.",
     "example": "Leo leans a chair back until it nearly lies flat. The wide angle it makes is obtuse.",
     "misconception": ""
@@ -1744,6 +3271,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "4.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.G"
+      }
+    ],
     "definition": "A square corner. It measures 90 degrees.",
     "example": "Ana checks the corner of her paper against a tile. They match exactly, so it is a right angle.",
     "misconception": ""
@@ -1755,6 +3288,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "4.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.G"
+      }
+    ],
     "definition": "Lines that stay the same distance apart and never meet.",
     "example": "Ben looks down the train tracks. The rails run side by side forever, so they are parallel.",
     "misconception": ""
@@ -1766,6 +3305,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "4.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.G"
+      }
+    ],
     "definition": "Lines that cross and make a square corner.",
     "example": "Ivy studies the window frame. The upright meets the sill at a square corner, so those lines are perpendicular.",
     "misconception": ""
@@ -1777,9 +3322,133 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "4.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.G"
+      }
+    ],
     "definition": "A line that folds a shape into two matching halves.",
     "example": "Zoe folds a paper heart down the middle. The two halves match exactly, so the fold is a line of symmetry.",
     "misconception": "Not every fold works. The halves have to land on each other exactly."
+  },
+  {
+    "id": "4-g-radius",
+    "term": "radius",
+    "grade": "4",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "4.G",
+    "standards": [
+      {
+        "country": "IN",
+        "code": "Class IV · 4.M.LO3.1"
+      },
+      {
+        "country": "UK",
+        "code": "Y6 preview"
+      }
+    ],
+    "definition": "The distance from the center of a circle to its edge.",
+    "example": "Theo measures from the center of a pizza to its crust. That distance is the radius.",
+    "misconception": ""
+  },
+  {
+    "id": "4-g-diameter",
+    "term": "diameter",
+    "grade": "4",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "4.G",
+    "standards": [
+      {
+        "country": "IN",
+        "code": "Class IV · 4.M.LO3.1"
+      },
+      {
+        "country": "UK",
+        "code": "Y6 preview"
+      }
+    ],
+    "definition": "The distance across a circle, through its center. It is twice the radius.",
+    "example": "Nina measures straight across a round table, through the middle. That distance is the diameter.",
+    "misconception": "The diameter has to pass through the center. Any line across the circle that misses the center is shorter."
+  },
+  {
+    "id": "4-g-circumference",
+    "term": "circumference",
+    "grade": "4",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "4.G",
+    "standards": [
+      {
+        "country": "UK",
+        "code": "Y6 preview"
+      }
+    ],
+    "definition": "The distance around a circle.",
+    "example": "Omar wraps a string around a can to measure the circumference.",
+    "misconception": ""
+  },
+  {
+    "id": "4-g-net-of-a-solid",
+    "term": "net (of a solid)",
+    "grade": "4",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "4.G",
+    "standards": [
+      {
+        "country": "IN",
+        "code": "Class IV · 4.M.LO3.3"
+      },
+      {
+        "country": "UK",
+        "code": "Y6"
+      }
+    ],
+    "definition": "A flat pattern that can be folded up to make a solid shape.",
+    "example": "Maya cuts out a net of six squares and folds it up into a cube.",
+    "misconception": ""
+  },
+  {
+    "id": "4-g-reflection-symmetry",
+    "term": "reflection symmetry",
+    "grade": "4",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "4.G",
+    "standards": [
+      {
+        "country": "IN",
+        "code": "Class IV · 4.M.LO3.4"
+      },
+      {
+        "country": "UK",
+        "code": "glossary"
+      }
+    ],
+    "definition": "When one half of a shape is the mirror image of the other half.",
+    "example": "Leo folds a paper butterfly down the middle. Both wings match exactly, so it has reflection symmetry.",
+    "misconception": ""
+  },
+  {
+    "id": "4-g-top-front-side-view",
+    "term": "top, front & side view",
+    "grade": "4",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "4.G",
+    "standards": [
+      {
+        "country": "IN",
+        "code": "Class IV · 4.M.LO3.5"
+      }
+    ],
+    "definition": "Drawings that show what a solid object looks like from different directions.",
+    "example": "Ana draws her toy box from the top, from the front, and from the side to show all three views.",
+    "misconception": ""
   },
   {
     "id": "5-oa-order-of-operations",
@@ -1788,6 +3457,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "5.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.OA"
+      }
+    ],
     "definition": "The agreed order for working a problem. Do parentheses first. Then multiply and divide. Add and subtract last.",
     "example": "Theo solves 2 + 3 × 4. He multiplies first and gets 12. Then he adds 2 for a total of 14.",
     "misconception": "Working left to right gives 20 here, which is wrong. Multiplying comes before adding."
@@ -1799,6 +3474,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "5.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.OA"
+      }
+    ],
     "definition": "Curved marks that show what to work out first.",
     "example": "Nina solves (2 + 3) × 4. The parentheses come first, so she gets 5. Then 5 × 4 gives 20.",
     "misconception": ""
@@ -1810,6 +3491,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "5.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.OA"
+      }
+    ],
     "definition": "A math phrase with numbers and signs. It has no equal sign.",
     "example": "Omar writes 6 × (2 + 1). That is an expression, not an equation.",
     "misconception": ""
@@ -1821,6 +3508,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "5.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.OA"
+      }
+    ],
     "definition": "Work out what an expression is worth.",
     "example": "Maya evaluates 4 × (3 + 2). Inside the parentheses gives 5. Then 4 × 5 gives 20.",
     "misconception": ""
@@ -1832,6 +3525,12 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "5.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.OA"
+      }
+    ],
     "definition": "A list of numbers that follows a rule.",
     "example": "Leo starts at 3 and adds 5 each time: 3, 8, 13, 18. His pattern grows by 5.",
     "misconception": ""
@@ -1843,8 +3542,73 @@
     "domainCode": "OA",
     "domain": "Operations & Algebraic Thinking",
     "standard": "5.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.OA"
+      }
+    ],
     "definition": "Two numbers that locate a point on a grid.",
     "example": "Ana plots (4, 3). She moves 4 across, then 3 up, and marks the spot.",
+    "misconception": ""
+  },
+  {
+    "id": "5-oa-square-number",
+    "term": "square number",
+    "grade": "5",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "5.OA",
+    "standards": [
+      {
+        "country": "UK",
+        "code": "Y5 glossary"
+      },
+      {
+        "country": "IN",
+        "code": "Class V · 5.M.LO7"
+      }
+    ],
+    "definition": "A number made by multiplying a whole number by itself.",
+    "example": "Zoe multiplies 6 x 6 and gets 36. 36 is a square number.",
+    "misconception": ""
+  },
+  {
+    "id": "5-oa-cube-number",
+    "term": "cube number",
+    "grade": "5",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "5.OA",
+    "standards": [
+      {
+        "country": "UK",
+        "code": "Y5 glossary"
+      }
+    ],
+    "definition": "A number made by multiplying a whole number by itself three times.",
+    "example": "Theo multiplies 3 x 3 x 3 and gets 27. 27 is a cube number.",
+    "misconception": ""
+  },
+  {
+    "id": "5-oa-triangular-number",
+    "term": "triangular number",
+    "grade": "5",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "5.OA",
+    "standards": [
+      {
+        "country": "UK",
+        "code": "glossary"
+      },
+      {
+        "country": "IN",
+        "code": "Class V · 5.M.LO7"
+      }
+    ],
+    "definition": "A number that can be arranged as dots in a triangle, like 1, 3, 6, 10.",
+    "example": "Nina stacks dots in rows of 1, then 2, then 3. The running totals, 1, 3, 6, are triangular numbers.",
     "misconception": ""
   },
   {
@@ -1854,6 +3618,12 @@
     "domainCode": "NBT",
     "domain": "Number & Operations in Base Ten",
     "standard": "5.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.NBT"
+      }
+    ],
     "definition": "A small raised number. It tells how many times to multiply the base by itself.",
     "example": "Ben writes 10 with a small 3 above it. The exponent means 10 × 10 × 10, which is 1,000.",
     "misconception": "An exponent is not the same as multiplying by 3. It means three tens multiplied together."
@@ -1865,6 +3635,12 @@
     "domainCode": "NBT",
     "domain": "Number & Operations in Base Ten",
     "standard": "5.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.NBT"
+      }
+    ],
     "definition": "What you get when you multiply 10 by itself.",
     "example": "Ivy sees that 100 is 10 × 10. That makes 100 a power of ten.",
     "misconception": ""
@@ -1876,6 +3652,12 @@
     "domainCode": "NBT",
     "domain": "Number & Operations in Base Ten",
     "standard": "5.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.NBT"
+      }
+    ],
     "definition": "Change a decimal to a nearby simpler one.",
     "example": "Zoe rounds 3.67 to the nearest tenth. The 7 pushes it up, so she writes 3.7.",
     "misconception": ""
@@ -1887,6 +3669,12 @@
     "domainCode": "NBT",
     "domain": "Number & Operations in Base Ten",
     "standard": "5.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.NBT"
+      }
+    ],
     "definition": "Multiply as you would whole numbers. Then place the dot.",
     "example": "Theo multiplies 0.4 × 0.3. He thinks 4 × 3 = 12. Two decimal places give him 0.12.",
     "misconception": "The answer can be smaller than what you started with. Multiplying by a part shrinks it."
@@ -1898,8 +3686,69 @@
     "domainCode": "NBT",
     "domain": "Number & Operations in Base Ten",
     "standard": "5.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.NBT"
+      }
+    ],
     "definition": "Split a decimal into equal parts.",
     "example": "Nina pours 4.5 liters into 3 bottles evenly. Each bottle gets 1.5 liters.",
+    "misconception": ""
+  },
+  {
+    "id": "5-nbt-thousandths",
+    "term": "thousandths",
+    "grade": "5",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "5.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.NBT.A.1"
+      },
+      {
+        "country": "UK",
+        "code": "Y5"
+      }
+    ],
+    "definition": "A place value equal to one-thousandth of a whole. It is the third digit after the decimal point.",
+    "example": "Omar writes 0.125. The 5 is in the thousandths place.",
+    "misconception": ""
+  },
+  {
+    "id": "5-nbt-lakh",
+    "term": "lakh",
+    "grade": "5",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "5.NBT",
+    "standards": [
+      {
+        "country": "IN",
+        "code": "Class V · 5.M.LO1.1"
+      }
+    ],
+    "definition": "An Indian place-value unit equal to 100,000.",
+    "example": "Maya reads that a car costs 5 lakh rupees, which means 500,000 rupees.",
+    "misconception": ""
+  },
+  {
+    "id": "5-nbt-crore",
+    "term": "crore",
+    "grade": "5",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "5.NBT",
+    "standards": [
+      {
+        "country": "IN",
+        "code": "Class V · 5.M.LO1.1"
+      }
+    ],
+    "definition": "An Indian place-value unit equal to 10,000,000.",
+    "example": "Leo reads that a stadium cost 50 crore rupees to build, which means 500,000,000 rupees.",
     "misconception": ""
   },
   {
@@ -1909,6 +3758,12 @@
     "domainCode": "NF",
     "domain": "Number & Operations—Fractions",
     "standard": "5.NF",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.NF"
+      }
+    ],
     "definition": "A shared bottom number that lets you add or compare fractions.",
     "example": "Omar adds 1/2 and 1/3. He rewrites them as 3/6 and 2/6, then adds to get 5/6.",
     "misconception": "You cannot add the bottom numbers. Make them match first, then add only the tops."
@@ -1920,6 +3775,12 @@
     "domainCode": "NF",
     "domain": "Number & Operations—Fractions",
     "standard": "5.NF",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.NF"
+      }
+    ],
     "definition": "A whole number plus a fraction.",
     "example": "Maya runs 3 whole laps and half of another. She ran 3 1/2 laps.",
     "misconception": ""
@@ -1931,6 +3792,12 @@
     "domainCode": "NF",
     "domain": "Number & Operations—Fractions",
     "standard": "5.NF",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.NF"
+      }
+    ],
     "definition": "Multiply the top numbers. Then multiply the bottom numbers.",
     "example": "Leo scoops 1/2 of a 1/3 cup measure. He multiplies and finds he has 1/6 of a cup.",
     "misconception": ""
@@ -1942,6 +3809,12 @@
     "domainCode": "NF",
     "domain": "Number & Operations—Fractions",
     "standard": "5.NF",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.NF"
+      }
+    ],
     "definition": "Split a fraction into equal parts, or find how many fit inside.",
     "example": "Ana has 1/2 a pizza and shares it with 2 people. Each one gets 1/4 of the pizza.",
     "misconception": ""
@@ -1953,6 +3826,12 @@
     "domainCode": "NF",
     "domain": "Number & Operations—Fractions",
     "standard": "5.NF",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.NF"
+      }
+    ],
     "definition": "Write a fraction with the smallest numbers that still name the same amount.",
     "example": "Ben has 6/8 of a bar. He divides the top and bottom by 2 and writes 3/4.",
     "misconception": ""
@@ -1964,8 +3843,31 @@
     "domainCode": "NF",
     "domain": "Number & Operations—Fractions",
     "standard": "5.NF",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.NF"
+      }
+    ],
     "definition": "The fraction you get when you flip one over.",
     "example": "Ivy flips 2/5 and gets 5/2. That is the reciprocal. The two of them multiply to 1.",
+    "misconception": ""
+  },
+  {
+    "id": "5-nf-percentage",
+    "term": "percentage",
+    "grade": "5",
+    "domainCode": "NF",
+    "domain": "Number & Operations—Fractions",
+    "standard": "5.NF",
+    "standards": [
+      {
+        "country": "UK",
+        "code": "Y5 programme of study"
+      }
+    ],
+    "definition": "A fraction expressed as parts per hundred, written with a % sign.",
+    "example": "Ana scores 90% on her spelling test. Out of 100 equal parts, she got 90 of them right.",
     "misconception": ""
   },
   {
@@ -1975,6 +3877,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "5.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.MD"
+      }
+    ],
     "definition": "The amount of space a solid takes up.",
     "example": "Zoe fills a box with unit cubes. It holds 3 layers of 8, so the volume is 24 cubic units.",
     "misconception": "Volume fills the inside. Area only covers a flat surface."
@@ -1986,6 +3894,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "5.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.MD"
+      }
+    ],
     "definition": "One cube used to measure volume.",
     "example": "Theo stacks cubes inside a box with no gaps. Each cube is one cubic unit, and he counts 18.",
     "misconception": ""
@@ -1997,6 +3911,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "5.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.MD"
+      }
+    ],
     "definition": "Change a measure to a different unit.",
     "example": "Nina has 2,000 meters left to run. She converts it and sees that is just 2 kilometers.",
     "misconception": ""
@@ -2008,6 +3928,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "5.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.MD"
+      }
+    ],
     "definition": "A grid made by two number lines that cross.",
     "example": "Omar maps his neighborhood on a coordinate plane. He finds the park at (4, 3).",
     "misconception": ""
@@ -2019,6 +3945,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "5.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.MD"
+      }
+    ],
     "definition": "The number line that runs across the grid.",
     "example": "Maya moves right along the x-axis to 5 before she moves up at all.",
     "misconception": ""
@@ -2030,6 +3962,12 @@
     "domainCode": "MD",
     "domain": "Measurement & Data",
     "standard": "5.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.MD"
+      }
+    ],
     "definition": "The number line that runs up and down the grid.",
     "example": "Leo counts up the y-axis to 4 to finish plotting his point.",
     "misconception": ""
@@ -2041,6 +3979,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "5.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.G"
+      }
+    ],
     "definition": "A grid for locating points. A level line and an upright line cross to make it.",
     "example": "Ana plots (4, 3) on the coordinate plane. She goes 4 across, then 3 up.",
     "misconception": ""
@@ -2052,6 +3996,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "5.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.G"
+      }
+    ],
     "definition": "Two numbers in order that give a point's spot. The across number comes first.",
     "example": "Ben plots (2, 5). He moves 2 across, then 5 up. The order changes where he lands.",
     "misconception": "Swapping the numbers lands you somewhere else. (2, 5) is not the same as (5, 2)."
@@ -2063,6 +4013,12 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "5.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.G"
+      }
+    ],
     "definition": "Sort shapes into groups by what they have in common.",
     "example": "Ivy classifies triangles by their angles. She makes one pile each for acute, right, and obtuse.",
     "misconception": ""
@@ -2074,8 +4030,107 @@
     "domainCode": "G",
     "domain": "Geometry",
     "standard": "5.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.G"
+      }
+    ],
     "definition": "A way to order shape groups. Smaller groups fit inside bigger ones.",
     "example": "Zoe draws a chart of shapes. Squares fit inside rectangles, and rectangles fit inside quadrilaterals.",
     "misconception": "Every square is a rectangle, but not every rectangle is a square."
+  },
+  {
+    "id": "5-g-quadrant",
+    "term": "quadrant",
+    "grade": "5",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "5.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.G.A.1"
+      },
+      {
+        "country": "UK",
+        "code": "Y4"
+      }
+    ],
+    "definition": "One of the four sections made when a coordinate plane is divided by its axes.",
+    "example": "Theo plots a point with two positive coordinates. It lands in the first quadrant.",
+    "misconception": ""
+  },
+  {
+    "id": "5-g-rotation-symmetry",
+    "term": "rotation symmetry",
+    "grade": "5",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "5.G",
+    "standards": [
+      {
+        "country": "IN",
+        "code": "Class V · 5.M.LO3.2"
+      },
+      {
+        "country": "UK",
+        "code": "glossary"
+      }
+    ],
+    "definition": "When a shape looks the same after being turned part of the way around its center.",
+    "example": "Omar spins a pinwheel shape a third of the way around. It looks exactly the same, so it has rotation symmetry.",
+    "misconception": ""
+  },
+  {
+    "id": "5-g-regular-polygon",
+    "term": "regular polygon",
+    "grade": "5",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "5.G",
+    "standards": [
+      {
+        "country": "UK",
+        "code": "Y5 programme of study"
+      }
+    ],
+    "definition": "A polygon where all the sides and all the angles are equal.",
+    "example": "Maya checks a hexagon tile. All the sides and all the angles match, so it is a regular polygon.",
+    "misconception": ""
+  },
+  {
+    "id": "5-g-irregular-polygon",
+    "term": "irregular polygon",
+    "grade": "5",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "5.G",
+    "standards": [
+      {
+        "country": "UK",
+        "code": "Y5 programme of study"
+      }
+    ],
+    "definition": "A polygon where the sides and angles are not all equal.",
+    "example": "Leo draws a five-sided shape. Its sides are not all the same length, so it is an irregular polygon.",
+    "misconception": ""
+  },
+  {
+    "id": "5-g-reflex-angle",
+    "term": "reflex angle",
+    "grade": "5",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "5.G",
+    "standards": [
+      {
+        "country": "UK",
+        "code": "Y5 programme of study"
+      }
+    ],
+    "definition": "An angle greater than 180 degrees but less than 360 degrees.",
+    "example": "A door swings almost all the way open. Ana measures the angle: 300 degrees. That is a reflex angle.",
+    "misconception": "Kids often measure the small angle instead of the wide one. A reflex angle is always the bigger way around."
   }
 ]
