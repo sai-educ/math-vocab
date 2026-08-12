@@ -32,7 +32,11 @@ const Graph = (function () {
   const gradeIds = [];         // instance index -> node id
   const termIds = [];
   const domainIdsByCode = {};  // domainCode -> [node id]
-  let gradeMesh, termMesh, rootMesh;
+  let gradeMesh, termMesh, rootMesh, rootVisual;
+  const SUN_ASSET_URL = 'assets/sun.glb';
+  // Independent of the graph's own auto-rotate/orbit — the sun turns on its
+  // own axis at a fixed, slow rate regardless of how the camera is moving.
+  const SUN_ROTATION_SPEED = 0.045;
   const domainMeshes = {};     // domainCode -> InstancedMesh
   const haloLayers = {};       // level -> { points, ids, colors }
   let edgeGeometry, edgeColors, edgeBaseColors;
@@ -52,7 +56,13 @@ const Graph = (function () {
   const RG = 34, RD = 13, RT = 6.2;
   const COLORS = { root: 0xffffff, grade: 0x7c9eff, domain: 0xff5fa8, term: 0x7cffb2 };
   const SIZE = { root: 2.8, grade: 1.7, domain: 1.08, term: 0.58 };
-  const HALO_SIZE = { root: 19, grade: 13, domain: 8.5, term: 4.6 };
+  const HALO_SIZE = { root: 26, grade: 13, domain: 8.5, term: 4.6 };
+  // A warm corona around the sun model, separate from COLORS.root (which
+  // stays white — that is still what the fallback sphere and its dimming
+  // logic use). "Not a lot" of bloom: bright enough for UnrealBloomPass's
+  // threshold to catch, restrained enough to read as a glow, not a flare.
+  const SUN_HALO_COLOR = 0xffb35c;
+  const SUN_HALO_BOOST = 1.7;
   const EDGE_SEGMENTS = 8;
   // How far inactive nodes fade toward the background. Was 0.055 — nodes at
   // that level are practically black against the panel's near-black bg,
@@ -62,6 +72,11 @@ const Graph = (function () {
   // legible enough to navigate by on an iPad.
   const DIM = 0.24;
   const DIM_SCALE = 0.6;
+  // A node whose term (or whose entire subtree) belongs to a curriculum that
+  // is currently switched off fades further than a merely-unselected node —
+  // "not part of this view" reads differently from "not the current pick".
+  const HIDDEN = 0.02;
+  const HIDDEN_SCALE = 0.12;
 
   // Allocated in init(), after THREE is confirmed present — this module has
   // to stay loadable when the CDN is unreachable so the rest of the page
@@ -279,8 +294,8 @@ const Graph = (function () {
       register(gradeId, gpos, 'grade', 'root');
       gradeIds.push(gradeId);
 
-      domainsForGrade(g).forEach((d, di) => {
-        const doms = domainsForGrade(g);
+      domainsForGradeAll(g).forEach((d, di) => {
+        const doms = domainsForGradeAll(g);
         const thetaD = (di / doms.length) * Math.PI * 2 + gi * 0.7;
         const dpos = gpos.clone().add(new THREE.Vector3(
           RD * Math.cos(thetaD), RD * 0.55 * Math.sin(thetaD * 1.4 + di), RD * Math.sin(thetaD),
@@ -293,7 +308,7 @@ const Graph = (function () {
         domainIdsByCode[d.code].push(domId);
         domainCounts[d.code] = (domainCounts[d.code] || 0) + 1;
 
-        const terms = termsFor(g, d.code);
+        const terms = termsForAll(g, d.code);
         terms.forEach((t, ti) => {
           const thetaT = (ti / terms.length) * Math.PI * 2 + di * 0.9;
           const tpos = dpos.clone().add(new THREE.Vector3(
@@ -313,6 +328,8 @@ const Graph = (function () {
     rootMesh.material.color.set(COLORS.root);
     rootMesh.material.emissive = new THREE.Color(0x333344);
     scene.add(rootMesh);
+    rootVisual = rootMesh;
+    loadSunModel();
 
     gradeMesh = new THREE.InstancedMesh(
       new THREE.SphereGeometry(SIZE.grade, 24, 24), nodeMaterial(), gradeIds.length,
@@ -335,6 +352,60 @@ const Graph = (function () {
     buildHalos();
     buildEdges();
     writeInstances(true);
+  }
+
+  /* Swaps the plain white root sphere for "Sun" by SebastianSosnowski
+     (CC BY 4.0, https://skfb.ly/6yGSx — see README credits). Wired the same
+     way as the bloom post-processing add-ons: a best-effort enhancement, not
+     a dependency, so no network / a missing GLTFLoader / a failed fetch all
+     fall back to the sphere that is already on screen rather than an error. */
+  function loadSunModel() {
+    if (typeof THREE.GLTFLoader === 'undefined') return;
+
+    new THREE.GLTFLoader().load(
+      SUN_ASSET_URL,
+      (gltf) => {
+        const model = gltf.scene;
+
+        // Re-centre on its own bounding-sphere centre, then scale that
+        // sphere to match SIZE.root — the asset's authored scale and origin
+        // are unknown, so this is the only way to reliably land it at the
+        // same size and position the procedural sphere occupied.
+        const box = new THREE.Box3().setFromObject(model);
+        const sphere = box.getBoundingSphere(new THREE.Sphere());
+        model.position.sub(sphere.center);
+
+        // A gentle nudge so the model's own bright surfaces clear the bloom
+        // pass's threshold too, alongside the halo corona — most of the
+        // glow the corona already carries, this just keeps the body itself
+        // from reading as a flat, unlit cutout against it.
+        model.traverse((child) => {
+          if (!child.isMesh || !child.material) return;
+          const materials = Array.isArray(child.material) ? child.material : [child.material];
+          materials.forEach((mat) => {
+            if ('emissiveIntensity' in mat) mat.emissiveIntensity = Math.max(mat.emissiveIntensity, 1) * 1.4;
+          });
+        });
+
+        const group = new THREE.Group();
+        group.add(model);
+        const scale = SIZE.root / sphere.radius;
+        group.scale.setScalar(scale);
+        group.position.copy(ORIGIN);
+        // animate()'s pulse multiplies this rather than overwriting it, so
+        // the model keeps the size this fit computed instead of snapping to
+        // whatever setScalar(1 + …) alone would mean for its raw geometry.
+        group.userData.baseScale = scale;
+
+        scene.add(group);
+        scene.remove(rootMesh);
+        rootMesh.geometry.dispose();
+        rootMesh.material.dispose();
+        rootVisual = group;
+      },
+      undefined,
+      (error) => console.warn('Sun model could not load; keeping the plain sphere.', error),
+    );
   }
 
   /* Additive point sprites behind each node. These are the glow when bloom
@@ -443,8 +514,11 @@ const Graph = (function () {
   const SHORT_PANEL_HEIGHT = 280;
   const AMBIENT_SYMBOL_MAX = 8;
   // Concrete rather than "Every math word" — a real number is meaningful in
-  // a way a summary phrase is not, and it stays correct if the bank grows.
-  const ROOT_LABEL_TEXT = DATA.length + ' math words · K–5';
+  // a way a summary phrase is not, and it stays correct as the bank grows or
+  // as curricula are switched on and off, since this reads the live filter.
+  function rootLabelText() {
+    return DATA.filter(isTermVisible).length + ' math words · K–5';
+  }
 
   function buildLabels() {
     ['root', 'grade', 'domain', 'term', 'hover'].forEach((key) => {
@@ -670,7 +744,10 @@ const Graph = (function () {
     const st = state;
     const anySelection = !!st.grade;
 
-    setLabel('root', anySelection ? null : 'root', ROOT_LABEL_TEXT, 'spark');
+    // Off by default — the sun model reads as itself now, not as a node
+    // waiting for a caption — and back on with "Show grade labels", the one
+    // toggle that already means "show me what these things are called".
+    setLabel('root', (anySelection || !showAllGradeLabels) ? null : 'root', rootLabelText(), 'spark');
 
     // Grade and topic labels give way once a word is chosen — the word is
     // what matters at that point, and the breadcrumb still shows the path.
@@ -695,9 +772,10 @@ const Graph = (function () {
     // yet. Every branch below is a case where something is already saying
     // the same thing — hovering root previously produced two overlapping
     // boxes with identical text, which is the bug this guards against.
+    const rootLabelShowing = !anySelection && showAllGradeLabels;
     const hoveredNode = hoveredId ? nodes[hoveredId] : null;
     const hoverIsRedundant = hoveredNode && (
-      hoveredId === 'root'
+      (hoveredId === 'root' && rootLabelShowing)
       || hoveredId === 'term:' + st.term
       || (domId && hoveredId === domId)
       || (showSingleGrade && hoveredId === 'grade:' + st.grade)
@@ -757,7 +835,7 @@ const Graph = (function () {
   function describe(id) {
     const n = nodes[id];
     if (!n) return '';
-    if (n.level === 'root') return ROOT_LABEL_TEXT;
+    if (n.level === 'root') return rootLabelText();
     if (n.level === 'grade') return gradeLabel(id.split(':')[1]);
     if (n.level === 'domain') return DOMAIN_FULLNAME[id.split(':')[2]] || '';
     const t = termById(id.slice(5));
@@ -786,15 +864,35 @@ const Graph = (function () {
     return ids;
   }
 
+  /* Whether a node belongs to at least one currently active curriculum.
+     Grades and domains are structural (always built — see buildGraph) but
+     read as "not part of this view" once every term beneath them is
+     filtered out, same as a term whose own citation is switched off. */
+  function isNodeVisibleUnderStandards(id, n) {
+    if (n.level === 'term') {
+      const t = termById(id.slice(5));
+      return t ? isTermVisible(t) : true;
+    }
+    if (n.level === 'domain') {
+      const parts = id.split(':'); // domain:grade:code
+      return domainsForGrade(parts[1]).some((d) => d.code === parts[2]);
+    }
+    if (n.level === 'grade') {
+      return domainsForGrade(id.split(':')[1]).length > 0;
+    }
+    return true; // root
+  }
+
   function applyState(st, instant) {
     const active = new Set(st.grade ? pathFor(st) : []);
     const showAll = active.size === 0;
 
     Object.keys(nodes).forEach((id) => {
       const n = nodes[id];
-      const on = showAll || active.has(id) || id === 'root';
-      n.target = on ? 1 : DIM;
-      n.targetScale = on ? 1 : DIM_SCALE;
+      const visible = isNodeVisibleUnderStandards(id, n);
+      const on = visible && (showAll || active.has(id) || id === 'root');
+      n.target = on ? 1 : (visible ? DIM : HIDDEN);
+      n.targetScale = on ? 1 : (visible ? DIM_SCALE : HIDDEN_SCALE);
       if (instant) { n.cur = n.target; n.curScale = n.targetScale; }
     });
 
@@ -827,13 +925,18 @@ const Graph = (function () {
     // halos
     Object.keys(haloLayers).forEach((level) => {
       const layer = haloLayers[level];
+      const isSun = level === 'root';
       layer.ids.forEach((id, i) => {
         const n = nodes[id];
         const boost = hoveredId === id ? 1.7 : 1;
         // A touch brighter than the old 0.42 so the bloom pass has real
-        // signal to work with while staying far below the lit nodes.
-        _c.copy(n.baseColor).multiplyScalar(n.cur * 0.5 * boost);
-        layer.colors[i * 3] = _c.r; layer.colors[i * 3 + 1] = _c.g; layer.colors[i * 3 + 2] = _c.b;
+        // signal to work with while staying far below the lit nodes. The
+        // sun's corona uses its own warm colour and a further boost so it
+        // reads as light coming from a body, not the flat white every other
+        // node's halo already means.
+        const color = isSun ? _c.setHex(SUN_HALO_COLOR) : _c.copy(n.baseColor);
+        color.multiplyScalar(n.cur * 0.5 * boost * (isSun ? SUN_HALO_BOOST : 1));
+        layer.colors[i * 3] = color.r; layer.colors[i * 3 + 1] = color.g; layer.colors[i * 3 + 2] = color.b;
       });
       layer.points.geometry.attributes.color.needsUpdate = true;
     });
@@ -850,8 +953,14 @@ const Graph = (function () {
     });
     edgeGeometry.attributes.color.needsUpdate = true;
 
-    const rootNode = nodes.root;
-    rootMesh.material.color.copy(rootNode.baseColor).multiplyScalar(Math.max(rootNode.cur, 0.3));
+    // Only the sphere fallback dims with the rest of the graph — once the
+    // sun model is in, it is a real body with its own baked-in materials
+    // rather than a flat colour, and it stays fully lit regardless of what
+    // else on the graph is selected or filtered out.
+    if (rootVisual.material) {
+      const rootNode = nodes.root;
+      rootVisual.material.color.copy(rootNode.baseColor).multiplyScalar(Math.max(rootNode.cur, 0.3));
+    }
   }
 
   function writeInstance(mesh, i, n) {
@@ -985,8 +1094,14 @@ const Graph = (function () {
       pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
       raycaster.setFromCamera(pointer, camera);
 
-      const targets = [termMesh, gradeMesh, rootMesh].concat(Object.values(domainMeshes));
-      const hits = raycaster.intersectObjects(targets, false);
+      const targets = [termMesh, gradeMesh].concat(Object.values(domainMeshes));
+      // The root visual is raycast separately and recursively: it is a plain
+      // Mesh for the sphere fallback, but a Group of however many meshes the
+      // loaded sun model contains, and either way a hit on any part of it
+      // means "the root node was tapped".
+      const hits = raycaster.intersectObjects(targets, false)
+        .concat(raycaster.intersectObject(rootVisual, true));
+      hits.sort((a, b) => a.distance - b.distance);
       for (const hit of hits) {
         const id = idForHit(hit);
         if (id && nodes[id].cur > 0.3) return id;   // ignore dimmed-out nodes
@@ -995,11 +1110,14 @@ const Graph = (function () {
     }
 
     function idForHit(hit) {
-      if (hit.object === rootMesh) return 'root';
       if (hit.object === gradeMesh) return gradeIds[hit.instanceId];
       if (hit.object === termMesh) return termIds[hit.instanceId];
       const code = Object.keys(domainMeshes).find((k) => domainMeshes[k] === hit.object);
-      return code ? domainIdsByCode[code][hit.instanceId] : null;
+      if (code) return domainIdsByCode[code][hit.instanceId];
+      for (let obj = hit.object; obj; obj = obj.parent) {
+        if (obj === rootVisual) return 'root';
+      }
+      return null;
     }
 
     renderer.domElement.addEventListener('pointermove', (e) => {
@@ -1085,7 +1203,12 @@ const Graph = (function () {
     }
 
     if (!REDUCED_MOTION) {
-      rootMesh.scale.setScalar(1 + 0.06 * Math.sin(t * 1.1));
+      // Turns on its own axis at a fixed rate, independent of whatever the
+      // camera's auto-rotate/orbit is doing — a real body spinning in place,
+      // not just something the graph's own rotation carries past.
+      rootVisual.rotation.y += dt * SUN_ROTATION_SPEED;
+      const baseScale = rootVisual.userData.baseScale || 1;
+      rootVisual.scale.setScalar(baseScale * (1 + 0.06 * Math.sin(t * 1.1)));
     }
 
     // project() reads camera.matrixWorldInverse, which render() is what
