@@ -101,6 +101,11 @@ a:hover{color:var(--accent3-ink);}
 .launch:active{transform:translateY(0);}
 
 .cta-note{margin:14px 0 0;font-size:13.5px;color:var(--text-dim);}
+.cta-note-sound{
+  display:flex;align-items:flex-start;justify-content:center;gap:6px;margin-top:6px;
+  max-width:280px;margin-left:auto;margin-right:auto;
+}
+.cta-note-sound svg{flex:0 0 auto;opacity:.75;margin-top:2px;}
 
 /* ---------- content panels ---------- */
 
@@ -159,6 +164,37 @@ footer{
 }
 footer p{margin:0;font-size:13px;color:var(--text-dim);}
 
+/* ---------- device notice ----------
+   The one exception to "no application JavaScript" on this page (see file
+   header): a phone-width visitor tapping "Open the Explorer" sees this
+   instead of the app, since the app itself is built for a tablet or larger.
+   ------------------------------------------------------------------------ */
+#deviceNoticeOverlay{
+  position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;
+  padding:20px;background:rgba(15,15,26,.46);opacity:0;
+  transition:opacity var(--dur) var(--ease);
+}
+#deviceNoticeOverlay.open{opacity:1;}
+#deviceNoticeOverlay[hidden]{display:none;}
+#deviceNoticeDialog{
+  width:100%;max-width:400px;background:var(--panel);border:1px solid var(--line);
+  border-radius:18px;padding:26px 26px 22px;box-shadow:0 24px 60px rgba(20,20,40,.22);
+  transform:translateY(8px) scale(.98);transition:transform var(--dur) var(--ease);
+}
+#deviceNoticeOverlay.open #deviceNoticeDialog{transform:translateY(0) scale(1);}
+#deviceNoticeDialog h2{margin:0 0 10px;font-size:19px;letter-spacing:-.01em;}
+#deviceNoticeDialog p{margin:0 0 20px;font-size:14.5px;color:var(--text-dim);}
+.device-notice-actions{display:flex;flex-direction:column;gap:10px;}
+.device-notice-primary,.device-notice-secondary{
+  min-height:46px;border-radius:11px;font:inherit;font-weight:600;font-size:14.5px;
+  display:flex;align-items:center;justify-content:center;text-decoration:none;cursor:pointer;
+  transition:background var(--dur) var(--ease),color var(--dur) var(--ease);
+}
+.device-notice-secondary{background:var(--bg);border:1px solid var(--line);color:var(--text);}
+.device-notice-secondary:hover{background:var(--line);}
+.device-notice-primary{background:transparent;border:1px solid var(--line);color:var(--text-dim);}
+.device-notice-primary:hover{color:var(--text);border-color:var(--text-dim);}
+
 /* ---------- responsive ---------- */
 
 @media (max-width: 620px){
@@ -174,4 +210,6 @@ footer p{margin:0;font-size:13px;color:var(--text-dim);}
     transition-duration:.001ms !important;
   }
   .launch:hover{transform:none;}
+  #deviceNoticeOverlay,#deviceNoticeDialog{transition-duration:.001ms;}
+  #deviceNoticeOverlay.open #deviceNoticeDialog{transform:none;}
 }
