@@ -10,6 +10,10 @@
 <title>Math Word Explorer — K-5 math vocabulary</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<!-- Loads the root node's Sun model (assets/sun.glb, see README credits). If
+     this fails to load — no network, the file is missing — the graph falls
+     back to its plain white sphere, same as every other CDN add-on here. -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <!-- Bloom post-processing (UnrealBloomPass). Loaded after the core three.js
      build; if any of these fail, the graph falls back to direct rendering
      with its sprite-halo glow, so bloom is an enhancement, not a dependency. -->
@@ -34,7 +38,7 @@ __STYLES__
   <header>
     <div class="titles">
       <h1>Math Word Explorer</h1>
-      <p>K–5 · Common Core aligned · 189 words · free and open</p>
+      <p>K–5 · <span id="headerWordCount">189</span> words · free and open</p>
     </div>
     <div class="header-actions">
       <button id="soundBtn" class="header-btn" type="button" aria-pressed="true"></button>
@@ -47,19 +51,26 @@ __STYLES__
     </div>
   </header>
 
-  <div id="gradeRow" role="group" aria-label="Step 1: choose a grade"></div>
+  <h2 class="panel-heading grade-heading" id="gradeHeading">
+    <span class="step" aria-hidden="true">1</span>
+    <span>Choose a grade</span>
+  </h2>
 
-  <div id="searchWrap">
-    <label class="sr-only" for="search">Search all 189 math words</label>
-    <input id="search" type="search" autocomplete="off"
-           placeholder="Search all 189 words across every grade…">
+  <div id="gradeSearchRow">
+    <div id="gradeRow" role="group" aria-labelledby="gradeHeading"></div>
+
+    <div id="searchWrap">
+      <label class="sr-only" for="search" id="searchLabel">Search all math words</label>
+      <input id="search" type="search" autocomplete="off"
+             placeholder="Search all words, K–5…">
+    </div>
   </div>
 
   <div id="main">
     <div id="leftPanel">
       <div id="topicsSection">
         <h2 class="panel-heading" id="topicsHeading">
-          <span class="step" aria-hidden="true">1</span>
+          <span class="step" aria-hidden="true">2</span>
           <span id="topicsHeadingText">Select a grade above</span>
         </h2>
         <div id="topicList" role="group" aria-labelledby="topicsHeading"></div>
@@ -68,7 +79,7 @@ __STYLES__
            aria-label="Resize the topic list" tabindex="0"></div>
       <div id="vocabSection">
         <h2 class="panel-heading" id="vocabHeading">
-          <span class="step" aria-hidden="true">2</span>
+          <span class="step" aria-hidden="true">3</span>
           <span id="vocabHeadingText">Select a topic first</span>
         </h2>
         <div id="vocabList" role="group" aria-labelledby="vocabHeading"></div>
@@ -97,6 +108,44 @@ __STYLES__
           <input type="checkbox" id="gradeLabelsCheckbox">
           <span>Show grade labels</span>
         </label>
+        <div id="graphTopRight">
+          <div class="curriculum-picker">
+            <button id="curriculumBtn" class="graph-btn curriculum-btn" type="button"
+                    aria-haspopup="true" aria-expanded="false" aria-controls="curriculumPanel">
+              <span class="btn-text">Curriculum</span>
+              <span id="curriculumCount" class="curriculum-count">1</span>
+            </button>
+            <div id="curriculumPanel" class="curriculum-panel" role="group"
+                 aria-label="Choose which curricula to show" hidden>
+              <p class="curriculum-panel-hint">Show vocabulary from:</p>
+              <label class="curriculum-option">
+                <input type="checkbox" value="US" checked>
+                <span class="curriculum-option-name">Common Core</span>
+                <span class="curriculum-option-tag">
+                  <span class="curriculum-flag" data-flag="US" aria-hidden="true"></span>
+                  <span class="curriculum-option-code">US</span>
+                </span>
+              </label>
+              <label class="curriculum-option">
+                <input type="checkbox" value="UK">
+                <span class="curriculum-option-name">UK National Curriculum</span>
+                <span class="curriculum-option-tag">
+                  <span class="curriculum-flag" data-flag="UK" aria-hidden="true"></span>
+                  <span class="curriculum-option-code">UK</span>
+                </span>
+              </label>
+              <label class="curriculum-option">
+                <input type="checkbox" value="IN">
+                <span class="curriculum-option-name">India NCERT</span>
+                <span class="curriculum-option-tag">
+                  <span class="curriculum-flag" data-flag="IN" aria-hidden="true"></span>
+                  <span class="curriculum-option-code">IN</span>
+                </span>
+              </label>
+            </div>
+          </div>
+          <button id="resetViewBtn" class="graph-btn" type="button" hidden>See the whole map</button>
+        </div>
         <div id="zoomControls">
           <button id="zoomInBtn" class="zoom-btn" type="button" aria-label="Zoom in">
             <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
@@ -125,6 +174,7 @@ __STYLES__
 
   <div id="stats">
     <span id="statsText"></span>
+    <span class="stats-updated">New vocabulary is added regularly — this bank is still growing.</span>
     <button id="statsAboutBtn" class="stats-about" type="button" aria-haspopup="dialog">About &amp; licence</button>
   </div>
 </div>
@@ -141,9 +191,11 @@ __STYLES__
     <p class="about-sub">An open educational resource for elementary math vocabulary.</p>
 
     <p>
-      A vocabulary bank of 189 math words drawn from every Common Core domain across
-      Kindergarten through Grade 5, with a child-facing definition, a worked example and
-      the misconception teachers most often see for each term.
+      A vocabulary bank of math words spanning Kindergarten through Grade 5, with a
+      child-facing definition, a worked example, and the misconception teachers most often
+      see for each term. Every word is cited to the standard it comes from — the US Common
+      Core, the UK National Curriculum, or India's NCERT — and the <strong>Curriculum</strong>
+      control above the graph lets you choose which of those to show.
     </p>
 
     <ul class="about-orgs">
@@ -184,6 +236,17 @@ __STYLES__
         <a href="https://github.com/sai-educ/math-vocab" target="_blank" rel="noopener noreferrer">
           github.com/sai-educ/math-vocab
         </a>
+      </p>
+    </div>
+
+    <div class="about-repo">
+      <h3>3D assets</h3>
+      <p>
+        The knowledge graph's centre is
+        <a href="https://skfb.ly/6yGSx" target="_blank" rel="noopener noreferrer">"Sun"</a>
+        by SebastianSosnowski, licensed under
+        <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">Creative
+        Commons Attribution 4.0</a>.
       </p>
     </div>
 
