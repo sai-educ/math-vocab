@@ -444,7 +444,7 @@ DATA = {
    "Ana finds 6 shells, then 2 more. She adds them up. The sum is 8 shells.",
    ""),
   ("difference", "The answer you get when you subtract.",
-   "Ben has 9 grapes and eats 4. He subtracts to find the difference. It is 5 grapes.",
+   "Gordon Stadium seats 79,407 people. Hillcrest Stadium seats 58,868 people. The difference tells how many more seats Gordon Stadium has: 20,539.",
    "In math, 'difference' does not mean how two things are unlike. It is the subtraction answer."),
   ("equation", "A math sentence with an equal sign. Both sides are worth the same.",
    "Ivy writes 5 + 3 = 8. Each side of the equal sign is worth 8, so the sentence balances.",
