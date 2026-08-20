@@ -55,6 +55,16 @@
 
 **Standards:** US 4.OA
 
+### left over
+
+**Definition:** What is still there after dividing into equal groups, with not enough for one more full group.
+
+**Example:** Leo splits 14 pencils into groups of 4. He makes 3 full groups, with 2 pencils left over.
+
+**Common misconception:** 'Left over' and 'remainder' mean the same thing. Remainder is just the math word for it.
+
+**Standards:** US 4.OA
+
 ### variable
 
 **Definition:** A letter that stands for a number you do not know yet.
@@ -98,6 +108,24 @@
 
 **Standards:** US 4.NBT
 
+### algorithm
+
+**Definition:** A set of steps that always gets you to the answer, done in the same order every time.
+
+**Example:** Nina follows an algorithm every time she adds two big numbers. First she lines up the places. Then she adds one column at a time.
+
+**Common misconception:** An algorithm is not one fixed set of steps for every problem. Different kinds of problems can each have their own algorithm.
+
+**Standards:** US 4.NBT
+
+### hindu-arabic numbers
+
+**Definition:** The number symbols 0 through 9 that we use every day, written in a base-ten system.
+
+**Example:** Theo writes 2,048 using Hindu-Arabic numbers. Each digit's place tells how much it is worth.
+
+**Standards:** US 4.NBT
+
 
 ## Number & Operations—Fractions (4.NF)
 
@@ -124,6 +152,16 @@
 **Example:** Ben has 5 quarter slices of pie. He writes 5/4, which is more than one whole pie.
 
 **Common misconception:** An improper fraction is not wrong. It is just written as parts instead of wholes.
+
+**Standards:** US 4.NF
+
+### proper fraction
+
+**Definition:** A fraction with a top number smaller than its bottom number. It is less than one whole.
+
+**Example:** Zoe writes 3/4 for the pizza slices she ate. Since 3 is smaller than 4, it is a proper fraction.
+
+**Common misconception:** A proper fraction is not 'more correct' than an improper one. It just names an amount less than a whole.
 
 **Standards:** US 4.NF
 
@@ -238,6 +276,14 @@
 
 **Standards:** IN Class IV · 4.M.LO9, UK Y4
 
+### kilometer
+
+**Definition:** A metric unit for long distances. It equals 1,000 meters.
+
+**Example:** Maya's family drives 5 kilometers to the lake, much farther than she could walk.
+
+**Standards:** US 4.MD
+
 
 ## Geometry (4.G)
 
@@ -286,6 +332,24 @@
 **Definition:** A square corner. It measures 90 degrees.
 
 **Example:** Ana checks the corner of her paper against a tile. They match exactly, so it is a right angle.
+
+**Standards:** US 4.G
+
+### equilateral triangle
+
+**Definition:** A triangle with all 3 sides the same length.
+
+**Example:** Ben checks a triangle tile with his ruler. All 3 sides measure 4 centimeters, so it is equilateral.
+
+**Standards:** US 4.G
+
+### isosceles triangle
+
+**Definition:** A triangle with exactly 2 sides the same length.
+
+**Example:** Ivy measures a triangle flag. Two sides are 6 inches, and the third is 4 inches, so it is isosceles.
+
+**Common misconception:** A triangle can be isosceles even if it does not look symmetrical at first glance. Check the side lengths, not just the shape.
 
 **Standards:** US 4.G
 
