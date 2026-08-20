@@ -238,6 +238,16 @@
 
 **Standards:** US 5.MD
 
+### knot
+
+**Definition:** A unit used to measure the speed of a boat or the wind. It is not a unit of length.
+
+**Example:** Omar reads that a ship is sailing at 12 knots, meaning it covers 12 nautical miles every hour.
+
+**Common misconception:** A knot already means a speed, not a distance. Nobody says 'knots per hour'.
+
+**Standards:** US 5.MD
+
 ### coordinate plane
 
 **Definition:** A grid made by two number lines that cross.
