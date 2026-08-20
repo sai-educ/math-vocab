@@ -219,6 +219,31 @@ VISUALS = {
         "alt": "A \"Favorite Party Games\" table with tally marks counting votes.",
         "credit": "Usable Math — Charts and Graphs, Slide 9",
     },
+    "4-oa-prime-number": {
+        "src": "assets/visuals/4-oa-prime-number-seven.jpg",
+        "alt": "The number 7 painted in yellow on pavement — a prime number.",
+        "credit": "Usable Math — Algebraic Thinking, Slide 32 (Hint 2)",
+    },
+    "4-nbt-hindu-arabic-numbers": {
+        "src": "assets/visuals/4-nbt-hindu-arabic-numbers-character.png",
+        "alt": "A child surrounded by the playful digits 0 through 9.",
+        "credit": "Usable Math — Algebraic Thinking, Slide 33",
+    },
+    "k-cc-zero": {
+        "src": "assets/visuals/k-cc-zero-numeral.png",
+        "alt": "The numeral 0.",
+        "credit": "Usable Math — Algebraic Thinking, Slide 34 (\"The History of Zero\")",
+    },
+    "2-md-number-line": {
+        "src": "assets/visuals/2-md-number-line-points.png",
+        "alt": "A number line from 0 to 1 with four labeled points.",
+        "credit": "Usable Math — Algebraic Thinking, Slide 39",
+    },
+    "3-nbt-rounding": {
+        "src": "assets/visuals/3-nbt-rounding-pencils.png",
+        "alt": "Rows of colored pencils, from a rounding word problem about packs of pencils.",
+        "credit": "Usable Math — Estimation, Slide 5",
+    },
 }
 
 # grade -> domain_code -> [(term, definition, example, misconception)]
