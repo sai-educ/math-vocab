@@ -59,6 +59,11 @@ VISUALS = {
         "alt": "A bar chart comparing Wildwood's 1,393 seats to Mark's Meadow's 682 seats, with the gap between them marked as the difference.",
         "credit": "Usable Math — Add & Take Away: How Many More, Slide 3 (Visual Vicuna)",
     },
+    "k-oa-take-away": {
+        "src": "assets/visuals/1-oa-how-many-more-wildwood-chart.png",
+        "alt": "A bar chart comparing Wildwood's 1,393 seats to Mark's Meadow's 682 seats, with the gap between them marked as the difference.",
+        "credit": "Usable Math — Add & Take Away: How Many More, Slide 3 (Visual Vicuna)",
+    },
     "1-oa-difference": {
         "src": "assets/visuals/1-oa-difference-gordon-hillcrest-chart.png",
         "alt": "A bar chart comparing Gordon Stadium's 79,000 seats to Hillcrest Stadium's 59,000 seats, with the gap between them marked as the difference.",
