@@ -69,6 +69,61 @@ VISUALS = {
         "alt": "A bar chart comparing Gordon Stadium's 79,000 seats to Hillcrest Stadium's 59,000 seats, with the gap between them marked as the difference.",
         "credit": "Usable Math — Add & Take Away: How Many More, Slide 7 (Visual Vicuna)",
     },
+    "3-nf-fraction": {
+        "src": "assets/visuals/3-nf-fraction-cake-slices.png",
+        "alt": "A chocolate cake marked with lines dividing it into 8 equal slices.",
+        "credit": "Usable Math — Fractions, Slide 5",
+    },
+    "k-cc-equal": {
+        "src": "assets/visuals/k-cc-equal-spinner.jpg",
+        "alt": "Three circles each split into 8 equal wedges, showing 2/8, 1/4, and 1/2 shaded.",
+        "credit": "Usable Math — Fractions, Slide 11 (Visual Vicuna)",
+    },
+    "4-nf-proper-fraction": {
+        "src": "assets/visuals/4-nf-proper-fraction-tulips.gif",
+        "alt": "An animated tally of 7 boxes filling in with tulip icons, one at a time.",
+        "credit": "Usable Math — Fractions, Slide 17 (Visual Vicuna)",
+    },
+    "2-md-dollar": {
+        "src": "assets/visuals/2-md-dollar-cents-comic-prices.png",
+        "alt": "Three comic books priced at $1.00, $2.00, and $2.25.",
+        "credit": "Usable Math — Money, Slide 18",
+    },
+    "2-md-cents": {
+        "src": "assets/visuals/2-md-dollar-cents-comic-prices.png",
+        "alt": "Three comic books priced at $1.00, $2.00, and $2.25.",
+        "credit": "Usable Math — Money, Slide 18",
+    },
+    "2-md-money": {
+        "src": "assets/visuals/2-md-money-cash-coins.gif",
+        "alt": "An illustration of stacked cash and coins.",
+        "credit": "Usable Math — Money, Slide 5",
+    },
+    "2-md-price": {
+        "src": "assets/visuals/2-md-price-toy-store.gif",
+        "alt": "Toy figures on a store shelf, from the toy-store price problem.",
+        "credit": "Usable Math — Money, Slide 16",
+    },
+    "1-oa-total": {
+        "src": "assets/visuals/1-oa-total-dog-treats.png",
+        "alt": "Rows of dog bone treats, from a word problem about a daily total.",
+        "credit": "Usable Math — Multiplication and Division, Slide 5",
+    },
+    "4-oa-left-over": {
+        "src": "assets/visuals/4-oa-left-over-strawberries.gif",
+        "alt": "An animation dividing 47 strawberries into 5 baskets, with 2 left over.",
+        "credit": "Usable Math — Multiplication and Division, Slide 11 (Visual Vicuna)",
+    },
+    "3-oa-divide": {
+        "src": "assets/visuals/3-oa-division-cupcakes.gif",
+        "alt": "An animation dividing 52 cupcakes into 8 boxes, with some left over.",
+        "credit": "Usable Math — Multiplication and Division, Slide 19 (Visual Vicuna)",
+    },
+    "3-oa-division": {
+        "src": "assets/visuals/3-oa-division-cupcakes.gif",
+        "alt": "An animation dividing 52 cupcakes into 8 boxes, with some left over.",
+        "credit": "Usable Math — Multiplication and Division, Slide 19 (Visual Vicuna)",
+    },
 }
 
 # grade -> domain_code -> [(term, definition, example, misconception)]
