@@ -124,6 +124,101 @@ VISUALS = {
         "alt": "An animation dividing 52 cupcakes into 8 boxes, with some left over.",
         "credit": "Usable Math — Multiplication and Division, Slide 19 (Visual Vicuna)",
     },
+    "1-g-vertex-vertices": {
+        "src": "assets/visuals/1-g-vertex-dots.png",
+        "alt": "A cube's 8 corners marked as colored dots.",
+        "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 3 (Visual Vicuna)",
+    },
+    "k-g-shape": {
+        "src": "assets/visuals/k-g-shape-mosaic.gif",
+        "alt": "A colorful mosaic of triangles, circles, squares, and other shapes.",
+        "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 6",
+    },
+    "k-g-triangle": {
+        "src": "assets/visuals/k-g-triangle-fractal.png",
+        "alt": "A large triangle made of many smaller triangles.",
+        "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 13",
+    },
+    "4-g-isosceles-triangle": {
+        "src": "assets/visuals/4-g-isosceles-triangle-icecream.png",
+        "alt": "A tall ice cream cone, its two slanted sides the same length.",
+        "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 13",
+    },
+    "4-g-acute-angle": {
+        "src": "assets/visuals/4-g-acute-angle-compare.png",
+        "alt": "An acute angle drawn next to a right angle for comparison.",
+        "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 11",
+    },
+    "4-g-perpendicular-lines": {
+        "src": "assets/visuals/4-g-perpendicular-lines-cross.jpg",
+        "alt": "Two lines crossing at a right angle.",
+        "credit": "Usable Math — Geometry: Lines and Lines of Symmetry, Slide 3",
+    },
+    "4-g-parallel-lines": {
+        "src": "assets/visuals/4-g-parallel-lines-chairs.png",
+        "alt": "Two striped beach chairs, their stripes running parallel.",
+        "credit": "Usable Math — Geometry: Lines and Lines of Symmetry, Slide 5",
+    },
+    "k-g-square": {
+        "src": "assets/visuals/k-g-square-video-thumb.png",
+        "alt": "A green square, captioned \"It's a green square.\"",
+        "credit": "Usable Math — Geometry: Lines and Lines of Symmetry, Slide 7",
+    },
+    "5-g-ordered-pair": {
+        "src": "assets/visuals/5-g-ordered-pair-axes.png",
+        "alt": "A blank coordinate grid with labeled x and y axes.",
+        "credit": "Usable Math — Geometry: Maps + Grids + Ordered Pairs, Slide 11 (Visual Vicuna)",
+    },
+    "3-md-area": {
+        "src": "assets/visuals/3-md-area-grid.gif",
+        "alt": "A 10-by-10 grid of squares, for counting area.",
+        "credit": "Usable Math — Area and Perimeter, Slide 6",
+    },
+    "4-md-perimeter": {
+        "src": "assets/visuals/4-md-perimeter-field.png",
+        "alt": "An aerial view of a stadium track and field, its running track forming the perimeter.",
+        "credit": "Usable Math — Area and Perimeter, Slide 8",
+    },
+    "k-g-rectangle": {
+        "src": "assets/visuals/k-g-rectangle-field.jpg",
+        "alt": "A rectangular soccer field, from a perimeter word problem.",
+        "credit": "Usable Math — Area and Perimeter, Slide 8",
+    },
+    "2-md-meter": {
+        "src": "assets/visuals/2-md-meter-track.png",
+        "alt": "Runners racing on a track, a distance measured in meters.",
+        "credit": "Usable Math — Measurement, Slide 8",
+    },
+    "3-md-kilogram": {
+        "src": "assets/visuals/3-md-kilogram-scale.png",
+        "alt": "A bathroom scale, for measuring weight in kilograms.",
+        "credit": "Usable Math — Measurement, Slide 8",
+    },
+    "2-md-centimeter": {
+        "src": "assets/visuals/2-md-centimeter-ruler.png",
+        "alt": "A tape measure next to small tools.",
+        "credit": "Usable Math — Measurement, Slide 8",
+    },
+    "3-md-yard": {
+        "src": "assets/visuals/3-md-yard-tape-measure.png",
+        "alt": "A close-up of a tape measure's markings.",
+        "credit": "Usable Math — Measurement, Slide 12",
+    },
+    "2-md-bar-graph": {
+        "src": "assets/visuals/2-md-bar-graph-colorful.png",
+        "alt": "A bar graph with four colored bars of different heights.",
+        "credit": "Usable Math — Charts and Graphs, Slide 3",
+    },
+    "1-md-graph": {
+        "src": "assets/visuals/1-md-graph-pictures-symbols.gif",
+        "alt": "A dashboard illustration with bar, line, and gauge charts.",
+        "credit": "Usable Math — Charts and Graphs, Slide 5",
+    },
+    "1-md-tally-chart": {
+        "src": "assets/visuals/1-md-tally-chart-party-games.png",
+        "alt": "A \"Favorite Party Games\" table with tally marks counting votes.",
+        "credit": "Usable Math — Charts and Graphs, Slide 9",
+    },
 }
 
 # grade -> domain_code -> [(term, definition, example, misconception)]
