@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="robots" content="noindex, nofollow">
+<title>Visual Mapping — Math Word Explorer</title>
+<style>
+:root{
+  --bg:#f6f5f1;
+  --panel:#ffffff;
+  --line:#e4e1d8;
+  --ink:#211d16;
+  --ink-muted:#6f6656;
+  --ink-faint:#a89d86;
+  --accent:#b8611c;
+  --accent-ink:#8a4712;
+  --good:#3f7d4f; --good-bg:#e3efe6;
+  --pending:#8a8370; --pending-bg:#eeece3;
+  --skip:#a33b2e; --skip-bg:#f5e2de;
+  --shadow:0 1px 2px rgba(33,29,22,.06), 0 6px 18px -10px rgba(33,29,22,.18);
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  line-height:1.5;
+}
+.wrap{max-width:1040px;margin:0 auto;padding:44px 24px 80px;}
+a{color:var(--accent-ink);}
+h1{font-size:clamp(26px,4vw,34px);margin:0 0 8px;letter-spacing:-.01em;}
+.lede{color:var(--ink-muted);font-size:15.5px;max-width:68ch;margin:0 0 6px;}
+.back{display:inline-block;margin-bottom:22px;font-size:13.5px;color:var(--ink-muted);text-decoration:none;}
+.back:hover{color:var(--accent-ink);}
+
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0 36px;}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 16px;box-shadow:var(--shadow);min-width:120px;}
+.stat .n{font-size:22px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums;}
+.stat .l{font-size:11.5px;color:var(--ink-muted);margin-top:4px;}
+
+.module{margin-bottom:36px;}
+.module h2{
+  font-size:16px;margin:0 0 2px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;
+}
+.module .sub{font-size:12px;color:var(--ink-faint);font-weight:400;}
+.module-note{font-size:12.5px;color:var(--ink-muted);margin:2px 0 10px;max-width:70ch;}
+
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);background:var(--panel);}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:640px;}
+th{
+  text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.04em;
+  color:var(--ink-muted);font-weight:600;padding:9px 12px;background:#faf9f5;
+  border-bottom:1px solid var(--line);white-space:nowrap;
+}
+td{padding:8px 12px;border-bottom:1px solid #efece3;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+td.term{font-weight:600;white-space:nowrap;}
+td.loc{color:var(--ink-muted);font-size:12.5px;}
+td.notes{color:var(--ink-muted);font-size:12px;max-width:260px;}
+
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap;}
+.pill.good{background:var(--good-bg);color:var(--good);}
+.pill.pending{background:var(--pending-bg);color:var(--pending);}
+.pill.skip{background:var(--skip-bg);color:var(--skip);}
+
+.thumb{display:flex;align-items:center;}
+.thumb img{width:64px;height:44px;object-fit:cover;border-radius:6px;border:1px solid var(--line);background:#fff;}
+.thumb .none{width:64px;height:44px;display:flex;align-items:center;justify-content:center;color:var(--ink-faint);font-size:10px;}
+
+footer{margin-top:50px;padding-top:18px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink-faint);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="app.html">&larr; Back to Math Word Explorer</a>
+  <h1>Mapping Visuals to Usable Math Modules</h1>
+  <p class="lede">Every vocabulary word Bob and Sharon pointed at a Usable Math coach-hint visual for, matched to the exact module, slide and hint — and whether that visual has actually been pulled into the Word Explorer yet.</p>
+
+  <div class="stats">
+    <div class="stat"><div class="n">4 / 40</div><div class="l">visuals integrated so far</div></div>
+    <div class="stat"><div class="n">1 / 13</div><div class="l">modules started</div></div>
+    <div class="stat"><div class="n">1</div><div class="l">term skipped (grade mismatch)</div></div>
+  </div>
+
+  <div class="module">
+    <h2>Add &amp; Take Away: How Many More <span class="sub">4.NBT · started 2026-08-20</span></h2>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Term</th><th>Grade</th><th>Slide / hint</th><th>Status</th><th>Visual</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="term">more</td><td>K</td><td class="loc">Slide 5</td>
+          <td><span class="pill good">integrated</span></td>
+          <td class="thumb"><img src="assets/visuals/k-cc-more-colorful-balls.gif" alt="more — bowl of colorful balls"></td>
+          <td class="notes">Animated GIF, 41 frames.</td>
+        </tr>
+        <tr>
+          <td class="term">fewer</td><td>K</td><td class="loc">Slide 5</td>
+          <td><span class="pill good">integrated</span></td>
+          <td class="thumb"><img src="assets/visuals/k-cc-fewer-dog-ball.gif" alt="fewer — dog with one ball"></td>
+          <td class="notes">Animated GIF.</td>
+        </tr>
+        <tr>
+          <td class="term">how many more</td><td>1</td><td class="loc">Slide 3 (Wildwood Gym), Slide 7, Slide 11</td>
+          <td><span class="pill good">integrated</span></td>
+          <td class="thumb"><img src="assets/visuals/1-oa-how-many-more-wildwood-chart.png" alt="how many more — Wildwood vs Mark's Meadow chart"></td>
+          <td class="notes">Visual Vicuna bar chart, Slide 3. Slide 11 is the blank "design your own" prompt — nothing to extract there.</td>
+        </tr>
+        <tr>
+          <td class="term">difference</td><td>1</td><td class="loc">Slide 7 (Gordon/Hillcrest)</td>
+          <td><span class="pill good">integrated</span></td>
+          <td class="thumb"><img src="assets/visuals/1-oa-difference-gordon-hillcrest-chart.png" alt="difference — Gordon vs Hillcrest chart"></td>
+          <td class="notes">Visual Vicuna bar chart, Slide 7.</td>
+        </tr>
+        <tr>
+          <td class="term">take away</td><td>K</td><td class="loc">Slide 3 (Wildwood Gym)</td>
+          <td><span class="pill skip">skipped</span></td>
+          <td class="thumb"><span class="none">—</span></td>
+          <td class="notes">Only available chart uses 4-digit gym-seating numbers — not age-appropriate for the K definition. Left without a visual.</td>
+        </tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="module">
+    <h2>Fractions <span class="sub">Grade 4</span></h2>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Term</th><th>Grade</th><th>Slide / hint</th><th>Status</th><th>Visual</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td class="term">fraction</td><td>3</td><td class="loc">Slide 5</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">Coaches eat cake sections.</td></tr>
+        <tr><td class="term">equal</td><td>K</td><td class="loc">Slide 11</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">Math Bear divides a spinner into 8.</td></tr>
+        <tr><td class="term">proper fraction</td><td>4</td><td class="loc">Slide 17</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">Ann's Flower Garden.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="module">
+    <h2>Money <span class="sub">Grade 3-6</span></h2>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Term</th><th>Grade</th><th>Slide / hint</th><th>Status</th><th>Visual</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td class="term">dollar</td><td>2</td><td class="loc">Slide 18 Hint 4, or Slide 6 Hint 4</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">Two possible slides — confirm which with Bob.</td></tr>
+        <tr><td class="term">cents</td><td>2</td><td class="loc">Slide 18 Hint 4, or Slide 6 Hint 4</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">Same slide as dollar.</td></tr>
+        <tr><td class="term">money</td><td>2</td><td class="loc">Slide 5</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+        <tr><td class="term">price</td><td>2</td><td class="loc">Slide 16</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="module">
+    <h2>Multiplication and Division <span class="sub">Grade 3-6</span></h2>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Term</th><th>Grade</th><th>Slide / hint</th><th>Status</th><th>Visual</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td class="term">total</td><td>1</td><td class="loc">Slide 3</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+        <tr><td class="term">expression</td><td>5</td><td class="loc">Slide 23</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+        <tr><td class="term">check</td><td>3</td><td class="loc">Slide 7 (Chef Math Bear)</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+        <tr><td class="term">left over</td><td>4</td><td class="loc">Slide 11 Hint 4</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+        <tr><td class="term">divide / division</td><td>3</td><td class="loc">Slide 17 Hint 4 or Slide 19 Hint 4 (Daniel Cupcakes)</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">An earlier email named Slide 11 (Amelia Strawberries) instead — confirm which one Bob means.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="module">
+    <h2>Geometry: Figures, Shapes and Angles <span class="sub">Grade 3-5</span></h2>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Term</th><th>Grade</th><th>Slide / hint</th><th>Status</th><th>Visual</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td class="term">triangle</td><td>K</td><td class="loc">Slide 13, Hint 1</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+        <tr><td class="term">equilateral triangle</td><td>4</td><td class="loc">Slide 13, Hint 3</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+        <tr><td class="term">isosceles triangle</td><td>4</td><td class="loc">Slide 13, Hint 2</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+        <tr><td class="term">shape</td><td>K</td><td class="loc">Slide 6, Hint 2</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+        <tr><td class="term">vertex</td><td>1</td><td class="loc">Slide 3, Hints 1 &amp; 4</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+        <tr><td class="term">acute angle</td><td>4</td><td class="loc">Slide 11, Hint 4 or 2</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="module">
+    <h2>Geometry: Lines and Lines of Symmetry <span class="sub">Grade 3-5</span></h2>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Term</th><th>Grade</th><th>Slide / hint</th><th>Status</th><th>Visual</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td class="term">perpendicular lines</td><td>4</td><td class="loc">Slide 3, Hint 3 (maybe also Hint 2)</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+        <tr><td class="term">parallel lines</td><td>4</td><td class="loc">Slide 5, Hints 1 &amp; 3</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+        <tr><td class="term">square</td><td>K</td><td class="loc">Slide 7, Hint 4</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+        <tr><td class="term">line of symmetry</td><td>4</td><td class="loc">Slide 9, Hints 2 &amp; 3</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="module">
+    <h2>Geometry: Maps + Grids + Ordered Pairs <span class="sub">Grade 3-5</span></h2>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Term</th><th>Grade</th><th>Slide / hint</th><th>Status</th><th>Visual</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td class="term">x, y axis</td><td>5</td><td class="loc">Slide 11</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">In the bank as "ordered pair".</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="module">
+    <h2>Area and Perimeter <span class="sub">Grade 3-6</span></h2>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Term</th><th>Grade</th><th>Slide / hint</th><th>Status</th><th>Visual</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td class="term">area</td><td>3</td><td class="loc">Slide 6, Hint 1 (also an image from Slide 7)</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+        <tr><td class="term">perimeter</td><td>4</td><td class="loc">Slide 8, Hint 1</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+        <tr><td class="term">rectangle</td><td>K</td><td class="loc">Slide 8, Hint 3</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="module">
+    <h2>Measurement <span class="sub">Grade 3-5</span></h2>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Term</th><th>Grade</th><th>Slide / hint</th><th>Status</th><th>Visual</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td class="term">meter</td><td>2</td><td class="loc">Slide 8, Hint 2 (also Slide 14, Hint 2)</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+        <tr><td class="term">kilogram</td><td>3</td><td class="loc">Slide 8, Hint 3</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+        <tr><td class="term">centimeter</td><td>2</td><td class="loc">Slide 8, Hint 4</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+        <tr><td class="term">yard</td><td>3</td><td class="loc">Slide 12, Hint 2</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="module">
+    <h2>Charts &amp; Graphs <span class="sub">Grade 3-5</span></h2>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Term</th><th>Grade</th><th>Slide / hint</th><th>Status</th><th>Visual</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td class="term">bar graph</td><td>2</td><td class="loc">Slide 3, Hints 1 &amp; 2</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+        <tr><td class="term">graph</td><td>1</td><td class="loc">Slide 5, Hint 1</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+        <tr><td class="term">tally chart</td><td>1</td><td class="loc">Slide 9, Hint 1 (also Slide 21, Slide 24 Hint 1)</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="module">
+    <h2>Algebraic Thinking <span class="sub">Grade 3-6</span></h2>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Term</th><th>Grade</th><th>Slide / hint</th><th>Status</th><th>Visual</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td class="term">zero</td><td>K</td><td class="loc">Slide 36 or 37</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+        <tr><td class="term">prime number</td><td>4</td><td class="loc">Slide 32, Hint 2</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+        <tr><td class="term">hindu-arabic numbers</td><td>4</td><td class="loc">Slides 33 &amp; 35</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+        <tr><td class="term">number line</td><td>2</td><td class="loc">Slide 39</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">—</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="module">
+    <h2>Estimation <span class="sub">Grade 3-6</span></h2>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Term</th><th>Grade</th><th>Slide / hint</th><th>Status</th><th>Visual</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td class="term">rounding</td><td>3</td><td class="loc">Slide 5, Hint 2</td><td><span class="pill pending">not started</span></td><td class="thumb"><span class="none">—</span></td><td class="notes">A separate, dedicated "Rounding" module also exists on usablemath.org — Bob pointed here instead, in Estimation.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <footer>Internal reference — not linked from the app, and excluded from search indexing. Edit source: <code>mapping.html</code> at the repo root.</footer>
+</div>
+</body>
+</html>
