@@ -212,6 +212,7 @@ function boot() {
   Sound.init();
   bindControls();
   About.init();
+  ResetProgress.init();
   Curriculum.init();
   initPanelResizers();
   renderAll();
