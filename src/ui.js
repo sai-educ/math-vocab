@@ -278,6 +278,11 @@ function renderDetail() {
       <p class="block-body">${escapeHtml(t.definition)}</p>
     </div>
 
+    ${t.visual ? `<figure class="term-visual">
+      <img src="${escapeHtml(t.visual.src)}" alt="${escapeHtml(t.visual.alt)}" loading="lazy">
+      <figcaption>${escapeHtml(t.visual.credit)}</figcaption>
+    </figure>` : ''}
+
     <section class="story" aria-labelledby="storyHeading">
       <h3 class="story-heading" id="storyHeading">
         <span aria-hidden="true">${iconSvg('spark', { size: 17 })}</span>
