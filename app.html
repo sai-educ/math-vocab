@@ -757,12 +757,26 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
 
 /* Inline text control, so WCAG 2.5.8's inline exception applies — but keep
    it at least 24px tall so it is still comfortable to hit on a tablet. */
+#resetProgressWrap{margin:0 0 0 auto;display:flex;align-items:center;gap:8px;flex:0 0 auto;}
 #stats .stats-about{
-  background:none;border:none;padding:6px 6px;margin:0 0 0 auto;min-height:26px;
+  background:none;border:none;padding:6px 6px;min-height:26px;
   color:var(--accent-ink);font-size:11.5px;font-family:inherit;font-weight:600;
   cursor:pointer;text-decoration:underline;text-underline-offset:2px;flex:0 0 auto;
 }
 #stats .stats-about:hover{color:var(--accent3-ink);}
+
+.stats-reset-confirm{display:flex;align-items:center;gap:8px;flex:0 0 auto;}
+.stats-reset-confirm[hidden]{display:none;}
+.stats-reset-text{color:var(--text-dim);}
+.stats-reset-yes,.stats-reset-no{
+  background:none;border:none;padding:6px 6px;min-height:26px;
+  font-size:11.5px;font-family:inherit;font-weight:700;
+  cursor:pointer;text-decoration:underline;text-underline-offset:2px;
+}
+.stats-reset-yes{color:#b8391a;}
+.stats-reset-yes:hover{color:#8a2a54;}
+.stats-reset-no{color:var(--accent-ink);}
+.stats-reset-no:hover{color:var(--accent3-ink);}
 
 /* ---------- onboarding spotlight ---------- */
 
@@ -1100,7 +1114,14 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   <div id="stats">
     <span id="statsText"></span>
     <span class="stats-updated">New vocabulary is added regularly — this bank is still growing.</span>
-    <button id="statsAboutBtn" class="stats-about" type="button" aria-haspopup="dialog">About &amp; licence</button>
+    <span id="resetProgressWrap">
+      <button id="resetProgressBtn" class="stats-about" type="button">Reset progress</button>
+      <span id="resetProgressConfirm" class="stats-reset-confirm" hidden>
+        <span class="stats-reset-text">Reset progress? Start fresh again.</span>
+        <button id="resetProgressYes" class="stats-reset-yes" type="button" aria-label="Yes, reset progress">Yes</button>
+        <button id="resetProgressNo" class="stats-reset-no" type="button" aria-label="No, keep my progress">No</button>
+      </span>
+    </span>
   </div>
 </div>
 
@@ -9095,7 +9116,6 @@ const About = (function () {
     closeXBtn.innerHTML = iconSvg('close', { size: 16 });
 
     aboutBtn.addEventListener('click', open);
-    document.getElementById('statsAboutBtn').addEventListener('click', open);
     document.getElementById('aboutClose').addEventListener('click', close);
     closeXBtn.addEventListener('click', close);
 
@@ -9150,6 +9170,50 @@ const About = (function () {
   }
 
   return { init, open, close };
+}());
+
+/* ---------- src/resetProgress.js ---------- */
+/* =========================================================================
+   Reset progress: a small text control in the footer (where "About &
+   licence" used to live — that's now reachable from the header instead)
+   that clears explored-word history and the onboarding flag.
+
+   Two-step (idle -> confirm) in place, rather than a modal, so it stays a
+   single quiet line in the footer until someone actually means to use it.
+   ========================================================================= */
+
+const ResetProgress = (function () {
+  function init() {
+    const btn = document.getElementById('resetProgressBtn');
+    const confirm = document.getElementById('resetProgressConfirm');
+    const yesBtn = document.getElementById('resetProgressYes');
+    const noBtn = document.getElementById('resetProgressNo');
+
+    btn.addEventListener('click', () => {
+      btn.hidden = true;
+      confirm.hidden = false;
+      announce('Reset progress? This clears every word you have explored. Yes or no?');
+      noBtn.focus();
+    });
+
+    noBtn.addEventListener('click', cancel);
+
+    yesBtn.addEventListener('click', () => {
+      try {
+        localStorage.removeItem(STORAGE_KEYS.onboarded);
+        localStorage.removeItem(STORAGE_KEYS.visited);
+      } catch (e) { /* private browsing — nothing was persisted anyway */ }
+      location.reload();
+    });
+
+    function cancel() {
+      confirm.hidden = true;
+      btn.hidden = false;
+      btn.focus();
+    }
+  }
+
+  return { init };
 }());
 
 /* ---------- src/curriculum.js ---------- */
@@ -9621,6 +9685,7 @@ function boot() {
   Sound.init();
   bindControls();
   About.init();
+  ResetProgress.init();
   Curriculum.init();
   initPanelResizers();
   renderAll();
