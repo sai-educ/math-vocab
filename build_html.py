@@ -46,6 +46,7 @@ APP_SCRIPTS = (
     "tts.js",
     "ui.js",
     "about.js",
+    "resetProgress.js",
     "curriculum.js",
     "panelResize.js",
     "main.js",
