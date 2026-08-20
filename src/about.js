@@ -25,7 +25,6 @@ const About = (function () {
     closeXBtn.innerHTML = iconSvg('close', { size: 16 });
 
     aboutBtn.addEventListener('click', open);
-    document.getElementById('statsAboutBtn').addEventListener('click', open);
     document.getElementById('aboutClose').addEventListener('click', close);
     closeXBtn.addEventListener('click', close);
 
