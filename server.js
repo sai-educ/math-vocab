@@ -32,6 +32,7 @@ const MIME_TYPES = {
   ".png": "image/png",
   ".jpg": "image/jpeg",
   ".jpeg": "image/jpeg",
+  ".gif": "image/gif",
   ".svg": "image/svg+xml",
   ".webp": "image/webp",
   ".glb": "model/gltf-binary",
@@ -157,6 +158,7 @@ function serveStatic(request, response, pathname) {
   const relativePath =
     decodedPath === "/" ? "./index.html" :
     decodedPath === "/roadmap" ? "./roadmap.html" :
+    decodedPath === "/mapping" ? "./mapping.html" :
     `.${decodedPath}`;
   const filePath = path.resolve(ROOT, relativePath);
   if (filePath !== ROOT && !filePath.startsWith(ROOT + path.sep)) {
