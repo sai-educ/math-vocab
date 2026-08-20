@@ -38,6 +38,34 @@ DOMAIN_NAMES = {
     "G": "Geometry",
 }
 
+# term id -> visual. Optional; a term with none renders exactly as before.
+# Sourced from Usable Math's own coach-hint slides (with permission pending -
+# see the project roadmap), not authored for this bank. `src` is relative to
+# the deployed site root and lazy-loaded, same as assets/sun.glb - never
+# inlined into the single-file HTML.
+VISUALS = {
+    "k-cc-more": {
+        "src": "assets/visuals/k-cc-more-colorful-balls.gif",
+        "alt": "An animated bowl overflowing with many colorful balls.",
+        "credit": "Usable Math — Add & Take Away: How Many More, Slide 5",
+    },
+    "k-cc-fewer": {
+        "src": "assets/visuals/k-cc-fewer-dog-ball.gif",
+        "alt": "An animated dog with just one ball.",
+        "credit": "Usable Math — Add & Take Away: How Many More, Slide 5",
+    },
+    "1-oa-how-many-more": {
+        "src": "assets/visuals/1-oa-how-many-more-wildwood-chart.png",
+        "alt": "A bar chart comparing Wildwood's 1,393 seats to Mark's Meadow's 682 seats, with the gap between them marked as the difference.",
+        "credit": "Usable Math — Add & Take Away: How Many More, Slide 3 (Visual Vicuna)",
+    },
+    "1-oa-difference": {
+        "src": "assets/visuals/1-oa-difference-gordon-hillcrest-chart.png",
+        "alt": "A bar chart comparing Gordon Stadium's 79,000 seats to Hillcrest Stadium's 59,000 seats, with the gap between them marked as the difference.",
+        "credit": "Usable Math — Add & Take Away: How Many More, Slide 7 (Visual Vicuna)",
+    },
+}
+
 # grade -> domain_code -> [(term, definition, example, misconception)]
 DATA = {
 "K": {
@@ -973,8 +1001,9 @@ def build_entries() -> list[dict]:
                 else:
                     term, definition, example, misconception = item
                     standards = [("US", f"{grade}.{dcode}")]
+                term_id = slugify(f"{grade}-{dcode}-{term}")
                 entries.append({
-                    "id": slugify(f"{grade}-{dcode}-{term}"),
+                    "id": term_id,
                     "term": term,
                     "grade": grade,
                     "domainCode": dcode,
@@ -984,6 +1013,7 @@ def build_entries() -> list[dict]:
                     "definition": definition,
                     "example": example,
                     "misconception": misconception,
+                    "visual": VISUALS.get(term_id),
                 })
     return entries
 
