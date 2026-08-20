@@ -175,7 +175,14 @@ __STYLES__
   <div id="stats">
     <span id="statsText"></span>
     <span class="stats-updated">New vocabulary is added regularly — this bank is still growing.</span>
-    <button id="statsAboutBtn" class="stats-about" type="button" aria-haspopup="dialog">About &amp; licence</button>
+    <span id="resetProgressWrap">
+      <button id="resetProgressBtn" class="stats-about" type="button">Reset progress</button>
+      <span id="resetProgressConfirm" class="stats-reset-confirm" hidden>
+        <span class="stats-reset-text">Reset progress? Start fresh again.</span>
+        <button id="resetProgressYes" class="stats-reset-yes" type="button" aria-label="Yes, reset progress">Yes</button>
+        <button id="resetProgressNo" class="stats-reset-no" type="button" aria-label="No, keep my progress">No</button>
+      </span>
+    </span>
   </div>
 </div>
 
