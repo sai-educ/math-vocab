@@ -171,7 +171,11 @@
     "definition": "A number that means none at all.",
     "example": "The cookie jar had 3 cookies. Ana's family ate every one. Now there are zero cookies left.",
     "misconception": "Zero is a real number, not an empty space. It tells you the amount is none.",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/k-cc-zero-numeral.png",
+      "alt": "The numeral 0.",
+      "credit": "Usable Math — Algebraic Thinking, Slide 34 (\"The History of Zero\")"
+    }
   },
   {
     "id": "k-cc-in-order",
@@ -2169,7 +2173,11 @@
     "definition": "A line with numbers spaced out in order.",
     "example": "Ivy starts at 8 on the number line and hops to 13. She counts 5 hops.",
     "misconception": "",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/2-md-number-line-points.png",
+      "alt": "A number line from 0 to 1 with four labeled points.",
+      "credit": "Usable Math — Algebraic Thinking, Slide 39"
+    }
   },
   {
     "id": "2-md-bar-graph",
@@ -2799,7 +2807,11 @@
     "definition": "Changing a number to a nearby ten or hundred, to make it easier to work with.",
     "example": "Ben is rounding 63. On the number line, 63 sits closer to 60 than to 70, so he rounds down to 60.",
     "misconception": "",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/3-nbt-rounding-pencils.png",
+      "alt": "Rows of colored pencils, from a rounding word problem about packs of pencils.",
+      "credit": "Usable Math — Estimation, Slide 5"
+    }
   },
   {
     "id": "3-nbt-place-value",
@@ -3353,7 +3365,11 @@
     "definition": "A number with exactly two factors: 1 and itself.",
     "example": "Leo tries to split 7 counters into equal groups. Only 1 group of 7 works. So 7 is prime.",
     "misconception": "The number 1 is not prime. It has only one factor, not two.",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/4-oa-prime-number-seven.jpg",
+      "alt": "The number 7 painted in yellow on pavement — a prime number.",
+      "credit": "Usable Math — Algebraic Thinking, Slide 32 (Hint 2)"
+    }
   },
   {
     "id": "4-oa-composite-number",
@@ -3559,7 +3575,11 @@
     "definition": "The number symbols 0 through 9 that we use every day, written in a base-ten system.",
     "example": "Theo writes 2,048 using Hindu-Arabic numbers. Each digit's place tells how much it is worth.",
     "misconception": "",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/4-nbt-hindu-arabic-numbers-character.png",
+      "alt": "A child surrounded by the playful digits 0 through 9.",
+      "credit": "Usable Math — Algebraic Thinking, Slide 33"
+    }
   },
   {
     "id": "4-nf-equivalent-fraction",
