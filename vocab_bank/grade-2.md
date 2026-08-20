@@ -132,6 +132,14 @@
 
 **Standards:** IN Class II · 2.M.LO1.3
 
+### order
+
+**Definition:** Arrange numbers from smallest to biggest, or biggest to smallest.
+
+**Example:** Ana lines up the numbers 52, 18, and 40 in order: 18, 40, 52.
+
+**Standards:** US 2.NBT
+
 
 ## Measurement & Data (2.MD)
 
@@ -206,6 +214,30 @@
 **Definition:** A coin worth 25 cents.
 
 **Example:** Maya has 3 quarters. She counts 25, 50, 75. She has 75 cents.
+
+**Standards:** US 2.MD
+
+### cents
+
+**Definition:** A small unit of money. 100 cents make 1 dollar.
+
+**Example:** Omar counts 3 dimes. Each dime is 10 cents, so he has 30 cents.
+
+**Standards:** US 2.MD
+
+### money
+
+**Definition:** Coins and bills used to buy and sell things.
+
+**Example:** Maya counts her money before the school fair: 2 dollar bills and 3 quarters.
+
+**Standards:** US 2.MD
+
+### price
+
+**Definition:** How much money something costs.
+
+**Example:** Leo checks the price tag on a toy car. It costs 4 dollars.
 
 **Standards:** US 2.MD
 
