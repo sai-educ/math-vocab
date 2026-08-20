@@ -43,6 +43,16 @@
 
 **Standards:** US 3.OA
 
+### division
+
+**Definition:** Splitting a number into equal groups. It is the opposite of multiplying.
+
+**Example:** Nina uses division to share 18 cookies among 3 friends. Each friend gets 6.
+
+**Common misconception:** Division is the name for the operation. 'Divide' is the action word for doing it.
+
+**Standards:** US 3.OA
+
 ### equal groups
 
 **Definition:** Groups that all hold the same amount.
@@ -91,6 +101,32 @@
 
 **Standards:** IN Class III · 3.M.LO3
 
+### inverse
+
+**Definition:** An action that undoes another action. Adding and taking away undo each other.
+
+**Example:** Omar adds 6 + 3 to get 9. He checks it with the inverse: 9 - 3 gets him back to 6.
+
+**Standards:** US 3.OA
+
+### check
+
+**Definition:** Make sure an answer is right, often by working it a different way.
+
+**Example:** Maya solves 15 - 7 = 8. To check, she adds 8 + 7 and gets back to 15.
+
+**Common misconception:** Checking is not redoing the exact same steps. Using the inverse operation catches more mistakes.
+
+**Standards:** US 3.OA
+
+### increment
+
+**Definition:** A set amount added each time you count up.
+
+**Example:** Leo counts by 5s: 5, 10, 15, 20. Each increment adds 5 more.
+
+**Standards:** US 3.OA
+
 
 ## Number & Operations in Base Ten (3.NBT)
 
@@ -101,6 +137,14 @@
 **Example:** Zoe rounds 47 to the nearest ten. On the number line 47 sits closer to 50 than to 40, so she rounds up.
 
 **Common misconception:** Look at where the number really sits. Do not just chop the last digit off.
+
+**Standards:** US 3.NBT
+
+### rounding
+
+**Definition:** Changing a number to a nearby ten or hundred, to make it easier to work with.
+
+**Example:** Ben is rounding 63. On the number line, 63 sits closer to 60 than to 70, so he rounds down to 60.
 
 **Standards:** US 3.NBT
 
@@ -253,6 +297,14 @@
 **Example:** Zoe weighs a bag of rice. It has a mass of 2 kilograms.
 
 **Standards:** US 3.MD.A.2, IN Class III · 3.M.LO6
+
+### yard
+
+**Definition:** A customary unit of length. It is about as long as one big step.
+
+**Example:** Ivy measures the hallway with a yardstick. It is 12 yards long.
+
+**Standards:** US 3.MD
 
 ### standard unit
 
