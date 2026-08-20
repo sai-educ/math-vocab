@@ -14,10 +14,10 @@ sure what *how many are left* is asking.
 
 This tool explains every one of those words twice over: once as a short, plain
 definition, and once as a small story showing the word doing its job in a real
-situation. By default it shows the 197 words cited to the US Common Core State
+situation. By default it shows the 223 words cited to the US Common Core State
 Standards for Mathematics; a **Curriculum** control above the 3D graph lets a
 reader add the UK National Curriculum and India's NCERT syllabus, bringing the
-bank to 238 words across all three.
+bank to 264 words across all three.
 
 Free, open source, and it collects no data about anyone.
 
