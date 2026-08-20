@@ -791,7 +791,11 @@
     "definition": "The form of a thing. It is the outline you see.",
     "example": "Nina traces the lid of a jar onto paper. The shape she draws is a circle.",
     "misconception": "",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/k-g-shape-mosaic.gif",
+      "alt": "A colorful mosaic of triangles, circles, squares, and other shapes.",
+      "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 6"
+    }
   },
   {
     "id": "k-g-circle",
@@ -827,7 +831,11 @@
     "definition": "A shape with 3 straight sides and 3 corners.",
     "example": "Maya folds her napkin into a triangle. She counts 3 sides and 3 corners.",
     "misconception": "A triangle can be tall, wide, or tipped over. It still counts as long as it has 3 straight sides.",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/k-g-triangle-fractal.png",
+      "alt": "A large triangle made of many smaller triangles.",
+      "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 13"
+    }
   },
   {
     "id": "k-g-square",
@@ -845,7 +853,11 @@
     "definition": "A shape with 4 straight sides. All 4 sides are the same length.",
     "example": "Leo checks a sticky note against his ruler. All 4 sides match, so it is a square.",
     "misconception": "",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/k-g-square-video-thumb.png",
+      "alt": "A green square, captioned \"It's a green square.\"",
+      "credit": "Usable Math — Geometry: Lines and Lines of Symmetry, Slide 7"
+    }
   },
   {
     "id": "k-g-rectangle",
@@ -863,7 +875,11 @@
     "definition": "A shape with 4 straight sides and 4 corners. The sides across from each other match.",
     "example": "Ana measures the door. The two tall sides match. The two short sides match too. The door is a rectangle.",
     "misconception": "A square is a rectangle too. It is just a special one with all 4 sides the same.",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/k-g-rectangle-field.jpg",
+      "alt": "A rectangular soccer field, from a perimeter word problem.",
+      "credit": "Usable Math — Area and Perimeter, Slide 8"
+    }
   },
   {
     "id": "k-g-hexagon",
@@ -1221,7 +1237,11 @@
     "definition": "The amount you get when you put everything together.",
     "example": "Ivy has 3 red beads and 4 blue beads. She adds them to find the total: 7 beads.",
     "misconception": "",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/1-oa-total-dog-treats.png",
+      "alt": "Rows of dog bone treats, from a word problem about a daily total.",
+      "credit": "Usable Math — Multiplication and Division, Slide 5"
+    }
   },
   {
     "id": "1-oa-subtraction",
@@ -1491,7 +1511,11 @@
     "definition": "A chart that counts with small marks.",
     "example": "Theo makes a tally chart of bus riders. He draws one mark per rider. Every fifth mark crosses the other four.",
     "misconception": "",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/1-md-tally-chart-party-games.png",
+      "alt": "A \"Favorite Party Games\" table with tally marks counting votes.",
+      "credit": "Usable Math — Charts and Graphs, Slide 9"
+    }
   },
   {
     "id": "1-md-graph",
@@ -1509,7 +1533,11 @@
     "definition": "A picture that shows data so you can compare.",
     "example": "Nina graphs the class pets. The dog bar is the tallest, so dogs are the most common pet.",
     "misconception": "",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/1-md-graph-pictures-symbols.gif",
+      "alt": "A dashboard illustration with bar, line, and gauge charts.",
+      "credit": "Usable Math — Charts and Graphs, Slide 5"
+    }
   },
   {
     "id": "1-md-capacity",
@@ -1733,7 +1761,11 @@
     "definition": "The point where two sides of a shape meet. The plural is vertices.",
     "example": "Zoe traces a triangle with her finger. She counts 3 corners, or vertices, where the sides meet.",
     "misconception": "",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/1-g-vertex-dots.png",
+      "alt": "A cube's 8 corners marked as colored dots.",
+      "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 3 (Visual Vicuna)"
+    }
   },
   {
     "id": "1-g-quarter-turn",
@@ -2075,7 +2107,11 @@
     "definition": "A small unit of length. It is about as wide as your fingernail.",
     "example": "Leo lays his crayon along a ruler. The crayon is 9 centimeters long.",
     "misconception": "",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/2-md-centimeter-ruler.png",
+      "alt": "A tape measure next to small tools.",
+      "credit": "Usable Math — Measurement, Slide 8"
+    }
   },
   {
     "id": "2-md-meter",
@@ -2093,7 +2129,11 @@
     "definition": "A larger unit of length. It is about as wide as a door.",
     "example": "Ana measures the rug with a meter stick. She steps it out twice, so the rug is 2 meters long.",
     "misconception": "",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/2-md-meter-track.png",
+      "alt": "Runners racing on a track, a distance measured in meters.",
+      "credit": "Usable Math — Measurement, Slide 8"
+    }
   },
   {
     "id": "2-md-estimate",
@@ -2147,7 +2187,11 @@
     "definition": "A graph that uses bars to show amounts.",
     "example": "Zoe makes a bar graph of favorite fruits. The apple bar rises highest, so apples won.",
     "misconception": "",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/2-md-bar-graph-colorful.png",
+      "alt": "A bar graph with four colored bars of different heights.",
+      "credit": "Usable Math — Charts and Graphs, Slide 3"
+    }
   },
   {
     "id": "2-md-picture-graph",
@@ -2509,7 +2553,11 @@
     "definition": "Split into equal groups.",
     "example": "Omar has 12 grapes and 3 friends. He divides them evenly, so each friend gets 4.",
     "misconception": "",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/3-oa-division-cupcakes.gif",
+      "alt": "An animation dividing 52 cupcakes into 8 boxes, with some left over.",
+      "credit": "Usable Math — Multiplication and Division, Slide 19 (Visual Vicuna)"
+    }
   },
   {
     "id": "3-oa-quotient",
@@ -2545,7 +2593,11 @@
     "definition": "Splitting a number into equal groups. It is the opposite of multiplying.",
     "example": "Nina uses division to share 18 cookies among 3 friends. Each friend gets 6.",
     "misconception": "Division is the name for the operation. 'Divide' is the action word for doing it.",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/3-oa-division-cupcakes.gif",
+      "alt": "An animation dividing 52 cupcakes into 8 boxes, with some left over.",
+      "credit": "Usable Math — Multiplication and Division, Slide 19 (Visual Vicuna)"
+    }
   },
   {
     "id": "3-oa-equal-groups",
@@ -2931,7 +2983,11 @@
     "definition": "The amount of flat space a shape covers.",
     "example": "Nina tiles a table top with square tiles. She counts 24 tiles, so the area is 24 square units.",
     "misconception": "Area is the space inside. Perimeter is the trip around the edge.",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/3-md-area-grid.gif",
+      "alt": "A 10-by-10 grid of squares, for counting area.",
+      "credit": "Usable Math — Area and Perimeter, Slide 6"
+    }
   },
   {
     "id": "3-md-perimeter",
@@ -3061,7 +3117,11 @@
     "definition": "A metric unit of mass equal to 1,000 grams.",
     "example": "Zoe weighs a bag of rice. It has a mass of 2 kilograms.",
     "misconception": "",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/3-md-kilogram-scale.png",
+      "alt": "A bathroom scale, for measuring weight in kilograms.",
+      "credit": "Usable Math — Measurement, Slide 8"
+    }
   },
   {
     "id": "3-md-yard",
@@ -3079,7 +3139,11 @@
     "definition": "A customary unit of length. It is about as long as one big step.",
     "example": "Ivy measures the hallway with a yardstick. It is 12 yards long.",
     "misconception": "",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/3-md-yard-tape-measure.png",
+      "alt": "A close-up of a tape measure's markings.",
+      "credit": "Usable Math — Measurement, Slide 12"
+    }
   },
   {
     "id": "3-md-standard-unit",
@@ -3361,7 +3425,11 @@
     "definition": "What is still there after dividing into equal groups, with not enough for one more full group.",
     "example": "Leo splits 14 pencils into groups of 4. He makes 3 full groups, with 2 pencils left over.",
     "misconception": "'Left over' and 'remainder' mean the same thing. Remainder is just the math word for it.",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/4-oa-left-over-strawberries.gif",
+      "alt": "An animation dividing 47 strawberries into 5 baskets, with 2 left over.",
+      "credit": "Usable Math — Multiplication and Division, Slide 11 (Visual Vicuna)"
+    }
   },
   {
     "id": "4-oa-variable",
@@ -3729,7 +3797,11 @@
     "definition": "The total distance around the outside of a shape.",
     "example": "Ben fences a garden 8 feet by 3 feet. He adds 8 + 3 + 8 + 3 and needs 22 feet of fence.",
     "misconception": "",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/4-md-perimeter-field.png",
+      "alt": "An aerial view of a stadium track and field, its running track forming the perimeter.",
+      "credit": "Usable Math — Area and Perimeter, Slide 8"
+    }
   },
   {
     "id": "4-md-formula",
@@ -3895,7 +3967,11 @@
     "definition": "An angle smaller than a square corner.",
     "example": "Maya opens a book just a crack. The narrow angle at the spine is acute.",
     "misconception": "",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/4-g-acute-angle-compare.png",
+      "alt": "An acute angle drawn next to a right angle for comparison.",
+      "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 11"
+    }
   },
   {
     "id": "4-g-obtuse-angle",
@@ -3967,7 +4043,11 @@
     "definition": "A triangle with exactly 2 sides the same length.",
     "example": "Ivy measures a triangle flag. Two sides are 6 inches, and the third is 4 inches, so it is isosceles.",
     "misconception": "A triangle can be isosceles even if it does not look symmetrical at first glance. Check the side lengths, not just the shape.",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/4-g-isosceles-triangle-icecream.png",
+      "alt": "A tall ice cream cone, its two slanted sides the same length.",
+      "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 13"
+    }
   },
   {
     "id": "4-g-parallel-lines",
@@ -3985,7 +4065,11 @@
     "definition": "Lines that stay the same distance apart and never meet.",
     "example": "Ben looks down the train tracks. The rails run side by side forever, so they are parallel.",
     "misconception": "",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/4-g-parallel-lines-chairs.png",
+      "alt": "Two striped beach chairs, their stripes running parallel.",
+      "credit": "Usable Math — Geometry: Lines and Lines of Symmetry, Slide 5"
+    }
   },
   {
     "id": "4-g-perpendicular-lines",
@@ -4003,7 +4087,11 @@
     "definition": "Lines that cross and make a square corner.",
     "example": "Ivy studies the window frame. The upright meets the sill at a square corner, so those lines are perpendicular.",
     "misconception": "",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/4-g-perpendicular-lines-cross.jpg",
+      "alt": "Two lines crossing at a right angle.",
+      "credit": "Usable Math — Geometry: Lines and Lines of Symmetry, Slide 3"
+    }
   },
   {
     "id": "4-g-line-of-symmetry",
@@ -4751,7 +4839,11 @@
     "definition": "Two numbers in order that give a point's spot. The across number comes first.",
     "example": "Ben plots (2, 5). He moves 2 across, then 5 up. The order changes where he lands.",
     "misconception": "Swapping the numbers lands you somewhere else. (2, 5) is not the same as (5, 2).",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/5-g-ordered-pair-axes.png",
+      "alt": "A blank coordinate grid with labeled x and y axes.",
+      "credit": "Usable Math — Geometry: Maps + Grids + Ordered Pairs, Slide 11 (Visual Vicuna)"
+    }
   },
   {
     "id": "5-g-classify",
