@@ -179,6 +179,15 @@ def main() -> None:
     else:
         print("Warning: roadmap.html not found at repo root; public/roadmap.html was not updated.")
 
+    # mapping.html is an internal, hand-authored cross-reference (Usable Math
+    # slide/hint -> vocab term) — same self-contained, copy-as-is pattern as
+    # roadmap.html, and not linked from the app itself.
+    mapping_src = os.path.join(HERE, "mapping.html")
+    if os.path.exists(mapping_src):
+        os.makedirs(public_dir, exist_ok=True)
+        shutil.copyfile(mapping_src, os.path.join(public_dir, "mapping.html"))
+        print(f"Copied {mapping_src} -> {os.path.join(public_dir, 'mapping.html')}")
+
     sun_src = os.path.join(HERE, "assets", "sun.glb")
     if os.path.exists(sun_src):
         public_assets_dir = os.path.join(public_dir, "assets")
@@ -187,6 +196,20 @@ def main() -> None:
         print(f"Copied {sun_src} -> {os.path.join(public_assets_dir, 'sun.glb')}")
     else:
         print("Warning: assets/sun.glb not found; the root node will fall back to its plain sphere.")
+
+    # Term visuals (assets/visuals/*) follow the same lazy-loaded, not-inlined
+    # pattern as the sun model: fetched on demand when a term with one is
+    # opened, rather than bloated into the single-file HTML.
+    visuals_src_dir = os.path.join(HERE, "assets", "visuals")
+    if os.path.isdir(visuals_src_dir):
+        public_visuals_dir = os.path.join(public_dir, "assets", "visuals")
+        os.makedirs(public_visuals_dir, exist_ok=True)
+        for name in os.listdir(visuals_src_dir):
+            shutil.copyfile(
+                os.path.join(visuals_src_dir, name),
+                os.path.join(public_visuals_dir, name),
+            )
+        print(f"Copied {visuals_src_dir} -> {public_visuals_dir}")
 
 
 if __name__ == "__main__":
