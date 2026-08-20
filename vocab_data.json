@@ -95,7 +95,11 @@
     "definition": "The same amount. Not more and not less.",
     "example": "Zoe has 3 red blocks. Omar has 3 blue blocks. The groups are equal. Each one has 3.",
     "misconception": "",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/k-cc-equal-spinner.jpg",
+      "alt": "Three circles each split into 8 equal wedges, showing 2/8, 1/4, and 1/2 shaded.",
+      "credit": "Usable Math — Fractions, Slide 11 (Visual Vicuna)"
+    }
   },
   {
     "id": "k-cc-greater-than",
@@ -531,7 +535,11 @@
     "definition": "Words that mean to subtract. Some things are removed from a group.",
     "example": "Ben has 6 balloons and 2 float away. He works out 6 take away 2, and finds 4 left.",
     "misconception": "",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/1-oa-how-many-more-wildwood-chart.png",
+      "alt": "A bar chart comparing Wildwood's 1,393 seats to Mark's Meadow's 682 seats, with the gap between them marked as the difference.",
+      "credit": "Usable Math — Add & Take Away: How Many More, Slide 3 (Visual Vicuna)"
+    }
   },
   {
     "id": "k-nbt-ten",
@@ -2193,7 +2201,11 @@
     "definition": "A unit of money worth 100 cents.",
     "example": "Omar saves 4 quarters in a jar. Together they make 1 dollar.",
     "misconception": "",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/2-md-dollar-cents-comic-prices.png",
+      "alt": "Three comic books priced at $1.00, $2.00, and $2.25.",
+      "credit": "Usable Math — Money, Slide 18"
+    }
   },
   {
     "id": "2-md-quarter-coin",
@@ -2229,7 +2241,11 @@
     "definition": "A small unit of money. 100 cents make 1 dollar.",
     "example": "Omar counts 3 dimes. Each dime is 10 cents, so he has 30 cents.",
     "misconception": "",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/2-md-dollar-cents-comic-prices.png",
+      "alt": "Three comic books priced at $1.00, $2.00, and $2.25.",
+      "credit": "Usable Math — Money, Slide 18"
+    }
   },
   {
     "id": "2-md-money",
@@ -2247,7 +2263,11 @@
     "definition": "Coins and bills used to buy and sell things.",
     "example": "Maya counts her money before the school fair: 2 dollar bills and 3 quarters.",
     "misconception": "",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/2-md-money-cash-coins.gif",
+      "alt": "An illustration of stacked cash and coins.",
+      "credit": "Usable Math — Money, Slide 5"
+    }
   },
   {
     "id": "2-md-price",
@@ -2265,7 +2285,11 @@
     "definition": "How much money something costs.",
     "example": "Leo checks the price tag on a toy car. It costs 4 dollars.",
     "misconception": "",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/2-md-price-toy-store.gif",
+      "alt": "Toy figures on a store shelf, from the toy-store price problem.",
+      "credit": "Usable Math — Money, Slide 16"
+    }
   },
   {
     "id": "2-md-venn-diagram",
@@ -2759,7 +2783,11 @@
     "definition": "A number that names part of a whole.",
     "example": "Nina cuts a pie into 4 equal slices and takes 1. She ate 1/4 of the pie.",
     "misconception": "The parts have to be equal. Four uneven slices do not make fourths.",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/3-nf-fraction-cake-slices.png",
+      "alt": "A chocolate cake marked with lines dividing it into 8 equal slices.",
+      "credit": "Usable Math — Fractions, Slide 5"
+    }
   },
   {
     "id": "3-nf-numerator",
@@ -3535,7 +3563,11 @@
     "definition": "A fraction with a top number smaller than its bottom number. It is less than one whole.",
     "example": "Zoe writes 3/4 for the pizza slices she ate. Since 3 is smaller than 4, it is a proper fraction.",
     "misconception": "A proper fraction is not 'more correct' than an improper one. It just names an amount less than a whole.",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/4-nf-proper-fraction-tulips.gif",
+      "alt": "An animated tally of 7 boxes filling in with tulip icons, one at a time.",
+      "credit": "Usable Math — Fractions, Slide 17 (Visual Vicuna)"
+    }
   },
   {
     "id": "4-nf-common-denominator",
