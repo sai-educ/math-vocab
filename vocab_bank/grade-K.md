@@ -123,6 +123,24 @@
 
 **Standards:** UK KS1 position language
 
+### numeral
+
+**Definition:** The written symbol for a number, like 5 or 12.
+
+**Example:** Leo sees the numeral 7 on the classroom door. It tells him room 7 is his room.
+
+**Common misconception:** A numeral is the symbol you write. The number is the amount it stands for.
+
+**Standards:** US K.CC
+
+### unequal
+
+**Definition:** Not the same amount. One group has more or fewer than the other.
+
+**Example:** Ana has 4 shells and Ben has 6 shells. Their groups are unequal, because 4 and 6 are not the same.
+
+**Standards:** US K.CC
+
 
 ## Operations & Algebraic Thinking (K.OA)
 
@@ -213,6 +231,32 @@
 **Common misconception:** A pattern needs to repeat more than once. Two shapes in a row are not a pattern yet.
 
 **Standards:** IN Class I · 1.M.LO7, UK KS1 glossary
+
+### plus sign
+
+**Definition:** The sign (+) that tells you to add.
+
+**Example:** Maya writes 4 + 3 on her paper. She sees the plus sign and knows to add the two numbers together.
+
+**Standards:** US K.OA
+
+### minus
+
+**Definition:** Another word for subtract. It means to take some away.
+
+**Example:** Sam has 5 pretzels and eats 2. He works out 5 minus 2, and finds 3 pretzels left.
+
+**Common misconception:** 'Minus' means the same thing as 'take away', even though the two words look nothing alike.
+
+**Standards:** US K.OA
+
+### take away
+
+**Definition:** Words that mean to subtract. Some things are removed from a group.
+
+**Example:** Ben has 6 balloons and 2 float away. He works out 6 take away 2, and finds 4 left.
+
+**Standards:** US K.OA
 
 
 ## Number & Operations in Base Ten (K.NBT)
