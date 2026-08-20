@@ -238,6 +238,40 @@
     "misconception": ""
   },
   {
+    "id": "k-cc-numeral",
+    "term": "numeral",
+    "grade": "K",
+    "domainCode": "CC",
+    "domain": "Counting & Cardinality",
+    "standard": "K.CC",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.CC"
+      }
+    ],
+    "definition": "The written symbol for a number, like 5 or 12.",
+    "example": "Leo sees the numeral 7 on the classroom door. It tells him room 7 is his room.",
+    "misconception": "A numeral is the symbol you write. The number is the amount it stands for."
+  },
+  {
+    "id": "k-cc-unequal",
+    "term": "unequal",
+    "grade": "K",
+    "domainCode": "CC",
+    "domain": "Counting & Cardinality",
+    "standard": "K.CC",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.CC"
+      }
+    ],
+    "definition": "Not the same amount. One group has more or fewer than the other.",
+    "example": "Ana has 4 shells and Ben has 6 shells. Their groups are unequal, because 4 and 6 are not the same.",
+    "misconception": ""
+  },
+  {
     "id": "k-oa-add",
     "term": "add",
     "grade": "K",
@@ -410,6 +444,57 @@
     "definition": "A set of shapes, colors, or numbers that repeat in the same order.",
     "example": "Theo lines up blocks: red, blue, red, blue. He says the pattern will keep going: red, blue, red.",
     "misconception": "A pattern needs to repeat more than once. Two shapes in a row are not a pattern yet."
+  },
+  {
+    "id": "k-oa-plus-sign",
+    "term": "plus sign",
+    "grade": "K",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "K.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.OA"
+      }
+    ],
+    "definition": "The sign (+) that tells you to add.",
+    "example": "Maya writes 4 + 3 on her paper. She sees the plus sign and knows to add the two numbers together.",
+    "misconception": ""
+  },
+  {
+    "id": "k-oa-minus",
+    "term": "minus",
+    "grade": "K",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "K.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.OA"
+      }
+    ],
+    "definition": "Another word for subtract. It means to take some away.",
+    "example": "Sam has 5 pretzels and eats 2. He works out 5 minus 2, and finds 3 pretzels left.",
+    "misconception": "'Minus' means the same thing as 'take away', even though the two words look nothing alike."
+  },
+  {
+    "id": "k-oa-take-away",
+    "term": "take away",
+    "grade": "K",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "K.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "K.OA"
+      }
+    ],
+    "definition": "Words that mean to subtract. Some things are removed from a group.",
+    "example": "Ben has 6 balloons and 2 float away. He works out 6 take away 2, and finds 4 left.",
+    "misconception": ""
   },
   {
     "id": "k-nbt-ten",
@@ -1032,6 +1117,40 @@
     "misconception": ""
   },
   {
+    "id": "1-oa-total",
+    "term": "total",
+    "grade": "1",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "1.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.OA"
+      }
+    ],
+    "definition": "The amount you get when you put everything together.",
+    "example": "Ivy has 3 red beads and 4 blue beads. She adds them to find the total: 7 beads.",
+    "misconception": ""
+  },
+  {
+    "id": "1-oa-subtraction",
+    "term": "subtraction",
+    "grade": "1",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "1.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.OA"
+      }
+    ],
+    "definition": "Taking one number away from another to find what is left.",
+    "example": "Zoe uses subtraction to solve 9 - 4. She takes 4 away from 9 and finds 5.",
+    "misconception": "Subtraction is the name for the operation. 'Subtract' is the action word for doing it."
+  },
+  {
     "id": "1-nbt-place-value",
     "term": "place value",
     "grade": "1",
@@ -1374,6 +1493,23 @@
     "definition": "Two equal parts of one whole.",
     "example": "Leo cuts an apple into halves. Each piece is one of two equal parts.",
     "misconception": ""
+  },
+  {
+    "id": "1-g-half",
+    "term": "half",
+    "grade": "1",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "1.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "1.G"
+      }
+    ],
+    "definition": "One of two equal parts of a whole.",
+    "example": "Sam cuts his sandwich into 2 equal parts and eats half.",
+    "misconception": "A piece only counts as 'half' if both pieces are the same size. Two uneven pieces are not halves."
   },
   {
     "id": "1-g-fourths",
@@ -1771,6 +1907,23 @@
     "misconception": ""
   },
   {
+    "id": "2-nbt-order",
+    "term": "order",
+    "grade": "2",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "2.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.NBT"
+      }
+    ],
+    "definition": "Arrange numbers from smallest to biggest, or biggest to smallest.",
+    "example": "Ana lines up the numbers 52, 18, and 40 in order: 18, 40, 52.",
+    "misconception": ""
+  },
+  {
     "id": "2-md-centimeter",
     "term": "centimeter",
     "grade": "2",
@@ -1921,6 +2074,57 @@
     ],
     "definition": "A coin worth 25 cents.",
     "example": "Maya has 3 quarters. She counts 25, 50, 75. She has 75 cents.",
+    "misconception": ""
+  },
+  {
+    "id": "2-md-cents",
+    "term": "cents",
+    "grade": "2",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "2.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.MD"
+      }
+    ],
+    "definition": "A small unit of money. 100 cents make 1 dollar.",
+    "example": "Omar counts 3 dimes. Each dime is 10 cents, so he has 30 cents.",
+    "misconception": ""
+  },
+  {
+    "id": "2-md-money",
+    "term": "money",
+    "grade": "2",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "2.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.MD"
+      }
+    ],
+    "definition": "Coins and bills used to buy and sell things.",
+    "example": "Maya counts her money before the school fair: 2 dollar bills and 3 quarters.",
+    "misconception": ""
+  },
+  {
+    "id": "2-md-price",
+    "term": "price",
+    "grade": "2",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "2.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.MD"
+      }
+    ],
+    "definition": "How much money something costs.",
+    "example": "Leo checks the price tag on a toy car. It costs 4 dollars.",
     "misconception": ""
   },
   {
@@ -2149,6 +2353,23 @@
     "misconception": ""
   },
   {
+    "id": "3-oa-division",
+    "term": "division",
+    "grade": "3",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "3.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.OA"
+      }
+    ],
+    "definition": "Splitting a number into equal groups. It is the opposite of multiplying.",
+    "example": "Nina uses division to share 18 cookies among 3 friends. Each friend gets 6.",
+    "misconception": "Division is the name for the operation. 'Divide' is the action word for doing it."
+  },
+  {
     "id": "3-oa-equal-groups",
     "term": "equal groups",
     "grade": "3",
@@ -2255,6 +2476,57 @@
     "misconception": ""
   },
   {
+    "id": "3-oa-inverse",
+    "term": "inverse",
+    "grade": "3",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "3.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.OA"
+      }
+    ],
+    "definition": "An action that undoes another action. Adding and taking away undo each other.",
+    "example": "Omar adds 6 + 3 to get 9. He checks it with the inverse: 9 - 3 gets him back to 6.",
+    "misconception": ""
+  },
+  {
+    "id": "3-oa-check",
+    "term": "check",
+    "grade": "3",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "3.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.OA"
+      }
+    ],
+    "definition": "Make sure an answer is right, often by working it a different way.",
+    "example": "Maya solves 15 - 7 = 8. To check, she adds 8 + 7 and gets back to 15.",
+    "misconception": "Checking is not redoing the exact same steps. Using the inverse operation catches more mistakes."
+  },
+  {
+    "id": "3-oa-increment",
+    "term": "increment",
+    "grade": "3",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "3.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.OA"
+      }
+    ],
+    "definition": "A set amount added each time you count up.",
+    "example": "Leo counts by 5s: 5, 10, 15, 20. Each increment adds 5 more.",
+    "misconception": ""
+  },
+  {
     "id": "3-nbt-round",
     "term": "round",
     "grade": "3",
@@ -2270,6 +2542,23 @@
     "definition": "Change a number to a nearby easier one.",
     "example": "Zoe rounds 47 to the nearest ten. On the number line 47 sits closer to 50 than to 40, so she rounds up.",
     "misconception": "Look at where the number really sits. Do not just chop the last digit off."
+  },
+  {
+    "id": "3-nbt-rounding",
+    "term": "rounding",
+    "grade": "3",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "3.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.NBT"
+      }
+    ],
+    "definition": "Changing a number to a nearby ten or hundred, to make it easier to work with.",
+    "example": "Ben is rounding 63. On the number line, 63 sits closer to 60 than to 70, so he rounds down to 60.",
+    "misconception": ""
   },
   {
     "id": "3-nbt-place-value",
@@ -2565,6 +2854,23 @@
     "misconception": ""
   },
   {
+    "id": "3-md-yard",
+    "term": "yard",
+    "grade": "3",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "3.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.MD"
+      }
+    ],
+    "definition": "A customary unit of length. It is about as long as one big step.",
+    "example": "Ivy measures the hallway with a yardstick. It is 12 yards long.",
+    "misconception": ""
+  },
+  {
     "id": "3-md-standard-unit",
     "term": "standard unit",
     "grade": "3",
@@ -2815,6 +3121,23 @@
     "misconception": ""
   },
   {
+    "id": "4-oa-left-over",
+    "term": "left over",
+    "grade": "4",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "4.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.OA"
+      }
+    ],
+    "definition": "What is still there after dividing into equal groups, with not enough for one more full group.",
+    "example": "Leo splits 14 pencils into groups of 4. He makes 3 full groups, with 2 pencils left over.",
+    "misconception": "'Left over' and 'remainder' mean the same thing. Remainder is just the math word for it."
+  },
+  {
     "id": "4-oa-variable",
     "term": "variable",
     "grade": "4",
@@ -2904,6 +3227,40 @@
     "misconception": ""
   },
   {
+    "id": "4-nbt-algorithm",
+    "term": "algorithm",
+    "grade": "4",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "4.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.NBT"
+      }
+    ],
+    "definition": "A set of steps that always gets you to the answer, done in the same order every time.",
+    "example": "Nina follows an algorithm every time she adds two big numbers. First she lines up the places. Then she adds one column at a time.",
+    "misconception": "An algorithm is not one fixed set of steps for every problem. Different kinds of problems can each have their own algorithm."
+  },
+  {
+    "id": "4-nbt-hindu-arabic-numbers",
+    "term": "hindu-arabic numbers",
+    "grade": "4",
+    "domainCode": "NBT",
+    "domain": "Number & Operations in Base Ten",
+    "standard": "4.NBT",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.NBT"
+      }
+    ],
+    "definition": "The number symbols 0 through 9 that we use every day, written in a base-ten system.",
+    "example": "Theo writes 2,048 using Hindu-Arabic numbers. Each digit's place tells how much it is worth.",
+    "misconception": ""
+  },
+  {
     "id": "4-nf-equivalent-fraction",
     "term": "equivalent fraction",
     "grade": "4",
@@ -2953,6 +3310,23 @@
     "definition": "A fraction whose top number is bigger than its bottom.",
     "example": "Ben has 5 quarter slices of pie. He writes 5/4, which is more than one whole pie.",
     "misconception": "An improper fraction is not wrong. It is just written as parts instead of wholes."
+  },
+  {
+    "id": "4-nf-proper-fraction",
+    "term": "proper fraction",
+    "grade": "4",
+    "domainCode": "NF",
+    "domain": "Number & Operations—Fractions",
+    "standard": "4.NF",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.NF"
+      }
+    ],
+    "definition": "A fraction with a top number smaller than its bottom number. It is less than one whole.",
+    "example": "Zoe writes 3/4 for the pizza slices she ate. Since 3 is smaller than 4, it is a proper fraction.",
+    "misconception": "A proper fraction is not 'more correct' than an improper one. It just names an amount less than a whole."
   },
   {
     "id": "4-nf-common-denominator",
@@ -3180,6 +3554,23 @@
     "misconception": ""
   },
   {
+    "id": "4-md-kilometer",
+    "term": "kilometer",
+    "grade": "4",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "4.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.MD"
+      }
+    ],
+    "definition": "A metric unit for long distances. It equals 1,000 meters.",
+    "example": "Maya's family drives 5 kilometers to the lake, much farther than she could walk.",
+    "misconception": ""
+  },
+  {
     "id": "4-g-point",
     "term": "point",
     "grade": "4",
@@ -3280,6 +3671,40 @@
     "definition": "A square corner. It measures 90 degrees.",
     "example": "Ana checks the corner of her paper against a tile. They match exactly, so it is a right angle.",
     "misconception": ""
+  },
+  {
+    "id": "4-g-equilateral-triangle",
+    "term": "equilateral triangle",
+    "grade": "4",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "4.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.G"
+      }
+    ],
+    "definition": "A triangle with all 3 sides the same length.",
+    "example": "Ben checks a triangle tile with his ruler. All 3 sides measure 4 centimeters, so it is equilateral.",
+    "misconception": ""
+  },
+  {
+    "id": "4-g-isosceles-triangle",
+    "term": "isosceles triangle",
+    "grade": "4",
+    "domainCode": "G",
+    "domain": "Geometry",
+    "standard": "4.G",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.G"
+      }
+    ],
+    "definition": "A triangle with exactly 2 sides the same length.",
+    "example": "Ivy measures a triangle flag. Two sides are 6 inches, and the third is 4 inches, so it is isosceles.",
+    "misconception": "A triangle can be isosceles even if it does not look symmetrical at first glance. Check the side lengths, not just the shape."
   },
   {
     "id": "4-g-parallel-lines",
@@ -3920,6 +4345,23 @@
     "definition": "Change a measure to a different unit.",
     "example": "Nina has 2,000 meters left to run. She converts it and sees that is just 2 kilometers.",
     "misconception": ""
+  },
+  {
+    "id": "5-md-knot",
+    "term": "knot",
+    "grade": "5",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "5.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "5.MD"
+      }
+    ],
+    "definition": "A unit used to measure the speed of a boat or the wind. It is not a unit of length.",
+    "example": "Omar reads that a ship is sailing at 12 knots, meaning it covers 12 nautical miles every hour.",
+    "misconception": "A knot already means a speed, not a distance. Nobody says 'knots per hour'."
   },
   {
     "id": "5-md-coordinate-plane",
