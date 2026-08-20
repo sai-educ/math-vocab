@@ -25,7 +25,7 @@
 
 **Definition:** The answer you get when you subtract.
 
-**Example:** Ben has 9 grapes and eats 4. He subtracts to find the difference. It is 5 grapes.
+**Example:** Gordon Stadium seats 79,407 people. Hillcrest Stadium seats 58,868 people. The difference tells how many more seats Gordon Stadium has: 20,539.
 
 **Common misconception:** In math, 'difference' does not mean how two things are unlike. It is the subtraction answer.
 
