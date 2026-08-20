@@ -81,6 +81,24 @@
 
 **Standards:** US 1.OA
 
+### total
+
+**Definition:** The amount you get when you put everything together.
+
+**Example:** Ivy has 3 red beads and 4 blue beads. She adds them to find the total: 7 beads.
+
+**Standards:** US 1.OA
+
+### subtraction
+
+**Definition:** Taking one number away from another to find what is left.
+
+**Example:** Zoe uses subtraction to solve 9 - 4. She takes 4 away from 9 and finds 5.
+
+**Common misconception:** Subtraction is the name for the operation. 'Subtract' is the action word for doing it.
+
+**Standards:** US 1.OA
+
 
 ## Number & Operations in Base Ten (1.NBT)
 
@@ -255,6 +273,16 @@
 **Definition:** Two equal parts of one whole.
 
 **Example:** Leo cuts an apple into halves. Each piece is one of two equal parts.
+
+**Standards:** US 1.G
+
+### half
+
+**Definition:** One of two equal parts of a whole.
+
+**Example:** Sam cuts his sandwich into 2 equal parts and eats half.
+
+**Common misconception:** A piece only counts as 'half' if both pieces are the same size. Two uneven pieces are not halves.
 
 **Standards:** US 1.G
 
