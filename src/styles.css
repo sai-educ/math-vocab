@@ -682,6 +682,13 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
 }
 .story-heading span{display:flex;}
 .story-body{margin:0;font-size:15.5px;line-height:1.7;color:var(--text);}
+.term-visual{
+  margin:0 0 18px;padding:12px;border-radius:14px;
+  background:var(--panel2);border:1px solid var(--line);
+  box-shadow:var(--shadow-sm);text-align:center;
+}
+.term-visual img{max-width:100%;height:auto;border-radius:8px;display:block;margin:0 auto;}
+.term-visual figcaption{margin:8px 2px 0;font-size:11px;color:var(--text-muted);text-align:right;}
 #detail .block{margin-bottom:18px;}
 #detail .block-label{
   font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--text-dim);
