@@ -215,9 +215,9 @@ VISUALS = {
         "credit": "Usable Math — Charts and Graphs, Slide 5",
     },
     "1-md-tally-chart": {
-        "src": "assets/visuals/1-md-tally-chart-party-games.png",
-        "alt": "A \"Favorite Party Games\" table with tally marks counting votes.",
-        "credit": "Usable Math — Charts and Graphs, Slide 9",
+        "src": "assets/visuals/1-md-tally-chart-numbers-to-ten.png",
+        "alt": "A table pairing the numbers 1 through 10 with their matching tally marks.",
+        "credit": "Usable Math — Charts and Graphs, Slide 21",
     },
     "4-oa-prime-number": {
         "src": "assets/visuals/4-oa-prime-number-seven.jpg",
@@ -243,6 +243,11 @@ VISUALS = {
         "src": "assets/visuals/3-nbt-rounding-pencils.png",
         "alt": "Rows of colored pencils, from a rounding word problem about packs of pencils.",
         "credit": "Usable Math — Estimation, Slide 5",
+    },
+    "1-nbt-place-value": {
+        "src": "assets/visuals/1-nbt-place-value-counters-chart.gif",
+        "alt": "An animated place-value chart for 52,068: colored counters stack into columns as the digits break out into 5 ten-thousands, 2 thousands, 0 hundreds, 6 tens, and 8 ones.",
+        "credit": "Usable Math — Place Value, Slide 3",
     },
 }
 
