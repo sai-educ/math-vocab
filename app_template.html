@@ -42,6 +42,26 @@ __STYLES__
     </div>
     <div class="header-actions">
       <button id="soundBtn" class="header-btn" type="button" aria-pressed="true"></button>
+      <div class="cat-picker">
+        <button id="catSettingsBtn" class="header-btn" type="button"
+                aria-haspopup="true" aria-expanded="false" aria-controls="catSettingsPanel">
+          <span class="btn-icon" aria-hidden="true"></span><span class="btn-text">Cat</span>
+        </button>
+        <div id="catSettingsPanel" class="cat-settings-panel" role="group" aria-label="Pixel cat settings" hidden>
+          <label class="cat-settings-toggle">
+            <input type="checkbox" id="catShowCheckbox">
+            <span>Show the pixel cat</span>
+          </label>
+          <div class="cat-skin-picker-wrap">
+            <p class="cat-skin-picker-hint">Choose a colour:</p>
+            <div id="catSkinPicker" class="cat-skin-picker"></div>
+            <!-- The cat's hints are otherwise only offered on its own timer,
+                 and the sprite is decorative and not focusable — so this is
+                 what keeps them reachable by keyboard and screen reader. -->
+            <button id="catTipBtn" class="cat-tip-btn" type="button">Ask the cat for a tip</button>
+          </div>
+        </div>
+      </div>
       <button id="aboutBtn" class="header-btn" type="button" aria-haspopup="dialog">
         <span class="btn-icon" aria-hidden="true"></span><span class="btn-text">About</span>
       </button>
@@ -183,6 +203,26 @@ __STYLES__
         <button id="resetProgressNo" class="stats-reset-no" type="button" aria-label="No, keep my progress">No</button>
       </span>
     </span>
+
+    <!-- Decorative companion, not informational — its speech bubble only ever
+         repeats what the panels above already show, so it stays out of the
+         accessibility tree rather than doubling up srAnnounce, and its hints
+         are reachable instead from "Ask the cat for a tip" in the Cat menu.
+         Pinned to the RIGHT end of #stats's top border (see .cat-widget), so
+         the cat keeps to that corner at every viewport width.
+
+         The bubble is a sibling of the sprite, not a child: both are placed
+         from JS, but the bubble is clamped inside the strip while the cat is
+         not, so a line spoken from the corner cannot run off the page. -->
+    <div id="catWidget" class="cat-widget" aria-hidden="true">
+      <div id="catBubble" class="cat-bubble" hidden>
+        <span id="catBubbleText"></span>
+        <span id="catBubbleTail" class="cat-bubble-tail"></span>
+      </div>
+      <div id="catUnit" class="cat-unit">
+        <div id="catSprite" class="cat-sprite"></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -254,6 +294,17 @@ __STYLES__
         by SebastianSosnowski, licensed under
         <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">Creative
         Commons Attribution 4.0</a>.
+      </p>
+    </div>
+
+    <div class="about-repo">
+      <h3>Pixel cat</h3>
+      <p>
+        The corner companion's sprite sheet is from
+        <a href="https://github.com/KINGS-MZ/PixelCat" target="_blank" rel="noopener noreferrer">KINGS-MZ/PixelCat</a>
+        by Imad El Khaider, used under the
+        <a href="https://opensource.org/license/mit" target="_blank" rel="noopener noreferrer">MIT licence</a>.
+        Only the artwork is reused; the coaching it does here is ours.
       </p>
     </div>
 
