@@ -38,6 +38,7 @@ function renderAll() {
   updateInstruction();
   updateSpotlight();
   Graph.focus(state);
+  CatWidget.reactToState(state, { seen: visitedTerms.size });
 }
 
 // ---- selection ----------------------------------------------------------
@@ -58,14 +59,22 @@ function selectDomain(code) {
 }
 
 function selectTerm(id) {
+  // Before renderAll(), whose markVisited() would otherwise erase the
+  // difference between a first look and a revisit.
+  CatWidget.noteWordOpened(visitedTerms.has(id));
   state = { ...state, term: id };
   renderAll();
   Sound.play('word');
+  // After renderAll()'s own reactToState() bubble, so a fast click-through
+  // streak in the word list (step 3) overrides the routine word-definition
+  // line rather than getting immediately overwritten by it.
+  CatWidget.trackWordClick();
   const t = termById(id);
   if (t) announce(`${t.term}. ${t.definition} For example: ${t.example}`);
 }
 
 function jumpToTerm(t) {
+  CatWidget.noteWordOpened(visitedTerms.has(t.id));
   state = { grade: t.grade, domainCode: t.domainCode, term: t.id };
   clearSearch();
   renderAll();
@@ -102,7 +111,9 @@ function applyStandardsChange() {
 
   state = { grade, domainCode, term };
   renderAll();
-  announce(`Showing ${[...activeStandards].map((c) => STANDARD_LABELS[c]).join(', ')}.`);
+  CatWidget.onStandardsChange();
+  const labels = [...activeStandards].map((c) => STANDARD_LABELS[c]).join(', ');
+  announce(`Showing ${labels}.`);
 }
 
 function clearSearch() {
@@ -214,6 +225,10 @@ function boot() {
   About.init();
   ResetProgress.init();
   Curriculum.init();
+  CatWidget.init();
+  // After CatWidget.init(), which loads the stored colour and visibility the
+  // Cat menu reflects.
+  CatSettings.init();
   initPanelResizers();
   renderAll();
 

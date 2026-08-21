@@ -45,6 +45,27 @@ const STORAGE_KEYS = {
   topicsSectionHeight: 'mathVocabTopicsSectionHeight',
   showGradeLabels: 'mathVocabShowGradeLabels',
   activeStandards: 'mathVocabActiveStandards',
+  showCat: 'mathVocabShowCat',
+  catSkin: 'mathVocabCatSkin',
+};
+
+// ---- pixel cat mascot -------------------------------------------------
+
+/* Sprite sheet from KINGS-MZ/PixelCat (github.com/KINGS-MZ/PixelCat), MIT
+   licensed — see assets/cat/cat_sheet.png, src/cat.js for the engine and
+   src/catDialogue.js for what it says.
+
+   The sheet is drawn as a gray tabby; the other colourways are the source
+   project's own CSS filters over that same art, so three skins cost one
+   39KB image rather than three. */
+const CAT_SKINS = ['white', 'orange', 'rainbow'];
+const CAT_SKIN_LABELS = { white: 'Gray tabby', orange: 'Ginger', rainbow: 'Rainbow' };
+const CAT_SKIN_FILTERS = {
+  white: 'none',
+  orange: 'sepia(1) saturate(8) hue-rotate(-35deg) brightness(0.95) contrast(1.1)',
+  // The still frame of the animated cycle in cat.js, and the whole of it
+  // when the OS asks for reduced motion.
+  rainbow: 'sepia(1) saturate(7) hue-rotate(200deg) brightness(1.08) contrast(1.08)',
 };
 
 // ---- curricula ------------------------------------------------------------

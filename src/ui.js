@@ -203,6 +203,9 @@ function renderSearchResults(list, heading, headingText) {
 
   heading.classList.remove('dim');
   headingText.textContent = `Search results (${matches.length})`;
+  // The cat covers the empty-result case, which is the one place in the app
+  // a child can land on a genuinely blank panel.
+  CatWidget.onSearch(searchQuery, matches.length);
 
   if (!matches.length) {
     list.innerHTML = '<p class="placeholder-text">No terms match your search.</p>';
