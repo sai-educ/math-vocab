@@ -27,6 +27,7 @@ in an IIFE exposed as `window.Cuelume`.
 """
 import base64
 import json
+import math
 import os
 import re
 import shutil
@@ -35,6 +36,66 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(HERE, "src")
 CUELUME = os.path.join(HERE, "node_modules", "cuelume", "dist")
 INTER_FILES = os.path.join(HERE, "node_modules", "@fontsource", "inter", "files")
+
+# Mirrors the layout math in src/graph3d.js's buildGraph() (GRADES, RG/RD/RT,
+# domainsForGradeAll/termsForAll) so the landing page's decorative backdrop is
+# the same shaped constellation as the real app, without shipping the app's
+# vocab data, definitions or icons to render it — only bare positions, grouped
+# by level and (for the domain shape/colour) domain code.
+GRAPH_GRADES = ["K", "1", "2", "3", "4", "5"]
+GRAPH_DOMAIN_ORDER = ["CC", "OA", "NBT", "NF", "MD", "G"]
+GRAPH_RG, GRAPH_RD, GRAPH_RT = 34, 13, 6.2
+
+
+def graph_domains_for_grade(data, grade):
+    present = {d["domainCode"] for d in data if d["grade"] == grade}
+    return [code for code in GRAPH_DOMAIN_ORDER if code in present]
+
+
+def graph_terms_for(data, grade, code):
+    return [d for d in data if d["grade"] == grade and d["domainCode"] == code]
+
+
+def build_graph_layout(data):
+    """[level, domainCode, x, y, z, parentIndex] per node — grade/domain/term
+    only; the root (the sun) is always at the origin and is handled directly
+    by the renderer, same as graph3d.js's ORIGIN-anchored root node."""
+    nodes = []
+
+    def add(level, domain_code, pos, parent):
+        nodes.append([level, domain_code, round(pos[0], 3), round(pos[1], 3), round(pos[2], 3), parent])
+        return len(nodes) - 1
+
+    for gi, grade in enumerate(GRAPH_GRADES):
+        theta = (gi / len(GRAPH_GRADES)) * math.pi * 2
+        gpos = (
+            GRAPH_RG * math.cos(theta),
+            9 * math.sin(theta * 1.6 + gi),
+            GRAPH_RG * math.sin(theta),
+        )
+        grade_idx = add("g", None, gpos, -1)
+
+        doms = graph_domains_for_grade(data, grade)
+        for di, code in enumerate(doms):
+            theta_d = (di / len(doms)) * math.pi * 2 + gi * 0.7
+            dpos = (
+                gpos[0] + GRAPH_RD * math.cos(theta_d),
+                gpos[1] + GRAPH_RD * 0.55 * math.sin(theta_d * 1.4 + di),
+                gpos[2] + GRAPH_RD * math.sin(theta_d),
+            )
+            dom_idx = add("d", code, dpos, grade_idx)
+
+            terms = graph_terms_for(data, grade, code)
+            for ti in range(len(terms)):
+                theta_t = (ti / len(terms)) * math.pi * 2 + di * 0.9
+                tpos = (
+                    dpos[0] + GRAPH_RT * math.cos(theta_t),
+                    dpos[1] + GRAPH_RT * 0.6 * math.sin(theta_t * 1.7 + ti),
+                    dpos[2] + GRAPH_RT * math.sin(theta_t),
+                )
+                add("t", None, tpos, dom_idx)
+
+    return nodes
 
 # Order matters: each file uses names defined by the ones before it.
 APP_SCRIPTS = (
@@ -46,6 +107,9 @@ APP_SCRIPTS = (
     "tts.js",
     "ui.js",
     "about.js",
+    "catDialogue.js",
+    "cat.js",
+    "catSettings.js",
     "resetProgress.js",
     "curriculum.js",
     "panelResize.js",
@@ -161,6 +225,8 @@ def main() -> None:
     index_html = render("landing_template.html", {
         "__STYLES__": fonts_css + "\n\n" + read(SRC, "landing.css").strip(),
         "__TERM_COUNT__": str(len(json.loads(data))),
+        "__GRAPH_LAYOUT__": json.dumps(build_graph_layout(json.loads(data)), separators=(",", ":")),
+        "__GRAPH_SCRIPT__": read(SRC, "graphBackdrop.js").strip(),
     })
 
     public_dir = os.path.join(HERE, "public")
@@ -211,6 +277,23 @@ def main() -> None:
                 os.path.join(public_visuals_dir, name),
             )
         print(f"Copied {visuals_src_dir} -> {public_visuals_dir}")
+
+    # Pixel cat sprite sheet (assets/cat/*, see src/cat.js) — same
+    # lazy-loaded, not-inlined pattern as the sun model and term visuals
+    # above. The .txt licence ships with it, since the art is MIT and the
+    # licence has to travel with any copy of it.
+    cat_src_dir = os.path.join(HERE, "assets", "cat")
+    if os.path.isdir(cat_src_dir):
+        public_cat_dir = os.path.join(public_dir, "assets", "cat")
+        os.makedirs(public_cat_dir, exist_ok=True)
+        for name in os.listdir(cat_src_dir):
+            shutil.copyfile(
+                os.path.join(cat_src_dir, name),
+                os.path.join(public_cat_dir, name),
+            )
+        print(f"Copied {cat_src_dir} -> {public_cat_dir}")
+    else:
+        print("Warning: assets/cat not found; the pixel cat will have no sprite sheet.")
 
 
 if __name__ == "__main__":
