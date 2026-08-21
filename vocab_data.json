@@ -1281,7 +1281,11 @@
     "definition": "The value a digit has because of where it sits.",
     "example": "Ana writes 47. The 4 sits in the tens place, so it is worth 40. The 7 is worth just 7.",
     "misconception": "In 47, the 4 does not mean four. Its spot makes it worth forty.",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/1-nbt-place-value-counters-chart.gif",
+      "alt": "An animated place-value chart for 52,068: colored counters stack into columns as the digits break out into 5 ten-thousands, 2 thousands, 0 hundreds, 6 tens, and 8 ones.",
+      "credit": "Usable Math — Place Value, Slide 3"
+    }
   },
   {
     "id": "1-nbt-tens",
@@ -1516,9 +1520,9 @@
     "example": "Theo makes a tally chart of bus riders. He draws one mark per rider. Every fifth mark crosses the other four.",
     "misconception": "",
     "visual": {
-      "src": "assets/visuals/1-md-tally-chart-party-games.png",
-      "alt": "A \"Favorite Party Games\" table with tally marks counting votes.",
-      "credit": "Usable Math — Charts and Graphs, Slide 9"
+      "src": "assets/visuals/1-md-tally-chart-numbers-to-ten.png",
+      "alt": "A table pairing the numbers 1 through 10 with their matching tally marks.",
+      "credit": "Usable Math — Charts and Graphs, Slide 21"
     }
   },
   {
