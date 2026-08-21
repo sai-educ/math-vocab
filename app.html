@@ -752,6 +752,7 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   font-size:11.5px;color:var(--text-dim);border-top:1px solid var(--line);
   background:var(--panel);flex:0 0 auto;
   display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  position:relative; /* anchors .cat-widget to this border-top line */
 }
 .stats-updated{color:var(--text-muted);font-style:italic;}
 
@@ -946,8 +947,135 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   header .titles{flex:1 0 100%;}
   header h1{font-size:17px;white-space:nowrap;}
   header p{font-size:11.5px;}
-  .header-actions{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr;}
+  .header-actions{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;}
   .header-btn{justify-content:center;padding:8px 10px;}
+  .cat-picker{grid-column:span 1;}
+  .cat-settings-panel{right:auto;left:0;}
+}
+
+/* =========================================================================
+   Pixel cat mascot — header settings + the corner widget itself.
+   Sheet: assets/cat/cat_sheet.png (src/cat.js drives it, src/catDialogue.js
+   scripts it).
+   ========================================================================= */
+
+.cat-picker{position:relative;}
+
+.cat-settings-panel{
+  position:absolute;top:calc(100% + 8px);right:0;z-index:20;width:240px;
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:10px;box-shadow:var(--shadow-md);
+  opacity:0;transform:translateY(-6px);pointer-events:none;
+  transition:opacity var(--dur-fast) var(--ease),transform var(--dur-fast) var(--ease);
+}
+.cat-settings-panel.open{opacity:1;transform:translateY(0);pointer-events:auto;}
+
+.cat-settings-toggle{
+  display:flex;align-items:center;gap:10px;min-height:var(--tap);padding:0 8px;
+  border-radius:8px;cursor:pointer;color:var(--text);font-size:13px;
+  transition:background var(--dur-fast) var(--ease);
+}
+.cat-settings-toggle:hover{background:var(--node-hover);}
+.cat-settings-toggle input{width:18px;height:18px;accent-color:var(--accent);cursor:pointer;flex:0 0 auto;}
+
+.cat-skin-picker-wrap{margin-top:4px;border-top:1px solid var(--line);padding-top:6px;}
+.cat-skin-picker-hint{
+  margin:2px 8px 4px;font-size:11px;color:var(--text-dim);
+  text-transform:uppercase;letter-spacing:.4px;
+}
+.cat-skin-picker{display:flex;flex-direction:column;}
+.cat-skin-option{
+  display:flex;align-items:center;gap:10px;min-height:var(--tap);padding:0 8px;
+  border-radius:8px;cursor:pointer;color:var(--text-dim);font-size:13px;
+  transition:background var(--dur-fast) var(--ease);
+}
+.cat-skin-option:hover{background:var(--node-hover);}
+.cat-skin-option input{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;flex:0 0 auto;}
+.cat-skin-option:has(input:checked){color:var(--text);font-weight:600;}
+.cat-skin-option img{width:22px;height:22px;image-rendering:pixelated;flex:0 0 auto;}
+
+/* The widget is the cat's whole world: a short strip of floor pinned to the
+   RIGHT end of #stats's top border. Anchoring the box rather than the sprite
+   is what keeps the cat in the same corner at every viewport width — it can
+   only ever roam inside this strip, never across the footer. */
+.cat-widget{
+  position:absolute;right:0;bottom:100%;height:0;
+  width:min(340px,58vw);
+  /* Below the graph's overlay controls (the zoom pair, curriculum menu and
+     map key all sit at 5-7) and above ordinary panel content. On a narrow,
+     stacked layout the vertically-centred zoom buttons land right where the
+     cat walks, and a decorative cat must never paint over a control — so
+     the cat passes behind them instead. */
+  z-index:4;pointer-events:none;overflow:visible;
+}
+.cat-widget-hidden{display:none;}
+
+/* `left` is written from JS on every animation frame; translateX(-50%) keeps
+   the sprite centred on it. Deliberately no CSS transition here: the travel
+   is eased inside the rAF loop instead, so the walk-cycle frames can be
+   advanced by distance covered and the paws stay locked to the ground. */
+.cat-unit{position:absolute;bottom:0;left:0;transform:translateX(-50%);}
+
+/* One sprite sheet, 8x10 cells of 32px. width/height/background-size and the
+   per-frame background-position are all set from src/cat.js, which is also
+   what picks the pixel scale for the current breakpoint. */
+.cat-sprite{
+  display:block;image-rendering:pixelated;
+  background-image:url('assets/cat/cat_sheet.png');
+  background-repeat:no-repeat;
+  transform-origin:bottom center;
+  /* The art is drawn facing right and the cat lives in the right-hand
+     corner, so facing left — into the page — is the resting default. */
+  transform:scaleX(-1);
+}
+.cat-sprite.face-right{transform:scaleX(1);}
+
+/* Positioned from JS: centred on the cat, then clamped inside the strip so a
+   line spoken from the far corner cannot run off the edge of the page. */
+.cat-bubble{
+  position:absolute;box-sizing:border-box;
+  max-width:min(280px,100%);width:max-content;padding:8px 12px;
+  border-radius:12px;background:var(--panel);border:1.5px solid var(--accent);
+  color:var(--text);font-size:12.5px;line-height:1.45;box-shadow:var(--shadow-md);
+  opacity:0;transform:translateY(6px);
+  transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease);
+}
+.cat-bubble.show{opacity:1;transform:translateY(0);}
+
+/* Tracks the cat independently of the bubble, so a clamped bubble still
+   points at the animal instead of at the middle of itself. Two stacked
+   triangles: the outer one is the border, the inner one masks it in the
+   panel colour. */
+.cat-bubble-tail{
+  position:absolute;top:100%;width:0;height:0;transform:translateX(-50%);
+  border-left:8px solid transparent;border-right:8px solid transparent;
+  border-top:10px solid var(--accent);
+}
+.cat-bubble-tail::after{
+  content:'';position:absolute;left:-7px;top:-11px;width:0;height:0;
+  border-left:7px solid transparent;border-right:7px solid transparent;
+  border-top:9px solid var(--panel);
+}
+
+/* The keyboard-reachable route to everything the cat knows — the sprite
+   itself is decorative and deliberately not focusable. */
+.cat-tip-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;min-height:var(--tap);margin-top:6px;
+  border:1px solid var(--line);border-radius:8px;background:none;
+  color:var(--text);font:inherit;font-size:13px;cursor:pointer;
+  transition:background var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease);
+}
+.cat-tip-btn:hover:not(:disabled){background:var(--node-hover);border-color:var(--line-active);}
+.cat-tip-btn:disabled{opacity:.45;cursor:default;}
+
+/* Stacked layout: the graph sits directly above the footer, which puts its
+   vertically-centred zoom buttons (right:14px, 40px wide) exactly where the
+   cat walks. The strip is inset past them so the cat stays fully visible in
+   the corner rather than passing behind a control. */
+@media (max-width:640px){
+  .cat-widget{right:60px;width:min(200px,52vw);}
+  .cat-bubble{max-width:min(210px,160%);font-size:11.5px;padding:6px 10px;}
 }
 
 /* =========================================================================
@@ -981,6 +1109,26 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     </div>
     <div class="header-actions">
       <button id="soundBtn" class="header-btn" type="button" aria-pressed="true"></button>
+      <div class="cat-picker">
+        <button id="catSettingsBtn" class="header-btn" type="button"
+                aria-haspopup="true" aria-expanded="false" aria-controls="catSettingsPanel">
+          <span class="btn-icon" aria-hidden="true"></span><span class="btn-text">Cat</span>
+        </button>
+        <div id="catSettingsPanel" class="cat-settings-panel" role="group" aria-label="Pixel cat settings" hidden>
+          <label class="cat-settings-toggle">
+            <input type="checkbox" id="catShowCheckbox">
+            <span>Show the pixel cat</span>
+          </label>
+          <div class="cat-skin-picker-wrap">
+            <p class="cat-skin-picker-hint">Choose a colour:</p>
+            <div id="catSkinPicker" class="cat-skin-picker"></div>
+            <!-- The cat's hints are otherwise only offered on its own timer,
+                 and the sprite is decorative and not focusable — so this is
+                 what keeps them reachable by keyboard and screen reader. -->
+            <button id="catTipBtn" class="cat-tip-btn" type="button">Ask the cat for a tip</button>
+          </div>
+        </div>
+      </div>
       <button id="aboutBtn" class="header-btn" type="button" aria-haspopup="dialog">
         <span class="btn-icon" aria-hidden="true"></span><span class="btn-text">About</span>
       </button>
@@ -1122,6 +1270,26 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
         <button id="resetProgressNo" class="stats-reset-no" type="button" aria-label="No, keep my progress">No</button>
       </span>
     </span>
+
+    <!-- Decorative companion, not informational — its speech bubble only ever
+         repeats what the panels above already show, so it stays out of the
+         accessibility tree rather than doubling up srAnnounce, and its hints
+         are reachable instead from "Ask the cat for a tip" in the Cat menu.
+         Pinned to the RIGHT end of #stats's top border (see .cat-widget), so
+         the cat keeps to that corner at every viewport width.
+
+         The bubble is a sibling of the sprite, not a child: both are placed
+         from JS, but the bubble is clamped inside the strip while the cat is
+         not, so a line spoken from the corner cannot run off the page. -->
+    <div id="catWidget" class="cat-widget" aria-hidden="true">
+      <div id="catBubble" class="cat-bubble" hidden>
+        <span id="catBubbleText"></span>
+        <span id="catBubbleTail" class="cat-bubble-tail"></span>
+      </div>
+      <div id="catUnit" class="cat-unit">
+        <div id="catSprite" class="cat-sprite"></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1193,6 +1361,17 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
         by SebastianSosnowski, licensed under
         <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">Creative
         Commons Attribution 4.0</a>.
+      </p>
+    </div>
+
+    <div class="about-repo">
+      <h3>Pixel cat</h3>
+      <p>
+        The corner companion's sprite sheet is from
+        <a href="https://github.com/KINGS-MZ/PixelCat" target="_blank" rel="noopener noreferrer">KINGS-MZ/PixelCat</a>
+        by Imad El Khaider, used under the
+        <a href="https://opensource.org/license/mit" target="_blank" rel="noopener noreferrer">MIT licence</a>.
+        Only the artwork is reused; the coaching it does here is ours.
       </p>
     </div>
 
@@ -2493,7 +2672,11 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The value a digit has because of where it sits.",
     "example": "Ana writes 47. The 4 sits in the tens place, so it is worth 40. The 7 is worth just 7.",
     "misconception": "In 47, the 4 does not mean four. Its spot makes it worth forty.",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/1-nbt-place-value-counters-chart.gif",
+      "alt": "An animated place-value chart for 52,068: colored counters stack into columns as the digits break out into 5 ten-thousands, 2 thousands, 0 hundreds, 6 tens, and 8 ones.",
+      "credit": "Usable Math — Place Value, Slide 3"
+    }
   },
   {
     "id": "1-nbt-tens",
@@ -2728,9 +2911,9 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "example": "Theo makes a tally chart of bus riders. He draws one mark per rider. Every fifth mark crosses the other four.",
     "misconception": "",
     "visual": {
-      "src": "assets/visuals/1-md-tally-chart-party-games.png",
-      "alt": "A \"Favorite Party Games\" table with tally marks counting votes.",
-      "credit": "Usable Math — Charts and Graphs, Slide 9"
+      "src": "assets/visuals/1-md-tally-chart-numbers-to-ten.png",
+      "alt": "A table pairing the numbers 1 through 10 with their matching tally marks.",
+      "credit": "Usable Math — Charts and Graphs, Slide 21"
     }
   },
   {
@@ -6590,6 +6773,27 @@ const STORAGE_KEYS = {
   topicsSectionHeight: 'mathVocabTopicsSectionHeight',
   showGradeLabels: 'mathVocabShowGradeLabels',
   activeStandards: 'mathVocabActiveStandards',
+  showCat: 'mathVocabShowCat',
+  catSkin: 'mathVocabCatSkin',
+};
+
+// ---- pixel cat mascot -------------------------------------------------
+
+/* Sprite sheet from KINGS-MZ/PixelCat (github.com/KINGS-MZ/PixelCat), MIT
+   licensed — see assets/cat/cat_sheet.png, src/cat.js for the engine and
+   src/catDialogue.js for what it says.
+
+   The sheet is drawn as a gray tabby; the other colourways are the source
+   project's own CSS filters over that same art, so three skins cost one
+   39KB image rather than three. */
+const CAT_SKINS = ['white', 'orange', 'rainbow'];
+const CAT_SKIN_LABELS = { white: 'Gray tabby', orange: 'Ginger', rainbow: 'Rainbow' };
+const CAT_SKIN_FILTERS = {
+  white: 'none',
+  orange: 'sepia(1) saturate(8) hue-rotate(-35deg) brightness(0.95) contrast(1.1)',
+  // The still frame of the animated cycle in cat.js, and the whole of it
+  // when the OS asks for reduced motion.
+  rainbow: 'sepia(1) saturate(7) hue-rotate(200deg) brightness(1.08) contrast(1.08)',
 };
 
 // ---- curricula ------------------------------------------------------------
@@ -6736,6 +6940,7 @@ const ICON_PATHS = {
   arrowRight: '<path d="M4 12h15"/><path d="m13 6 6 6-6 6"/>',
   cap: '<path d="M2 8.5 12 4l10 4.5L12 13z"/><path d="M6 10.7V16c0 1.7 2.7 3 6 3s6-1.3 6-3v-5.3"/>',
   spark: '<path d="M12 3v5"/><path d="M12 16v5"/><path d="M3 12h5"/><path d="M16 12h5"/><path d="m6.3 6.3 3 3"/><path d="m14.7 14.7 3 3"/><path d="m17.7 6.3-3 3"/><path d="m9.3 14.7-3 3"/>',
+  cat: '<path d="M5.5 10 4 4l4.5 3.5h7L20 4l-1.5 6"/><rect x="5" y="10" width="14" height="8.5" rx="4.25"/><path d="M9.5 14.2h.01"/><path d="M14.5 14.2h.01"/>',
 
   // --- number & counting ----------------------------------------------
   countGroup: '<circle cx="7" cy="8" r="2.3"/><circle cx="15" cy="6.5" r="2.3"/><circle cx="9.5" cy="16" r="2.3"/><circle cx="17.5" cy="14.5" r="2.3"/>',
@@ -8908,6 +9113,9 @@ function renderSearchResults(list, heading, headingText) {
 
   heading.classList.remove('dim');
   headingText.textContent = `Search results (${matches.length})`;
+  // The cat covers the empty-result case, which is the one place in the app
+  // a child can land on a genuinely blank panel.
+  CatWidget.onSearch(searchQuery, matches.length);
 
   if (!matches.length) {
     list.innerHTML = '<p class="placeholder-text">No terms match your search.</p>';
@@ -9170,6 +9378,1383 @@ const About = (function () {
   }
 
   return { init, open, close };
+}());
+
+/* ---------- src/catDialogue.js ---------- */
+/* =========================================================================
+   Everything the pixel cat says.
+
+   Kept apart from src/cat.js on purpose: that file is the sprite engine and
+   the behaviour scheduler, this one is the script. A teacher who wants to
+   reword a cue should be able to work here without reading a line of
+   animation code.
+
+   WHAT THIS CAT IS FOR
+   --------------------
+   It is a motivational agent, not a second definition panel. The detail
+   panel already shows the word, what it means and a worked example, and
+   #srAnnounce already reads all three aloud — so the cat repeating any of
+   that would be the third copy of the same sentence on one screen.
+
+   Instead every line here does one of these jobs:
+
+     - growth mindset: effort and struggle are how brains grow, "yet" is a
+       real word, mistakes are information
+     - vocabulary motivation: why owning a math word is worth the trouble
+     - collaboration: ask someone, explain it to someone, math is social
+     - pacing: slow down, it is okay, understanding beats speed
+     - tool mastery: what this app can do that a child has not found yet
+
+   A "scene" is an array of beats — { text, gesture } — played one after the
+   other in the speech bubble, so the cat can hold a short exchange instead
+   of only ever dropping a single line. Gesture names are the ones
+   src/cat.js knows: idle1, idle2, groom, walk, run, sleep, tap, cheer, perk.
+
+   VOICE RULES — read these before adding a line
+   ---------------------------------------------
+     - Never the words "good" or "bad". They are verdicts, and a verdict
+       teaches a child that the point of the work is to be judged. Say what
+       actually happened instead: "you went back to that one", "you kept
+       going", "that took three tries". Descriptive beats evaluative, and it
+       is the whole reason this cat exists.
+     - For the same reason, no "smart", "clever" or "talented" pointed at the
+       child. Praise the move, never the mind that made it.
+     - Situational before generic. If the grade, topic or word is known, a
+       line that names it lands harder than one that could appear anywhere.
+     - Second person, present tense, one idea per line.
+     - Short enough to read at a Grade-2 level; these are 5-to-11-year-olds.
+     - Never state a definition, an example, or a word count. The panels own
+       those.
+   ========================================================================= */
+
+const CatDialogue = (function () {
+  /* Picks at random but never twice running from the same bank, so a child
+     clicking through ten words does not hear one line three times. Each
+     bank passes its own key; the last index used for that key is skipped. */
+  const lastPicked = {};
+
+  function pick(list, key) {
+    if (!list.length) return '';
+    if (list.length === 1) return list[0];
+    let idx = Math.floor(Math.random() * list.length);
+    if (idx === lastPicked[key]) idx = (idx + 1) % list.length;
+    lastPicked[key] = idx;
+    return list[idx];
+  }
+
+  // ---- the motivational banks --------------------------------------------
+
+  /* Effort, struggle and "yet". The core of the thing — this is what the cat
+     reaches for most often. */
+  const GROWTH_MINDSET = [
+    'Mistakes grow your brain. That is really how it works.',
+    'You do not know this one yet. Yet is a powerful word.',
+    'Tricky means your brain is building something new.',
+    'Hard is not the same as impossible.',
+    'Every mathematician was puzzled by these words once.',
+    'Your brain is stretching right now. Can you feel it?',
+    'Getting stuck is part of the work. Keep going.',
+    'You are not behind. You are early.',
+    'The struggle is where the learning happens.',
+    'Puzzled today, sure of it next week. That is the pattern.',
+    'Effort is the secret ingredient. Not talent.',
+    'Your math brain gets stronger the more you use it.',
+    'Nobody was born knowing these words. Nobody.',
+    'One more try is usually when it clicks.',
+    'Progress is not a straight line. Zigzags still count.',
+    'If it were easy, it would not be worth learning.',
+    'Brains change when they work hard. Yours is changing.',
+    'You kept going. That is the part that matters.',
+    'Hard things get easier. That is what practice is for.',
+    'A wrong answer tells you something. Listen to it.',
+    'Being puzzled is not being lost.',
+    'You are doing the hard part right now.',
+    'Small steps still get you all the way there.',
+    'Learning feels slow from the inside. Trust it.',
+    'You are allowed to find this hard.',
+    'Brave is trying the one you are unsure about.',
+    'Your brain grows most on the words that fight back.',
+    'Not yet just means not yet.',
+    'Confusion is the sound of your brain working.',
+    'The second time through is always clearer.',
+  ];
+
+  /* Why a math word is worth owning — the vocabulary-specific half. */
+  const VOCAB_MOTIVATION = [
+    'Math words are keys. Each one opens more problems.',
+    'When you own a word, you own the idea inside it.',
+    'Say it out loud. Words stick better that way.',
+    'A word you can explain is a word you really know.',
+    'Math has its own language. You are learning to speak it.',
+    'Every word you collect makes the next problem easier.',
+    'Use this word today and it becomes yours.',
+    'You just picked up another tool for your math toolbox.',
+    'Can you say what this means without reading it?',
+    'The more words you know, the friendlier word problems get.',
+    'Words are how mathematicians share what they think.',
+    'Try building a sentence with this word.',
+    'Knowing the word means you can join the conversation.',
+    'A new word today is an easier problem tomorrow.',
+    'Where else have you seen this word? Have a think.',
+    'Math words are not extra. They are the math.',
+    'Draw it. Some words make more sense as a picture.',
+  ];
+
+  /* Math is social. The supportive, collaborative climate half. */
+  const COLLABORATION = [
+    'Stuck? Asking for help is a math skill too.',
+    'Explaining it to a friend makes it clearer for you.',
+    'Two heads solve problems faster than one.',
+    'Math is better out loud, with somebody else.',
+    'Ask a classmate what they think this one means.',
+    'Teach this word to someone. That is how you keep it.',
+    'Your teacher likes being asked about words.',
+    'Working it out together is not cheating. It is how math works.',
+    'Share this one with the person next to you.',
+    'Mathematicians disagree, then work it out together.',
+    'Someone near you is wondering the same thing.',
+  ];
+
+  /* Openers. The first one a child ever sees says what this cat is for. */
+  const GREETINGS = [
+    [
+      { text: 'Hi! I am here to cheer you on, not to do the math for you.', gesture: 'cheer' },
+      { text: 'Explore anything you like. I will be right here.', gesture: 'idle2' },
+    ],
+    [
+      { text: 'Back again! I saved your spot.', gesture: 'cheer' },
+      { text: 'Every word you look at makes your math brain bigger.', gesture: 'tap' },
+    ],
+    [
+      { text: 'Ready when you are.', gesture: 'idle2' },
+      { text: 'No rush and no test in here. Just words worth knowing.', gesture: 'tap' },
+    ],
+    [
+      { text: 'Hello again!', gesture: 'cheer' },
+      { text: 'Learning a word takes a few visits. That is normal.', gesture: 'idle2' },
+    ],
+    [
+      { text: 'There you are.', gesture: 'idle2' },
+      { text: 'Take your time in here. Slow is how it sticks.', gesture: 'tap' },
+    ],
+  ];
+
+  /* Tool mastery. Each names a real control and what it gets you — the one
+     kind of line that is new information rather than a repeat. */
+  const TOOL_TIPS = [
+    'Drag the big graph to spin it. Every dot is a word.',
+    'Pinch the graph to zoom — or use the + and − buttons.',
+    'The Listen button reads a word out loud. Try it.',
+    'The search box looks inside meanings too, not just names.',
+    "Forgot a word's name? Search what it does instead.",
+    'Words you have opened keep a little mark, so you can see your trail.',
+    'The Curriculum menu adds UK and India words to the graph.',
+    'Tap a dot in the graph to jump straight to that word.',
+    'The Cat button up top is me. You can change my colour there.',
+    'Stuck? The yellow ring shows you where to tap next.',
+    'The Listen button helps if a word is hard to say.',
+  ];
+
+  /* Pacing. Warm, never scolding — a child clicking fast is engaged, just
+     moving quicker than reading allows. */
+  const SLOW_DOWN_OPENERS = [
+    'Slow down, slow down. It is okay.',
+    'Whoa, speedy paws! There is no race here.',
+    'Take a breath. The words are not going anywhere.',
+    'Hold on — that was quick!',
+    'Easy does it.',
+    'Careful, you are outrunning me!',
+    'Pause here. Just for a second.',
+    'That is a lot of clicking!',
+    'Nobody is timing you. Promise.',
+    'Wait for me!',
+    'Slow down a little. It is okay, really.',
+    'You are moving faster than these words can land.',
+  ];
+
+  const SLOW_DOWN_FOLLOWUPS = [
+    'One word at a time is plenty.',
+    'Slow is how it sticks.',
+    'Racing past a word means missing it.',
+    'Your brain needs a second to catch up.',
+    'Speed is not the goal. Understanding is.',
+    'Pick one and read it all the way through.',
+    'Fast clicking, slow learning. Try it the other way.',
+    'It is okay to go slowly. That is how it works.',
+    'Let this one sink in before the next one.',
+    'Deep beats quick, every time.',
+    'Give this word a proper look.',
+    'There is no prize for finishing first.',
+  ];
+
+  /* Milestones. Every line names the effort or the count, never the child's
+     ability. */
+  const MILESTONES = {
+    5: [
+      { text: 'Five words! Look at you go.', gesture: 'cheer' },
+      { text: 'You showed up and did the work. That is the whole trick.', gesture: 'tap' },
+    ],
+    10: [
+      { text: 'Ten words explored!', gesture: 'cheer' },
+      { text: 'Your math vocabulary is bigger than it was this morning.', gesture: 'idle2' },
+    ],
+    25: [
+      { text: 'Twenty-five words!', gesture: 'cheer' },
+      { text: 'That is not luck. That is persistence.', gesture: 'tap' },
+    ],
+    50: [
+      { text: 'Fifty words!', gesture: 'cheer' },
+      { text: 'You have built something real here.', gesture: 'cheer' },
+      { text: 'Every one of those took effort. Yours.', gesture: 'idle2' },
+    ],
+    100: [
+      { text: 'ONE HUNDRED WORDS!', gesture: 'cheer' },
+      { text: 'You kept going, over and over. That is the skill.', gesture: 'cheer' },
+      { text: 'Go tell somebody. I will wait right here.', gesture: 'idle2' },
+    ],
+  };
+  const MILESTONE_STEPS = Object.keys(MILESTONES).map(Number).sort((a, b) => a - b);
+
+  /* Openers for a word being opened. Naming the word is a nod, not a
+     definition, and it is what makes the line feel aimed at this moment
+     rather than pasted in from anywhere. */
+  const TERM_OPENERS_NAMED = [
+    (w) => `"${w}" is yours now.`,
+    (w) => `You went for "${w}".`,
+    (w) => `"${w}" — say it out loud once.`,
+    (w) => `Ah, "${w}".`,
+    (w) => `"${w}" is worth knowing.`,
+    (w) => `New word: "${w}".`,
+    (w) => `"${w}". Take your time with this one.`,
+    (w) => `So — "${w}".`,
+    (w) => `"${w}" turns up everywhere once you know it.`,
+  ];
+
+  const TERM_OPENERS_PLAIN = [
+    'Take your time with this one.',
+    'Have a proper read.',
+    'This one rewards a slow look.',
+    'Here we go.',
+    'Give this a moment.',
+  ];
+
+  /* Revisiting a word. Worth naming out loud, because it is the part that
+     actually builds memory and usually feels like going backwards. */
+  const REVISIT = [
+    'Back again? Reviewing is what makes it stick.',
+    'Second look. That is exactly how memory works.',
+    'Returning to a word is not going backwards.',
+    'You came back to this one on purpose. That works.',
+    'Repeats build memory. Keep doing that.',
+    'Coming back is a strategy, not a mistake.',
+  ];
+
+  const SEARCH_EMPTY_OPENERS = [
+    'Nothing matched that one.',
+    'Hmm, no luck there.',
+    'That search came up empty.',
+  ];
+
+  const SEARCH_EMPTY_FOLLOWUPS = [
+    'Try a shorter piece of the word.',
+    'Not finding it is not failing. Try again.',
+    'Spelling is tricky. Try just the first few letters.',
+    'Try describing what it does instead.',
+  ];
+
+  const SEARCH_FOUND = [
+    'There we go.',
+    'Found something. Have a look.',
+    'That is what searching well looks like.',
+    'Your search worked.',
+  ];
+
+  /* Situational openers that weave in the grade or topic actually chosen, so
+     roughly half of those moments are about *this* choice rather than a line
+     that could have appeared anywhere. */
+  const GRADE_LINES = [
+    (l) => `${l}. Pick whatever looks interesting.`,
+    (l) => `${l} words, coming up.`,
+    (l) => `${l} has some sturdy words in it.`,
+    (l) => `Straight into ${l}, then.`,
+  ];
+
+  const TOPIC_LINES = [
+    (n) => `${n}. Take these one at a time.`,
+    (n) => `${n} words are worth saying out loud.`,
+    (n) => `Into ${n} we go.`,
+    (n) => `${n}. Pick the one you know least.`,
+  ];
+
+  /* One short orientation the first time a child reaches each step. This is
+     the only instructional copy left, and it fires once per session. */
+  const FIRST_TIME = {
+    grade: (label) => [
+      { text: `${label} it is.`, gesture: 'cheer' },
+      { text: 'Now pick a topic in box 2 on the left.', gesture: 'tap' },
+    ],
+    topic: (name) => [
+      { text: `${name}!`, gesture: 'cheer' },
+      { text: 'The words for it show up in box 3, just below.', gesture: 'tap' },
+    ],
+    term: () => [
+      { text: 'The meaning is over on the right whenever you want it.', gesture: 'tap' },
+    ],
+  };
+
+  // ---- scene builders -----------------------------------------------------
+
+  /* Rotates across the three motivational banks so a session does not turn
+     into all growth-mindset or all collaboration. Growth mindset carries the
+     most weight because it is the one that generalises beyond vocabulary. */
+  function motivationalLine() {
+    const roll = Math.random();
+    if (roll < 0.55) return pick(GROWTH_MINDSET, 'growth');
+    if (roll < 0.85) return pick(VOCAB_MOTIVATION, 'vocab');
+    return pick(COLLABORATION, 'collab');
+  }
+
+  /* A word opening is the app's main event. Two beats: a nod to the choice,
+     then something to carry away. Deliberately no definition and no example
+     — the panel on the right is already showing both, and the screen reader
+     announcement is already speaking them. */
+  function termScene(term, isRevisit) {
+    const opener = isRevisit
+      ? pick(REVISIT, 'revisit')
+      : (Math.random() < 0.75
+        ? pick(TERM_OPENERS_NAMED, 'termNamed')(term.term)
+        : pick(TERM_OPENERS_PLAIN, 'termPlain'));
+
+    return [
+      { text: opener, gesture: isRevisit ? 'tap' : 'cheer' },
+      { text: motivationalLine(), gesture: 'idle2' },
+    ];
+  }
+
+  function firstTermHint() {
+    return FIRST_TIME.term();
+  }
+
+  function gradeScene(label, isFirst) {
+    if (isFirst) return FIRST_TIME.grade(label);
+    const text = Math.random() < 0.5
+      ? pick(GRADE_LINES, 'gradeLine')(label)
+      : motivationalLine();
+    return [{ text, gesture: 'tap' }];
+  }
+
+  function topicScene(name, isFirst) {
+    if (isFirst) return FIRST_TIME.topic(name);
+    const text = Math.random() < 0.5
+      ? pick(TOPIC_LINES, 'topicLine')(name)
+      : motivationalLine();
+    return [{ text, gesture: 'tap' }];
+  }
+
+  function searchScene(query, count) {
+    if (count === 0) {
+      return [
+        { text: pick(SEARCH_EMPTY_OPENERS, 'searchNoneA'), gesture: 'perk' },
+        { text: pick(SEARCH_EMPTY_FOLLOWUPS, 'searchNoneB'), gesture: 'tap' },
+      ];
+    }
+    return [{ text: pick(SEARCH_FOUND, 'searchFound'), gesture: 'cheer' }];
+  }
+
+  /* Two beats: name what is happening, then make it okay. The point is that
+     a child who slows down should feel supported, not caught. */
+  function slowDownScene() {
+    return [
+      { text: pick(SLOW_DOWN_OPENERS, 'slowA'), gesture: 'perk' },
+      { text: pick(SLOW_DOWN_FOLLOWUPS, 'slowB'), gesture: 'tap' },
+    ];
+  }
+
+  function milestoneFor(count) {
+    return MILESTONES[count] || null;
+  }
+
+  /* The largest milestone at or below `count`, used at boot to work out which
+     celebrations a returning child has already had, so a second visit does
+     not replay "Ten words!" for a child who is on ninety. */
+  function milestoneFloor(count) {
+    let floor = 0;
+    MILESTONE_STEPS.forEach((step) => { if (step <= count) floor = step; });
+    return floor;
+  }
+
+  /* The quiet-page line. Mostly encouragement, with about a third of the
+     rotation kept for tool tips — the cat should still be the one who knows
+     where everything is. */
+  function idleScene() {
+    const useTip = Math.random() < 0.34;
+    return [{
+      text: useTip ? pick(TOOL_TIPS, 'tips') : motivationalLine(),
+      gesture: 'tap',
+    }];
+  }
+
+  function greeting() {
+    return pick(GREETINGS, 'greeting');
+  }
+
+  function standardsScene() {
+    return [{ text: motivationalLine(), gesture: 'tap' }];
+  }
+
+  return {
+    greeting,
+    idleScene,
+    termScene,
+    firstTermHint,
+    gradeScene,
+    topicScene,
+    searchScene,
+    slowDownScene,
+    standardsScene,
+    milestoneFor,
+    milestoneFloor,
+  };
+}());
+
+/* ---------- src/cat.js ---------- */
+/* =========================================================================
+   Pixel cat — a pedagogical companion that lives in the page's right corner.
+
+   Art: KINGS-MZ/PixelCat (github.com/KINGS-MZ/PixelCat), MIT licensed. Only
+   the cat sprite sheet is reused (assets/cat/cat_sheet.png); none of that
+   extension's game systems — coins, fish, spiders, quests — come with it,
+   since this cat's job is to coach a child through a vocabulary tool rather
+   than to be played with.
+
+   The sheet is 8 columns x 10 rows of 32px cells, one animation per row.
+   This file is the engine: it steps the sheet, moves the cat along the strip
+   of floor above the footer, and decides what it should be doing. What it
+   *says* lives in src/catDialogue.js.
+
+   Two deliberate constraints:
+
+   - It never moves off the right-hand corner. The cat roams a short patch of
+     floor anchored to the right edge and walks home when it strays, so a
+     child always knows where to look for it.
+
+   - It stays out of the accessibility tree. The bubble only ever repeats
+     what the panels already show, and every hint it gives is also reachable
+     from the "Tip" button in the Cat menu, which is a real focusable
+     control. A screen reader user therefore loses nothing by not hearing a
+     decorative cat narrate the page a second time (see #srAnnounce).
+   ========================================================================= */
+
+const CatWidget = (function () {
+  // ---- sprite sheet -------------------------------------------------------
+
+  const CELL = 32;
+  const SHEET_COLS = 8;
+  const SHEET_ROWS = 10;
+  const SCALE = 3;            // 96px on screen
+  const SCALE_SMALL = 2.25;   // 72px under 640px wide
+  /* The art sits in the lower 26 of each 32px cell — the same inset the
+     source project applies as its yOffset. The cell is drawn whole (so the
+     feet land on the floor line), and this is only used to tuck the speech
+     bubble down to the cat's actual head instead of the empty cell top. */
+  const CELL_TOP_PADDING = 6;
+
+  /* One entry per row of the sheet. `fps` drives the gestures that play in
+     place; the two travelling gaits ignore it and advance on distance
+     covered instead (see `pxPerFrame`) so the paws never slide on the floor. */
+  const ANIMS = {
+    idle1: { row: 0, frames: 4, fps: 2 },
+    idle2: { row: 1, frames: 4, fps: 2 },
+    groom: { row: 2, frames: 4, fps: 3 },
+    groom2: { row: 3, frames: 4, fps: 3 },
+    walk: { row: 4, frames: 8, fps: 8, pxPerFrame: 7 },
+    run: { row: 5, frames: 8, fps: 11, pxPerFrame: 11 },
+    sleep: { row: 6, frames: 4, fps: 1.5 },
+    tap: { row: 7, frames: 6, fps: 6 },
+    cheer: { row: 8, frames: 7, fps: 10 },
+    perk: { row: 9, frames: 8, fps: 6 },
+  };
+
+  const GAIT_SPEED_PX_S = { walk: 30, run: 105 };
+
+  // ---- behaviour timing ---------------------------------------------------
+
+  const MIN_IDLE_MS = 7000;
+  const MAX_IDLE_MS = 14000;
+  // How long a gesture that plays in place holds before the cat settles.
+  const GESTURE_MS = { tap: 2400, cheer: 2100, groom: 4200, groom2: 4200, perk: 1500 };
+  const MIN_MOVE_MS = 450;
+  const MAX_MOVE_MS = 9000;
+
+  /* Weighted pick for "what should the cat do next" when nothing in the app
+     has happened. Walking wins most of the time; running is the rare treat
+     that makes a child look up. */
+  const AMBIENT_WEIGHTS = { walk: 5, tap: 3, groom: 2, cheer: 1, run: 1 };
+
+  // Quiet for this long and the cat offers a hint about the tool.
+  const TIP_AFTER_MS = 38000;
+  // Quiet for *this* long and it curls up instead. Any activity wakes it.
+  const SLEEP_AFTER_MS = 95000;
+
+  // ---- speech -------------------------------------------------------------
+
+  /* Reading time. `hold` starts when the last character has been typed, so
+     MIN_HOLD_MS is a floor on how long a *finished* line stays readable —
+     five seconds even for a three-word one. Short lines were vanishing in
+     about two seconds before this, which is nowhere near enough for a child
+     who is still decoding the sentence.
+
+     A typical line lands around seven seconds all in: roughly a second and
+     a half of typing plus the five-second floor. Longer sentences earn more
+     hold per character, up to the cap. */
+  const TYPE_MS_PER_CHAR = 24;
+  const MIN_HOLD_MS = 5000;
+  const MAX_HOLD_MS = 9000;
+  const HOLD_MS_PER_CHAR = 60;
+  const BUBBLE_GAP_PX = 10;
+
+  // ---- click-rate coaching (step 3, the word list) ------------------------
+
+  /* Four consecutive words opened at an average of less than a second and a
+     half apart. At that pace nobody is reading the definition panel, so the
+     cat steps in — but it is a *rate* over several picks, never one quick
+     click, so a child who knows exactly which word they want is not scolded
+     for going straight to it.
+
+     The cooldown is longer than a slow-down scene takes to play (two beats,
+     around thirteen seconds), so the coaching can never stack on itself. */
+  const RAPID_CLICK_WINDOW = 4;
+  const RAPID_CLICK_AVG_MS = 1500;
+  const RAPID_CLICK_COOLDOWN_MS = 25000;
+
+  // ---- element + state ----------------------------------------------------
+
+  let root, unit, sprite, bubble, bubbleText, bubbleTail;
+
+  let skin = 'white';
+  let visible = true;
+  let started = false;
+
+  // Current animation.
+  let anim = 'idle1';
+  let frame = 0;
+  let frameClock = 0;
+  let facingRight = false;
+
+  // Current position along the floor strip, in px from the strip's left edge.
+  let x = 0;
+  let homeX = 0;
+  let move = null;      // { from, to, duration, elapsed } while travelling
+  let rafId = null;
+  let lastTime = 0;
+
+  // What the cat is currently committed to, and until when.
+  let busyUntil = 0;
+  let asleep = false;
+  let lastActivityAt = 0;
+  let tipShownAt = 0;
+
+  // Speech.
+  let scene = null;     // { beats, index }
+  let typeTimer = null;
+  let holdTimer = null;
+  let hideTimer = null;
+  let skinAnimation = null;
+
+  // Context bookkeeping.
+  let lastSpokenKey = null;
+  let lastMilestone = 0;
+  let introduced = { grade: false, topic: false, term: false };
+  let wordClickTimes = [];
+  let lastRapidWarnAt = -Infinity;
+  /* How this session has been paced. In memory for the session only —
+     nothing about how a child clicks is written to storage or sent
+     anywhere. Read it with CatWidget.getPacing(). */
+  const pacing = { opens: 0, lastAvgGapMs: null, fastestAvgGapMs: null, coached: 0 };
+  let lastSearchKey = null;
+  // Set by noteWordOpened() just before renderAll() runs, because
+  // markVisited() inside it will already have marked the term by then.
+  let wasRevisit = false;
+
+  // ---- persistence --------------------------------------------------------
+
+  function loadSkin() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEYS.catSkin);
+      return CAT_SKINS.includes(raw) ? raw : 'white';
+    } catch (e) {
+      return 'white';
+    }
+  }
+
+  function loadVisible() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEYS.showCat);
+      return raw === null ? true : raw === '1';   // visible on a first visit
+    } catch (e) {
+      return true;
+    }
+  }
+
+  function save(key, value) {
+    try { localStorage.setItem(key, value); } catch (e) { /* private browsing */ }
+  }
+
+  // ---- sprite rendering ---------------------------------------------------
+
+  function scale() {
+    return window.innerWidth <= 640 ? SCALE_SMALL : SCALE;
+  }
+
+  function spriteSize() {
+    return CELL * scale();
+  }
+
+  /* Re-lays the sprite box whenever the scale changes (a rotated iPad
+     crossing the 640px breakpoint), then repaints the current cell. */
+  function layoutSprite() {
+    const s = scale();
+    sprite.style.width = `${CELL * s}px`;
+    sprite.style.height = `${CELL * s}px`;
+    sprite.style.backgroundSize = `${SHEET_COLS * CELL * s}px ${SHEET_ROWS * CELL * s}px`;
+    paint();
+  }
+
+  function paint() {
+    const s = scale();
+    const def = ANIMS[anim] || ANIMS.idle1;
+    sprite.style.backgroundPosition = `${-frame * CELL * s}px ${-def.row * CELL * s}px`;
+    sprite.classList.toggle('face-right', facingRight);
+  }
+
+  function setAnim(name) {
+    if (!ANIMS[name] || anim === name) return;
+    anim = name;
+    frame = 0;
+    frameClock = 0;
+    paint();
+  }
+
+  // ---- the floor strip ----------------------------------------------------
+
+  /* The cat's world is the widget box — a short strip pinned to the right
+     edge of the footer's top border. Half a sprite is kept clear of each end
+     so it never walks out of its own box. */
+  function bounds() {
+    const total = root.clientWidth || 0;
+    const half = spriteSize() / 2;
+    return { min: half, max: Math.max(half, total - half) };
+  }
+
+  function place(px) {
+    x = px;
+    unit.style.left = `${px}px`;
+  }
+
+  /* Home is the right end of the strip: the corner itself. Everything else
+     the cat does is an excursion it comes back from. */
+  function goHome() {
+    homeX = bounds().max;
+    place(homeX);
+  }
+
+  /* A resize moves the goalposts mid-walk: the target the cat set off for
+     may now be outside the strip, so the trip is abandoned rather than
+     clamped — stopping where it stands reads as a cat pausing, while
+     retargeting mid-stride reads as a glitch. */
+  function clampToBounds() {
+    const { min, max } = bounds();
+    homeX = max;
+    move = null;
+    place(Math.min(Math.max(x, min), max));
+    layoutSprite();
+    if (scene) positionBubble();
+  }
+
+  // ---- movement -----------------------------------------------------------
+
+  function easeInOut(p) {
+    // Cubic in-out: the cat leans into a walk and settles out of it rather
+    // than snapping to full speed, matching every other motion in the app.
+    return p < 0.5 ? 4 * p * p * p : 1 - ((-2 * p + 2) ** 3) / 2;
+  }
+
+  function pickTarget() {
+    const { min, max } = bounds();
+    const span = max - min;
+    if (span <= 1) return x;
+
+    // Drifted most of the way across the strip? Head back to the corner, so
+    // the cat is never far from where a child last saw it.
+    if (Math.abs(x - homeX) > span * 0.55) return homeX;
+
+    const minTravel = span * 0.2;
+    for (let attempt = 0; attempt < 6; attempt += 1) {
+      const target = min + Math.random() * span;
+      if (Math.abs(target - x) >= minTravel) return target;
+    }
+    return homeX;
+  }
+
+  function beginMove(gait) {
+    const target = pickTarget();
+    const distance = Math.abs(target - x);
+    if (distance < 2) return beginGesture('tap');
+
+    const speed = GAIT_SPEED_PX_S[gait] || 30;
+    const duration = Math.min(MAX_MOVE_MS, Math.max(MIN_MOVE_MS, (distance / speed) * 1000));
+    facingRight = target > x;
+    setAnim(gait);
+    move = { from: x, to: target, duration, elapsed: 0 };
+    busyUntil = performance.now() + duration;
+    return duration;
+  }
+
+  function beginGesture(name) {
+    move = null;
+    setAnim(name);
+    const duration = GESTURE_MS[name] || 2000;
+    busyUntil = performance.now() + duration;
+    return duration;
+  }
+
+  /* The two sitting idles alternate so a cat left alone does not loop one
+     four-frame twitch forever. */
+  function settle() {
+    move = null;
+    setAnim(Math.random() < 0.5 ? 'idle1' : 'idle2');
+    busyUntil = performance.now() + MIN_IDLE_MS + Math.random() * (MAX_IDLE_MS - MIN_IDLE_MS);
+  }
+
+  // ---- the loop -----------------------------------------------------------
+
+  function tick(now) {
+    // Clamped: coming back to a backgrounded tab must not teleport the cat
+    // across the strip in one enormous frame.
+    const dt = Math.min(64, now - lastTime);
+    lastTime = now;
+
+    stepMotion(dt);
+    stepFrame(dt);
+    if (!scene) stepBehaviour(now);
+
+    rafId = requestAnimationFrame(tick);
+  }
+
+  function stepMotion(dt) {
+    if (!move) return;
+    move.elapsed += dt;
+    const p = Math.min(1, move.elapsed / move.duration);
+    place(move.from + (move.to - move.from) * easeInOut(p));
+    if (p >= 1) move = null;
+  }
+
+  function stepFrame(dt) {
+    const def = ANIMS[anim] || ANIMS.idle1;
+
+    if (move && def.pxPerFrame) {
+      // Distance-driven: eight walk frames per stride of ground, whatever
+      // speed the easing happens to be running at right now.
+      const travelled = Math.abs(x - move.from);
+      frame = Math.floor(travelled / def.pxPerFrame) % def.frames;
+      paint();
+      return;
+    }
+
+    frameClock += dt;
+    const step = 1000 / def.fps;
+    if (frameClock < step) return;
+    frameClock -= step;
+    frame = (frame + 1) % def.frames;
+    paint();
+  }
+
+  /* Chooses the next ambient behaviour once the current one has run out, and
+     escalates through hint -> sleep when the app itself has gone quiet. */
+  function stepBehaviour(now) {
+    if (now < busyUntil) return;
+
+    const quietFor = now - lastActivityAt;
+
+    if (asleep) { setAnim('sleep'); busyUntil = now + 4000; return; }
+
+    if (quietFor > SLEEP_AFTER_MS) {
+      asleep = true;
+      move = null;
+      setAnim('sleep');
+      busyUntil = now + 4000;
+      return;
+    }
+
+    // One unprompted hint per quiet stretch — enough to be useful, not
+    // enough to nag a child who is reading.
+    if (quietFor > TIP_AFTER_MS && now - tipShownAt > TIP_AFTER_MS) {
+      tipShownAt = now;
+      playScene(CatDialogue.idleScene());
+      return;
+    }
+
+    const gesture = weightedPick(AMBIENT_WEIGHTS);
+    if (gesture === 'walk' || gesture === 'run') beginMove(gesture);
+    else if (gesture === 'groom') beginGesture(Math.random() < 0.5 ? 'groom' : 'groom2');
+    else beginGesture(gesture);
+  }
+
+  function weightedPick(weights) {
+    const names = Object.keys(weights);
+    const total = names.reduce((sum, n) => sum + weights[n], 0);
+    let roll = Math.random() * total;
+    for (let i = 0; i < names.length; i += 1) {
+      roll -= weights[names[i]];
+      if (roll <= 0) return names[i];
+    }
+    return names[0];
+  }
+
+  function startLoop() {
+    if (rafId !== null || REDUCED_MOTION) return;
+    lastTime = performance.now();
+    rafId = requestAnimationFrame(tick);
+  }
+
+  function stopLoop() {
+    if (rafId === null) return;
+    cancelAnimationFrame(rafId);
+    rafId = null;
+  }
+
+  // ---- speech bubble ------------------------------------------------------
+
+  /* Anchored to the cat but clamped inside the strip, with the tail tracking
+     the cat separately — so a bubble spoken from the far corner still points
+     at the right animal instead of sliding off the page. */
+  function positionBubble() {
+    const stripWidth = root.clientWidth || 0;
+    const bubbleWidth = bubble.offsetWidth;
+    const left = Math.min(Math.max(x - bubbleWidth / 2, 0), Math.max(0, stripWidth - bubbleWidth));
+    bubble.style.left = `${left}px`;
+    bubble.style.bottom = `${spriteSize() - CELL_TOP_PADDING * scale() + BUBBLE_GAP_PX}px`;
+
+    // Keep the tail inside the bubble's rounded corners.
+    const tailX = Math.min(Math.max(x - left, 14), Math.max(14, bubbleWidth - 14));
+    bubbleTail.style.left = `${tailX}px`;
+  }
+
+  function clearSpeechTimers() {
+    clearTimeout(typeTimer);
+    clearTimeout(holdTimer);
+    typeTimer = null;
+    holdTimer = null;
+  }
+
+  /* The fade-out is deferred, so its timer has to be cancellable: a new
+     scene starting inside that window would otherwise be hidden by the
+     previous scene's timer firing after it. */
+  function hideBubble() {
+    bubble.classList.remove('show');
+    clearTimeout(hideTimer);
+    const finish = () => {
+      bubble.hidden = true;
+      bubble.style.width = '';
+      bubble.style.height = '';
+    };
+    if (REDUCED_MOTION) finish();
+    else hideTimer = setTimeout(finish, 240);
+  }
+
+  /* A scene is the cat's whole turn in the conversation: one or more beats,
+     each with its own line and its own gesture, played in order. Starting a
+     new scene always interrupts the old one — the newest thing that happened
+     in the app is the thing worth talking about. */
+  function playScene(beats) {
+    if (!visible || !beats || !beats.length) return;
+    wake();
+    clearSpeechTimers();
+    scene = { beats, index: -1 };
+    nextBeat();
+  }
+
+  function nextBeat() {
+    if (!scene) return;
+    scene.index += 1;
+
+    if (scene.index >= scene.beats.length) {
+      scene = null;
+      hideBubble();
+      settle();
+      return;
+    }
+
+    const beat = scene.beats[scene.index];
+
+    // The cat stops walking to talk to you, and faces into the page while it
+    // does — a line is easier to read when the text is not sliding sideways.
+    move = null;
+    facingRight = false;
+    setAnim(beat.gesture && ANIMS[beat.gesture] ? beat.gesture : 'idle2');
+    // setAnim() short-circuits when the gesture has not changed between two
+    // beats, so the turn-to-face-you is repainted here rather than relying
+    // on it.
+    paint();
+    busyUntil = Infinity;
+
+    speak(beat.text, nextBeat);
+  }
+
+  function speak(text, done) {
+    clearTimeout(hideTimer);
+    // Measure at full text and lock the box before typing, so the bubble
+    // does not grow line by line while a child is trying to read it.
+    bubble.hidden = false;
+    bubble.style.width = '';
+    bubble.style.height = '';
+    bubbleText.textContent = text;
+    const w = bubble.offsetWidth;
+    const h = bubble.offsetHeight;
+    bubble.style.width = `${w}px`;
+    bubble.style.height = `${h}px`;
+    positionBubble();
+    // Reading offsetWidth above already flushed layout at the pre-`show`
+    // state, so the transition has a start value to run from and the class
+    // can go on synchronously. Deferring this to requestAnimationFrame would
+    // leave the bubble invisible whenever frames are not being scheduled —
+    // a backgrounded tab, or one restored mid-scene.
+    bubble.classList.add('show');
+
+    const hold = Math.min(MAX_HOLD_MS, Math.max(MIN_HOLD_MS, text.length * HOLD_MS_PER_CHAR));
+
+    if (REDUCED_MOTION) {
+      holdTimer = setTimeout(done, hold);
+      return;
+    }
+
+    bubbleText.textContent = '';
+    let i = 0;
+    const type = () => {
+      if (i >= text.length) {
+        holdTimer = setTimeout(done, hold);
+        return;
+      }
+      bubbleText.textContent += text[i];
+      i += 1;
+      typeTimer = setTimeout(type, TYPE_MS_PER_CHAR);
+    };
+    type();
+  }
+
+  function wake() {
+    lastActivityAt = performance.now();
+    if (!asleep) return;
+    asleep = false;
+    if (!REDUCED_MOTION) beginGesture('perk');
+  }
+
+  // ---- context awareness --------------------------------------------------
+
+  /* Reads the same `state` object ui.js just rendered from, so the bubble
+     always matches what is actually on screen. Only speaks on a real change
+     (see lastSpokenKey), so a debounced search or an unrelated re-render
+     stays quiet. */
+  function reactToState(state, stats) {
+    if (!visible) return;
+    wake();
+
+    const seen = (stats && stats.seen) || 0;
+
+    // A milestone outranks whatever was selected to reach it.
+    const milestone = CatDialogue.milestoneFor(seen);
+    if (milestone && seen > lastMilestone) {
+      lastMilestone = seen;
+      lastSpokenKey = `${state.grade || ''}:${state.domainCode || ''}:${state.term || ''}`;
+      return playScene(milestone);
+    }
+
+    const key = `${state.grade || ''}:${state.domainCode || ''}:${state.term || ''}`;
+    if (key === lastSpokenKey) return;
+    lastSpokenKey = key;
+
+    if (state.term) {
+      const t = termById(state.term);
+      if (!t) return;
+      const first = !introduced.term;
+      introduced.term = true;
+      // markVisited() has already run for this term by the time renderAll()
+      // reaches here, so "was this already explored" is captured one step
+      // earlier, in noteWordOpened().
+      const beats = CatDialogue.termScene(t, !first && wasRevisit);
+      // The very first word a child opens is also where the detail panel and
+      // the Listen button appear, so that beat is appended once, ever.
+      if (first) beats.push(...CatDialogue.firstTermHint());
+      return playScene(beats);
+    }
+
+    if (state.domainCode) {
+      const name = DOMAIN_FULLNAME[state.domainCode] || 'This topic';
+      const first = !introduced.topic;
+      introduced.topic = true;
+      return playScene(CatDialogue.topicScene(name, first));
+    }
+
+    if (state.grade) {
+      const first = !introduced.grade;
+      introduced.grade = true;
+      return playScene(CatDialogue.gradeScene(gradeLabel(state.grade), first));
+    }
+
+    return undefined;
+  }
+
+  /* Two hooks, because they have to straddle renderAll().
+
+     noteWordOpened() runs *before* it, since markVisited() inside renderAll()
+     is what makes a first look indistinguishable from a revisit — the cat
+     greets those differently, so the answer has to be captured first.
+
+     trackWordClick() runs *after* it, so that a fast click-through streak in
+     the word list overrides the routine word scene reactToState() just
+     started, rather than being immediately overwritten by it. */
+  function noteWordOpened(seenBefore) {
+    wasRevisit = !!seenBefore;
+    if (!visible) return;
+    wake();
+    pacing.opens += 1;
+    wordClickTimes.push(performance.now());
+    if (wordClickTimes.length > RAPID_CLICK_WINDOW) wordClickTimes.shift();
+  }
+
+  /* Measures the click-through *rate* — the average gap over the last few
+     picks — rather than any single quick click, so one snap decision does
+     not trip it; and only speaks up once per cooldown, so a real streak is
+     not scolded on every word.
+
+     The rate is recorded on every full window, whether or not it turns out
+     to be fast enough to act on, so `pacing` is a real record of how this
+     session went rather than only of the moments the cat interrupted. */
+  function trackWordClick() {
+    if (!visible || wordClickTimes.length < RAPID_CLICK_WINDOW) return;
+
+    const span = wordClickTimes[wordClickTimes.length - 1] - wordClickTimes[0];
+    const avgGap = span / (RAPID_CLICK_WINDOW - 1);
+    pacing.lastAvgGapMs = Math.round(avgGap);
+    if (pacing.fastestAvgGapMs === null || avgGap < pacing.fastestAvgGapMs) {
+      pacing.fastestAvgGapMs = Math.round(avgGap);
+    }
+
+    if (avgGap >= RAPID_CLICK_AVG_MS) return;
+
+    const now = performance.now();
+    if (now - lastRapidWarnAt < RAPID_CLICK_COOLDOWN_MS) return;
+
+    lastRapidWarnAt = now;
+    pacing.coached += 1;
+    playScene(CatDialogue.slowDownScene());
+  }
+
+  /* Search is the one place a child can get a genuinely empty screen, so the
+     cat covers it. Keyed so the debounced input does not re-speak the same
+     result set on every keystroke. */
+  function onSearch(query, count) {
+    if (!visible || !query) return;
+    wake();
+    const key = `${query}:${count}`;
+    if (key === lastSearchKey) return;
+    lastSearchKey = key;
+    playScene(CatDialogue.searchScene(query, count));
+  }
+
+  function onStandardsChange() {
+    if (!visible) return;
+    wake();
+    playScene(CatDialogue.standardsScene());
+  }
+
+  // ---- skin ---------------------------------------------------------------
+
+  function applySkin(name) {
+    if (skinAnimation) {
+      try { skinAnimation.cancel(); } catch (e) { /* not animating */ }
+      skinAnimation = null;
+    }
+    sprite.style.filter = CAT_SKIN_FILTERS[name] || 'none';
+
+    // The rainbow shifts hue continuously, which is exactly the kind of
+    // motion "Reduce Motion" is asking us to stop — so it holds one colour.
+    if (name !== 'rainbow' || REDUCED_MOTION || typeof sprite.animate !== 'function') return;
+    const hues = [0, 72, 144, 216, 288, 360];
+    skinAnimation = sprite.animate(
+      hues.map((deg) => ({
+        filter: `sepia(1) saturate(7) hue-rotate(${deg}deg) brightness(1.08) contrast(1.08)`,
+      })),
+      { duration: 6000, iterations: Infinity },
+    );
+  }
+
+  function setSkin(name) {
+    if (!CAT_SKINS.includes(name)) return;
+    skin = name;
+    save(STORAGE_KEYS.catSkin, skin);
+    applySkin(skin);
+  }
+
+  // ---- show / hide --------------------------------------------------------
+
+  /* Stopping the loop rather than letting it spin invisibly matters on the
+     iPads this runs on: a hidden cat should cost nothing. */
+  function applyVisibility() {
+    root.classList.toggle('cat-widget-hidden', !visible);
+    root.setAttribute('aria-hidden', 'true');
+
+    if (!visible) {
+      stopLoop();
+      clearSpeechTimers();
+      clearTimeout(hideTimer);
+      scene = null;
+      bubble.hidden = true;
+      bubble.classList.remove('show');
+      return;
+    }
+
+    // Sized synchronously: a page that opens in a background tab never gets
+    // a requestAnimationFrame callback, so deferring the *layout* to one
+    // leaves the cat as a zero-by-zero box until the tab is first looked at.
+    layoutSprite();
+    goHome();
+    settle();
+    startLoop();
+
+    // #stats may still be mid-layout on that first synchronous pass, so the
+    // corner is measured once more after it settles.
+    requestAnimationFrame(goHome);
+  }
+
+  function setVisible(on) {
+    visible = !!on;
+    save(STORAGE_KEYS.showCat, visible ? '1' : '0');
+    applyVisibility();
+  }
+
+  // ---- page-level listeners -----------------------------------------------
+
+  function bindPage() {
+    window.addEventListener('resize', clampToBounds);
+
+    /* Nothing animates in a hidden tab — rAF is suspended there — so the loop
+       is stopped outright rather than left to be throttled, and the strip is
+       re-measured on the way back in case the tab was never painted at all. */
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) { stopLoop(); return; }
+      lastTime = performance.now();
+      lastActivityAt = performance.now();
+      if (!visible) return;
+      const neverPainted = sprite.offsetWidth === 0;
+      clampToBounds();
+      if (neverPainted) goHome();
+      startLoop();
+    });
+
+    /* Any real interaction counts as company. wake() no-ops when the cat is
+       already up, so this stays cheap on every keystroke — and dragging the
+       graph or scrolling rouses it, not only the clicks that happen to start
+       a scene. */
+    ['pointerdown', 'keydown'].forEach((type) => {
+      document.addEventListener(type, wake, { passive: true });
+    });
+  }
+
+  // ---- boot ---------------------------------------------------------------
+
+  function whenPageVisible(fn) {
+    if (!document.hidden) return fn();
+    const onShow = () => {
+      if (document.hidden) return;
+      document.removeEventListener('visibilitychange', onShow);
+      fn();
+    };
+    return document.addEventListener('visibilitychange', onShow);
+  }
+
+  function init() {
+    root = document.getElementById('catWidget');
+    unit = document.getElementById('catUnit');
+    sprite = document.getElementById('catSprite');
+    bubble = document.getElementById('catBubble');
+    bubbleText = document.getElementById('catBubbleText');
+    bubbleTail = document.getElementById('catBubbleTail');
+    if (!root || started) return;
+    started = true;
+
+    skin = loadSkin();
+    visible = loadVisible();
+    lastActivityAt = performance.now();
+
+    // A returning child should not be congratulated again for the ten words
+    // they explored last week.
+    lastMilestone = CatDialogue.milestoneFloor(visitedTerms.size);
+
+    // Seeded to the empty-selection key so boot()'s first renderAll() — state
+    // is always {grade:null,domainCode:null,term:null} there — stays quiet
+    // and lets the greeting below open the conversation.
+    lastSpokenKey = '::';
+
+    applySkin(skin);
+    bindPage();
+    applyVisibility();
+
+    // Late enough that the greeting does not compete with page-load motion,
+    // and held back entirely if the page opened in a background tab — an
+    // introduction nobody was there for is an introduction wasted.
+    setTimeout(() => {
+      whenPageVisible(() => { if (visible) playScene(CatDialogue.greeting()); });
+    }, 1400);
+  }
+
+  return {
+    init,
+    reactToState,
+    trackWordClick,
+    noteWordOpened,
+    onSearch,
+    onStandardsChange,
+    // Used by the Cat menu (src/catSettings.js).
+    setVisible,
+    isVisible: () => visible,
+    setSkin,
+    getSkin: () => skin,
+    // A copy, so a caller reading the record cannot edit it.
+    getPacing: () => ({ ...pacing }),
+    tip: () => { tipShownAt = performance.now(); playScene(CatDialogue.idleScene()); },
+    say: (text) => playScene([{ text, gesture: 'tap' }]),
+  };
+}());
+
+/* ---------- src/catSettings.js ---------- */
+/* =========================================================================
+   The "Cat" menu in the header.
+
+   Split out from src/cat.js so that file stays the sprite engine and this
+   one stays ordinary UI chrome: a disclosure panel with a visibility toggle,
+   a colour picker, and the tip button.
+
+   That tip button is the accessibility hinge of the whole feature. The cat
+   itself is decorative — aria-hidden, not focusable, offering its hints on
+   its own timer — which is only defensible because everything it knows is
+   also available here, from a real control that keyboard and screen reader
+   users can reach.
+   ========================================================================= */
+
+const CatSettings = (function () {
+  const FOCUSABLE = 'input:not([disabled]),button:not([disabled])';
+
+  let panel, panelBtn, showCheckbox, skinPicker, tipBtn, lastFocused;
+
+  /* Every swatch is the same 64px icon under the colourway's own CSS filter,
+     the same way the sprite is tinted — so a swatch cannot drift out of sync
+     with the cat it is promising. */
+  function buildSkinPicker() {
+    skinPicker.innerHTML = CAT_SKINS.map((name) => `
+      <label class="cat-skin-option">
+        <input type="radio" name="catSkin" value="${name}">
+        <img src="assets/cat/cat_icon.png" alt="" width="22" height="22"
+             style="filter:${CAT_SKIN_FILTERS[name] || 'none'}">
+        <span>${CAT_SKIN_LABELS[name]}</span>
+      </label>
+    `).join('');
+
+    skinPicker.querySelectorAll('input[type="radio"]').forEach((input) => {
+      input.checked = input.value === CatWidget.getSkin();
+      input.addEventListener('change', () => {
+        if (!input.checked) return;
+        CatWidget.setSkin(input.value);
+        Sound.play('toggle');
+      });
+    });
+  }
+
+  /* The colour picker and the tip button are meaningless with the cat turned
+     off, so they go with it rather than sitting there inert. */
+  function syncControls() {
+    const on = CatWidget.isVisible();
+    showCheckbox.checked = on;
+    skinPicker.closest('.cat-skin-picker-wrap').hidden = !on;
+    tipBtn.disabled = !on;
+  }
+
+  function open() {
+    lastFocused = document.activeElement;
+    panel.hidden = false;
+    panelBtn.setAttribute('aria-expanded', 'true');
+    requestAnimationFrame(() => panel.classList.add('open'));
+    showCheckbox.focus();
+    Sound.play('open');
+  }
+
+  function close() {
+    panel.classList.remove('open');
+    panelBtn.setAttribute('aria-expanded', 'false');
+    Sound.play('close');
+    const finish = () => { panel.hidden = true; };
+    if (REDUCED_MOTION) finish();
+    else setTimeout(finish, 180);
+    if (lastFocused && lastFocused.focus) lastFocused.focus();
+  }
+
+  function trapFocus(event) {
+    const items = [...panel.querySelectorAll(FOCUSABLE)].filter((el) => el.offsetParent !== null);
+    if (!items.length) return;
+    const first = items[0];
+    const last = items[items.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  function bind() {
+    panelBtn.addEventListener('click', () => (panel.hidden ? open() : close()));
+
+    document.addEventListener('click', (event) => {
+      if (panel.hidden) return;
+      if (!panel.contains(event.target) && event.target !== panelBtn && !panelBtn.contains(event.target)) close();
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (panel.hidden) return;
+      if (event.key === 'Escape') { close(); panelBtn.focus(); return; }
+      if (event.key === 'Tab') trapFocus(event);
+    });
+
+    showCheckbox.addEventListener('change', () => {
+      CatWidget.setVisible(showCheckbox.checked);
+      syncControls();
+      Sound.play('toggle');
+    });
+
+    tipBtn.addEventListener('click', () => {
+      CatWidget.tip();
+      Sound.play('toggle');
+    });
+  }
+
+  /* Runs after CatWidget.init(), which is what loads the stored colour and
+     visibility this panel then reflects. */
+  function init() {
+    panelBtn = document.getElementById('catSettingsBtn');
+    panel = document.getElementById('catSettingsPanel');
+    showCheckbox = document.getElementById('catShowCheckbox');
+    skinPicker = document.getElementById('catSkinPicker');
+    tipBtn = document.getElementById('catTipBtn');
+    if (!panelBtn || !panel) return;
+
+    panelBtn.querySelector('.btn-icon').innerHTML = iconSvg('cat', { size: 18 });
+    buildSkinPicker();
+    syncControls();
+    bind();
+  }
+
+  return { init };
 }());
 
 /* ---------- src/resetProgress.js ---------- */
@@ -9511,6 +11096,7 @@ function renderAll() {
   updateInstruction();
   updateSpotlight();
   Graph.focus(state);
+  CatWidget.reactToState(state, { seen: visitedTerms.size });
 }
 
 // ---- selection ----------------------------------------------------------
@@ -9531,14 +11117,22 @@ function selectDomain(code) {
 }
 
 function selectTerm(id) {
+  // Before renderAll(), whose markVisited() would otherwise erase the
+  // difference between a first look and a revisit.
+  CatWidget.noteWordOpened(visitedTerms.has(id));
   state = { ...state, term: id };
   renderAll();
   Sound.play('word');
+  // After renderAll()'s own reactToState() bubble, so a fast click-through
+  // streak in the word list (step 3) overrides the routine word-definition
+  // line rather than getting immediately overwritten by it.
+  CatWidget.trackWordClick();
   const t = termById(id);
   if (t) announce(`${t.term}. ${t.definition} For example: ${t.example}`);
 }
 
 function jumpToTerm(t) {
+  CatWidget.noteWordOpened(visitedTerms.has(t.id));
   state = { grade: t.grade, domainCode: t.domainCode, term: t.id };
   clearSearch();
   renderAll();
@@ -9575,7 +11169,9 @@ function applyStandardsChange() {
 
   state = { grade, domainCode, term };
   renderAll();
-  announce(`Showing ${[...activeStandards].map((c) => STANDARD_LABELS[c]).join(', ')}.`);
+  CatWidget.onStandardsChange();
+  const labels = [...activeStandards].map((c) => STANDARD_LABELS[c]).join(', ');
+  announce(`Showing ${labels}.`);
 }
 
 function clearSearch() {
@@ -9687,6 +11283,10 @@ function boot() {
   About.init();
   ResetProgress.init();
   Curriculum.init();
+  CatWidget.init();
+  // After CatWidget.init(), which loads the stored colour and visibility the
+  // Cat menu reflects.
+  CatSettings.init();
   initPanelResizers();
   renderAll();
 
