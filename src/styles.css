@@ -412,6 +412,31 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   background:radial-gradient(125% 95% at 50% 45%, transparent 55%, rgba(4,4,10,.42) 100%);
 }
 
+/* First-visit splash: a short line over a solid backdrop, opaque from the
+   first frame so it hides the graph building itself underneath regardless of
+   how long Three.js takes to spin up. GraphIntro (src/graphIntro.js) fades
+   the text in, holds it, fades it out, then fades this whole layer's own
+   opacity out to reveal the graph — and removes the element outright once
+   that finishes, rather than leaving an inert full-panel layer sitting over
+   every later interaction. z-index clears every other graph overlay (the
+   zoom pair, curriculum menu, map key, grade toggle) so nothing shows
+   through while it holds. #graphPanel is already position:relative, so it's
+  this layer's containing block for free. */
+.graph-intro{
+  position:absolute;inset:0;z-index:20;
+  display:flex;align-items:center;justify-content:center;
+  padding:8%;background:var(--bg);
+}
+/* One line, always — nowrap plus a comfortable default size for a typical
+   panel width; GraphIntro.run() measures the rendered width against the
+   available space and shrinks the size further on narrow panels, rather
+   than a fixed breakpoint guess that would still wrap on some width. */
+.graph-intro-text{
+  margin:0;white-space:nowrap;text-align:center;
+  font-family:var(--font-sans);font-size:clamp(14px,1.6vw,20px);font-weight:600;
+  color:var(--text-dim);opacity:0;
+}
+
 /* HTML labels projected from 3D positions. These replaced canvas sprites:
    they stay crisp at any pixel ratio, never overlap the way the sprites did,
    and their text is real text. */
