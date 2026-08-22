@@ -55,10 +55,15 @@ __STYLES__
           <div class="cat-skin-picker-wrap">
             <p class="cat-skin-picker-hint">Choose a colour:</p>
             <div id="catSkinPicker" class="cat-skin-picker"></div>
+            <hr class="cat-menu-sep">
             <!-- The cat's hints are otherwise only offered on its own timer,
                  and the sprite is decorative and not focusable — so this is
                  what keeps them reachable by keyboard and screen reader. -->
             <button id="catTipBtn" class="cat-tip-btn" type="button">Ask the cat for a tip</button>
+            <hr class="cat-menu-sep">
+            <!-- The guided tour runs itself once, ever. This is the way back
+                 to it for a child who skipped it or wants it again. -->
+            <button id="catTourBtn" class="cat-tip-btn" type="button">Do the walkthrough again</button>
           </div>
         </div>
       </div>
@@ -215,7 +220,7 @@ __STYLES__
          from JS, but the bubble is clamped inside the strip while the cat is
          not, so a line spoken from the corner cannot run off the page. -->
     <div id="catWidget" class="cat-widget" aria-hidden="true">
-      <div id="catBubble" class="cat-bubble" hidden>
+      <div id="catBubble" class="cat-bubble" aria-hidden="true" hidden>
         <!-- Holds the whole line, invisibly, so the bubble is already the
              size the finished sentence needs while the visible copy is still
              being typed into it. The two share one grid cell, so nothing has
@@ -223,10 +228,15 @@ __STYLES__
              text — see .cat-bubble in the stylesheet. -->
         <span id="catBubbleSizer" class="cat-bubble-sizer" aria-hidden="true"></span>
         <span id="catBubbleText" class="cat-bubble-text"></span>
+        <!-- Empty except during the first-visit guided tour, which is the one
+             time the cat asks a question rather than just talking. Those are
+             real buttons, and the bubble is exposed to assistive tech only
+             while they are in it — see tourSay() in src/cat.js. -->
+        <span id="catBubbleActions" class="cat-bubble-actions"></span>
         <span id="catBubbleTail" class="cat-bubble-tail"></span>
       </div>
       <div id="catUnit" class="cat-unit">
-        <div id="catSprite" class="cat-sprite"></div>
+        <div id="catSprite" class="cat-sprite" aria-hidden="true"></div>
       </div>
     </div>
   </div>
