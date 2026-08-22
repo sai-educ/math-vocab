@@ -118,7 +118,11 @@ const CatSettings = (function () {
     tipBtn = document.getElementById('catTipBtn');
     if (!panelBtn || !panel) return;
 
-    panelBtn.querySelector('.btn-icon').innerHTML = iconSvg('cat', { size: 18 });
+    /* The real pixel-cat sprite, not the generic line-art glyph the other
+       header buttons use — this button is about that specific cat, so it
+       should show it rather than a stand-in icon. */
+    panelBtn.querySelector('.btn-icon').innerHTML =
+      '<img src="assets/cat/cat_icon.png" alt="" width="18" height="18">';
     buildSkinPicker();
     syncControls();
     bind();
