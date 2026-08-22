@@ -38,7 +38,11 @@ function renderAll() {
   updateInstruction();
   updateSpotlight();
   Graph.focus(state);
-  CatWidget.reactToState(state, { seen: visitedTerms.size });
+
+  /* During the first-visit tour the cat is being driven step by step, so its
+     usual running commentary would talk over the instructions. */
+  if (CatTour.isActive()) CatTour.onStateChange(state);
+  else CatWidget.reactToState(state, { seen: visitedTerms.size });
 }
 
 // ---- selection ----------------------------------------------------------
@@ -230,6 +234,10 @@ function boot() {
   // After CatWidget.init(), which loads the stored colour and visibility the
   // Cat menu reflects.
   CatSettings.init();
+  // Before renderAll(), so a pending tour has already claimed the opening
+  // line by the time the cat would otherwise greet.
+  CatTour.init();
+  if (CatTour.isPending()) CatWidget.suppressGreeting();
   initPanelResizers();
   renderAll();
 
