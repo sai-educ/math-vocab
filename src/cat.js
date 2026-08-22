@@ -64,6 +64,11 @@ const CatWidget = (function () {
   const MIN_FLIGHT_MS = 480;
   const MAX_FLIGHT_MS = 1500;
 
+  // Trail left behind a flight: one dot roughly every this many ms, each
+  // stepping the hue on so a whole flight draws a short rainbow.
+  const TRAIL_EVERY_MS = 38;
+  const TRAIL_HUE_STEP = 26;
+
   // ---- behaviour timing ---------------------------------------------------
 
   const MIN_IDLE_MS = 7000;
@@ -146,6 +151,8 @@ const CatWidget = (function () {
   let tourMode = false;
   let y = 0;
   let anchor = null;
+  let trailClock = 0;
+  let trailHue = 0;
   /* The corner, in viewport coordinates, captured on the way into the tour —
      while the widget is still laid out as its strip and can be measured
      honestly. Reading it mid-tour would mean toggling the tour class off and
@@ -384,8 +391,41 @@ const CatWidget = (function () {
     rafId = requestAnimationFrame(tick);
   }
 
+  /* One dot at the cat's middle, left to fade out on its own CSS animation
+     and remove itself. Nothing is pooled or tracked: a flight is under two
+     seconds, so at most a few dozen exist at once. */
+  function emitTrailDot() {
+    const dot = document.createElement('span');
+    dot.className = 'cat-trail-dot';
+    const half = spriteSize() / 2;
+    dot.style.left = `${x}px`;
+    dot.style.top = `${y - half}px`;
+    trailHue = (trailHue + TRAIL_HUE_STEP) % 360;
+    const colour = `hsl(${trailHue} 95% 66%)`;
+    dot.style.background = colour;
+    dot.style.boxShadow = `0 0 14px 4px ${colour}`;
+    /* animationend does the tidying, with a timer as backstop: CSS animations
+       do not advance in a hidden tab, so a flight interrupted by a tab switch
+       would otherwise leave its dots behind for good. */
+    const drop = () => dot.remove();
+    dot.addEventListener('animationend', drop);
+    setTimeout(drop, 1500);
+    root.appendChild(dot);
+  }
+
+  function stepTrail(dt) {
+    // Only flights leave a trail; the ambient stroll along the footer does
+    // not, and reduced motion gets none of it at all.
+    if (!move || !move.arc || REDUCED_MOTION) { trailClock = 0; return; }
+    trailClock += dt;
+    if (trailClock < TRAIL_EVERY_MS) return;
+    trailClock = 0;
+    emitTrailDot();
+  }
+
   function stepMotion(dt) {
     if (!move) return;
+    stepTrail(dt);
     move.elapsed += dt;
     const p = Math.min(1, move.elapsed / move.duration);
     const eased = easeInOut(p);
@@ -490,55 +530,114 @@ const CatWidget = (function () {
      strip is only as wide as the cat's patch of floor — on a narrow screen
      that is 200px, and a bubble confined to it would be a column of one-word
      lines. This lets it overhang the strip and still never leave the page. */
-  /* Everything here is worked out from the sprite's real rendered box rather
-     than from `x`/`y`, so one implementation serves both the corner strip and
-     the tour's viewport coordinates. */
+  /* Where a bubble may not go. During the tour the cat perches on something
+     the child is being asked to tap, and a bubble that covers it defeats the
+     whole point — so the perch supplies a rectangle to keep clear of. */
+  function avoidRect() {
+    if (!tourMode || !anchor || !anchor.avoid) return null;
+    const r = typeof anchor.avoid === 'function' ? anchor.avoid() : anchor.avoid;
+    return r && r.width >= 0 ? r : null;
+  }
+
+  function overlaps(a, b, pad) {
+    return !(a.right + pad <= b.left || a.left - pad >= b.right
+      || a.bottom + pad <= b.top || a.top - pad >= b.bottom);
+  }
+
+  /* Candidate placements in preference order. Above the cat is the natural
+     home; beside it is what the tour needs when the cat is perched near the
+     top of the page, where "below" would drop the bubble straight onto the
+     grade buttons. Each returns viewport coordinates plus which way its tail
+     should point. */
+  function bubblePlacements(spriteRect, size, gap) {
+    const catX = spriteRect.left + spriteRect.width / 2;
+    const headY = spriteRect.top + CELL_TOP_PADDING * scale();
+    const feetY = spriteRect.bottom;
+    const middleY = (headY + feetY) / 2 - size.height / 2;
+
+    return [
+      { name: 'up', tail: 'down', left: catX - size.width / 2, top: headY - size.height - gap },
+      { name: 'right', tail: 'left', left: spriteRect.right + gap, top: middleY },
+      { name: 'left', tail: 'right', left: spriteRect.left - size.width - gap, top: middleY },
+      { name: 'down', tail: 'up', left: catX - size.width / 2, top: feetY + gap },
+    ];
+  }
+
+  /* Worked out from the sprite's real rendered box rather than from `x`/`y`,
+     so one implementation serves both the corner strip and the tour's
+     viewport coordinates. */
   function positionBubble() {
     const widgetRect = root.getBoundingClientRect();
     const spriteRect = sprite.getBoundingClientRect();
-    const bubbleBox = bubble.getBoundingClientRect();
+    const box = bubble.getBoundingClientRect();
+    const size = { width: box.width, height: box.height };
     const edge = 6;
+    const gap = BUBBLE_GAP_PX;
 
     /* documentElement.clientWidth, not window.innerWidth: innerWidth counts
        the classic scrollbar gutter as usable page, so clamping to it lets
        the right-hand end of the bubble slide under the scrollbar — and in an
-       embedded frame the two can disagree by far more than that. clientWidth
-       is the layout viewport the bubble is actually laid out in. */
-    const viewportWidth = document.documentElement.clientWidth;
+       embedded frame the two can disagree by far more than that. */
+    const vw = document.documentElement.clientWidth;
+    const vh = document.documentElement.clientHeight;
+    const keepClear = avoidRect();
 
-    const catCentreX = spriteRect.left + spriteRect.width / 2;
-    // The art sits in the lower part of the cell, so the visual top of the
-    // cat is below the top of its box.
-    const catHeadY = spriteRect.top + CELL_TOP_PADDING * scale();
-    const catFeetY = spriteRect.bottom;
+    const fitsHorizontally = (p) => p.left >= edge && p.left + size.width <= vw - edge;
+    const fitsVertically = (p) => p.top >= edge && p.top + size.height <= vh - edge;
 
-    // Horizontal: centred on the cat, clamped into the viewport.
-    let leftV = catCentreX - bubbleBox.width / 2;
-    leftV = Math.min(Math.max(leftV, edge), Math.max(edge, viewportWidth - bubbleBox.width - edge));
+    const candidates = bubblePlacements(spriteRect, size, gap);
+    let chosen = null;
 
-    /* Vertical: above the cat by default, flipped underneath when there is no
-       room — which is what happens on the tour's first stop, where the cat
-       perches on the grade row near the top of the page. */
-    const below = catHeadY - bubbleBox.height - BUBBLE_GAP_PX < edge;
-    bubble.classList.toggle('below', below);
+    for (let i = 0; i < candidates.length; i += 1) {
+      const p = candidates[i];
+      // Sideways placements have to fit on their own terms; up/down may slide
+      // along x to fit, so only their vertical room is decisive.
+      const horizontalOk = (p.name === 'up' || p.name === 'down') || fitsHorizontally(p);
+      if (!horizontalOk || !fitsVertically(p)) continue;
 
-    bubble.style.left = `${leftV - widgetRect.left}px`;
-    if (below) {
-      bubble.style.top = `${catFeetY + BUBBLE_GAP_PX - widgetRect.top}px`;
-      bubble.style.bottom = 'auto';
-    } else {
-      bubble.style.top = 'auto';
-      bubble.style.bottom = `${widgetRect.bottom - catHeadY + BUBBLE_GAP_PX}px`;
+      const slid = { ...p, left: Math.min(Math.max(p.left, edge), Math.max(edge, vw - size.width - edge)) };
+      const rect = { left: slid.left, top: slid.top, right: slid.left + size.width, bottom: slid.top + size.height };
+      if (keepClear && overlaps(rect, keepClear, 4)) continue;
+
+      chosen = slid;
+      break;
     }
 
-    // Keep the tail inside the bubble's rounded corners.
-    const tailX = Math.min(Math.max(catCentreX - leftV, 16), Math.max(16, bubbleBox.width - 16));
-    bubbleTail.style.left = `${tailX}px`;
+    // Nothing was clean: keep it on screen and accept the overlap rather than
+    // leaving the line somewhere it cannot be read.
+    if (!chosen) {
+      const p = candidates[0];
+      chosen = {
+        ...p,
+        left: Math.min(Math.max(p.left, edge), Math.max(edge, vw - size.width - edge)),
+        top: Math.min(Math.max(p.top, edge), Math.max(edge, vh - size.height - edge)),
+      };
+    }
+
+    bubble.classList.remove('tail-down', 'tail-up', 'tail-left', 'tail-right');
+    bubble.classList.add(`tail-${chosen.tail}`);
+
+    bubble.style.left = `${chosen.left - widgetRect.left}px`;
+    bubble.style.top = `${chosen.top - widgetRect.top}px`;
+    bubble.style.bottom = 'auto';
+
+    // The tail tracks the cat along whichever edge it lives on.
+    const catX = spriteRect.left + spriteRect.width / 2;
+    const catY = (spriteRect.top + CELL_TOP_PADDING * scale() + spriteRect.bottom) / 2;
+    if (chosen.tail === 'left' || chosen.tail === 'right') {
+      const offset = Math.min(Math.max(catY - chosen.top, 16), Math.max(16, size.height - 16));
+      bubbleTail.style.top = `${offset}px`;
+      bubbleTail.style.left = '';
+    } else {
+      const offset = Math.min(Math.max(catX - chosen.left, 16), Math.max(16, size.width - 16));
+      bubbleTail.style.left = `${offset}px`;
+      bubbleTail.style.top = '';
+    }
   }
 
   /* The bubble is decorative for its own chatter and stays out of the
      accessibility tree for it; the moment it holds buttons that is no longer
-     true, so it is exposed and focus is moved into it. */
+     true, so it is exposed and the offer is announced. */
   function renderBubbleActions(actions) {
     bubbleActions.innerHTML = '';
 
@@ -941,6 +1040,7 @@ const CatWidget = (function () {
     const home = homeAnchor || { x, y };
     flyTo(home.x, home.y, () => {
       tourMode = false;
+      root.querySelectorAll('.cat-trail-dot').forEach((dot) => dot.remove());
       root.classList.remove('cat-widget-tour');
       unit.style.top = '';
       layoutSprite();
@@ -953,9 +1053,9 @@ const CatWidget = (function () {
 
   /* Fly to an element and stay put on it, following it if the page scrolls
      or reflows underneath. */
-  function perchOn(el, align, done) {
+  function perchOn(el, align, avoid, done) {
     if (!el || !el.isConnected) { if (done) done(); return; }
-    anchor = { el, align };
+    anchor = { el, align, avoid: avoid || (() => el.getBoundingClientRect()) };
     const point = perchPoint(el, align);
     flyTo(point.x, point.y, () => {
       setAnim('tap');
