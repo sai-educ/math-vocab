@@ -216,7 +216,13 @@ __STYLES__
          not, so a line spoken from the corner cannot run off the page. -->
     <div id="catWidget" class="cat-widget" aria-hidden="true">
       <div id="catBubble" class="cat-bubble" hidden>
-        <span id="catBubbleText"></span>
+        <!-- Holds the whole line, invisibly, so the bubble is already the
+             size the finished sentence needs while the visible copy is still
+             being typed into it. The two share one grid cell, so nothing has
+             to be measured and the box cannot end up too small for its own
+             text — see .cat-bubble in the stylesheet. -->
+        <span id="catBubbleSizer" class="cat-bubble-sizer" aria-hidden="true"></span>
+        <span id="catBubbleText" class="cat-bubble-text"></span>
         <span id="catBubbleTail" class="cat-bubble-tail"></span>
       </div>
       <div id="catUnit" class="cat-unit">
