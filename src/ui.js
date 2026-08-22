@@ -335,6 +335,23 @@ function updateInstruction() {
   }
 }
 
+/* The union of a container's real children. A highlight should hug what a
+   child is meant to tap, and #gradeRow stretches the full width of the page
+   while its six buttons occupy only the left end of it — so measuring the
+   container spreads the ring across the whole screen. Falls back to the
+   container when it has no children yet. */
+function contentRect(container, selector) {
+  const kids = container ? [...container.querySelectorAll(selector)] : [];
+  if (!kids.length) return container ? container.getBoundingClientRect() : null;
+
+  const rects = kids.map((el) => el.getBoundingClientRect());
+  const left = Math.min(...rects.map((r) => r.left));
+  const top = Math.min(...rects.map((r) => r.top));
+  const right = Math.max(...rects.map((r) => r.right));
+  const bottom = Math.max(...rects.map((r) => r.bottom));
+  return { left, top, right, bottom, width: right - left, height: bottom - top };
+}
+
 function updateSpotlight() {
   const ring = document.getElementById('spotlightRing');
   const hide = () => {
@@ -343,13 +360,15 @@ function updateSpotlight() {
   };
   if (onboarded) return hide();
 
-  let target = null;
-  if (!state.grade) target = document.getElementById('gradeRow');
-  else if (!state.domainCode) target = document.getElementById('topicsSection');
-  else if (!state.term) target = document.getElementById('vocabSection');
-  if (!target) return hide();
-
-  const r = target.getBoundingClientRect();
+  let r = null;
+  if (!state.grade) {
+    r = contentRect(document.getElementById('gradeRow'), '.grade-node');
+  } else if (!state.domainCode) {
+    r = document.getElementById('topicsSection').getBoundingClientRect();
+  } else if (!state.term) {
+    r = document.getElementById('vocabSection').getBoundingClientRect();
+  }
+  if (!r) return hide();
   ring.classList.add('active');
   ring.style.opacity = '1';
   const vars = {
