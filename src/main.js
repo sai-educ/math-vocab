@@ -154,6 +154,7 @@ function selectFromGraphNode(nodeId) {
 // ---- boot ---------------------------------------------------------------
 
 function bindControls() {
+  document.getElementById('backHomeLink').querySelector('.btn-icon').innerHTML = iconSvg('home', { size: 18 });
   document.getElementById('resetViewBtn').addEventListener('click', resetAll);
   document.getElementById('zoomInBtn').addEventListener('click', () => Graph.zoomIn());
   document.getElementById('zoomOutBtn').addEventListener('click', () => Graph.zoomOut());
