@@ -6,12 +6,20 @@
 <meta name="color-scheme" content="light">
 <meta name="description" content="Math Word Explorer: a free, open tool that explains the __TERM_COUNT__ math words children meet in Kindergarten through Grade 5, in language they can actually read.">
 <title>Math Word Explorer — math words, explained simply</title>
+<!-- Decorative backdrop only (src/graphBackdrop.js) — no vocabulary data, no
+     curriculum picker, nothing app.html itself needs is loaded here. If any
+     of these fail to load, the page still opens fully on its own CSS. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <style>
 __STYLES__
 </style>
 </head>
 <body>
 <a class="skip-link" href="#start">Skip to the start button</a>
+
+<div id="graphBackdrop" aria-hidden="true"></div>
 
 <main>
   <section class="hero">
@@ -32,8 +40,10 @@ __STYLES__
           <path d="M4 12h15"/><path d="m13 6 6 6-6 6"/>
         </svg>
       </a>
-      <p class="cta-note">Works on a tablet, laptop, or any browser. Nothing to install.</p>
-      <p class="cta-note cta-note-sound"><strong>Note:</strong> turn up the volume — sound effects help guide the way.</p>
+      <div class="cta-notes">
+        <p class="cta-note">Works on a tablet, laptop, or any browser. Nothing to install.</p>
+        <p class="cta-note cta-note-sound"><strong>Note:</strong> turn up the volume — sound effects help guide the way.</p>
+      </div>
     </div>
   </section>
 
@@ -83,6 +93,11 @@ __STYLES__
         <h3>Search everything</h3>
         <p>Look up any word across all six grades at once, by name or by meaning.</p>
       </li>
+      <li>
+        <h3>A pedagogical companion cat</h3>
+        <p>A small pixel cat keeps a child company, offering quiet encouragement and the
+          occasional tool tip. It never interrupts, and it can be turned off entirely.</p>
+      </li>
     </ul>
   </section>
 
@@ -123,6 +138,40 @@ __STYLES__
         </p>
       </article>
     </div>
+  </section>
+
+  <section class="panel">
+    <h2>Meet the team</h2>
+    <div class="team">
+      <article class="team-member">
+        <img class="team-photo" src="assets/team/aubrey-coyne.webp" alt="Aubrey Coyne" width="72" height="72" loading="lazy">
+        <h3>Aubrey Coyne</h3>
+        <p class="team-title">Keeper of the Common Denominator</p>
+        <p class="team-role">Math Content Designer &amp; Reviewer</p>
+      </article>
+      <article class="team-member">
+        <img class="team-photo" src="assets/team/robert-maloy.webp" alt="Robert Maloy" width="72" height="72" loading="lazy">
+        <h3>Robert Maloy, Ed.D.</h3>
+        <p class="team-title">Grand Narrator of Number Tales</p>
+        <p class="team-role">Elementary Math &amp; History</p>
+      </article>
+      <article class="team-member">
+        <img class="team-photo" src="assets/team/sai-gattupalli.webp" alt="Sai Gattupalli" width="72" height="72" loading="lazy">
+        <h3>Sai Gattupalli, Ph.D.</h3>
+        <p class="team-title">Head of the Order of Operations</p>
+        <p class="team-role">Math, Science &amp; Learning Technologies</p>
+      </article>
+      <article class="team-member">
+        <img class="team-photo" src="assets/team/sharon-edwards.webp" alt="Sharon Edwards" width="72" height="72" loading="lazy">
+        <h3>Sharon Edwards, Ed.D.</h3>
+        <p class="team-title">Root of It All</p>
+        <p class="team-role">Teacher Education &amp; Curriculum Studies</p>
+      </article>
+    </div>
+    <p class="team-note">
+      The people behind Usable Math and Math Word Explorer, at the College of Education,
+      University of Massachusetts Amherst.
+    </p>
   </section>
 
   <section class="panel privacy">
@@ -232,6 +281,11 @@ __STYLES__
     if (event.target === overlay) close();
   });
 }());
+</script>
+
+<script id="graph-layout" type="application/json">__GRAPH_LAYOUT__</script>
+<script>
+__GRAPH_SCRIPT__
 </script>
 </body>
 </html>
