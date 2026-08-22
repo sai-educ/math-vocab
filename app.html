@@ -8963,8 +8963,41 @@ const DEFAULT_TTS_PROXY_URL = '/api/tts';
 const TTS_VOICE_ID = 'd38790551b0548ba9de248dbd10b74e1';
 const TTS_PROXY_URL = readTtsProxyUrl();
 
+// Fish Audio's own mp3s come back quiet — well under 0dBFS even at this
+// voice's natural level — and an <audio> element's `.volume` tops out at 1
+// (its own 100%), which still isn't loud enough. A Web Audio GainNode has no
+// such ceiling, so playback is routed through one turned up past unity to
+// compensate. Tuned for headroom against clipping on louder lines; raise it
+// if words are still too quiet, lower it if loud ones start to crackle.
+const TTS_GAIN = 2.4;
+
 // termId -> object URL, so replaying a word doesn't call the API again.
 const ttsCache = {};
+
+let gainAudioCtx = null;
+let gainNode = null;
+
+/* Lazily creates one persistent AudioContext + GainNode for the page, then
+   routes a given <audio> element's output through it. Safe to call more than
+   once for the same element — createMediaElementSource() throws if called
+   twice on one element, so a dataset flag guards the repeat call a cached
+   replay (see the `ttsCache` branch below) would otherwise trigger. */
+function routeThroughGain(audioEl) {
+  if (audioEl.dataset.gainRouted) return;
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtx) return; // No Web Audio support — falls back to the element's own (quieter) output.
+
+  if (!gainAudioCtx) {
+    gainAudioCtx = new AudioCtx();
+    gainNode = gainAudioCtx.createGain();
+    gainNode.gain.value = TTS_GAIN;
+    gainNode.connect(gainAudioCtx.destination);
+  }
+  if (gainAudioCtx.state === 'suspended') gainAudioCtx.resume();
+
+  gainAudioCtx.createMediaElementSource(audioEl).connect(gainNode);
+  audioEl.dataset.gainRouted = '1';
+}
 
 // Tracks whatever is currently in flight or playing, so a stale response —
 // or a mute toggle, or picking a different word — can actually stop it
@@ -9010,6 +9043,7 @@ async function speakTerm(t) {
   const status = document.getElementById('listenStatus');
   const audioEl = document.getElementById('listenAudio');
   if (!btn || !audioEl) return;
+  routeThroughGain(audioEl);
 
   // A second tap — or a fresh word — always cancels whatever came before,
   // rather than letting two requests race for the same audio element.
