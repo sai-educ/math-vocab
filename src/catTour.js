@@ -61,6 +61,18 @@ const CatTour = (function () {
 
   const ALIGN = { grade: 'centre', topic: 'right', word: 'right', detail: 'centre' };
 
+  /* What the bubble has to stay off at each stop. Usually just the element
+     the cat is standing on, but the grade step guards the whole row of
+     buttons: the cat perches on the first one and the child needs to be able
+     to see and tap any of the six. contentRect() (src/ui.js) measures the
+     buttons themselves rather than their full-width container. */
+  const AVOID = {
+    grade: () => contentRect(document.getElementById('gradeRow'), '.grade-node'),
+    topic: () => document.getElementById('topicList').getBoundingClientRect(),
+    word: () => document.getElementById('vocabList').getBoundingClientRect(),
+    detail: () => document.getElementById('listenBtn').getBoundingClientRect(),
+  };
+
   const LINES = {
     grade: 'Start here. Tap any grade — they all work.',
     topic: 'Now a topic. Pick whichever one you like the sound of.',
@@ -89,7 +101,7 @@ const CatTour = (function () {
     if (!el) return finish();
 
     step = name;
-    CatWidget.tour.perchOn(el, ALIGN[name], () => {
+    CatWidget.tour.perchOn(el, ALIGN[name], AVOID[name], () => {
       after(SETTLE_MS, () => {
         if (step !== name) return;
         CatWidget.tour.say(LINES[name], { persist: true });
@@ -105,7 +117,7 @@ const CatTour = (function () {
     if (!el) return finish();
 
     step = 'detail';
-    CatWidget.tour.perchOn(el, ALIGN.detail, () => {
+    CatWidget.tour.perchOn(el, ALIGN.detail, AVOID.detail, () => {
       after(SETTLE_MS, () => {
         if (step !== 'detail') return;
         CatWidget.tour.say(LINES.detailA, {}, () => {
@@ -163,6 +175,25 @@ const CatTour = (function () {
     return step === 'pending';
   }
 
+  /* Re-run on demand from the Cat menu. Clears the once-ever flag so the
+     normal path applies, then arms it again — including the offer, because
+     someone who asked for the walkthrough should still get to back out. */
+  function restart() {
+    clearTimeout(timer);
+    step = 'idle';
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) { /* private browsing */ }
+    if (!CatWidget.isVisible()) return;
+
+    step = 'prompt';
+    CatWidget.tour.enter();
+    CatWidget.tour.say('Want the walkthrough again?', {
+      actions: [
+        { label: 'Yes, please', onClick: () => goToStep('grade') },
+        { label: 'Not now', primary: false, onClick: decline },
+      ],
+    });
+  }
+
   function init() {
     // A browser that has seen it, a child who has already explored words, or
     // a hidden cat: all reasons to leave the page alone.
@@ -188,5 +219,5 @@ const CatTour = (function () {
     });
   }
 
-  return { init, onStateChange, isActive, isPending };
+  return { init, restart, onStateChange, isActive, isPending };
 }());
