@@ -26,6 +26,7 @@ const ICON_PATHS = {
   cap: '<path d="M2 8.5 12 4l10 4.5L12 13z"/><path d="M6 10.7V16c0 1.7 2.7 3 6 3s6-1.3 6-3v-5.3"/>',
   spark: '<path d="M12 3v5"/><path d="M12 16v5"/><path d="M3 12h5"/><path d="M16 12h5"/><path d="m6.3 6.3 3 3"/><path d="m14.7 14.7 3 3"/><path d="m17.7 6.3-3 3"/><path d="m9.3 14.7-3 3"/>',
   cat: '<path d="M5.5 10 4 4l4.5 3.5h7L20 4l-1.5 6"/><rect x="5" y="10" width="14" height="8.5" rx="4.25"/><path d="M9.5 14.2h.01"/><path d="M14.5 14.2h.01"/>',
+  home: '<path d="M4 11.5 12 4l8 7.5"/><path d="M6 10.5V19a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-8.5"/><path d="M9.5 20v-5.5h5V20"/>',
 
   // --- number & counting ----------------------------------------------
   countGroup: '<circle cx="7" cy="8" r="2.3"/><circle cx="15" cy="6.5" r="2.3"/><circle cx="9.5" cy="16" r="2.3"/><circle cx="17.5" cy="14.5" r="2.3"/>',
