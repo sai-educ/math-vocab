@@ -295,6 +295,21 @@ def main() -> None:
     else:
         print("Warning: assets/cat not found; the pixel cat will have no sprite sheet.")
 
+    # Team photos (assets/team/*.webp, landing page "Meet the team" panel) —
+    # same lazy-loaded, not-inlined pattern as the sun model and term visuals.
+    team_src_dir = os.path.join(HERE, "assets", "team")
+    if os.path.isdir(team_src_dir):
+        public_team_dir = os.path.join(public_dir, "assets", "team")
+        os.makedirs(public_team_dir, exist_ok=True)
+        for name in os.listdir(team_src_dir):
+            shutil.copyfile(
+                os.path.join(team_src_dir, name),
+                os.path.join(public_team_dir, name),
+            )
+        print(f"Copied {team_src_dir} -> {public_team_dir}")
+    else:
+        print("Warning: assets/team not found; the landing page team photos will be missing.")
+
 
 if __name__ == "__main__":
     main()
