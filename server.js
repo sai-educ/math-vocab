@@ -23,6 +23,23 @@ loadEnvFile(path.join(ROOT, ".env"));
 const PORT = Number(process.env.PORT || 4173);
 const HOST = process.env.HOST || "127.0.0.1";
 
+// Mirrors vercel.json's "cleanUrls": true for local dev — every page is
+// reachable at its extensionless path, and a request for the .html file
+// itself redirects there, so a browser's address bar never shows the
+// extension either way.
+const CLEAN_ROUTES = {
+  "/": "index.html",
+  "/app": "app.html",
+  "/roadmap": "roadmap.html",
+  "/mapping": "mapping.html",
+};
+const HTML_TO_CLEAN_PATH = Object.fromEntries(
+  Object.entries(CLEAN_ROUTES)
+    .filter(([clean]) => clean !== "/")
+    .map(([clean, file]) => [`/${file}`, clean])
+);
+HTML_TO_CLEAN_PATH["/index.html"] = "/";
+
 const MIME_TYPES = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
@@ -155,11 +172,13 @@ function serveStatic(request, response, pathname) {
     return json(response, 400, { error: "Invalid path." });
   }
 
-  const relativePath =
-    decodedPath === "/" ? "./index.html" :
-    decodedPath === "/roadmap" ? "./roadmap.html" :
-    decodedPath === "/mapping" ? "./mapping.html" :
-    `.${decodedPath}`;
+  if (HTML_TO_CLEAN_PATH[decodedPath]) {
+    response.writeHead(308, { Location: HTML_TO_CLEAN_PATH[decodedPath] });
+    response.end();
+    return;
+  }
+
+  const relativePath = CLEAN_ROUTES[decodedPath] ? `./${CLEAN_ROUTES[decodedPath]}` : `.${decodedPath}`;
   const filePath = path.resolve(ROOT, relativePath);
   if (filePath !== ROOT && !filePath.startsWith(ROOT + path.sep)) {
     return json(response, 403, { error: "Forbidden." });
