@@ -109,7 +109,7 @@ const CatWidget = (function () {
 
   // ---- element + state ----------------------------------------------------
 
-  let root, unit, sprite, bubble, bubbleText, bubbleTail;
+  let root, unit, sprite, bubble, bubbleText, bubbleSizer, bubbleTail;
 
   let skin = 'white';
   let visible = true;
@@ -408,15 +408,34 @@ const CatWidget = (function () {
   /* Anchored to the cat but clamped inside the strip, with the tail tracking
      the cat separately — so a bubble spoken from the far corner still points
      at the right animal instead of sliding off the page. */
+  /* Centred on the cat, then clamped so the bubble stays on screen. The
+     clamp is against the viewport rather than against the strip, because the
+     strip is only as wide as the cat's patch of floor — on a narrow screen
+     that is 200px, and a bubble confined to it would be a column of one-word
+     lines. This lets it overhang the strip and still never leave the page. */
   function positionBubble() {
-    const stripWidth = root.clientWidth || 0;
-    const bubbleWidth = bubble.offsetWidth;
-    const left = Math.min(Math.max(x - bubbleWidth / 2, 0), Math.max(0, stripWidth - bubbleWidth));
+    const stripRect = root.getBoundingClientRect();
+    const bubbleWidth = bubble.getBoundingClientRect().width;
+    const edge = 6;
+
+    /* documentElement.clientWidth, not window.innerWidth: innerWidth counts
+       the classic scrollbar gutter as usable page, so clamping to it lets
+       the right-hand end of the bubble slide under the scrollbar — and in an
+       embedded frame the two can disagree by far more than that. clientWidth
+       is the layout viewport the bubble is actually laid out in. */
+    const viewportWidth = document.documentElement.clientWidth;
+
+    // Both bounds are in the strip's own coordinate space, which is what
+    // `left` is set in.
+    const minLeft = edge - stripRect.left;
+    const maxLeft = viewportWidth - stripRect.left - bubbleWidth - edge;
+    const left = Math.min(Math.max(x - bubbleWidth / 2, minLeft), Math.max(minLeft, maxLeft));
+
     bubble.style.left = `${left}px`;
     bubble.style.bottom = `${spriteSize() - CELL_TOP_PADDING * scale() + BUBBLE_GAP_PX}px`;
 
     // Keep the tail inside the bubble's rounded corners.
-    const tailX = Math.min(Math.max(x - left, 14), Math.max(14, bubbleWidth - 14));
+    const tailX = Math.min(Math.max(x - left, 16), Math.max(16, bubbleWidth - 16));
     bubbleTail.style.left = `${tailX}px`;
   }
 
@@ -435,8 +454,8 @@ const CatWidget = (function () {
     clearTimeout(hideTimer);
     const finish = () => {
       bubble.hidden = true;
-      bubble.style.width = '';
-      bubble.style.height = '';
+      bubbleSizer.textContent = '';
+      bubbleText.textContent = '';
     };
     if (REDUCED_MOTION) finish();
     else hideTimer = setTimeout(finish, 240);
@@ -483,22 +502,22 @@ const CatWidget = (function () {
 
   function speak(text, done) {
     clearTimeout(hideTimer);
-    // Measure at full text and lock the box before typing, so the bubble
-    // does not grow line by line while a child is trying to read it.
     bubble.hidden = false;
-    bubble.style.width = '';
-    bubble.style.height = '';
-    bubbleText.textContent = text;
-    const w = bubble.offsetWidth;
-    const h = bubble.offsetHeight;
-    bubble.style.width = `${w}px`;
-    bubble.style.height = `${h}px`;
+
+    /* The invisible sizer carries the whole line, so the box opens at the
+       size the finished sentence needs and holds it steady while the visible
+       copy types in. Nothing is measured and nothing is locked, which is why
+       the text can no longer outgrow its own bubble. */
+    bubbleSizer.textContent = text;
+    bubbleText.textContent = REDUCED_MOTION ? text : '';
+
     positionBubble();
-    // Reading offsetWidth above already flushed layout at the pre-`show`
-    // state, so the transition has a start value to run from and the class
-    // can go on synchronously. Deferring this to requestAnimationFrame would
-    // leave the bubble invisible whenever frames are not being scheduled —
-    // a backgrounded tab, or one restored mid-scene.
+    /* getBoundingClientRect() in positionBubble() has already flushed layout
+       at the pre-`show` state, so the transition has a start value to run
+       from and the class can go on synchronously. Deferring this to
+       requestAnimationFrame would leave the bubble invisible whenever frames
+       are not being scheduled — a backgrounded tab, or one restored
+       mid-scene. */
     bubble.classList.add('show');
 
     const hold = Math.min(MAX_HOLD_MS, Math.max(MIN_HOLD_MS, text.length * HOLD_MS_PER_CHAR));
@@ -508,7 +527,6 @@ const CatWidget = (function () {
       return;
     }
 
-    bubbleText.textContent = '';
     let i = 0;
     const type = () => {
       if (i >= text.length) {
@@ -759,6 +777,7 @@ const CatWidget = (function () {
     sprite = document.getElementById('catSprite');
     bubble = document.getElementById('catBubble');
     bubbleText = document.getElementById('catBubbleText');
+    bubbleSizer = document.getElementById('catBubbleSizer');
     bubbleTail = document.getElementById('catBubbleTail');
     if (!root || started) return;
     started = true;
