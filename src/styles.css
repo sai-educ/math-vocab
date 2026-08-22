@@ -997,17 +997,42 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
 }
 .cat-sprite.face-right{transform:scaleX(1);}
 
-/* Positioned from JS: centred on the cat, then clamped inside the strip so a
-   line spoken from the far corner cannot run off the edge of the page. */
+/* Positioned from JS: centred on the cat, then clamped into the viewport so
+   a line spoken from the far corner cannot run off the edge of the page.
+
+   The box sizes itself from #catBubbleSizer, which holds the full line from
+   the moment a beat starts while the visible copy types into the same grid
+   cell. That is deliberate. The earlier version measured offsetWidth and
+   locked width/height in pixels, and because offsetWidth rounds to whole
+   pixels a box could end up a fraction narrower than its own text — the last
+   word then wrapped onto a line the locked height had no room for, and it
+   rendered outside the bubble. A webfont finishing after the measurement did
+   the same. Letting real content do the sizing removes the arithmetic and
+   both failures with it. */
 .cat-bubble{
   position:absolute;box-sizing:border-box;
-  max-width:min(280px,100%);width:max-content;padding:8px 12px;
+  display:grid;
+  min-width:104px;max-width:min(300px,100%);width:max-content;
+  padding:9px 13px;
   border-radius:12px;background:var(--panel);border:1.5px solid var(--accent);
-  color:var(--text);font-size:12.5px;line-height:1.45;box-shadow:var(--shadow-md);
+  color:var(--text);font-size:13.5px;line-height:1.5;box-shadow:var(--shadow-md);
+  /* A single unbroken token — a long word, a stray URL — wraps rather than
+     pushing itself past the border. */
+  overflow-wrap:break-word;
   opacity:0;transform:translateY(6px);
   transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease);
 }
 .cat-bubble.show{opacity:1;transform:translateY(0);}
+
+/* display:grid above is an author declaration, so it outranks the user-agent
+   rule that makes [hidden] display:none — without this the bubble would keep
+   its box after every scene ended. */
+.cat-bubble[hidden]{display:none;}
+
+/* Stacked in one grid cell so both copies wrap identically and the taller of
+   the two — always the full line — decides the height. */
+.cat-bubble-sizer,.cat-bubble-text{grid-area:1/1;min-width:0;}
+.cat-bubble-sizer{visibility:hidden;}
 
 /* Tracks the cat independently of the bubble, so a clamped bubble still
    points at the animal instead of at the middle of itself. Two stacked
@@ -1042,7 +1067,10 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
    the corner rather than passing behind a control. */
 @media (max-width:640px){
   .cat-widget{right:60px;width:min(200px,52vw);}
-  .cat-bubble{max-width:min(210px,160%);font-size:11.5px;padding:6px 10px;}
+  /* Allowed to be wider than the strip: the strip is only the cat's floor,
+     and positionBubble() clamps the bubble against the viewport rather than
+     the strip, so it can spread out without leaving the screen. */
+  .cat-bubble{max-width:min(250px,78vw);font-size:12.5px;padding:8px 11px;}
 }
 
 /* =========================================================================
