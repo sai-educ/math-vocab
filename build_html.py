@@ -256,6 +256,17 @@ def main() -> None:
         shutil.copyfile(mapping_src, os.path.join(public_dir, "mapping.html"))
         print(f"Copied {mapping_src} -> {os.path.join(public_dir, 'mapping.html')}")
 
+    # Favicon (assets/favicon.png) — referenced by every page (app, landing,
+    # roadmap, mapping), so it's copied once here rather than per-page.
+    favicon_src = os.path.join(HERE, "assets", "favicon.png")
+    if os.path.exists(favicon_src):
+        public_assets_dir = os.path.join(public_dir, "assets")
+        os.makedirs(public_assets_dir, exist_ok=True)
+        shutil.copyfile(favicon_src, os.path.join(public_assets_dir, "favicon.png"))
+        print(f"Copied {favicon_src} -> {os.path.join(public_assets_dir, 'favicon.png')}")
+    else:
+        print("Warning: assets/favicon.png not found; pages will have no favicon.")
+
     sun_src = os.path.join(HERE, "assets", "sun.glb")
     if os.path.exists(sun_src):
         public_assets_dir = os.path.join(public_dir, "assets")
