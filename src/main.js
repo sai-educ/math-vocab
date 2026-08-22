@@ -248,6 +248,7 @@ function boot() {
   );
   // The graph reads its framing from the panel size, so re-focus once it is up.
   Graph.focus(state);
+  GraphIntro.run();
 }
 
 boot();
