@@ -138,9 +138,6 @@
     var ORIGIN = new THREE.Vector3(0, 0, 0);
     var positions = manifest.map(function (n) { return new THREE.Vector3(n[2], n[3], n[4]); });
 
-    var domainCounts = {};
-    manifest.forEach(function (n) { if (n[0] === 'd') domainCounts[n[1]] = (domainCounts[n[1]] || 0) + 1; });
-
     var gradeIdx = [], domainIdx = {}, termIdx = [];
     manifest.forEach(function (n, i) {
       if (n[0] === 'g') gradeIdx.push(i);
@@ -218,29 +215,25 @@
   }
 
   function buildEdges(positions, ORIGIN) {
-    var pairs = [];
-    manifest.forEach(function (n, i) {
-      var parent = n[5];
-      pairs.push([parent === -1 ? ORIGIN : positions[parent], positions[i], parent === -1 ? 0xffffff : COLORS[n[0] === 'g' ? 'grade' : n[0] === 'd' ? 'domain' : 'term']]);
-    });
-    // Colour of the parent end of each edge: root -> grade edges fade from
-    // white; grade -> domain and domain -> term fade from the parent's own
-    // level colour, same gradient graph3d.js's buildEdges() draws.
-    var parentColor = {};
-    manifest.forEach(function (n, i) { parentColor[i] = COLORS[n[0] === 'g' ? 'grade' : n[0] === 'd' ? 'domain' : 'term']; });
+    // Colour at the child end of each edge is that node's own level colour;
+    // the parent end is the parent's (white for root), so every edge fades
+    // from parent to child, same gradient graph3d.js's buildEdges() draws.
+    var levelColor = {};
+    manifest.forEach(function (n, i) { levelColor[i] = COLORS[n[0] === 'g' ? 'grade' : n[0] === 'd' ? 'domain' : 'term']; });
 
     var vertsPerEdge = EDGE_SEGMENTS * 2;
-    var edgePositions = new Float32Array(pairs.length * vertsPerEdge * 3);
-    var edgeColorsArr = new Float32Array(pairs.length * vertsPerEdge * 3);
+    var edgePositions = new Float32Array(manifest.length * vertsPerEdge * 3);
+    var edgeColorsArr = new Float32Array(manifest.length * vertsPerEdge * 3);
     var mid = new THREE.Vector3(), bowDir = new THREE.Vector3(), ctrl = new THREE.Vector3();
     var p0 = new THREE.Vector3(), p1 = new THREE.Vector3(), col = new THREE.Color();
     var ca = new THREE.Color(), cb = new THREE.Color();
 
-    pairs.forEach(function (pair, i) {
-      var pa = pair[0], pb = pair[1];
-      var parentIdx = manifest[i][5];
-      ca.setHex(parentIdx === -1 ? 0xffffff : parentColor[parentIdx]);
-      cb.setHex(parentColor[i]);
+    manifest.forEach(function (n, i) {
+      var parentIdx = n[5];
+      var pa = parentIdx === -1 ? ORIGIN : positions[parentIdx];
+      var pb = positions[i];
+      ca.setHex(parentIdx === -1 ? 0xffffff : levelColor[parentIdx]);
+      cb.setHex(levelColor[i]);
       mid.addVectors(pa, pb).multiplyScalar(0.5);
       if (mid.lengthSq() < 0.0001) bowDir.set(0, 1, 0); else bowDir.copy(mid).normalize();
       ctrl.copy(mid).addScaledVector(bowDir, pa.distanceTo(pb) * 0.24);
@@ -353,9 +346,10 @@
     buildRoot();
 
     if (typeof THREE.OrbitControls !== 'undefined') {
+      // The container is pointer-events:none (see landing.css) so this never
+      // receives drag/zoom input — autoRotate is the only thing it drives.
       controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.target.set(0, 0, 0);
-      controls.enabled = false; // decorative only — no drag/zoom, ever
       controls.autoRotate = !REDUCED_MOTION;
       controls.autoRotateSpeed = ROTATE_SPEED;
     } else {
