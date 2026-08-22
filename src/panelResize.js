@@ -72,8 +72,14 @@ function setupResizer({ handle, panel, axis, direction, min, max, storageKey, is
   let startPos = 0;
   let startSize = 0;
 
-  applyStoredSize();
+  syncDisabledState();
   syncAria();
+  // A stored desktop width must not survive into a stacked layout it was
+  // never sized for (that inline style would out-rank the stacked CSS and
+  // pin the panel too wide for the phone underneath it) — recheck on every
+  // resize, not just at load, since the viewport can cross the breakpoint
+  // without a reload.
+  window.addEventListener('resize', syncDisabledState);
 
   handle.addEventListener('pointerdown', (event) => {
     if (isDisabled() || event.button !== 0) return;
@@ -135,6 +141,15 @@ function setupResizer({ handle, panel, axis, direction, min, max, storageKey, is
     try { stored = localStorage.getItem(storageKey); } catch (e) { /* private browsing */ }
     const px = Number(stored);
     if (Number.isFinite(px) && px > 0) applySize(px);
+  }
+
+  function syncDisabledState() {
+    if (isDisabled()) {
+      panel.style[a.flexProp] = '';
+      panel.style[a.styleProp] = '';
+    } else {
+      applyStoredSize();
+    }
   }
 }
 
