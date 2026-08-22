@@ -38,6 +38,7 @@ const EASE_INOUT_STRONG = 'power3.inOut';
 
 const STORAGE_KEYS = {
   onboarded: 'mathGraphOnboarded',
+  graphIntroSeen: 'mathGraphIntroSeen',
   visited: 'mathVocabVisitedTerms',
   ttsProxy: 'mathVocabTtsProxyUrl',
   leftPanelWidth: 'mathVocabLeftPanelWidth',
