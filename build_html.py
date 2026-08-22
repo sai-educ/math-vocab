@@ -110,6 +110,7 @@ APP_SCRIPTS = (
     "catDialogue.js",
     "cat.js",
     "catSettings.js",
+    "catTour.js",
     "resetProgress.js",
     "curriculum.js",
     "panelResize.js",
