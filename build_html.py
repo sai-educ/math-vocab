@@ -103,6 +103,7 @@ APP_SCRIPTS = (
     "icons.js",
     "sound.js",
     "graph3d.js",
+    "graphIntro.js",
     "narration.js",
     "tts.js",
     "ui.js",
