@@ -904,11 +904,16 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   #vocabSection{order:6;flex:0 0 auto;max-height:280px;}
   #detail{order:7;width:100%;flex:0 0 auto;max-height:none;border-left:none;border-top:1px solid var(--line);}
 
-  /* All of it — word/standards counts, the CC BY-NC line, reset progress —
-     is reference text nobody needs mid-lesson, and on a phone it cost a
-     whole extra screen's worth of scrolling. Dropped here rather than
-     trimmed, since there was no version of it worth the space. */
-  #stats{display:none;}
+  /* The word/standards counts, the CC BY-NC line and reset progress are all
+     reference text nobody needs mid-lesson, and on a phone they cost a
+     whole extra screen's worth of scrolling — hidden here rather than
+     trimmed, since there was no version of it worth the space. #stats
+     itself has to stay rendered though (just emptied down to nothing): the
+     cat widget is its DOM child, and a display:none ancestor unmounts a
+     fixed-position descendant right along with it, so collapsing this
+     wrapper would take the cat off-screen too. */
+  #statsText,.stats-updated,#resetProgressWrap{display:none;}
+  #stats{padding:0;border-top:none;min-height:0;}
 
   #resetViewBtn{font-size:11.5px;padding:8px 10px;}
   .gl-box{font-size:12px;max-width:62vw;}
@@ -974,6 +979,7 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
 .cat-settings-toggle input{width:18px;height:18px;accent-color:var(--accent);cursor:pointer;flex:0 0 auto;}
 
 .cat-skin-picker-wrap{margin-top:4px;border-top:1px solid var(--line);padding-top:6px;}
+.cat-menu-sep{border:none;border-top:1px solid var(--line);margin:8px 0 2px;}
 .cat-skin-picker-hint{
   margin:2px 8px 4px;font-size:11px;color:var(--text-dim);
   text-transform:uppercase;letter-spacing:.4px;
@@ -1091,27 +1097,74 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
 .cat-bubble-action.secondary{background:none;color:var(--text-dim);border-color:var(--line);}
 .cat-bubble-action.secondary:hover{background:var(--node-hover);color:var(--text);}
 
-/* Flipped under the cat when there is no room above it — which is exactly
-   what happens on the first tour stop, where the cat perches on the grade
-   row near the top of the page. */
-.cat-bubble.below .cat-bubble-tail{top:auto;bottom:100%;
-  border-top:none;border-bottom:10px solid var(--accent);}
-.cat-bubble.below .cat-bubble-tail::after{top:auto;bottom:-11px;
-  border-top:none;border-bottom:9px solid var(--panel);}
 
-/* Tracks the cat independently of the bubble, so a clamped bubble still
-   points at the animal instead of at the middle of itself. Two stacked
-   triangles: the outer one is the border, the inner one masks it in the
-   panel colour. */
-.cat-bubble-tail{
-  position:absolute;top:100%;width:0;height:0;transform:translateX(-50%);
+/* Tracks the cat independently of the bubble, so a bubble pushed aside to
+   keep a control clear still points back at the animal. Two stacked
+   triangles: the outer one is the border, the inner masks it in the panel
+   colour. Which edge it lives on is set by the tail-* class that
+   positionBubble() picks. */
+.cat-bubble-tail{position:absolute;width:0;height:0;}
+
+.cat-bubble.tail-down .cat-bubble-tail{
+  top:100%;transform:translateX(-50%);
   border-left:8px solid transparent;border-right:8px solid transparent;
   border-top:10px solid var(--accent);
 }
-.cat-bubble-tail::after{
+.cat-bubble.tail-down .cat-bubble-tail::after{
   content:'';position:absolute;left:-7px;top:-11px;width:0;height:0;
   border-left:7px solid transparent;border-right:7px solid transparent;
   border-top:9px solid var(--panel);
+}
+
+.cat-bubble.tail-up .cat-bubble-tail{
+  bottom:100%;transform:translateX(-50%);
+  border-left:8px solid transparent;border-right:8px solid transparent;
+  border-bottom:10px solid var(--accent);
+}
+.cat-bubble.tail-up .cat-bubble-tail::after{
+  content:'';position:absolute;left:-7px;bottom:-11px;width:0;height:0;
+  border-left:7px solid transparent;border-right:7px solid transparent;
+  border-bottom:9px solid var(--panel);
+}
+
+/* Bubble sits to the RIGHT of the cat, so its tail points back to the left. */
+.cat-bubble.tail-left .cat-bubble-tail{
+  right:100%;transform:translateY(-50%);
+  border-top:8px solid transparent;border-bottom:8px solid transparent;
+  border-right:10px solid var(--accent);
+}
+.cat-bubble.tail-left .cat-bubble-tail::after{
+  content:'';position:absolute;top:-7px;right:-11px;width:0;height:0;
+  border-top:7px solid transparent;border-bottom:7px solid transparent;
+  border-right:9px solid var(--panel);
+}
+
+/* Bubble sits to the LEFT of the cat, tail points right. */
+.cat-bubble.tail-right .cat-bubble-tail{
+  left:100%;transform:translateY(-50%);
+  border-top:8px solid transparent;border-bottom:8px solid transparent;
+  border-left:10px solid var(--accent);
+}
+.cat-bubble.tail-right .cat-bubble-tail::after{
+  content:'';position:absolute;top:-7px;left:-11px;width:0;height:0;
+  border-top:7px solid transparent;border-bottom:7px solid transparent;
+  border-left:9px solid var(--panel);
+}
+
+/* ---- flight trail ------------------------------------------------------
+   Dropped behind the cat while it crosses the page on the guided tour, one
+   dot every few frames, each fading and shrinking on its own. Pure CSS
+   animation so the main loop only has to spawn them; screen blending gives
+   the bloom without a second canvas or any WebGL. */
+.cat-trail-dot{
+  position:absolute;width:12px;height:12px;border-radius:50%;
+  margin:-6px 0 0 -6px;pointer-events:none;
+  mix-blend-mode:screen;
+  animation:cat-trail-fade 620ms var(--ease) forwards;
+}
+@keyframes cat-trail-fade{
+  from{opacity:.85;transform:scale(1);}
+  to{opacity:0;transform:scale(.25);}
 }
 
 /* The keyboard-reachable route to everything the cat knows — the sprite
