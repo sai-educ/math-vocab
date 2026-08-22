@@ -902,25 +902,48 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   #detail .block-body{font-size:15.5px;}
 }
 
-/* Phone / small split-view: one column, everything stacked and scrollable. */
+/* Phone: reordered to match the order a student actually works through —
+   the graph up top and pinned there (position:sticky) as a live preview,
+   with grade -> topic -> word -> definition scrolling beneath it in one
+   column, instead of desktop's side-by-side split squeezed into a stack.
+
+   #main/#leftPanel/#rightRegion carry no visual box of their own at this
+   width (no border, no background), so making them display:contents is
+   free — it un-nests their children into #app's own flex flow, where
+   `order` can freely interleave a grandchild (graphPanel, detail) with a
+   great-grandchild (topicsSection, vocabSection) that desktop keeps in
+   separate branches of the tree. #app becomes the scroll container in
+   their place, which is what lets the graph's sticky top:0 stick to
+   something. */
 @media (max-width: 760px){
-  #gradeSearchRow{flex-wrap:wrap;}
-  #gradeRow{flex:1 1 100%;}
-  #searchWrap{width:100%;max-width:none;padding-top:0;}
-  #main{flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;}
-  #leftPanel{
-    width:100%;flex:0 0 auto;border-right:none;border-bottom:1px solid var(--line);
-  }
-  #topicsSection{flex:0 0 auto;max-height:210px;}
-  #vocabSection{flex:0 0 auto;max-height:280px;}
-  .panel-resizer-h{display:none;}
-  #rightRegion{display:flex;flex-direction:column;width:100%;}
-  #graphPanel{flex:0 0 auto;height:min(78vw, 360px);min-height:240px;}
-  #resetViewBtn{font-size:11.5px;padding:8px 10px;}
-  #detail{width:100%;flex:0 0 auto;max-height:none;border-left:none;border-top:1px solid var(--line);}
-  header{gap:10px;}
+  #app{overflow-y:auto;-webkit-overflow-scrolling:touch;}
+  #main,#leftPanel,#rightRegion{display:contents;}
+
+  header{order:1;gap:10px;}
   header h1{font-size:15.5px;}
   header p{font-size:11.5px;}
+
+  #graphPanel{
+    order:2;position:sticky;top:0;flex:0 0 auto;width:100%;
+    height:44vh;min-height:230px;max-height:340px;z-index:5;
+    box-shadow:0 8px 16px -8px rgba(0,0,0,.35);
+  }
+  .grade-heading{order:3;}
+  #gradeSearchRow{order:4;flex-wrap:wrap;}
+  #gradeRow{flex:1 1 100%;}
+  #searchWrap{width:100%;max-width:none;padding-top:0;}
+  #topicsSection{order:5;flex:0 0 auto;max-height:210px;}
+  .panel-resizer-h{display:none;}
+  #vocabSection{order:6;flex:0 0 auto;max-height:280px;}
+  #detail{order:7;width:100%;flex:0 0 auto;max-height:none;border-left:none;border-top:1px solid var(--line);}
+
+  /* All of it — word/standards counts, the CC BY-NC line, reset progress —
+     is reference text nobody needs mid-lesson, and on a phone it cost a
+     whole extra screen's worth of scrolling. Dropped here rather than
+     trimmed, since there was no version of it worth the space. */
+  #stats{display:none;}
+
+  #resetViewBtn{font-size:11.5px;padding:8px 10px;}
   .gl-box{font-size:12px;max-width:62vw;}
   .lv-root .gl-box{font-size:14px;padding:8px 12px;}
   .lv-term .gl-box{font-size:13.5px;}
@@ -935,6 +958,22 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   .graph-toggle{padding:8px 10px 8px 9px;font-size:11.5px;}
   #zoomControls{right:10px;gap:6px;}
   .zoom-btn{width:40px;height:40px;}
+
+  /* The cat's floor used to be #stats's top border; that bar is gone on
+     phone, so the cat is re-anchored straight to the viewport instead —
+     fixed rather than scrolled away with the page, and spanning the full
+     width so its walk actually reads as one, rather than pacing a 58vw
+     sliver tucked in one corner. The gradient behind it is just a floor to
+     stand on, so it doesn't look like it is floating over the last line of
+     whatever content happens to be scrolled underneath. */
+  .cat-widget{
+    position:fixed;left:0;right:0;top:auto;bottom:0;width:100%;height:0;z-index:15;
+  }
+  .cat-widget::before{
+    content:"";position:absolute;left:0;right:0;bottom:0;height:38px;
+    background:linear-gradient(180deg, transparent, rgba(244,245,250,.92) 55%);
+    pointer-events:none;
+  }
 }
 
 @media (max-width: 520px){
@@ -946,6 +985,16 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   .header-btn{justify-content:center;padding:8px 10px;}
   .cat-picker{grid-column:span 1;}
   .cat-settings-panel{right:auto;left:0;}
+}
+
+/* Small phones (iPhone SE and similar): the graph's sticky share of the
+   viewport is trimmed further so grade/topic/word/definition below it
+   still get a usable amount of room to scroll in. */
+@media (max-width: 400px){
+  #graphPanel{height:38vh;min-height:200px;}
+  header h1{font-size:14.5px;}
+  .grade-node{width:50px;height:50px;min-width:50px;font-size:15px;}
+  #gradeRow{gap:8px;}
 }
 
 /* =========================================================================
@@ -1005,6 +1054,18 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
 }
 .cat-widget-hidden{display:none;}
 
+/* Guided-tour mode. The cat leaves its strip of floor and works in viewport
+   coordinates so it can perch on the grade row, a topic card, a word row —
+   anything on the page. #app and #stats are position:relative with no
+   transform anywhere above the widget, so fixed here really does resolve
+   against the viewport. Raised above the onboarding spotlight ring (50) so
+   the two can be on screen together, and kept below the About dialog (120). */
+.cat-widget-tour{
+  position:fixed;left:0;top:0;right:auto;bottom:auto;
+  width:100%;height:100%;z-index:60;
+}
+.cat-widget-tour .cat-unit{bottom:auto;}
+
 /* `left` is written from JS on every animation frame; translateX(-50%) keeps
    the sprite centred on it. Deliberately no CSS transition here: the travel
    is eased inside the rAF loop instead, so the walk-cycle frames can be
@@ -1058,9 +1119,34 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
 .cat-bubble[hidden]{display:none;}
 
 /* Stacked in one grid cell so both copies wrap identically and the taller of
-   the two — always the full line — decides the height. */
+   the two — always the full line — decides the height. The action buttons
+   get their own row underneath, so they add to the box instead of fighting
+   the text for the same space. */
 .cat-bubble-sizer,.cat-bubble-text{grid-area:1/1;min-width:0;}
 .cat-bubble-sizer{visibility:hidden;}
+.cat-bubble-actions{grid-area:2/1;display:flex;flex-wrap:wrap;gap:8px;}
+.cat-bubble-actions:empty{display:none;}
+/* The widget is pointer-events:none so the cat never eats a tap meant for the
+   page; the tour's buttons are the one part that has to take them back. */
+.cat-bubble-actions{pointer-events:auto;}
+.cat-bubble-action{
+  flex:1 1 auto;min-height:var(--tap);padding:0 14px;margin-top:8px;
+  border:1.5px solid var(--accent);border-radius:9px;
+  background:var(--accent);color:#fff;font:inherit;font-size:13px;font-weight:600;
+  cursor:pointer;
+  transition:filter var(--dur-fast) var(--ease),background var(--dur-fast) var(--ease);
+}
+.cat-bubble-action:hover{filter:brightness(1.08);}
+.cat-bubble-action.secondary{background:none;color:var(--text-dim);border-color:var(--line);}
+.cat-bubble-action.secondary:hover{background:var(--node-hover);color:var(--text);}
+
+/* Flipped under the cat when there is no room above it — which is exactly
+   what happens on the first tour stop, where the cat perches on the grade
+   row near the top of the page. */
+.cat-bubble.below .cat-bubble-tail{top:auto;bottom:100%;
+  border-top:none;border-bottom:10px solid var(--accent);}
+.cat-bubble.below .cat-bubble-tail::after{top:auto;bottom:-11px;
+  border-top:none;border-bottom:9px solid var(--panel);}
 
 /* Tracks the cat independently of the bubble, so a clamped bubble still
    points at the animal instead of at the middle of itself. Two stacked
@@ -1305,7 +1391,7 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
          from JS, but the bubble is clamped inside the strip while the cat is
          not, so a line spoken from the corner cannot run off the page. -->
     <div id="catWidget" class="cat-widget" aria-hidden="true">
-      <div id="catBubble" class="cat-bubble" hidden>
+      <div id="catBubble" class="cat-bubble" aria-hidden="true" hidden>
         <!-- Holds the whole line, invisibly, so the bubble is already the
              size the finished sentence needs while the visible copy is still
              being typed into it. The two share one grid cell, so nothing has
@@ -1313,10 +1399,15 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
              text — see .cat-bubble in the stylesheet. -->
         <span id="catBubbleSizer" class="cat-bubble-sizer" aria-hidden="true"></span>
         <span id="catBubbleText" class="cat-bubble-text"></span>
+        <!-- Empty except during the first-visit guided tour, which is the one
+             time the cat asks a question rather than just talking. Those are
+             real buttons, and the bubble is exposed to assistive tech only
+             while they are in it — see tourSay() in src/cat.js. -->
+        <span id="catBubbleActions" class="cat-bubble-actions"></span>
         <span id="catBubbleTail" class="cat-bubble-tail"></span>
       </div>
       <div id="catUnit" class="cat-unit">
-        <div id="catSprite" class="cat-sprite"></div>
+        <div id="catSprite" class="cat-sprite" aria-hidden="true"></div>
       </div>
     </div>
   </div>
@@ -9907,6 +9998,13 @@ const CatWidget = (function () {
 
   const GAIT_SPEED_PX_S = { walk: 30, run: 105 };
 
+  /* Tour flights cross the whole page rather than a corner of it, so they get
+     their own pace — an ambling 105px/s would take ten seconds to reach the
+     grade row and the child would lose the thread. */
+  const TOUR_SPEED_PX_S = 460;
+  const MIN_FLIGHT_MS = 480;
+  const MAX_FLIGHT_MS = 1500;
+
   // ---- behaviour timing ---------------------------------------------------
 
   const MIN_IDLE_MS = 7000;
@@ -9959,11 +10057,14 @@ const CatWidget = (function () {
 
   // ---- element + state ----------------------------------------------------
 
-  let root, unit, sprite, bubble, bubbleText, bubbleSizer, bubbleTail;
+  let root, unit, sprite, bubble, bubbleText, bubbleSizer, bubbleActions, bubbleTail;
 
   let skin = 'white';
   let visible = true;
   let started = false;
+  // Set by the guided tour, whose offer should be the first thing a child on
+  // their first visit hears — not a greeting talking over it.
+  let greetingSuppressed = false;
 
   // Current animation.
   let anim = 'idle1';
@@ -9974,9 +10075,24 @@ const CatWidget = (function () {
   // Current position along the floor strip, in px from the strip's left edge.
   let x = 0;
   let homeX = 0;
-  let move = null;      // { from, to, duration, elapsed } while travelling
+  let move = null;      // see beginMove()/flyTo() for the shape
   let rafId = null;
   let lastTime = 0;
+
+  /* Guided-tour mode (src/catTour.js). The widget becomes viewport-sized, so
+     `x` is a viewport coordinate and `y` — the cat's feet — comes into play;
+     in ordinary corner mode the feet are always on the strip and `y` is
+     unused. `anchor` is the element the cat is currently perched on, kept so
+     it can be re-seated when the page scrolls or resizes under it. */
+  let tourMode = false;
+  let y = 0;
+  let anchor = null;
+  /* The corner, in viewport coordinates, captured on the way into the tour —
+     while the widget is still laid out as its strip and can be measured
+     honestly. Reading it mid-tour would mean toggling the tour class off and
+     back for one measurement, and a rect taken while the element is switching
+     between fixed and absolute layout comes back several pixels wrong. */
+  let homeAnchor = null;
 
   // What the cat is currently committed to, and until when.
   let busyUntil = 0;
@@ -10076,14 +10192,27 @@ const CatWidget = (function () {
     return { min: half, max: Math.max(half, total - half) };
   }
 
-  function place(px) {
+  /* `py` is the cat's FEET, not the top of its box, because every perch the
+     tour uses is expressed as "stand on this edge". Ignored outside tour
+     mode, where the feet are always on the strip. */
+  function place(px, py) {
     x = px;
     unit.style.left = `${px}px`;
+    if (!tourMode || typeof py !== 'number') return;
+    y = py;
+    unit.style.top = `${py - spriteSize()}px`;
   }
 
   /* Home is the right end of the strip: the corner itself. Everything else
      the cat does is an excursion it comes back from. */
   function goHome() {
+    /* The tour owns the cat's position for as long as it runs. This matters
+       because applyVisibility() defers a second goHome() through
+       requestAnimationFrame: in a tab that loads in the background those
+       callbacks are held until the page is first painted, which can land
+       after the tour has already taken over — and it would drag the cat back
+       to the corner mid-step, on the x axis only, leaving it stranded. */
+    if (tourMode) return;
     homeX = bounds().max;
     place(homeX);
   }
@@ -10093,6 +10222,7 @@ const CatWidget = (function () {
      clamped — stopping where it stands reads as a cat pausing, while
      retargeting mid-stride reads as a glitch. */
   function clampToBounds() {
+    if (tourMode) { reseatOnAnchor(); if (scene) positionBubble(); return; }
     const { min, max } = bounds();
     homeX = max;
     move = null;
@@ -10135,9 +10265,33 @@ const CatWidget = (function () {
     const duration = Math.min(MAX_MOVE_MS, Math.max(MIN_MOVE_MS, (distance / speed) * 1000));
     facingRight = target > x;
     setAnim(gait);
-    move = { from: x, to: target, duration, elapsed: 0 };
+    move = { fromX: x, toX: target, fromY: y, toY: y, duration, elapsed: 0, arc: 0 };
     busyUntil = performance.now() + duration;
     return duration;
+  }
+
+  /* A tour flight: a single eased hop to an arbitrary point on the page, with
+     the cat lifting off the straight line between the two and settling back
+     onto it so it reads as a jump rather than a slide. */
+  function flyTo(targetX, targetY, onDone) {
+    const distance = Math.hypot(targetX - x, targetY - y);
+    facingRight = targetX > x;
+
+    if (REDUCED_MOTION || distance < 2) {
+      place(targetX, targetY);
+      if (onDone) onDone();
+      return;
+    }
+
+    setAnim('run');
+    move = {
+      fromX: x, toX: targetX, fromY: y, toY: targetY,
+      duration: Math.min(MAX_FLIGHT_MS, Math.max(MIN_FLIGHT_MS, (distance / TOUR_SPEED_PX_S) * 1000)),
+      elapsed: 0,
+      arc: Math.min(70, distance * 0.16),
+      onDone,
+    };
+    busyUntil = Infinity;
   }
 
   function beginGesture(name) {
@@ -10175,8 +10329,19 @@ const CatWidget = (function () {
     if (!move) return;
     move.elapsed += dt;
     const p = Math.min(1, move.elapsed / move.duration);
-    place(move.from + (move.to - move.from) * easeInOut(p));
-    if (p >= 1) move = null;
+    const eased = easeInOut(p);
+
+    const nx = move.fromX + (move.toX - move.fromX) * eased;
+    let ny = move.fromY + (move.toY - move.fromY) * eased;
+    // sin() peaks at the midpoint and returns to zero at both ends, so the
+    // arc never disturbs where the cat takes off from or lands.
+    if (move.arc) ny -= Math.sin(Math.PI * p) * move.arc;
+    place(nx, ny);
+
+    if (p < 1) return;
+    const arrived = move.onDone;
+    move = null;
+    if (arrived) arrived();
   }
 
   function stepFrame(dt) {
@@ -10185,7 +10350,9 @@ const CatWidget = (function () {
     if (move && def.pxPerFrame) {
       // Distance-driven: eight walk frames per stride of ground, whatever
       // speed the easing happens to be running at right now.
-      const travelled = Math.abs(x - move.from);
+      const travelled = tourMode
+        ? Math.hypot(x - move.fromX, y - move.fromY)
+        : Math.abs(x - move.fromX);
       frame = Math.floor(travelled / def.pxPerFrame) % def.frames;
       paint();
       return;
@@ -10202,7 +10369,8 @@ const CatWidget = (function () {
   /* Chooses the next ambient behaviour once the current one has run out, and
      escalates through hint -> sleep when the app itself has gone quiet. */
   function stepBehaviour(now) {
-    if (now < busyUntil) return;
+    // The tour drives the cat itself; ambient wandering would fight it.
+    if (tourMode || now < busyUntil) return;
 
     const quietFor = now - lastActivityAt;
 
@@ -10263,9 +10431,13 @@ const CatWidget = (function () {
      strip is only as wide as the cat's patch of floor — on a narrow screen
      that is 200px, and a bubble confined to it would be a column of one-word
      lines. This lets it overhang the strip and still never leave the page. */
+  /* Everything here is worked out from the sprite's real rendered box rather
+     than from `x`/`y`, so one implementation serves both the corner strip and
+     the tour's viewport coordinates. */
   function positionBubble() {
-    const stripRect = root.getBoundingClientRect();
-    const bubbleWidth = bubble.getBoundingClientRect().width;
+    const widgetRect = root.getBoundingClientRect();
+    const spriteRect = sprite.getBoundingClientRect();
+    const bubbleBox = bubble.getBoundingClientRect();
     const edge = 6;
 
     /* documentElement.clientWidth, not window.innerWidth: innerWidth counts
@@ -10275,18 +10447,71 @@ const CatWidget = (function () {
        is the layout viewport the bubble is actually laid out in. */
     const viewportWidth = document.documentElement.clientWidth;
 
-    // Both bounds are in the strip's own coordinate space, which is what
-    // `left` is set in.
-    const minLeft = edge - stripRect.left;
-    const maxLeft = viewportWidth - stripRect.left - bubbleWidth - edge;
-    const left = Math.min(Math.max(x - bubbleWidth / 2, minLeft), Math.max(minLeft, maxLeft));
+    const catCentreX = spriteRect.left + spriteRect.width / 2;
+    // The art sits in the lower part of the cell, so the visual top of the
+    // cat is below the top of its box.
+    const catHeadY = spriteRect.top + CELL_TOP_PADDING * scale();
+    const catFeetY = spriteRect.bottom;
 
-    bubble.style.left = `${left}px`;
-    bubble.style.bottom = `${spriteSize() - CELL_TOP_PADDING * scale() + BUBBLE_GAP_PX}px`;
+    // Horizontal: centred on the cat, clamped into the viewport.
+    let leftV = catCentreX - bubbleBox.width / 2;
+    leftV = Math.min(Math.max(leftV, edge), Math.max(edge, viewportWidth - bubbleBox.width - edge));
+
+    /* Vertical: above the cat by default, flipped underneath when there is no
+       room — which is what happens on the tour's first stop, where the cat
+       perches on the grade row near the top of the page. */
+    const below = catHeadY - bubbleBox.height - BUBBLE_GAP_PX < edge;
+    bubble.classList.toggle('below', below);
+
+    bubble.style.left = `${leftV - widgetRect.left}px`;
+    if (below) {
+      bubble.style.top = `${catFeetY + BUBBLE_GAP_PX - widgetRect.top}px`;
+      bubble.style.bottom = 'auto';
+    } else {
+      bubble.style.top = 'auto';
+      bubble.style.bottom = `${widgetRect.bottom - catHeadY + BUBBLE_GAP_PX}px`;
+    }
 
     // Keep the tail inside the bubble's rounded corners.
-    const tailX = Math.min(Math.max(x - left, 16), Math.max(16, bubbleWidth - 16));
+    const tailX = Math.min(Math.max(catCentreX - leftV, 16), Math.max(16, bubbleBox.width - 16));
     bubbleTail.style.left = `${tailX}px`;
+  }
+
+  /* The bubble is decorative for its own chatter and stays out of the
+     accessibility tree for it; the moment it holds buttons that is no longer
+     true, so it is exposed and focus is moved into it. */
+  function renderBubbleActions(actions) {
+    bubbleActions.innerHTML = '';
+
+    if (!actions || !actions.length) {
+      bubble.setAttribute('aria-hidden', 'true');
+      bubble.removeAttribute('role');
+      bubble.removeAttribute('aria-label');
+      return;
+    }
+
+    bubble.removeAttribute('aria-hidden');
+    bubble.setAttribute('role', 'group');
+    bubble.setAttribute('aria-label', 'Guided tour');
+
+    actions.forEach((action) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = `cat-bubble-action${action.primary === false ? ' secondary' : ''}`;
+      btn.textContent = action.label;
+      btn.addEventListener('click', () => {
+        Sound.play('toggle');
+        action.onClick();
+      });
+      bubbleActions.appendChild(btn);
+    });
+
+    /* Announced rather than focused. The offer arrives on its own timing a
+       second after load, and pulling focus out from under someone who did not
+       ask for it is disorienting (WCAG 3.2.5). The buttons are real, reachable
+       and the line never times out, so nobody is shut out by leaving focus
+       where the child put it. */
+    announce(`${bubbleSizer.textContent} ${actions.map((a) => a.label).join(', or ')}.`);
   }
 
   function clearSpeechTimers() {
@@ -10306,6 +10531,7 @@ const CatWidget = (function () {
       bubble.hidden = true;
       bubbleSizer.textContent = '';
       bubbleText.textContent = '';
+      renderBubbleActions(null);
     };
     if (REDUCED_MOTION) finish();
     else hideTimer = setTimeout(finish, 240);
@@ -10350,7 +10576,13 @@ const CatWidget = (function () {
     speak(beat.text, nextBeat);
   }
 
-  function speak(text, done) {
+  /* opts.actions — [{ label, primary, onClick }] — turns the bubble into
+     something a child answers rather than just reads, and is the only time it
+     enters the accessibility tree. opts.persist keeps a line up until the
+     child does the thing it is asking for, instead of timing out. */
+  function speak(text, done, opts) {
+    const actions = (opts && opts.actions) || null;
+    const persist = !!(opts && opts.persist);
     clearTimeout(hideTimer);
     bubble.hidden = false;
 
@@ -10360,6 +10592,9 @@ const CatWidget = (function () {
        the text can no longer outgrow its own bubble. */
     bubbleSizer.textContent = text;
     bubbleText.textContent = REDUCED_MOTION ? text : '';
+    // After the sizer is filled: the buttons are part of the box being sized,
+    // and the announcement reads the line that is actually up.
+    renderBubbleActions(actions);
 
     positionBubble();
     /* getBoundingClientRect() in positionBubble() has already flushed layout
@@ -10371,16 +10606,19 @@ const CatWidget = (function () {
     bubble.classList.add('show');
 
     const hold = Math.min(MAX_HOLD_MS, Math.max(MIN_HOLD_MS, text.length * HOLD_MS_PER_CHAR));
+    // A line with buttons, or one waiting on the child to tap something on
+    // the page, has no business timing out underneath them.
+    const settle = persist || actions ? () => {} : done;
 
     if (REDUCED_MOTION) {
-      holdTimer = setTimeout(done, hold);
+      holdTimer = setTimeout(settle, hold);
       return;
     }
 
     let i = 0;
     const type = () => {
       if (i >= text.length) {
-        holdTimer = setTimeout(done, hold);
+        holdTimer = setTimeout(settle, hold);
         return;
       }
       bubbleText.textContent += text[i];
@@ -10392,7 +10630,7 @@ const CatWidget = (function () {
 
   function wake() {
     lastActivityAt = performance.now();
-    if (!asleep) return;
+    if (!asleep || tourMode) return;
     asleep = false;
     if (!REDUCED_MOTION) beginGesture('perk');
   }
@@ -10479,7 +10717,9 @@ const CatWidget = (function () {
      to be fast enough to act on, so `pacing` is a real record of how this
      session went rather than only of the moments the cat interrupted. */
   function trackWordClick() {
-    if (!visible || wordClickTimes.length < RAPID_CLICK_WINDOW) return;
+    // Mid-tour the fast clicks are the tour's own prompting, not a child
+    // racing, and a slow-down scene would talk over the step.
+    if (!visible || tourMode || wordClickTimes.length < RAPID_CLICK_WINDOW) return;
 
     const span = wordClickTimes[wordClickTimes.length - 1] - wordClickTimes[0];
     const avgGap = span / (RAPID_CLICK_WINDOW - 1);
@@ -10550,7 +10790,6 @@ const CatWidget = (function () {
      iPads this runs on: a hidden cat should cost nothing. */
   function applyVisibility() {
     root.classList.toggle('cat-widget-hidden', !visible);
-    root.setAttribute('aria-hidden', 'true');
 
     if (!visible) {
       stopLoop();
@@ -10561,6 +10800,10 @@ const CatWidget = (function () {
       bubble.classList.remove('show');
       return;
     }
+
+    // Mid-tour the cat is somewhere on the page by design, so re-seating it
+    // in its corner is exactly the wrong thing to do.
+    if (tourMode) { startLoop(); return; }
 
     // Sized synchronously: a page that opens in a background tab never gets
     // a requestAnimationFrame callback, so deferring the *layout* to one
@@ -10581,10 +10824,109 @@ const CatWidget = (function () {
     applyVisibility();
   }
 
+  // ---- guided tour --------------------------------------------------------
+
+  /* Where the cat should stand to be perched on `el`. `align` picks which
+     part of the top edge — the tour uses 'right' for cards it should sit on
+     the corner of, 'centre' for things it is pointing straight down at. */
+  function perchPoint(el, align) {
+    const r = el.getBoundingClientRect();
+    const half = spriteSize() / 2;
+    let px;
+    if (align === 'right') px = r.right - Math.min(30, r.width * 0.14);
+    else if (align === 'left') px = r.left + Math.min(30, r.width * 0.5);
+    else px = r.left + r.width / 2;
+
+    const viewportWidth = document.documentElement.clientWidth;
+    px = Math.min(Math.max(px, half), Math.max(half, viewportWidth - half));
+    // Never let a perch near the top of the page cut the cat's head off.
+    const py = Math.max(r.top, spriteSize() + 4);
+    return { x: px, y: py };
+  }
+
+  function reseatOnAnchor() {
+    if (!tourMode || !anchor || !anchor.el.isConnected || move) return;
+    const point = perchPoint(anchor.el, anchor.align);
+    place(point.x, point.y);
+  }
+
+  function enterTour() {
+    if (tourMode) return;
+    clearSpeechTimers();
+    clearTimeout(hideTimer);
+    scene = null;
+    bubble.classList.remove('show');
+    bubble.hidden = true;
+
+    /* Take off from wherever the cat is standing now, so it lifts out of its
+       corner instead of blinking to the top of the page. */
+    const from = sprite.getBoundingClientRect();
+    const strip = root.getBoundingClientRect();
+    homeAnchor = { x: strip.right - spriteSize() / 2, y: strip.bottom };
+    tourMode = true;
+    move = null;
+    root.classList.add('cat-widget-tour');
+    place(from.left + from.width / 2, from.bottom);
+    setAnim('idle2');
+    busyUntil = Infinity;
+    startLoop();
+  }
+
+  function exitTour(done) {
+    if (!tourMode) { if (done) done(); return; }
+    anchor = null;
+    /* Only ever an approximate destination — goHome() below re-measures the
+       corner exactly once the widget is back in strip layout, so a stale
+       homeAnchor (the window was resized mid-tour) costs a few pixels on the
+       last frame of the flight and nothing after it. */
+    const home = homeAnchor || { x, y };
+    flyTo(home.x, home.y, () => {
+      tourMode = false;
+      root.classList.remove('cat-widget-tour');
+      unit.style.top = '';
+      layoutSprite();
+      goHome();
+      settle();
+      lastActivityAt = performance.now();
+      if (done) done();
+    });
+  }
+
+  /* Fly to an element and stay put on it, following it if the page scrolls
+     or reflows underneath. */
+  function perchOn(el, align, done) {
+    if (!el || !el.isConnected) { if (done) done(); return; }
+    anchor = { el, align };
+    const point = perchPoint(el, align);
+    flyTo(point.x, point.y, () => {
+      setAnim('tap');
+      busyUntil = Infinity;
+      if (done) done();
+    });
+  }
+
+  function tourSay(text, opts, done) {
+    if (!tourMode) return;
+    clearSpeechTimers();
+    // Scenes and the tour must not both own the bubble; the tour wins for as
+    // long as it is running.
+    scene = null;
+    speak(text, done || (() => {}), opts);
+  }
+
   // ---- page-level listeners -----------------------------------------------
 
   function bindPage() {
     window.addEventListener('resize', clampToBounds);
+
+    /* Only matters mid-tour, where the cat is standing on a real element that
+       can slide out from under it — the left panel scrolls independently, so
+       this listens in the capture phase to catch scrolls on any container. */
+    window.addEventListener('scroll', () => {
+      if (!tourMode) return;
+      reseatOnAnchor();
+      if (!bubble.hidden) positionBubble();
+    }, { capture: true, passive: true });
 
     /* Nothing animates in a hidden tab — rAF is suspended there — so the loop
        is stopped outright rather than left to be throttled, and the strip is
@@ -10628,6 +10970,7 @@ const CatWidget = (function () {
     bubble = document.getElementById('catBubble');
     bubbleText = document.getElementById('catBubbleText');
     bubbleSizer = document.getElementById('catBubbleSizer');
+    bubbleActions = document.getElementById('catBubbleActions');
     bubbleTail = document.getElementById('catBubbleTail');
     if (!root || started) return;
     started = true;
@@ -10653,7 +10996,9 @@ const CatWidget = (function () {
     // and held back entirely if the page opened in a background tab — an
     // introduction nobody was there for is an introduction wasted.
     setTimeout(() => {
-      whenPageVisible(() => { if (visible) playScene(CatDialogue.greeting()); });
+      whenPageVisible(() => {
+        if (visible && !greetingSuppressed) playScene(CatDialogue.greeting());
+      });
     }, 1400);
   }
 
@@ -10669,6 +11014,16 @@ const CatWidget = (function () {
     isVisible: () => visible,
     setSkin,
     getSkin: () => skin,
+    // Used by the guided tour (src/catTour.js).
+    suppressGreeting: () => { greetingSuppressed = true; },
+    tour: {
+      enter: enterTour,
+      exit: exitTour,
+      perchOn,
+      say: tourSay,
+      gesture: (name) => { setAnim(name); busyUntil = Infinity; },
+      isRunning: () => tourMode,
+    },
     // A copy, so a caller reading the record cannot edit it.
     getPacing: () => ({ ...pacing }),
     tip: () => { tipShownAt = performance.now(); playScene(CatDialogue.idleScene()); },
@@ -10808,6 +11163,200 @@ const CatSettings = (function () {
   }
 
   return { init };
+}());
+
+/* ---------- src/catTour.js ---------- */
+/* =========================================================================
+   The first-visit guided tour.
+
+   Runs once, ever, on a given browser: the cat offers to show a child around,
+   and if they say yes it walks the three numbered steps in order — grade,
+   topic, word — perching on the real element each step is about and tapping
+   at it, then finishes on the definition panel and returns to its corner.
+
+   Two rules shape the whole thing:
+
+   - The cat never advances the app itself. It lands, it points, and then it
+     waits for the child to make the choice. Each step is unblocked by a real
+     selection arriving through onStateChange(), whether that came from the
+     list, the search box or a tap on the 3D graph.
+
+   - Every perch is measured off the live element (see perchOn/perchPoint in
+     src/cat.js), never off hard-coded coordinates, so the cat stays on the
+     right card when the panels are resized, the curriculum filter changes the
+     list, or the page is opened at any window size.
+   ========================================================================= */
+
+const CatTour = (function () {
+  const STORAGE_KEY = 'mathVocabCatTourDone';
+
+  /* A beat between landing on a step and speaking about it, so the two do not
+     arrive at once and the child's eye can follow the cat down. */
+  const SETTLE_MS = 420;
+  // Long enough after load that the tour is not competing with the graph
+  // fading in, and the page has settled where it is going to be.
+  const OPENING_MS = 1600;
+
+  let step = 'idle';
+  let timer = null;
+
+  // ---- persistence --------------------------------------------------------
+
+  function alreadyTaken() {
+    try {
+      return localStorage.getItem(STORAGE_KEY) === '1';
+    } catch (e) {
+      // Private browsing: better to skip the tour than to replay it forever.
+      return true;
+    }
+  }
+
+  function markTaken() {
+    try { localStorage.setItem(STORAGE_KEY, '1'); } catch (e) { /* private browsing */ }
+  }
+
+  // ---- targets ------------------------------------------------------------
+
+  /* Each step names the element the cat should stand on and which part of its
+     top edge to stand on. Looked up fresh every time, because these lists are
+     rebuilt from scratch on every render. */
+  const TARGETS = {
+    grade: () => document.querySelector('#gradeRow .grade-node'),
+    topic: () => document.querySelector('#topicList .topic-node'),
+    word: () => document.querySelector('#vocabList .vocab-row'),
+    detail: () => document.getElementById('listenBtn'),
+  };
+
+  const ALIGN = { grade: 'centre', topic: 'right', word: 'right', detail: 'centre' };
+
+  const LINES = {
+    grade: 'Start here. Tap any grade — they all work.',
+    topic: 'Now a topic. Pick whichever one you like the sound of.',
+    word: 'And now a word. Any of them.',
+    detailA: 'Everything about your word lands over here.',
+    detailB: 'You can hear it read out loud, and see it used in a real example.',
+    farewell: 'I will be down in this corner if you want me.',
+  };
+
+  // ---- flow ---------------------------------------------------------------
+
+  function isActive() {
+    return step !== 'idle' && step !== 'done';
+  }
+
+  function after(ms, fn) {
+    clearTimeout(timer);
+    timer = setTimeout(fn, ms);
+  }
+
+  /* Lands on the step's element, taps at it, then says its line and waits.
+     The line persists rather than timing out — it is asking for something, so
+     it should still be there whenever the child looks up. */
+  function goToStep(name) {
+    const el = TARGETS[name]();
+    if (!el) return finish();
+
+    step = name;
+    CatWidget.tour.perchOn(el, ALIGN[name], () => {
+      after(SETTLE_MS, () => {
+        if (step !== name) return;
+        CatWidget.tour.say(LINES[name], { persist: true });
+      });
+    });
+  }
+
+  /* The last stop is the only one the cat talks through rather than waits at,
+     because there is nothing here the child has to choose — so it explains,
+     then hands control back with a button. */
+  function goToDetail() {
+    const el = TARGETS.detail();
+    if (!el) return finish();
+
+    step = 'detail';
+    CatWidget.tour.perchOn(el, ALIGN.detail, () => {
+      after(SETTLE_MS, () => {
+        if (step !== 'detail') return;
+        CatWidget.tour.say(LINES.detailA, {}, () => {
+          if (step !== 'detail') return;
+          CatWidget.tour.say(LINES.detailB, {
+            actions: [{ label: 'Next', onClick: finish }],
+          });
+        });
+      });
+    });
+  }
+
+  function finish() {
+    clearTimeout(timer);
+    step = 'done';
+    markTaken();
+    CatWidget.tour.exit(() => {
+      // Said from the corner it has just landed in, so "here" means something.
+      CatWidget.say(LINES.farewell);
+    });
+  }
+
+  function decline() {
+    clearTimeout(timer);
+    step = 'done';
+    markTaken();
+    CatWidget.tour.exit(() => {
+      CatWidget.say('No problem. Explore anything you like — I am here either way.');
+    });
+  }
+
+  // ---- hooks --------------------------------------------------------------
+
+  /* Called at the end of every renderAll(). Each waiting step is unblocked by
+     its own part of the selection appearing, so it does not matter whether the
+     child used the list, the search box or the graph to get there. */
+  function onStateChange(state) {
+    if (!isActive()) return;
+
+    // Someone who starts exploring before answering has answered.
+    if (step === 'prompt') {
+      if (state.grade) decline();
+      return;
+    }
+
+    if (step === 'grade' && state.grade) return after(SETTLE_MS, () => goToStep('topic'));
+    if (step === 'topic' && state.domainCode) return after(SETTLE_MS, () => goToStep('word'));
+    if (step === 'word' && state.term) return after(SETTLE_MS, goToDetail);
+    return undefined;
+  }
+
+  /* Whether a tour is going to happen this page load — checked by the cat so
+     it can hold back its usual greeting and let the offer go first. */
+  function isPending() {
+    return step === 'pending';
+  }
+
+  function init() {
+    // A browser that has seen it, a child who has already explored words, or
+    // a hidden cat: all reasons to leave the page alone.
+    if (alreadyTaken() || !CatWidget.isVisible() || visitedTerms.size > 0) {
+      step = 'done';
+      return;
+    }
+
+    step = 'pending';
+    after(OPENING_MS, () => {
+      if (step !== 'pending') return;
+      // Turning the cat off during the opening delay counts as a no.
+      if (!CatWidget.isVisible()) { step = 'done'; return; }
+
+      step = 'prompt';
+      CatWidget.tour.enter();
+      CatWidget.tour.say('First time here? I can show you around.', {
+        actions: [
+          { label: 'Yes, show me', onClick: () => goToStep('grade') },
+          { label: 'No thanks', primary: false, onClick: decline },
+        ],
+      });
+    });
+  }
+
+  return { init, onStateChange, isActive, isPending };
 }());
 
 /* ---------- src/resetProgress.js ---------- */
@@ -11034,8 +11583,14 @@ function setupResizer({ handle, panel, axis, direction, min, max, storageKey, is
   let startPos = 0;
   let startSize = 0;
 
-  applyStoredSize();
+  syncDisabledState();
   syncAria();
+  // A stored desktop width must not survive into a stacked layout it was
+  // never sized for (that inline style would out-rank the stacked CSS and
+  // pin the panel too wide for the phone underneath it) — recheck on every
+  // resize, not just at load, since the viewport can cross the breakpoint
+  // without a reload.
+  window.addEventListener('resize', syncDisabledState);
 
   handle.addEventListener('pointerdown', (event) => {
     if (isDisabled() || event.button !== 0) return;
@@ -11098,6 +11653,15 @@ function setupResizer({ handle, panel, axis, direction, min, max, storageKey, is
     const px = Number(stored);
     if (Number.isFinite(px) && px > 0) applySize(px);
   }
+
+  function syncDisabledState() {
+    if (isDisabled()) {
+      panel.style[a.flexProp] = '';
+      panel.style[a.styleProp] = '';
+    } else {
+      applyStoredSize();
+    }
+  }
 }
 
 function isStacked() {
@@ -11149,7 +11713,11 @@ function renderAll() {
   updateInstruction();
   updateSpotlight();
   Graph.focus(state);
-  CatWidget.reactToState(state, { seen: visitedTerms.size });
+
+  /* During the first-visit tour the cat is being driven step by step, so its
+     usual running commentary would talk over the instructions. */
+  if (CatTour.isActive()) CatTour.onStateChange(state);
+  else CatWidget.reactToState(state, { seen: visitedTerms.size });
 }
 
 // ---- selection ----------------------------------------------------------
@@ -11341,6 +11909,10 @@ function boot() {
   // After CatWidget.init(), which loads the stored colour and visibility the
   // Cat menu reflects.
   CatSettings.init();
+  // Before renderAll(), so a pending tour has already claimed the opening
+  // line by the time the cat would otherwise greet.
+  CatTour.init();
+  if (CatTour.isPending()) CatWidget.suppressGreeting();
   initPanelResizers();
   renderAll();
 
