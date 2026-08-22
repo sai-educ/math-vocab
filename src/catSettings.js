@@ -15,7 +15,7 @@
 const CatSettings = (function () {
   const FOCUSABLE = 'input:not([disabled]),button:not([disabled])';
 
-  let panel, panelBtn, showCheckbox, skinPicker, tipBtn, lastFocused;
+  let panel, panelBtn, showCheckbox, skinPicker, tipBtn, tourBtn, lastFocused;
 
   /* Every swatch is the same 64px icon under the colourway's own CSS filter,
      the same way the sprite is tinted — so a swatch cannot drift out of sync
@@ -47,6 +47,7 @@ const CatSettings = (function () {
     showCheckbox.checked = on;
     skinPicker.closest('.cat-skin-picker-wrap').hidden = !on;
     tipBtn.disabled = !on;
+    tourBtn.disabled = !on;
   }
 
   function open() {
@@ -106,6 +107,14 @@ const CatSettings = (function () {
       CatWidget.tip();
       Sound.play('toggle');
     });
+
+    /* The menu has to get out of the way first — the tour takes the cat off
+       across the page, and the panel would sit on top of the first thing it
+       lands on. */
+    tourBtn.addEventListener('click', () => {
+      close();
+      CatTour.restart();
+    });
   }
 
   /* Runs after CatWidget.init(), which is what loads the stored colour and
@@ -116,6 +125,7 @@ const CatSettings = (function () {
     showCheckbox = document.getElementById('catShowCheckbox');
     skinPicker = document.getElementById('catSkinPicker');
     tipBtn = document.getElementById('catTipBtn');
+    tourBtn = document.getElementById('catTourBtn');
     if (!panelBtn || !panel) return;
 
     /* The real pixel-cat sprite, not the generic line-art glyph the other
