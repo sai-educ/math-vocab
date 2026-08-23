@@ -19,7 +19,8 @@ Standards for Mathematics; a **Curriculum** control above the 3D graph lets a
 reader add the UK National Curriculum and India's NCERT syllabus, bringing the
 bank to 264 words across all three.
 
-Free, open source, and it collects no data about anyone.
+Free, open source, and it collects no personal data about anyone (anonymous,
+aggregate traffic counts only — see [Privacy](#privacy)).
 
 ---
 
@@ -423,7 +424,7 @@ Built to WCAG 2.1 AA.
 
 ## Privacy
 
-**This site collects no data at all.** No sign-in, no analytics, no cookies, no
+**This site collects no personal information.** No sign-in, no cookies, no
 advertising, no tracking of any kind. Nothing about a child is sent anywhere or
 stored on any server.
 
@@ -434,6 +435,11 @@ Clearing your browser data erases all three.
 The one time anything leaves your device is when you press **Listen** — the
 sentence to be spoken is sent to the voice server so it can be turned into
 audio. Nothing is stored.
+
+The pages do load **Google Analytics**, used for one purpose only: counting
+anonymous, aggregate traffic — visit numbers and device type (phone, tablet,
+or computer) — so we know which devices to keep the tool fast on. It reports
+no personal details and nothing about what a child does inside the Explorer.
 
 ---
 
