@@ -9,23 +9,19 @@
 <meta name="description" content="An open-access, interactive K-5 math vocabulary bank aligned to the Common Core standards, with a 3D knowledge graph, definitions, examples and common misconceptions.">
 <title>Math Word Explorer — K-5 math vocabulary</title>
 <link rel="icon" type="image/png" href="assets/favicon.png">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-<!-- Loads the root node's Sun model (assets/sun.glb, see README credits). If
-     this fails to load — no network, the file is missing — the graph falls
-     back to its plain white sphere, same as every other CDN add-on here. -->
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-<!-- Bloom post-processing (UnrealBloomPass). Loaded after the core three.js
-     build; if any of these fail, the graph falls back to direct rendering
-     with its sprite-halo glow, so bloom is an enhancement, not a dependency. -->
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/Pass.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<!-- Google Analytics 4 — anonymous, aggregate traffic only (visit counts and
+     device type), so we know which devices to keep the tool fast on. No
+     sign-in, no advertising, nothing personal leaves the browser. -->
+<link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-3GKVZKQPWF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-3GKVZKQPWF');
+</script>
 <style>
 __STYLES__
 </style>
@@ -68,9 +64,6 @@ __STYLES__
           </div>
         </div>
       </div>
-      <button id="aboutBtn" class="header-btn" type="button" aria-haspopup="dialog">
-        <span class="btn-icon" aria-hidden="true"></span><span class="btn-text">About</span>
-      </button>
       <a id="backHomeLink" class="header-btn" href="index.html">
         <span class="btn-icon" aria-hidden="true"></span><span class="btn-text">Home</span>
       </a>
@@ -250,99 +243,24 @@ __STYLES__
      see the definition panel update on the far side of the screen. -->
 <div id="srAnnounce" class="sr-only" role="status" aria-live="polite"></div>
 
-<div id="aboutOverlay" hidden>
-  <div id="aboutDialog" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
-    <button id="aboutCloseX" type="button" aria-label="Close"></button>
-    <div id="aboutScroll">
-    <h2 id="aboutTitle">About this resource</h2>
-    <p class="about-sub">An open educational resource for elementary math vocabulary.</p>
-
-    <p>
-      A vocabulary bank of math words spanning Kindergarten through Grade 5, with a
-      child-facing definition, a worked example, and the misconception teachers most often
-      see for each term. Every word is cited to the standard it comes from — the US Common
-      Core, the UK National Curriculum, or India's NCERT — and the <strong>Curriculum</strong>
-      control above the graph lets you choose which of those to show.
-    </p>
-
-    <ul class="about-orgs">
-      <li>
-        <span class="org-name">
-          <a href="https://usablemath.org" target="_blank" rel="noopener noreferrer">Usable Math</a>
-        </span>
-        <span class="org-role">Developed by the Usable Math team at the University of Massachusetts Amherst.</span>
-      </li>
-      <li>
-        <span class="org-name">
-          <a href="https://societyandai.org" target="_blank" rel="noopener noreferrer">Society &amp; AI</a>
-        </span>
-        <span class="org-role">In collaboration with the Society &amp; AI research group.</span>
-      </li>
-    </ul>
-
-    <div class="about-privacy">
-      <h3>Your privacy</h3>
-      <p>
-        This site collects <strong>no data at all</strong>. There is no sign-in, no analytics,
-        no cookies, no advertising, and no tracking of any kind. Nothing about you or your
-        students is sent anywhere or stored on any server.
-      </p>
-      <p>
-        The only things kept are on your own device, in this browser: which words you have
-        opened, and whether sound is on. Clearing your browser data erases them.
-      </p>
-    </div>
-
-    <div class="about-repo">
-      <h3>Open source</h3>
-      <p>
-        Every part of this tool — the word bank, the readability checks and the code — is public,
-        so educators can see exactly how it was built, reuse it, or adapt it for their own district.
-      </p>
-      <p>
-        <a href="https://github.com/sai-educ/math-vocab" target="_blank" rel="noopener noreferrer">
-          github.com/sai-educ/math-vocab
-        </a>
-      </p>
-    </div>
-
-    <div class="about-repo">
-      <h3>3D assets</h3>
-      <p>
-        The knowledge graph's centre is
-        <a href="https://skfb.ly/6yGSx" target="_blank" rel="noopener noreferrer">"Sun"</a>
-        by SebastianSosnowski, licensed under
-        <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">Creative
-        Commons Attribution 4.0</a>.
-      </p>
-    </div>
-
-    <div class="about-repo">
-      <h3>Pixel cat</h3>
-      <p>
-        The corner companion's sprite sheet is from
-        <a href="https://github.com/KINGS-MZ/PixelCat" target="_blank" rel="noopener noreferrer">KINGS-MZ/PixelCat</a>
-        by Imad El Khaider, used under the
-        <a href="https://opensource.org/license/mit" target="_blank" rel="noopener noreferrer">MIT licence</a>.
-        Only the artwork is reused; the coaching it does here is ours.
-      </p>
-    </div>
-
-    <p class="license">
-      <strong>Licence — CC BY-NC 4.0.</strong>
-      Released as an Open Educational Resource under the
-      <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener noreferrer">Creative
-      Commons Attribution-NonCommercial 4.0 International licence</a>.
-      You are free to share and adapt this material for non-commercial purposes, as long as you give
-      appropriate credit.
-    </p>
-
-    <button id="aboutClose" type="button">Close</button>
-    </div>
-  </div>
-</div>
-
 <script id="vocab-data" type="application/json">__VOCAB_DATA__</script>
+<!-- The 3D graph's libraries, at the end of the body so every panel paints
+     before any script blocks. Order matters: three.js core first, then its
+     add-ons, then GSAP. If any of these fail — offline, CDN down — the graph
+     falls back to its plain sphere and sprite glow; everything else on the
+     page works without them. The root node's Sun model (assets/sun.glb) is
+     fetched by GLTFLoader only once the graph is up. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/Pass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script>
 __SCRIPTS__
 </script>
