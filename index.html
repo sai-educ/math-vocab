@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="color-scheme" content="light">
+<meta name="color-scheme" content="dark">
 <meta name="description" content="Math Word Explorer: a free, open tool that explains the 264 math words children meet in Kindergarten through Grade 5, in language they can actually read.">
 <title>Math Word Explorer — math words, explained simply</title>
 <link rel="icon" type="image/png" href="assets/favicon.png">
@@ -42,7 +42,7 @@
   --panel2:#20202e;
   --line:#3a3a52;
   --text:#e7e7ee;
-  --text-dim:#9a9ab0;
+  --text-dim:#b0b5cc;
   --accent:#7c9eff;
   --accent2:#ff5fa8;
   --accent3:#7cffb2;
@@ -106,7 +106,17 @@ a:hover{color:var(--accent3-ink);}
 
 /* ---------- hero ---------- */
 
-.hero{padding:72px 0 8px;text-align:center;}
+.hero{padding:72px 0 8px;text-align:center;position:relative;}
+/* Soft scrim so the hero text stays readable while the graph's bright nodes
+   and halos sweep behind it — the graph itself is untouched. Painted inside
+   main's stacking context (z-index:-1) so it sits above the canvas, below
+   the text; no horizontal overhang, so phones never get sideways scroll. */
+.hero::before{
+  content:"";position:absolute;z-index:-1;inset:-30px 0 -6px;
+  background:radial-gradient(ellipse 68% 82% at 50% 44%,
+    rgba(10,10,17,.88) 36%, rgba(10,10,17,.55) 68%, transparent 100%);
+  pointer-events:none;
+}
 .eyebrow{
   margin:0 0 14px;font-size:12.5px;font-weight:700;letter-spacing:1.6px;
   text-transform:uppercase;color:var(--accent3-ink);
@@ -144,7 +154,7 @@ a:hover{color:var(--accent3-ink);}
   margin:22px 0 0;padding:14px 20px;border-radius:12px;
   background:var(--panel);border:1px solid var(--line);
 }
-.cta-note{margin:0;font-size:13.5px;color:var(--text-dim);}
+.cta-note{margin:0;font-size:14px;color:var(--text-dim);}
 .cta-note-sound{margin-top:6px;}
 .cta-note-sound strong{color:var(--text);font-weight:700;}
 
@@ -199,16 +209,20 @@ a:hover{color:var(--accent3-ink);}
 /* ---------- team ---------- */
 
 .team{
-  display:grid;gap:24px 18px;margin:6px 0 0;
-  grid-template-columns:repeat(auto-fit, minmax(160px, 1fr));
+  display:grid;gap:28px 24px;margin:6px 0 0;
+  grid-template-columns:repeat(2, 1fr);
 }
 .team-member{text-align:center;}
 .team-photo{
   display:block;width:96px;height:96px;margin:0 auto 12px;border-radius:50%;
   object-fit:cover;border:2px solid var(--line);background:var(--bg);
 }
-.team-member h3{margin:0 0 4px;font-size:15px;color:var(--text);font-weight:700;}
-.team-title{margin:0;font-size:13px;color:var(--accent3-ink);font-weight:600;}
+.team-member h3{margin:0;font-size:15px;color:var(--text);font-weight:700;}
+.team-title{margin:4px 0 0;font-size:13.5px;color:var(--accent3-ink);font-weight:400;}
+.team-note{
+  margin:-4px 0 20px;
+  font-size:13.5px;line-height:1.55;color:var(--text-dim);font-weight:400;text-align:left;
+}
 
 /* ---------- footer ---------- */
 
@@ -217,8 +231,13 @@ footer{
   border-top:1px solid var(--line);margin-top:40px;
   padding:20px max(20px, var(--safe-r)) calc(20px + var(--safe-b)) max(20px, var(--safe-l));
   text-align:center;
+  /* Translucent + blurred so the rotating graph ghosts through without ever
+     fighting the credit line for legibility. */
+  background:rgba(13,13,21,.82);
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
 }
-footer p{margin:0;font-size:13px;color:var(--text-dim);}
+footer p{margin:0;font-size:13.5px;color:var(--text-dim);}
 
 /* ---------- credits list ----------
    The "Free to use and to build on" panel reuses .feature-list; these tweaks
@@ -373,6 +392,10 @@ footer p{margin:0;font-size:13px;color:var(--text-dim);}
 
   <section class="panel">
     <h2>Meet the team</h2>
+    <p class="team-note">
+      The Math Word Explorer was developed by researchers from the Society and AI
+      Research Group, University of Massachusetts Amherst, and Harvard University.
+    </p>
     <div class="team">
       <article class="team-member">
         <img class="team-photo" src="assets/team/aubrey-coyne.webp" alt="Aubrey Coyne" width="96" height="96" loading="lazy">
@@ -408,7 +431,7 @@ footer p{margin:0;font-size:13px;color:var(--text-dim);}
     <p>
       We do use Google Analytics to count anonymous website traffic — how many visits the site
       gets and whether they arrive on a phone, a tablet, or a computer — so we can keep the
-      Explorer fast and comfortable on the devices families actually use. It reports
+      Explorer fast and comfortable on the devices learners actually use. It reports
       <strong>traffic numbers only</strong>: nothing personal, nothing that identifies anyone,
       and nothing about which words a child reads.
     </p>
