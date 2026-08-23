@@ -142,6 +142,15 @@ main{padding:22px max(20px,var(--safe-r)) calc(40px + var(--safe-b)) max(20px,va
 .btn-danger{background:transparent;border:1px solid rgba(200,31,107,.4);color:var(--accent2-ink);}
 .btn-danger:hover{background:rgba(200,31,107,.08);}
 </style>
+<!-- Google Analytics 4 — anonymous, aggregate traffic only (visit counts and
+     device type), so we know which devices to keep the tool fast on. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-3GKVZKQPWF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-3GKVZKQPWF');
+</script>
 </head>
 <body>
 <a class="skip-link" href="#board">Skip to board</a>
