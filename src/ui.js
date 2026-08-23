@@ -282,7 +282,7 @@ function renderDetail() {
     </div>
 
     ${t.visual ? `<figure class="term-visual">
-      <img src="${escapeHtml(t.visual.src)}" alt="${escapeHtml(t.visual.alt)}" loading="lazy">
+      <img src="${escapeHtml(t.visual.src)}" alt="${escapeHtml(t.visual.alt)}" loading="lazy" decoding="async"${t.visual.width ? ` width="${t.visual.width}" height="${t.visual.height}"` : ''}>
       <figcaption>${escapeHtml(t.visual.credit)}</figcaption>
     </figure>` : ''}
 
