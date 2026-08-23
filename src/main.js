@@ -227,7 +227,6 @@ function bindGradeLabelsToggle() {
 function boot() {
   Sound.init();
   bindControls();
-  About.init();
   ResetProgress.init();
   Curriculum.init();
   CatWidget.init();
