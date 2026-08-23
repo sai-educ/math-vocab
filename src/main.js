@@ -182,7 +182,72 @@ function bindControls() {
   bindRovingGroup(document.getElementById('vocabList'), 'vertical');
 
   bindSoundToggle();
+  bindMapSheet();
   window.addEventListener('resize', updateSpotlight);
+}
+
+/* Phone-only apparatus (see .map-menu-btn in the stylesheet): one small
+   button on the graph slides #mapSheet up over the page holding the map
+   key, grade-labels toggle, curriculum picker, reset view and zoom — all
+   the controls that would otherwise crowd a phone-sized canvas. Tablet and
+   desktop render neither the button nor the sheet, but the wiring is
+   harmless there. Escape or any tap outside closes it; "See the whole map"
+   closes it right after acting. */
+function bindMapSheet() {
+  const btn = document.getElementById('mapMenuBtn');
+  const sheet = document.getElementById('mapSheet');
+  const closeBtn = document.getElementById('mapSheetClose');
+  const curriculumPanel = document.getElementById('curriculumPanel');
+  const FOCUSABLE = 'button:not([disabled]),input:not([disabled])';
+  let opener = null;
+
+  const isOpen = () => sheet.classList.contains('open');
+
+  function setOpen(open) {
+    if (open === isOpen()) return;
+    sheet.classList.toggle('open', open);
+    document.body.classList.toggle('map-menu-open', open);
+    btn.setAttribute('aria-expanded', String(open));
+    Sound.play(open ? 'open' : 'close');
+    if (open) {
+      opener = document.activeElement;
+      const firstItem = sheet.querySelector(FOCUSABLE);
+      if (firstItem) firstItem.focus();
+    } else if (opener && typeof opener.focus === 'function') {
+      opener.focus();
+    }
+  }
+
+  btn.addEventListener('click', () => setOpen(!isOpen()));
+  closeBtn.addEventListener('click', () => setOpen(false));
+
+  document.addEventListener('click', (event) => {
+    if (!isOpen()) return;
+    if (sheet.contains(event.target) || btn.contains(event.target)) return;
+    setOpen(false);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (!isOpen()) return;
+    if (event.key === 'Escape') {
+      // Inside an open curriculum dropdown, let that dropdown's own Escape
+      // handler win — closing two layers at once feels like a crash.
+      if (!curriculumPanel.hidden) return;
+      setOpen(false);
+      return;
+    }
+    if (event.key !== 'Tab') return;
+    const items = [...sheet.querySelectorAll(FOCUSABLE)].filter((el) => el.offsetParent !== null);
+    if (!items.length) return;
+    const first = items[0];
+    const last = items[items.length - 1];
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  });
+
+  document.getElementById('resetViewBtn').addEventListener('click', () => {
+    if (isOpen()) setOpen(false);
+  });
 }
 
 /* The toggle reflects state in its icon, its label and aria-pressed, so it
