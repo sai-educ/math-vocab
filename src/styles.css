@@ -649,6 +649,17 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
 }
 .zoom-btn:hover{border-color:var(--accent);color:var(--text);background:var(--node-hover);}
 
+/* ---------- map-controls sheet ----------
+   On a phone the five floating graph controls (legend, grade-labels toggle,
+   curriculum picker, reset view, zoom) collapse into one small button;
+   tapping it slides #mapSheet up from the bottom edge with the same controls
+   at thumb scale. On tablet and up the whole apparatus is a no-op: the
+   button and the sheet header never render, and both sheet wrappers are
+   display:contents — they generate no box, so every control inside keeps
+   positioning itself against #graphPanel exactly as before. */
+.map-menu-btn,.map-sheet-head{display:none;}
+#mapSheet,.map-sheet-inner{display:contents;}
+
 #breadcrumbFloat{
   position:absolute;bottom:14px;left:204px;right:14px;
   font-size:12px;color:var(--text-dim);
@@ -865,21 +876,100 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   #statsText,.stats-updated,#resetProgressWrap{display:none;}
   #stats{padding:0;border-top:none;min-height:0;}
 
-  #resetViewBtn{font-size:11.5px;padding:8px 10px;}
+  /* Graph controls: a single ⋯ button on the canvas — the map key, grade
+     labels toggle, curriculum picker, reset view and zoom all live in
+     #mapSheet instead, which slides up over the page when it opens. The
+     sheet's wrappers were display:contents above; these rules give them
+     real boxes back (and must match or beat those selectors' specificity,
+     hence the ids here). */
+  .map-menu-btn{
+    display:flex;align-items:center;justify-content:center;
+    /* Above .graph-intro (z-index:20): the first-visit splash covers the
+       whole panel for its hold, and a new user trying to find their way
+       around during exactly those seconds shouldn't be tapping a button
+       that silently swallows the tap. */
+    position:absolute;top:12px;right:12px;z-index:21;
+    width:38px;height:38px;border-radius:50%;padding:0;
+    background:rgba(32,32,46,.92);border:1px solid var(--line);color:var(--text-dim);
+    cursor:pointer;
+    transition:border-color var(--dur-fast) var(--ease),color var(--dur-fast) var(--ease);
+  }
+  .map-menu-btn:hover,.map-menu-btn[aria-expanded="true"]{border-color:var(--accent);color:var(--text);}
+
+  #mapSheet{
+    display:flex;position:fixed;left:0;right:0;bottom:0;z-index:70;
+    /* Above everything that floats: the guided-tour cat layer (60), the
+       spotlight ring (50), the intro splash (20). */
+    max-height:min(78vh,640px);
+    background:var(--panel2);border:1px solid var(--line);border-bottom:none;
+    border-radius:18px 18px 0 0;
+    padding:14px 16px calc(16px + env(safe-area-inset-bottom,0px));
+    /* The huge second shadow doubles as the scrim over the page behind. */
+    box-shadow:0 -14px 44px rgba(10,10,20,.45),0 0 0 200vmax rgba(15,15,26,.45);
+    transform:translateY(103%);visibility:hidden;
+    transition:transform var(--dur) var(--ease),visibility 0s linear var(--dur);
+  }
+  #mapSheet.open{
+    transform:none;visibility:visible;
+    transition:transform var(--dur) var(--ease);
+  }
+  .map-sheet-inner{display:block;width:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+  .map-sheet-head{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:12px;
+  }
+  .map-sheet-title{
+    margin:0;font-size:12.5px;font-weight:750;
+    letter-spacing:.5px;text-transform:uppercase;color:var(--text-dim);
+  }
+  .map-sheet-close{
+    display:inline-flex;align-items:center;gap:7px;
+    min-height:40px;padding:0 16px;border-radius:999px;
+    background:var(--node);border:1px solid var(--line);color:var(--text);
+    font-size:13px;font-weight:650;font-family:inherit;cursor:pointer;
+    transition:border-color var(--dur-fast) var(--ease);
+  }
+  .map-sheet-close:hover{border-color:var(--accent);}
+
+  /* The controls themselves, reflowed for thumbs at static positions. */
+  .map-sheet #zoomControls{
+    position:static;transform:none;flex-direction:row;
+    justify-content:center;gap:14px;margin:2px 0 14px;
+  }
+  .map-sheet .zoom-btn{width:56px;height:56px;border-radius:14px;color:var(--text);}
+  .map-sheet #graphTopRight{position:static;flex-direction:column-reverse;align-items:stretch;gap:8px;}
+  .map-sheet .curriculum-btn{width:100%;justify-content:center;min-height:48px;font-size:13.5px;color:var(--text);}
+  .map-sheet .curriculum-panel{position:static;width:auto;background:var(--node);}
+  .map-sheet #resetViewBtn{
+    width:100%;min-height:48px;display:inline-flex;
+    align-items:center;justify-content:center;font-size:13.5px;color:var(--text);
+  }
+  .map-sheet #gradeLabelsToggle{
+    position:static;min-height:48px;margin-top:10px;
+    justify-content:flex-start;font-size:13.5px;color:var(--text);
+  }
+  .map-sheet #graphLegend{
+    position:static;width:auto;margin-top:12px;pointer-events:auto;
+    background:rgba(15,15,22,.55);
+  }
+  /* The gesture line ("Drag · Pinch · Tap") was noise floating on the
+     canvas; inside the sheet it is exactly what a first-timer needs. */
+  .map-sheet #graphLegend p.legend-gesture{display:block;}
+
+  /* While the sheet is up, park the page's other floaters. The sheet itself
+     lives inside #graphPanel, whose sticky z-index:5 makes it one stacking
+     context — the sheet can never outrank page-level layers like the
+     guided-tour cat (60) or the spotlight ring (50) from in here, so those
+     simply stand down while the menu is open. */
+  body.map-menu-open #spotlightRing{opacity:0 !important;}
+  body.map-menu-open .cat-widget{visibility:hidden;}
+
   .gl-box{font-size:12px;max-width:62vw;}
   .lv-root .gl-box{font-size:14px;padding:8px 12px;}
   .lv-term .gl-box{font-size:13.5px;}
-  #graphLegend{left:10px;bottom:10px;width:154px;padding:8px 10px;}
-  #graphLegend p.legend-title,
-  #graphLegend p.legend-gesture{display:none;}
-  #graphLegend ul{grid-template-columns:1fr 1fr;gap:6px 9px;}
-  #graphLegend li{font-size:10px;gap:6px;}
-  #breadcrumbFloat{left:174px;right:10px;bottom:10px;}
   .graph-term-symbol-disc{width:40px;height:40px;}
   .graph-ambient-symbol-disc{width:23px;height:23px;}
-  .graph-toggle{padding:8px 10px 8px 9px;font-size:11.5px;}
-  #zoomControls{right:10px;gap:6px;}
-  .zoom-btn{width:40px;height:40px;}
+  #breadcrumbFloat{left:12px;right:12px;bottom:10px;}
 }
 
 @media (max-width: 520px){
