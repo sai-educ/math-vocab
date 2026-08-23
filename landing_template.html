@@ -7,12 +7,19 @@
 <meta name="description" content="Math Word Explorer: a free, open tool that explains the __TERM_COUNT__ math words children meet in Kindergarten through Grade 5, in language they can actually read.">
 <title>Math Word Explorer — math words, explained simply</title>
 <link rel="icon" type="image/png" href="assets/favicon.png">
-<!-- Decorative backdrop only (src/graphBackdrop.js) — no vocabulary data, no
-     curriculum picker, nothing app.html itself needs is loaded here. If any
-     of these fail to load, the page still opens fully on its own CSS. -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<!-- Google Analytics 4 — anonymous, aggregate traffic only (visit counts and
+     device type), so we know which devices to keep the tool fast on. No
+     sign-in, no advertising, nothing personal leaves the browser. -->
+<link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-3GKVZKQPWF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-3GKVZKQPWF');
+</script>
 <style>
 __STYLES__
 </style>
@@ -42,7 +49,7 @@ __STYLES__
         </svg>
       </a>
       <div class="cta-notes">
-        <p class="cta-note">Works on a tablet, laptop, or any browser. Nothing to install.</p>
+        <p class="cta-note">Works on a phone, tablet, laptop, or any browser. Nothing to install.</p>
         <p class="cta-note cta-note-sound"><strong>Note:</strong> turn up the volume — sound effects help guide the way.</p>
       </div>
     </div>
@@ -168,11 +175,19 @@ __STYLES__
   </section>
 
   <section class="panel privacy">
-    <h2>No tracking. None.</h2>
+    <h2>No personal data. Ever.</h2>
     <p>
-      This site collects <strong>no data at all</strong> — no sign-in, no analytics, no cookies,
-      no advertising. Nothing about a child is sent anywhere or stored on any server. The only
-      things saved are on your own device: which words have been opened, and whether sound is on.
+      This site collects <strong>no personal information</strong> — there is no sign-in, no
+      advertising, and nothing about you or a child is stored on any server. The only things
+      saved are on your own device, in your browser: which words have been opened, and whether
+      sound is on.
+    </p>
+    <p>
+      We do use Google Analytics to count anonymous website traffic — how many visits the site
+      gets and whether they arrive on a phone, a tablet, or a computer — so we can keep the
+      Explorer fast and comfortable on the devices families actually use. It reports
+      <strong>traffic numbers only</strong>: nothing personal, nothing that identifies anyone,
+      and nothing about which words a child reads.
     </p>
   </section>
 
@@ -182,15 +197,42 @@ __STYLES__
       Made by the <a href="https://usablemath.org" target="_blank" rel="noopener noreferrer">Usable Math</a>
       team at the University of Massachusetts Amherst, with the
       <a href="https://societyandai.org" target="_blank" rel="noopener noreferrer">Society &amp; AI</a>
-      research group.
-    </p>
-    <p>
-      The Math Word Explorer by Usable Math is an Open Educational Resource under
-      <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener noreferrer">CC BY-NC 4.0</a>,
-      so you may share and adapt it for non-commercial use with credit. All of the code and the
-      word bank are public at
+      research group. Every part of this tool — the word bank, the readability checks and the
+      code — is public, so educators can see exactly how it was built, reuse it, or adapt it for
+      their own district:
       <a href="https://github.com/sai-educ/math-vocab" target="_blank" rel="noopener noreferrer">github.com/sai-educ/math-vocab</a>.
     </p>
+    <ul class="feature-list credits-list">
+      <li>
+        <h3>Licence — CC BY-NC 4.0</h3>
+        <p>
+          The Math Word Explorer is an Open Educational Resource under the
+          <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener noreferrer">Creative
+          Commons Attribution-NonCommercial 4.0 International licence</a>. You are free to share
+          and adapt it for non-commercial purposes, as long as you give appropriate credit.
+        </p>
+      </li>
+      <li>
+        <h3>3D assets</h3>
+        <p>
+          The knowledge graph's centre is
+          <a href="https://skfb.ly/6yGSx" target="_blank" rel="noopener noreferrer">"Sun"</a>
+          by SebastianSosnowski, licensed under the
+          <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC
+          Attribution 4.0 licence</a>.
+        </p>
+      </li>
+      <li>
+        <h3>Pixel cat</h3>
+        <p>
+          The Explorer's corner companion uses a sprite sheet from
+          <a href="https://github.com/KINGS-MZ/PixelCat" target="_blank" rel="noopener noreferrer">KINGS-MZ/PixelCat</a>
+          by Imad El Khaider, under the
+          <a href="https://opensource.org/license/mit" target="_blank" rel="noopener noreferrer">MIT licence</a>.
+          Only the artwork is reused; the coaching it does is ours.
+        </p>
+      </li>
+    </ul>
   </section>
 
   <div class="cta cta-end">
@@ -208,75 +250,12 @@ __STYLES__
   <p>__TERM_COUNT__ words · 6 grades · US, UK &amp; India curricula · CC BY-NC 4.0</p>
 </footer>
 
-<div id="deviceNoticeOverlay" hidden>
-  <div id="deviceNoticeDialog" role="dialog" aria-modal="true" aria-labelledby="deviceNoticeTitle">
-    <h2 id="deviceNoticeTitle">Best viewed on a larger screen</h2>
-    <p>
-      Math Word Explorer's 3D knowledge graph and resizable panels are built for a tablet
-      or laptop display. On a phone screen, some controls will be difficult to use. For the
-      best experience, please continue on an iPad, tablet, or computer.
-    </p>
-    <div class="device-notice-actions">
-      <button id="deviceNoticeStay" type="button" class="device-notice-secondary">Stay on this page</button>
-      <a id="deviceNoticeContinue" class="device-notice-primary" href="app.html">Continue anyway</a>
-    </div>
-  </div>
-</div>
-
-<script>
-(function () {
-  var PHONE_QUERY = '(max-width: 760px)';
-  var overlay = document.getElementById('deviceNoticeOverlay');
-  var dialog = document.getElementById('deviceNoticeDialog');
-  var stayBtn = document.getElementById('deviceNoticeStay');
-  var lastFocused = null;
-
-  function isPhoneWidth() {
-    return window.matchMedia && window.matchMedia(PHONE_QUERY).matches;
-  }
-
-  function open() {
-    lastFocused = document.activeElement;
-    overlay.hidden = false;
-    requestAnimationFrame(function () { overlay.classList.add('open'); });
-    stayBtn.focus();
-    document.addEventListener('keydown', onKeydown);
-  }
-
-  function close() {
-    overlay.classList.remove('open');
-    document.removeEventListener('keydown', onKeydown);
-    setTimeout(function () {
-      overlay.hidden = true;
-      if (lastFocused && lastFocused.focus) lastFocused.focus();
-    }, 180);
-  }
-
-  function onKeydown(event) {
-    if (event.key === 'Escape') { close(); return; }
-    if (event.key !== 'Tab') return;
-    var items = dialog.querySelectorAll('a[href],button:not([disabled])');
-    var first = items[0], last = items[items.length - 1];
-    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
-    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
-  }
-
-  document.querySelectorAll('a.launch').forEach(function (link) {
-    link.addEventListener('click', function (event) {
-      if (!isPhoneWidth()) return;
-      event.preventDefault();
-      open();
-    });
-  });
-
-  stayBtn.addEventListener('click', close);
-  overlay.addEventListener('click', function (event) {
-    if (event.target === overlay) close();
-  });
-}());
-</script>
-
 <script id="graph-layout" type="application/json">__GRAPH_LAYOUT__</script>
+<!-- The decorative backdrop's libraries, at the end of the body so the whole
+     page paints before any script runs. If they fail — offline, CDN down —
+     the page still opens fully on its own CSS. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
 __GRAPH_SCRIPT__
 </script>
