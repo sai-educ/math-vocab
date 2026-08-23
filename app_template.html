@@ -116,65 +116,90 @@ __STYLES__
         <div id="graphContainer"></div>
         <div id="graphLabels" aria-hidden="true"></div>
         <div id="graphTermSymbol" aria-hidden="true"></div>
-        <aside id="graphLegend" aria-label="Knowledge graph map key" hidden>
-          <p class="legend-title">Map key</p>
-          <ul>
-            <li><span class="legend-node legend-root" aria-hidden="true"></span><span>All K–5 words</span></li>
-            <li><span class="legend-node legend-grade" aria-hidden="true"></span><span>Grades</span></li>
-            <li><span class="legend-node legend-domain" aria-hidden="true"></span><span>Math topics</span></li>
-            <li><span class="legend-node legend-term" aria-hidden="true"></span><span>Vocabulary words</span></li>
-          </ul>
-          <p class="legend-gesture">Drag to rotate · Pinch to zoom · Tap a dot to select</p>
-        </aside>
-        <label class="graph-toggle" id="gradeLabelsToggle">
-          <input type="checkbox" id="gradeLabelsCheckbox">
-          <span>Show grade labels</span>
-        </label>
-        <div id="graphTopRight">
-          <div class="curriculum-picker">
-            <button id="curriculumBtn" class="graph-btn curriculum-btn" type="button"
-                    aria-haspopup="true" aria-expanded="false" aria-controls="curriculumPanel">
-              <span class="btn-text">Curriculum</span>
-              <span id="curriculumCount" class="curriculum-count">1</span>
-            </button>
-            <div id="curriculumPanel" class="curriculum-panel" role="group"
-                 aria-label="Choose which curricula to show" hidden>
-              <p class="curriculum-panel-hint">Show vocabulary from:</p>
-              <label class="curriculum-option">
-                <input type="checkbox" value="US" checked>
-                <span class="curriculum-option-name">Common Core</span>
-                <span class="curriculum-option-tag">
-                  <span class="curriculum-flag" data-flag="US" aria-hidden="true"></span>
-                  <span class="curriculum-option-code">US</span>
-                </span>
-              </label>
-              <label class="curriculum-option">
-                <input type="checkbox" value="UK">
-                <span class="curriculum-option-name">UK National Curriculum</span>
-                <span class="curriculum-option-tag">
-                  <span class="curriculum-flag" data-flag="UK" aria-hidden="true"></span>
-                  <span class="curriculum-option-code">UK</span>
-                </span>
-              </label>
-              <label class="curriculum-option">
-                <input type="checkbox" value="IN">
-                <span class="curriculum-option-name">India NCERT</span>
-                <span class="curriculum-option-tag">
-                  <span class="curriculum-flag" data-flag="IN" aria-hidden="true"></span>
-                  <span class="curriculum-option-code">IN</span>
-                </span>
-              </label>
+        <!-- Phone: every floating graph control (legend, labels toggle,
+             curriculum, reset, zoom) collapses into this one small button;
+             tapping it slides up #mapSheet over the page with the same
+             controls at thumb scale. Desktop/tablet never see either —
+             the sheet's wrappers are display:contents there, so the
+             controls keep their original absolute positions on the panel. -->
+        <button id="mapMenuBtn" class="map-menu-btn" type="button"
+                aria-haspopup="true" aria-expanded="false" aria-controls="mapSheet">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/>
+          </svg>
+          <span class="sr-only">Map controls</span>
+        </button>
+        <div id="mapSheet" class="map-sheet" role="dialog" aria-label="Map controls">
+          <div class="map-sheet-inner">
+            <div class="map-sheet-head">
+              <p class="map-sheet-title">Map controls</p>
+              <button id="mapSheetClose" class="map-sheet-close" type="button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                Done
+              </button>
             </div>
+            <div id="zoomControls">
+              <button id="zoomInBtn" class="zoom-btn" type="button" aria-label="Zoom in">
+                <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+              </button>
+              <button id="zoomOutBtn" class="zoom-btn" type="button" aria-label="Zoom out">
+                <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg>
+              </button>
+            </div>
+            <div id="graphTopRight">
+              <div class="curriculum-picker">
+                <button id="curriculumBtn" class="graph-btn curriculum-btn" type="button"
+                        aria-haspopup="true" aria-expanded="false" aria-controls="curriculumPanel">
+                  <span class="btn-text">Curriculum</span>
+                  <span id="curriculumCount" class="curriculum-count">1</span>
+                </button>
+                <div id="curriculumPanel" class="curriculum-panel" role="group"
+                     aria-label="Choose which curricula to show" hidden>
+                  <p class="curriculum-panel-hint">Show vocabulary from:</p>
+                  <label class="curriculum-option">
+                    <input type="checkbox" value="US" checked>
+                    <span class="curriculum-option-name">Common Core</span>
+                    <span class="curriculum-option-tag">
+                      <span class="curriculum-flag" data-flag="US" aria-hidden="true"></span>
+                      <span class="curriculum-option-code">US</span>
+                    </span>
+                  </label>
+                  <label class="curriculum-option">
+                    <input type="checkbox" value="UK">
+                    <span class="curriculum-option-name">UK National Curriculum</span>
+                    <span class="curriculum-option-tag">
+                      <span class="curriculum-flag" data-flag="UK" aria-hidden="true"></span>
+                      <span class="curriculum-option-code">UK</span>
+                    </span>
+                  </label>
+                  <label class="curriculum-option">
+                    <input type="checkbox" value="IN">
+                    <span class="curriculum-option-name">India NCERT</span>
+                    <span class="curriculum-option-tag">
+                      <span class="curriculum-flag" data-flag="IN" aria-hidden="true"></span>
+                      <span class="curriculum-option-code">IN</span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+              <button id="resetViewBtn" class="graph-btn" type="button" hidden>See the whole map</button>
+            </div>
+            <label class="graph-toggle" id="gradeLabelsToggle">
+              <input type="checkbox" id="gradeLabelsCheckbox">
+              <span>Show grade labels</span>
+            </label>
+            <aside id="graphLegend" aria-label="Knowledge graph map key" hidden>
+              <p class="legend-title">Map key</p>
+              <ul>
+                <li><span class="legend-node legend-root" aria-hidden="true"></span><span>All K–5 words</span></li>
+                <li><span class="legend-node legend-grade" aria-hidden="true"></span><span>Grades</span></li>
+                <li><span class="legend-node legend-domain" aria-hidden="true"></span><span>Math topics</span></li>
+                <li><span class="legend-node legend-term" aria-hidden="true"></span><span>Vocabulary words</span></li>
+              </ul>
+              <p class="legend-gesture">Drag to rotate · Pinch to zoom · Tap a dot to select</p>
+            </aside>
           </div>
-          <button id="resetViewBtn" class="graph-btn" type="button" hidden>See the whole map</button>
-        </div>
-        <div id="zoomControls">
-          <button id="zoomInBtn" class="zoom-btn" type="button" aria-label="Zoom in">
-            <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
-          </button>
-          <button id="zoomOutBtn" class="zoom-btn" type="button" aria-label="Zoom out">
-            <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg>
-          </button>
         </div>
         <div id="graphFallback">
           The 3D graph could not load (it needs an internet connection the first time, for Three.js from a CDN).<br>
@@ -182,7 +207,6 @@ __STYLES__
         </div>
         <p id="graphHint">Pick a grade above to start exploring ↑</p>
         <p id="breadcrumbFloat" hidden></p>
-        <button id="resetViewBtn" class="graph-btn" type="button" hidden>See the whole map</button>
       </div>
 
       <div class="panel-resizer" id="resizerDetail" role="separator" aria-orientation="vertical"
