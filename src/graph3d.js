@@ -64,6 +64,17 @@ const Graph = (function () {
   const SUN_HALO_COLOR = 0xffb35c;
   const SUN_HALO_BOOST = 1.7;
   const EDGE_SEGMENTS = 8;
+  // Phones get a lighter render path: they are the smallest canvas, the
+  // tightest battery, and the most thermally constrained device in the room.
+  // A touch device whose shortest screen side is phone-sized (~<=520 CSS px)
+  // skips bloom post-processing (the additive sprite halos remain the glow —
+  // see initRenderer) and renders at a capped pixel ratio. Tablets and
+  // desktops are unaffected.
+  const IS_PHONE = typeof window.matchMedia === 'function'
+    && window.matchMedia('(pointer: coarse)').matches
+    && Math.min(window.screen ? (window.screen.width || 9e9) : 9e9,
+                window.screen ? (window.screen.height || 9e9) : 9e9) <= 520;
+  const MAX_PIXEL_RATIO = IS_PHONE ? 1.5 : 2;
   // How far inactive nodes fade toward the background. Was 0.055 — nodes at
   // that level are practically black against the panel's near-black bg,
   // which reads as "gone" rather than "not selected right now" and fails a
@@ -121,7 +132,7 @@ const Graph = (function () {
       camera.position.set(130, 30, 0);
 
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO));
       renderer.setSize(w, h);
       if (THREE.sRGBEncoding !== undefined) renderer.outputEncoding = THREE.sRGBEncoding;
       if (THREE.ACESFilmicToneMapping !== undefined) {
@@ -152,10 +163,14 @@ const Graph = (function () {
       }
 
         /* UnrealBloomPass post-processing. Wired defensively: if any of the
-           CDN add-on scripts are missing, the graph renders directly and the
-           additive sprite halos remain the glow. The pass halves its own
-           internal targets, so an iPad doesn't pay the full-scaled cost. */
-      if (typeof THREE.EffectComposer !== 'undefined'
+           CDN add-on scripts are missing, the graph renders directly and
+           the additive sprite halos remain the glow. The pass halves its own
+           internal targets, so an iPad doesn't pay the full-scaled cost.
+           Phones skip it entirely — at their canvas size the sprite halos
+           read almost identically, and dropping the composer removes a full
+           extra scene render plus several GPU-heavy blur passes per frame. */
+      if (!IS_PHONE
+          && typeof THREE.EffectComposer !== 'undefined'
           && typeof THREE.RenderPass !== 'undefined'
           && typeof THREE.UnrealBloomPass !== 'undefined') {
         composer = new THREE.EffectComposer(renderer);
