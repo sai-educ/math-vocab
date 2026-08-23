@@ -679,6 +679,17 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
 }
 .zoom-btn:hover{border-color:var(--accent);color:var(--text);background:var(--node-hover);}
 
+/* ---------- map-controls sheet ----------
+   On a phone the five floating graph controls (legend, grade-labels toggle,
+   curriculum picker, reset view, zoom) collapse into one small button;
+   tapping it slides #mapSheet up from the bottom edge with the same controls
+   at thumb scale. On tablet and up the whole apparatus is a no-op: the
+   button and the sheet header never render, and both sheet wrappers are
+   display:contents — they generate no box, so every control inside keeps
+   positioning itself against #graphPanel exactly as before. */
+.map-menu-btn,.map-sheet-head{display:none;}
+#mapSheet,.map-sheet-inner{display:contents;}
+
 #breadcrumbFloat{
   position:absolute;bottom:14px;left:204px;right:14px;
   font-size:12px;color:var(--text-dim);
@@ -895,21 +906,100 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   #statsText,.stats-updated,#resetProgressWrap{display:none;}
   #stats{padding:0;border-top:none;min-height:0;}
 
-  #resetViewBtn{font-size:11.5px;padding:8px 10px;}
+  /* Graph controls: a single ⋯ button on the canvas — the map key, grade
+     labels toggle, curriculum picker, reset view and zoom all live in
+     #mapSheet instead, which slides up over the page when it opens. The
+     sheet's wrappers were display:contents above; these rules give them
+     real boxes back (and must match or beat those selectors' specificity,
+     hence the ids here). */
+  .map-menu-btn{
+    display:flex;align-items:center;justify-content:center;
+    /* Above .graph-intro (z-index:20): the first-visit splash covers the
+       whole panel for its hold, and a new user trying to find their way
+       around during exactly those seconds shouldn't be tapping a button
+       that silently swallows the tap. */
+    position:absolute;top:12px;right:12px;z-index:21;
+    width:38px;height:38px;border-radius:50%;padding:0;
+    background:rgba(32,32,46,.92);border:1px solid var(--line);color:var(--text-dim);
+    cursor:pointer;
+    transition:border-color var(--dur-fast) var(--ease),color var(--dur-fast) var(--ease);
+  }
+  .map-menu-btn:hover,.map-menu-btn[aria-expanded="true"]{border-color:var(--accent);color:var(--text);}
+
+  #mapSheet{
+    display:flex;position:fixed;left:0;right:0;bottom:0;z-index:70;
+    /* Above everything that floats: the guided-tour cat layer (60), the
+       spotlight ring (50), the intro splash (20). */
+    max-height:min(78vh,640px);
+    background:var(--panel2);border:1px solid var(--line);border-bottom:none;
+    border-radius:18px 18px 0 0;
+    padding:14px 16px calc(16px + env(safe-area-inset-bottom,0px));
+    /* The huge second shadow doubles as the scrim over the page behind. */
+    box-shadow:0 -14px 44px rgba(10,10,20,.45),0 0 0 200vmax rgba(15,15,26,.45);
+    transform:translateY(103%);visibility:hidden;
+    transition:transform var(--dur) var(--ease),visibility 0s linear var(--dur);
+  }
+  #mapSheet.open{
+    transform:none;visibility:visible;
+    transition:transform var(--dur) var(--ease);
+  }
+  .map-sheet-inner{display:block;width:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+  .map-sheet-head{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:12px;
+  }
+  .map-sheet-title{
+    margin:0;font-size:12.5px;font-weight:750;
+    letter-spacing:.5px;text-transform:uppercase;color:var(--text-dim);
+  }
+  .map-sheet-close{
+    display:inline-flex;align-items:center;gap:7px;
+    min-height:40px;padding:0 16px;border-radius:999px;
+    background:var(--node);border:1px solid var(--line);color:var(--text);
+    font-size:13px;font-weight:650;font-family:inherit;cursor:pointer;
+    transition:border-color var(--dur-fast) var(--ease);
+  }
+  .map-sheet-close:hover{border-color:var(--accent);}
+
+  /* The controls themselves, reflowed for thumbs at static positions. */
+  .map-sheet #zoomControls{
+    position:static;transform:none;flex-direction:row;
+    justify-content:center;gap:14px;margin:2px 0 14px;
+  }
+  .map-sheet .zoom-btn{width:56px;height:56px;border-radius:14px;color:var(--text);}
+  .map-sheet #graphTopRight{position:static;flex-direction:column-reverse;align-items:stretch;gap:8px;}
+  .map-sheet .curriculum-btn{width:100%;justify-content:center;min-height:48px;font-size:13.5px;color:var(--text);}
+  .map-sheet .curriculum-panel{position:static;width:auto;background:var(--node);}
+  .map-sheet #resetViewBtn{
+    width:100%;min-height:48px;display:inline-flex;
+    align-items:center;justify-content:center;font-size:13.5px;color:var(--text);
+  }
+  .map-sheet #gradeLabelsToggle{
+    position:static;min-height:48px;margin-top:10px;
+    justify-content:flex-start;font-size:13.5px;color:var(--text);
+  }
+  .map-sheet #graphLegend{
+    position:static;width:auto;margin-top:12px;pointer-events:auto;
+    background:rgba(15,15,22,.55);
+  }
+  /* The gesture line ("Drag · Pinch · Tap") was noise floating on the
+     canvas; inside the sheet it is exactly what a first-timer needs. */
+  .map-sheet #graphLegend p.legend-gesture{display:block;}
+
+  /* While the sheet is up, park the page's other floaters. The sheet itself
+     lives inside #graphPanel, whose sticky z-index:5 makes it one stacking
+     context — the sheet can never outrank page-level layers like the
+     guided-tour cat (60) or the spotlight ring (50) from in here, so those
+     simply stand down while the menu is open. */
+  body.map-menu-open #spotlightRing{opacity:0 !important;}
+  body.map-menu-open .cat-widget{visibility:hidden;}
+
   .gl-box{font-size:12px;max-width:62vw;}
   .lv-root .gl-box{font-size:14px;padding:8px 12px;}
   .lv-term .gl-box{font-size:13.5px;}
-  #graphLegend{left:10px;bottom:10px;width:154px;padding:8px 10px;}
-  #graphLegend p.legend-title,
-  #graphLegend p.legend-gesture{display:none;}
-  #graphLegend ul{grid-template-columns:1fr 1fr;gap:6px 9px;}
-  #graphLegend li{font-size:10px;gap:6px;}
-  #breadcrumbFloat{left:174px;right:10px;bottom:10px;}
   .graph-term-symbol-disc{width:40px;height:40px;}
   .graph-ambient-symbol-disc{width:23px;height:23px;}
-  .graph-toggle{padding:8px 10px 8px 9px;font-size:11.5px;}
-  #zoomControls{right:10px;gap:6px;}
-  .zoom-btn{width:40px;height:40px;}
+  #breadcrumbFloat{left:12px;right:12px;bottom:10px;}
 }
 
 @media (max-width: 520px){
@@ -1300,65 +1390,90 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
         <div id="graphContainer"></div>
         <div id="graphLabels" aria-hidden="true"></div>
         <div id="graphTermSymbol" aria-hidden="true"></div>
-        <aside id="graphLegend" aria-label="Knowledge graph map key" hidden>
-          <p class="legend-title">Map key</p>
-          <ul>
-            <li><span class="legend-node legend-root" aria-hidden="true"></span><span>All K–5 words</span></li>
-            <li><span class="legend-node legend-grade" aria-hidden="true"></span><span>Grades</span></li>
-            <li><span class="legend-node legend-domain" aria-hidden="true"></span><span>Math topics</span></li>
-            <li><span class="legend-node legend-term" aria-hidden="true"></span><span>Vocabulary words</span></li>
-          </ul>
-          <p class="legend-gesture">Drag to rotate · Pinch to zoom · Tap a dot to select</p>
-        </aside>
-        <label class="graph-toggle" id="gradeLabelsToggle">
-          <input type="checkbox" id="gradeLabelsCheckbox">
-          <span>Show grade labels</span>
-        </label>
-        <div id="graphTopRight">
-          <div class="curriculum-picker">
-            <button id="curriculumBtn" class="graph-btn curriculum-btn" type="button"
-                    aria-haspopup="true" aria-expanded="false" aria-controls="curriculumPanel">
-              <span class="btn-text">Curriculum</span>
-              <span id="curriculumCount" class="curriculum-count">1</span>
-            </button>
-            <div id="curriculumPanel" class="curriculum-panel" role="group"
-                 aria-label="Choose which curricula to show" hidden>
-              <p class="curriculum-panel-hint">Show vocabulary from:</p>
-              <label class="curriculum-option">
-                <input type="checkbox" value="US" checked>
-                <span class="curriculum-option-name">Common Core</span>
-                <span class="curriculum-option-tag">
-                  <span class="curriculum-flag" data-flag="US" aria-hidden="true"></span>
-                  <span class="curriculum-option-code">US</span>
-                </span>
-              </label>
-              <label class="curriculum-option">
-                <input type="checkbox" value="UK">
-                <span class="curriculum-option-name">UK National Curriculum</span>
-                <span class="curriculum-option-tag">
-                  <span class="curriculum-flag" data-flag="UK" aria-hidden="true"></span>
-                  <span class="curriculum-option-code">UK</span>
-                </span>
-              </label>
-              <label class="curriculum-option">
-                <input type="checkbox" value="IN">
-                <span class="curriculum-option-name">India NCERT</span>
-                <span class="curriculum-option-tag">
-                  <span class="curriculum-flag" data-flag="IN" aria-hidden="true"></span>
-                  <span class="curriculum-option-code">IN</span>
-                </span>
-              </label>
+        <!-- Phone: every floating graph control (legend, labels toggle,
+             curriculum, reset, zoom) collapses into this one small button;
+             tapping it slides up #mapSheet over the page with the same
+             controls at thumb scale. Desktop/tablet never see either —
+             the sheet's wrappers are display:contents there, so the
+             controls keep their original absolute positions on the panel. -->
+        <button id="mapMenuBtn" class="map-menu-btn" type="button"
+                aria-haspopup="true" aria-expanded="false" aria-controls="mapSheet">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/>
+          </svg>
+          <span class="sr-only">Map controls</span>
+        </button>
+        <div id="mapSheet" class="map-sheet" role="dialog" aria-label="Map controls">
+          <div class="map-sheet-inner">
+            <div class="map-sheet-head">
+              <p class="map-sheet-title">Map controls</p>
+              <button id="mapSheetClose" class="map-sheet-close" type="button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                Done
+              </button>
             </div>
+            <div id="zoomControls">
+              <button id="zoomInBtn" class="zoom-btn" type="button" aria-label="Zoom in">
+                <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+              </button>
+              <button id="zoomOutBtn" class="zoom-btn" type="button" aria-label="Zoom out">
+                <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg>
+              </button>
+            </div>
+            <div id="graphTopRight">
+              <div class="curriculum-picker">
+                <button id="curriculumBtn" class="graph-btn curriculum-btn" type="button"
+                        aria-haspopup="true" aria-expanded="false" aria-controls="curriculumPanel">
+                  <span class="btn-text">Curriculum</span>
+                  <span id="curriculumCount" class="curriculum-count">1</span>
+                </button>
+                <div id="curriculumPanel" class="curriculum-panel" role="group"
+                     aria-label="Choose which curricula to show" hidden>
+                  <p class="curriculum-panel-hint">Show vocabulary from:</p>
+                  <label class="curriculum-option">
+                    <input type="checkbox" value="US" checked>
+                    <span class="curriculum-option-name">Common Core</span>
+                    <span class="curriculum-option-tag">
+                      <span class="curriculum-flag" data-flag="US" aria-hidden="true"></span>
+                      <span class="curriculum-option-code">US</span>
+                    </span>
+                  </label>
+                  <label class="curriculum-option">
+                    <input type="checkbox" value="UK">
+                    <span class="curriculum-option-name">UK National Curriculum</span>
+                    <span class="curriculum-option-tag">
+                      <span class="curriculum-flag" data-flag="UK" aria-hidden="true"></span>
+                      <span class="curriculum-option-code">UK</span>
+                    </span>
+                  </label>
+                  <label class="curriculum-option">
+                    <input type="checkbox" value="IN">
+                    <span class="curriculum-option-name">India NCERT</span>
+                    <span class="curriculum-option-tag">
+                      <span class="curriculum-flag" data-flag="IN" aria-hidden="true"></span>
+                      <span class="curriculum-option-code">IN</span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+              <button id="resetViewBtn" class="graph-btn" type="button" hidden>See the whole map</button>
+            </div>
+            <label class="graph-toggle" id="gradeLabelsToggle">
+              <input type="checkbox" id="gradeLabelsCheckbox">
+              <span>Show grade labels</span>
+            </label>
+            <aside id="graphLegend" aria-label="Knowledge graph map key" hidden>
+              <p class="legend-title">Map key</p>
+              <ul>
+                <li><span class="legend-node legend-root" aria-hidden="true"></span><span>All K–5 words</span></li>
+                <li><span class="legend-node legend-grade" aria-hidden="true"></span><span>Grades</span></li>
+                <li><span class="legend-node legend-domain" aria-hidden="true"></span><span>Math topics</span></li>
+                <li><span class="legend-node legend-term" aria-hidden="true"></span><span>Vocabulary words</span></li>
+              </ul>
+              <p class="legend-gesture">Drag to rotate · Pinch to zoom · Tap a dot to select</p>
+            </aside>
           </div>
-          <button id="resetViewBtn" class="graph-btn" type="button" hidden>See the whole map</button>
-        </div>
-        <div id="zoomControls">
-          <button id="zoomInBtn" class="zoom-btn" type="button" aria-label="Zoom in">
-            <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
-          </button>
-          <button id="zoomOutBtn" class="zoom-btn" type="button" aria-label="Zoom out">
-            <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg>
-          </button>
         </div>
         <div id="graphFallback">
           The 3D graph could not load (it needs an internet connection the first time, for Three.js from a CDN).<br>
@@ -1366,7 +1481,6 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
         </div>
         <p id="graphHint">Pick a grade above to start exploring ↑</p>
         <p id="breadcrumbFloat" hidden></p>
-        <button id="resetViewBtn" class="graph-btn" type="button" hidden>See the whole map</button>
       </div>
 
       <div class="panel-resizer" id="resizerDetail" role="separator" aria-orientation="vertical"
@@ -12064,7 +12178,72 @@ function bindControls() {
   bindRovingGroup(document.getElementById('vocabList'), 'vertical');
 
   bindSoundToggle();
+  bindMapSheet();
   window.addEventListener('resize', updateSpotlight);
+}
+
+/* Phone-only apparatus (see .map-menu-btn in the stylesheet): one small
+   button on the graph slides #mapSheet up over the page holding the map
+   key, grade-labels toggle, curriculum picker, reset view and zoom — all
+   the controls that would otherwise crowd a phone-sized canvas. Tablet and
+   desktop render neither the button nor the sheet, but the wiring is
+   harmless there. Escape or any tap outside closes it; "See the whole map"
+   closes it right after acting. */
+function bindMapSheet() {
+  const btn = document.getElementById('mapMenuBtn');
+  const sheet = document.getElementById('mapSheet');
+  const closeBtn = document.getElementById('mapSheetClose');
+  const curriculumPanel = document.getElementById('curriculumPanel');
+  const FOCUSABLE = 'button:not([disabled]),input:not([disabled])';
+  let opener = null;
+
+  const isOpen = () => sheet.classList.contains('open');
+
+  function setOpen(open) {
+    if (open === isOpen()) return;
+    sheet.classList.toggle('open', open);
+    document.body.classList.toggle('map-menu-open', open);
+    btn.setAttribute('aria-expanded', String(open));
+    Sound.play(open ? 'open' : 'close');
+    if (open) {
+      opener = document.activeElement;
+      const firstItem = sheet.querySelector(FOCUSABLE);
+      if (firstItem) firstItem.focus();
+    } else if (opener && typeof opener.focus === 'function') {
+      opener.focus();
+    }
+  }
+
+  btn.addEventListener('click', () => setOpen(!isOpen()));
+  closeBtn.addEventListener('click', () => setOpen(false));
+
+  document.addEventListener('click', (event) => {
+    if (!isOpen()) return;
+    if (sheet.contains(event.target) || btn.contains(event.target)) return;
+    setOpen(false);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (!isOpen()) return;
+    if (event.key === 'Escape') {
+      // Inside an open curriculum dropdown, let that dropdown's own Escape
+      // handler win — closing two layers at once feels like a crash.
+      if (!curriculumPanel.hidden) return;
+      setOpen(false);
+      return;
+    }
+    if (event.key !== 'Tab') return;
+    const items = [...sheet.querySelectorAll(FOCUSABLE)].filter((el) => el.offsetParent !== null);
+    if (!items.length) return;
+    const first = items[0];
+    const last = items[items.length - 1];
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  });
+
+  document.getElementById('resetViewBtn').addEventListener('click', () => {
+    if (isOpen()) setOpen(false);
+  });
 }
 
 /* The toggle reflects state in its icon, its label and aria-pressed, so it
