@@ -107,7 +107,6 @@ APP_SCRIPTS = (
     "narration.js",
     "tts.js",
     "ui.js",
-    "about.js",
     "catDialogue.js",
     "cat.js",
     "catSettings.js",
@@ -279,16 +278,15 @@ def main() -> None:
 
     # Term visuals (assets/visuals/*) follow the same lazy-loaded, not-inlined
     # pattern as the sun model: fetched on demand when a term with one is
-    # opened, rather than bloated into the single-file HTML.
+    # opened, rather than bloated into the single-file HTML. The destination
+    # is replaced wholesale (not merged) so renamed/re-encoded files — e.g.
+    # an old .gif superseded by a .webp — can't linger in the deploy output.
     visuals_src_dir = os.path.join(HERE, "assets", "visuals")
     if os.path.isdir(visuals_src_dir):
         public_visuals_dir = os.path.join(public_dir, "assets", "visuals")
-        os.makedirs(public_visuals_dir, exist_ok=True)
-        for name in os.listdir(visuals_src_dir):
-            shutil.copyfile(
-                os.path.join(visuals_src_dir, name),
-                os.path.join(public_visuals_dir, name),
-            )
+        if os.path.isdir(public_visuals_dir):
+            shutil.rmtree(public_visuals_dir)
+        shutil.copytree(visuals_src_dir, public_visuals_dir)
         print(f"Copied {visuals_src_dir} -> {public_visuals_dir}")
 
     # Pixel cat sprite sheet (assets/cat/*, see src/cat.js) — same
