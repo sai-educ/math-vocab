@@ -779,85 +779,6 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   50%{box-shadow:0 0 0 6px rgba(168,106,0,.22), 0 0 26px rgba(168,106,0,.55);}
 }
 
-/* ---------- about dialog ---------- */
-
-#aboutOverlay{
-  position:fixed;inset:0;z-index:120;
-  display:flex;align-items:center;justify-content:center;padding:24px;
-  background:rgba(15,15,25,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
-  opacity:0;transition:opacity var(--dur) var(--ease);
-}
-#aboutOverlay[hidden]{display:none;}
-#aboutOverlay.open{opacity:1;}
-#aboutDialog{
-  position:relative;width:min(560px, 100%);max-height:min(80vh, 640px);
-  background:var(--panel2);border:1px solid var(--line);border-radius:16px;
-  /* overflow:hidden here (not on the scrolling child) is what keeps the
-     inner scrollbar from squaring off the right-hand corners. */
-  overflow:hidden;box-shadow:0 24px 60px rgba(20,20,40,.28);
-  display:flex;flex-direction:column;
-  transform:translateY(10px) scale(.985);
-  transition:transform var(--dur-slow) var(--ease);
-}
-#aboutOverlay.open #aboutDialog{transform:translateY(0) scale(1);}
-#aboutScroll{
-  min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
-  padding:26px 26px 22px;
-}
-#aboutCloseX{
-  position:absolute;top:12px;right:12px;z-index:2;
-  width:36px;height:36px;border-radius:50%;padding:0;
-  display:flex;align-items:center;justify-content:center;
-  background:var(--node);border:1px solid var(--line);color:var(--text-dim);
-  cursor:pointer;
-  transition:background var(--dur-fast) var(--ease),color var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease);
-}
-#aboutCloseX:hover{background:var(--node-hover);color:var(--text);border-color:var(--accent);}
-#aboutDialog h2{margin:0 0 4px;font-size:20px;color:var(--text);font-weight:700;padding-right:32px;}
-#aboutDialog .about-sub{margin:0 0 18px;font-size:13px;color:var(--text-dim);}
-#aboutDialog p{font-size:14px;line-height:1.65;margin:0 0 14px;}
-#aboutDialog a{color:var(--accent-ink);text-decoration:underline;text-underline-offset:2px;}
-#aboutDialog a:hover{color:var(--accent3-ink);}
-#aboutDialog .about-orgs{
-  display:flex;flex-direction:column;gap:10px;margin:0 0 18px;padding:0;list-style:none;
-}
-#aboutDialog .about-orgs li{
-  background:var(--node);border:1px solid var(--line);border-radius:11px;padding:12px 14px;
-}
-#aboutDialog .about-orgs .org-name{display:block;font-size:14px;font-weight:600;margin-bottom:3px;}
-#aboutDialog .about-orgs .org-role{display:block;font-size:12.5px;color:var(--text-dim);}
-#aboutDialog .about-privacy,
-#aboutDialog .about-repo{
-  margin:0 0 16px;padding:15px 17px;border-radius:12px;
-  background:var(--node);border:1px solid var(--line);
-}
-#aboutDialog .about-privacy{
-  border-color:rgba(15,138,90,.3);background:rgba(15,138,90,.06);
-}
-#aboutDialog .about-privacy h3,
-#aboutDialog .about-repo h3{
-  margin:0 0 8px;font-size:13px;font-weight:700;letter-spacing:.5px;
-  text-transform:uppercase;color:var(--text-dim);
-}
-#aboutDialog .about-privacy h3{color:var(--accent3-ink);}
-#aboutDialog .about-privacy p:last-child,
-#aboutDialog .about-repo p:last-child{margin-bottom:0;}
-#aboutDialog .about-privacy strong{color:var(--accent3-ink);}
-
-#aboutDialog .license{
-  border-top:1px solid var(--line);padding-top:16px;margin-top:4px;
-  font-size:13px;line-height:1.65;color:var(--text-dim);
-}
-#aboutDialog .license strong{color:var(--text);}
-#aboutClose{
-  margin-top:18px;width:100%;min-height:var(--tap);border-radius:11px;
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  background:var(--node);border:1px solid var(--line);color:var(--text);
-  font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;
-  transition:background var(--dur) var(--ease),border-color var(--dur) var(--ease);
-}
-#aboutClose:hover{background:var(--node-hover);border-color:var(--accent);}
-
 /* ---------- scrollbars ---------- */
 
 ::-webkit-scrollbar{width:9px;height:9px;}
@@ -917,16 +838,20 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
 
   #graphPanel{
     order:2;position:sticky;top:0;flex:0 0 auto;width:100%;
-    height:44vh;min-height:230px;max-height:340px;z-index:5;
+    height:38vh;min-height:220px;max-height:300px;z-index:5;
     box-shadow:0 8px 16px -8px rgba(0,0,0,.35);
   }
   .grade-heading{order:3;}
   #gradeSearchRow{order:4;flex-wrap:wrap;}
   #gradeRow{flex:1 1 100%;}
   #searchWrap{width:100%;max-width:none;padding-top:0;}
-  #topicsSection{order:5;flex:0 0 auto;max-height:210px;}
+  /* One continuous page scroll instead of boxes-within-boxes: capping the
+     topic/word lists made three nested scrollers fight the swipe, and every
+     inner scrollbar is vertical screen space a phone doesn't have. */
+  #topicsSection{order:5;flex:0 0 auto;max-height:none;}
   .panel-resizer-h{display:none;}
-  #vocabSection{order:6;flex:0 0 auto;max-height:280px;}
+  #topicsSection,#vocabSection{overflow:visible;}
+  #vocabSection{order:6;flex:0 0 auto;max-height:none;}
   #detail{order:7;width:100%;flex:0 0 auto;max-height:none;border-left:none;border-top:1px solid var(--line);}
 
   /* The word/standards counts, the CC BY-NC line and reset progress are all
@@ -972,7 +897,7 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
    viewport is trimmed further so grade/topic/word/definition below it
    still get a usable amount of room to scroll in. */
 @media (max-width: 400px){
-  #graphPanel{height:38vh;min-height:200px;}
+  #graphPanel{height:34vh;min-height:190px;}
   header h1{font-size:14.5px;}
   .grade-node{width:50px;height:50px;min-width:50px;font-size:15px;}
   #gradeRow{gap:8px;}
