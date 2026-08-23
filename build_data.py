@@ -45,172 +45,172 @@ DOMAIN_NAMES = {
 # inlined into the single-file HTML.
 VISUALS = {
     "k-cc-more": {
-        "src": "assets/visuals/k-cc-more-colorful-balls.gif",
+        "src": "assets/visuals/k-cc-more-colorful-balls.webp",
         "alt": "An animated bowl overflowing with many colorful balls.",
         "credit": "Usable Math — Add & Take Away: How Many More, Slide 5",
     },
     "k-cc-fewer": {
-        "src": "assets/visuals/k-cc-fewer-dog-ball.gif",
+        "src": "assets/visuals/k-cc-fewer-dog-ball.webp",
         "alt": "An animated dog with just one ball.",
         "credit": "Usable Math — Add & Take Away: How Many More, Slide 5",
     },
     "1-oa-how-many-more": {
-        "src": "assets/visuals/1-oa-how-many-more-wildwood-chart.png",
+        "src": "assets/visuals/1-oa-how-many-more-wildwood-chart.webp",
         "alt": "A bar chart comparing Wildwood's 1,393 seats to Mark's Meadow's 682 seats, with the gap between them marked as the difference.",
         "credit": "Usable Math — Add & Take Away: How Many More, Slide 3 (Visual Vicuna)",
     },
     "k-oa-take-away": {
-        "src": "assets/visuals/1-oa-how-many-more-wildwood-chart.png",
+        "src": "assets/visuals/1-oa-how-many-more-wildwood-chart.webp",
         "alt": "A bar chart comparing Wildwood's 1,393 seats to Mark's Meadow's 682 seats, with the gap between them marked as the difference.",
         "credit": "Usable Math — Add & Take Away: How Many More, Slide 3 (Visual Vicuna)",
     },
     "1-oa-difference": {
-        "src": "assets/visuals/1-oa-difference-gordon-hillcrest-chart.png",
+        "src": "assets/visuals/1-oa-difference-gordon-hillcrest-chart.webp",
         "alt": "A bar chart comparing Gordon Stadium's 79,000 seats to Hillcrest Stadium's 59,000 seats, with the gap between them marked as the difference.",
         "credit": "Usable Math — Add & Take Away: How Many More, Slide 7 (Visual Vicuna)",
     },
     "3-nf-fraction": {
-        "src": "assets/visuals/3-nf-fraction-cake-slices.png",
+        "src": "assets/visuals/3-nf-fraction-cake-slices.webp",
         "alt": "A chocolate cake marked with lines dividing it into 8 equal slices.",
         "credit": "Usable Math — Fractions, Slide 5",
     },
     "k-cc-equal": {
-        "src": "assets/visuals/k-cc-equal-spinner.jpg",
+        "src": "assets/visuals/k-cc-equal-spinner.webp",
         "alt": "Three circles each split into 8 equal wedges, showing 2/8, 1/4, and 1/2 shaded.",
         "credit": "Usable Math — Fractions, Slide 11 (Visual Vicuna)",
     },
     "4-nf-proper-fraction": {
-        "src": "assets/visuals/4-nf-proper-fraction-tulips.gif",
+        "src": "assets/visuals/4-nf-proper-fraction-tulips.webp",
         "alt": "An animated tally of 7 boxes filling in with tulip icons, one at a time.",
         "credit": "Usable Math — Fractions, Slide 17 (Visual Vicuna)",
     },
     "2-md-dollar": {
-        "src": "assets/visuals/2-md-dollar-cents-comic-prices.png",
+        "src": "assets/visuals/2-md-dollar-cents-comic-prices.webp",
         "alt": "Three comic books priced at $1.00, $2.00, and $2.25.",
         "credit": "Usable Math — Money, Slide 18",
     },
     "2-md-cents": {
-        "src": "assets/visuals/2-md-dollar-cents-comic-prices.png",
+        "src": "assets/visuals/2-md-dollar-cents-comic-prices.webp",
         "alt": "Three comic books priced at $1.00, $2.00, and $2.25.",
         "credit": "Usable Math — Money, Slide 18",
     },
     "2-md-money": {
-        "src": "assets/visuals/2-md-money-cash-coins.gif",
+        "src": "assets/visuals/2-md-money-cash-coins.webp",
         "alt": "An illustration of stacked cash and coins.",
         "credit": "Usable Math — Money, Slide 5",
     },
     "2-md-price": {
-        "src": "assets/visuals/2-md-price-toy-store.gif",
+        "src": "assets/visuals/2-md-price-toy-store.webp",
         "alt": "Toy figures on a store shelf, from the toy-store price problem.",
         "credit": "Usable Math — Money, Slide 16",
     },
     "1-oa-total": {
-        "src": "assets/visuals/1-oa-total-dog-treats.png",
+        "src": "assets/visuals/1-oa-total-dog-treats.webp",
         "alt": "Rows of dog bone treats, from a word problem about a daily total.",
         "credit": "Usable Math — Multiplication and Division, Slide 5",
     },
     "4-oa-left-over": {
-        "src": "assets/visuals/4-oa-left-over-strawberries.gif",
+        "src": "assets/visuals/4-oa-left-over-strawberries.webp",
         "alt": "An animation dividing 47 strawberries into 5 baskets, with 2 left over.",
         "credit": "Usable Math — Multiplication and Division, Slide 11 (Visual Vicuna)",
     },
     "3-oa-divide": {
-        "src": "assets/visuals/3-oa-division-cupcakes.gif",
+        "src": "assets/visuals/3-oa-division-cupcakes.webp",
         "alt": "An animation dividing 52 cupcakes into 8 boxes, with some left over.",
         "credit": "Usable Math — Multiplication and Division, Slide 19 (Visual Vicuna)",
     },
     "3-oa-division": {
-        "src": "assets/visuals/3-oa-division-cupcakes.gif",
+        "src": "assets/visuals/3-oa-division-cupcakes.webp",
         "alt": "An animation dividing 52 cupcakes into 8 boxes, with some left over.",
         "credit": "Usable Math — Multiplication and Division, Slide 19 (Visual Vicuna)",
     },
     "1-g-vertex-vertices": {
-        "src": "assets/visuals/1-g-vertex-dots.png",
+        "src": "assets/visuals/1-g-vertex-dots.webp",
         "alt": "A cube's 8 corners marked as colored dots.",
         "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 3 (Visual Vicuna)",
     },
     "k-g-shape": {
-        "src": "assets/visuals/k-g-shape-mosaic.gif",
+        "src": "assets/visuals/k-g-shape-mosaic.webp",
         "alt": "A colorful mosaic of triangles, circles, squares, and other shapes.",
         "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 6",
     },
     "k-g-triangle": {
-        "src": "assets/visuals/k-g-triangle-fractal.png",
+        "src": "assets/visuals/k-g-triangle-fractal.webp",
         "alt": "A large triangle made of many smaller triangles.",
         "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 13",
     },
     "4-g-isosceles-triangle": {
-        "src": "assets/visuals/4-g-isosceles-triangle-icecream.png",
+        "src": "assets/visuals/4-g-isosceles-triangle-icecream.webp",
         "alt": "A tall ice cream cone, its two slanted sides the same length.",
         "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 13",
     },
     "4-g-acute-angle": {
-        "src": "assets/visuals/4-g-acute-angle-compare.png",
+        "src": "assets/visuals/4-g-acute-angle-compare.webp",
         "alt": "An acute angle drawn next to a right angle for comparison.",
         "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 11",
     },
     "4-g-perpendicular-lines": {
-        "src": "assets/visuals/4-g-perpendicular-lines-cross.jpg",
+        "src": "assets/visuals/4-g-perpendicular-lines-cross.webp",
         "alt": "Two lines crossing at a right angle.",
         "credit": "Usable Math — Geometry: Lines and Lines of Symmetry, Slide 3",
     },
     "4-g-parallel-lines": {
-        "src": "assets/visuals/4-g-parallel-lines-chairs.png",
+        "src": "assets/visuals/4-g-parallel-lines-chairs.webp",
         "alt": "Two striped beach chairs, their stripes running parallel.",
         "credit": "Usable Math — Geometry: Lines and Lines of Symmetry, Slide 5",
     },
     "k-g-square": {
-        "src": "assets/visuals/k-g-square-video-thumb.png",
+        "src": "assets/visuals/k-g-square-video-thumb.webp",
         "alt": "A green square, captioned \"It's a green square.\"",
         "credit": "Usable Math — Geometry: Lines and Lines of Symmetry, Slide 7",
     },
     "5-g-ordered-pair": {
-        "src": "assets/visuals/5-g-ordered-pair-axes.png",
+        "src": "assets/visuals/5-g-ordered-pair-axes.webp",
         "alt": "A blank coordinate grid with labeled x and y axes.",
         "credit": "Usable Math — Geometry: Maps + Grids + Ordered Pairs, Slide 11 (Visual Vicuna)",
     },
     "3-md-area": {
-        "src": "assets/visuals/3-md-area-grid.gif",
+        "src": "assets/visuals/3-md-area-grid.webp",
         "alt": "A 10-by-10 grid of squares, for counting area.",
         "credit": "Usable Math — Area and Perimeter, Slide 6",
     },
     "4-md-perimeter": {
-        "src": "assets/visuals/4-md-perimeter-field.png",
+        "src": "assets/visuals/4-md-perimeter-field.webp",
         "alt": "An aerial view of a stadium track and field, its running track forming the perimeter.",
         "credit": "Usable Math — Area and Perimeter, Slide 8",
     },
     "k-g-rectangle": {
-        "src": "assets/visuals/k-g-rectangle-field.jpg",
+        "src": "assets/visuals/k-g-rectangle-field.webp",
         "alt": "A rectangular soccer field, from a perimeter word problem.",
         "credit": "Usable Math — Area and Perimeter, Slide 8",
     },
     "2-md-meter": {
-        "src": "assets/visuals/2-md-meter-track.png",
+        "src": "assets/visuals/2-md-meter-track.webp",
         "alt": "Runners racing on a track, a distance measured in meters.",
         "credit": "Usable Math — Measurement, Slide 8",
     },
     "3-md-kilogram": {
-        "src": "assets/visuals/3-md-kilogram-scale.png",
+        "src": "assets/visuals/3-md-kilogram-scale.webp",
         "alt": "A bathroom scale, for measuring weight in kilograms.",
         "credit": "Usable Math — Measurement, Slide 8",
     },
     "2-md-centimeter": {
-        "src": "assets/visuals/2-md-centimeter-ruler.png",
+        "src": "assets/visuals/2-md-centimeter-ruler.webp",
         "alt": "A tape measure next to small tools.",
         "credit": "Usable Math — Measurement, Slide 8",
     },
     "3-md-yard": {
-        "src": "assets/visuals/3-md-yard-tape-measure.png",
+        "src": "assets/visuals/3-md-yard-tape-measure.webp",
         "alt": "A close-up of a tape measure's markings.",
         "credit": "Usable Math — Measurement, Slide 12",
     },
     "2-md-bar-graph": {
-        "src": "assets/visuals/2-md-bar-graph-colorful.png",
+        "src": "assets/visuals/2-md-bar-graph-colorful.webp",
         "alt": "A bar graph with four colored bars of different heights.",
         "credit": "Usable Math — Charts and Graphs, Slide 3",
     },
     "1-md-graph": {
-        "src": "assets/visuals/1-md-graph-pictures-symbols.gif",
+        "src": "assets/visuals/1-md-graph-pictures-symbols.webp",
         "alt": "A dashboard illustration with bar, line, and gauge charts.",
         "credit": "Usable Math — Charts and Graphs, Slide 5",
     },
@@ -220,32 +220,32 @@ VISUALS = {
         "credit": "Usable Math — Charts and Graphs, Slide 21",
     },
     "4-oa-prime-number": {
-        "src": "assets/visuals/4-oa-prime-number-seven.jpg",
+        "src": "assets/visuals/4-oa-prime-number-seven.webp",
         "alt": "The number 7 painted in yellow on pavement — a prime number.",
         "credit": "Usable Math — Algebraic Thinking, Slide 32 (Hint 2)",
     },
     "4-nbt-hindu-arabic-numbers": {
-        "src": "assets/visuals/4-nbt-hindu-arabic-numbers-character.png",
+        "src": "assets/visuals/4-nbt-hindu-arabic-numbers-character.webp",
         "alt": "A child surrounded by the playful digits 0 through 9.",
         "credit": "Usable Math — Algebraic Thinking, Slide 33",
     },
     "k-cc-zero": {
-        "src": "assets/visuals/k-cc-zero-numeral.png",
+        "src": "assets/visuals/k-cc-zero-numeral.webp",
         "alt": "The numeral 0.",
         "credit": "Usable Math — Algebraic Thinking, Slide 34 (\"The History of Zero\")",
     },
     "2-md-number-line": {
-        "src": "assets/visuals/2-md-number-line-points.png",
+        "src": "assets/visuals/2-md-number-line-points.webp",
         "alt": "A number line from 0 to 1 with four labeled points.",
         "credit": "Usable Math — Algebraic Thinking, Slide 39",
     },
     "3-nbt-rounding": {
-        "src": "assets/visuals/3-nbt-rounding-pencils.png",
+        "src": "assets/visuals/3-nbt-rounding-pencils.webp",
         "alt": "Rows of colored pencils, from a rounding word problem about packs of pencils.",
         "credit": "Usable Math — Estimation, Slide 5",
     },
     "1-nbt-place-value": {
-        "src": "assets/visuals/1-nbt-place-value-counters-chart.gif",
+        "src": "assets/visuals/1-nbt-place-value-counters-chart.webp",
         "alt": "An animated place-value chart for 52,068: colored counters stack into columns as the digits break out into 5 ten-thousands, 2 thousands, 0 hundreds, 6 tens, and 8 ones.",
         "credit": "Usable Math — Place Value, Slide 3",
     },
@@ -1231,9 +1231,36 @@ def write_markdown(out_dir: str) -> None:
             f.write("\n".join(lines))
 
 
+def attach_visual_dimensions(entries) -> None:
+    """Stamp each visual with its image's real width/height (best effort, via
+    Pillow). The app emits these as <img> width/height attributes so the
+    definition panel reserves the right box before the lazy-loaded image
+    arrives — no layout jump mid-lesson. A missing file or a machine without
+    Pillow simply skips the stamping; the <img> renders exactly as before."""
+    try:
+        from PIL import Image
+    except ImportError:
+        print("Note: Pillow not installed; visuals get no width/height stamps.")
+        return
+    for entry in entries:
+        visual = entry.get("visual")
+        if not visual:
+            continue
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), visual["src"])
+        if not os.path.exists(path):
+            print(f"Warning: visual missing on disk: {visual['src']}")
+            continue
+        try:
+            with Image.open(path) as im:
+                visual["width"], visual["height"] = im.size
+        except OSError as exc:
+            print(f"Warning: could not read {visual['src']}: {exc}")
+
+
 def main() -> None:
     out_dir = os.path.dirname(os.path.abspath(__file__))
     entries = build_entries()
+    attach_visual_dimensions(entries)
 
     ids = [e["id"] for e in entries]
     duplicates = {i for i in ids if ids.count(i) > 1}
