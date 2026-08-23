@@ -331,7 +331,12 @@
     camera.position.set(currentDist, currentDist * 0.24, 0);
 
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    // Phones cap harder: this backdrop is pure decoration behind the hero,
+    // and a 3x-DPR phone pays real battery for it otherwise.
+    var PHONE = window.matchMedia && window.matchMedia('(pointer: coarse)').matches
+      && Math.min(window.screen ? (window.screen.width || 9e9) : 9e9,
+                  window.screen ? (window.screen.height || 9e9) : 9e9) <= 520;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, PHONE ? 1.25 : 2));
     renderer.setSize(w, h);
     if (THREE.sRGBEncoding !== undefined) renderer.outputEncoding = THREE.sRGBEncoding;
     if (THREE.ACESFilmicToneMapping !== undefined) {
