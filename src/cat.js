@@ -1,5 +1,6 @@
 /* =========================================================================
-   Pixel cat — a pedagogical companion that lives in the page's right corner.
+   Pixel cat — a pedagogical companion that lives on a short strip of floor
+   near the top of the page (see .cat-widget in src/styles.css).
 
    Art: KINGS-MZ/PixelCat (github.com/KINGS-MZ/PixelCat), MIT licensed. Only
    the cat sprite sheet is reused (assets/cat/cat_sheet.png); none of that
@@ -8,15 +9,18 @@
    than to be played with.
 
    The sheet is 8 columns x 10 rows of 32px cells, one animation per row.
-   This file is the engine: it steps the sheet, moves the cat along the strip
-   of floor above the footer, and decides what it should be doing. What it
-   *says* lives in src/catDialogue.js.
+   This file is the engine: it steps the sheet, moves the cat along its strip
+   of floor, and decides what it should be doing. What it *says* lives in
+   src/catDialogue.js.
 
    Two deliberate constraints:
 
-   - It never moves off the right-hand corner. The cat roams a short patch of
-     floor anchored to the right edge and walks home when it strays, so a
-     child always knows where to look for it.
+   - It never wanders off its strip. On tablet/desktop widths that strip
+     sits on the line under the "Choose a grade" row, in the gap between the
+     grade circles and the search box (see .cat-widget in src/styles.css);
+     phones pin it along the bottom of the viewport instead, where that gap
+     doesn't exist. Either way the cat roams a short patch of floor and
+     walks home when it strays, so a child always knows where to look for it.
 
    - It stays out of the accessibility tree. The bubble only ever repeats
      what the panels already show, and every hint it gives is also reachable
@@ -79,9 +83,13 @@ const CatWidget = (function () {
   const MAX_MOVE_MS = 9000;
 
   /* Weighted pick for "what should the cat do next" when nothing in the app
-     has happened. Walking wins most of the time; running is the rare treat
-     that makes a child look up. */
-  const AMBIENT_WEIGHTS = { walk: 5, tap: 3, groom: 2, cheer: 1, run: 1 };
+     has happened. No `run` here on purpose — a dash reads as exciting once,
+     as a distraction on the tenth repeat in a room of kids trying to read —
+     it stays reserved for tour flights and celebration beats (see flyTo()),
+     never ambient wandering. In-place variety (groom/cheer/perk) outweighs
+     walking, so the cat spends more time doing something a child can watch
+     from where they are than crossing the strip. */
+  const AMBIENT_WEIGHTS = { walk: 3, tap: 2, groom: 3, cheer: 2, perk: 2 };
 
   // Quiet for this long and the cat offers a hint about the tool.
   const TIP_AFTER_MS = 38000;
@@ -249,9 +257,44 @@ const CatWidget = (function () {
 
   // ---- the floor strip ----------------------------------------------------
 
-  /* The cat's world is the widget box — a short strip pinned to the right
-     edge of the footer's top border. Half a sprite is kept clear of each end
-     so it never walks out of its own box. */
+  /* Must match the max-width:760px breakpoint in styles.css that switches
+     the strip from the graph-aligned one below to the phone tier's fixed
+     full-width strip along the bottom of the viewport. */
+  const NARROW_QUERY = '(max-width: 760px)';
+  // Clearance from the graph panel's own edges, so the sprite and its
+  // bubble never quite touch the panel border.
+  const GRAPH_STRIP_INSET = 20;
+
+  function isNarrowViewport() {
+    return !!(window.matchMedia && window.matchMedia(NARROW_QUERY).matches);
+  }
+
+  /* Tablet/desktop only (phones get their CSS-only strip — see NARROW_QUERY
+     above). Aligns the strip to the knowledge graph panel's own left/right
+     borders, which is real, permanently empty canvas: never a grade circle,
+     the search box, or a list, so the cat and its speech bubble can never
+     land on top of a control. #graphPanel itself is one of a row of
+     user-resizable panels (src/panelResize.js), so this is measured live off
+     its current rect rather than assumed — see bindPage()'s ResizeObserver
+     and clampToBounds() for what keeps it in sync as panels are dragged. */
+  function syncStrip() {
+    if (tourMode || isNarrowViewport()) {
+      root.style.left = '';
+      root.style.width = '';
+      root.style.right = '';
+      return;
+    }
+    const panel = document.getElementById('graphPanel');
+    const r = panel && panel.getBoundingClientRect();
+    if (!r || r.width < GRAPH_STRIP_INSET * 2 + 20) return; // not laid out yet, or too small to bother with
+    root.style.right = 'auto';
+    root.style.left = `${r.left + GRAPH_STRIP_INSET}px`;
+    root.style.width = `${r.width - GRAPH_STRIP_INSET * 2}px`;
+  }
+
+  /* The cat's world is the widget box — see syncStrip() above and
+     .cat-widget in src/styles.css for where that strip actually sits. Half a
+     sprite is kept clear of each end so it never walks out of its own box. */
   function bounds() {
     const total = root.clientWidth || 0;
     const half = spriteSize() / 2;
@@ -288,6 +331,7 @@ const CatWidget = (function () {
      clamped — stopping where it stands reads as a cat pausing, while
      retargeting mid-stride reads as a glitch. */
   function clampToBounds() {
+    syncStrip();
     if (tourMode) { reseatOnAnchor(); if (scene) positionBubble(); return; }
     const { min, max } = bounds();
     homeX = max;
@@ -322,8 +366,11 @@ const CatWidget = (function () {
     return homeX;
   }
 
-  function beginMove(gait) {
-    const target = pickTarget();
+  /* `explicitTarget` bypasses the random pickTarget() — used to send the cat
+     somewhere specific (currently just the walk home before it sleeps, see
+     stepBehaviour()) rather than wherever ambient wandering would take it. */
+  function beginMove(gait, explicitTarget) {
+    const target = typeof explicitTarget === 'number' ? explicitTarget : pickTarget();
     const distance = Math.abs(target - x);
     if (distance < 2) return beginGesture('tap');
 
@@ -414,7 +461,7 @@ const CatWidget = (function () {
   }
 
   function stepTrail(dt) {
-    // Only flights leave a trail; the ambient stroll along the footer does
+    // Only flights leave a trail; the ambient stroll along the strip does
     // not, and reduced motion gets none of it at all.
     if (!move || !move.arc || REDUCED_MOTION) { trailClock = 0; return; }
     trailClock += dt;
@@ -476,6 +523,16 @@ const CatWidget = (function () {
     if (asleep) { setAnim('sleep'); busyUntil = now + 4000; return; }
 
     if (quietFor > SLEEP_AFTER_MS) {
+      /* Home first, sleep after: curling up wherever ambient wandering last
+         left the cat would put it somewhere a child was not looking. Home is
+         bounds().max — the far end of the strip, which on tablet/desktop is
+         the graph panel's own top-right corner (see syncStrip()) — so this
+         reads as "the cat went back to its usual spot and settled down,"
+         the same corner it always returns to, rather than falling asleep at
+         a random point mid-strip. beginMove() re-fires every idle tick while
+         still walking (busyUntil keeps stepBehaviour out until each leg
+         finishes), so this naturally keeps closing the distance. */
+      if (Math.abs(x - homeX) > 2) { beginMove('walk', homeX); return; }
       asleep = true;
       move = null;
       setAnim('sleep');
@@ -492,7 +549,7 @@ const CatWidget = (function () {
     }
 
     const gesture = weightedPick(AMBIENT_WEIGHTS);
-    if (gesture === 'walk' || gesture === 'run') beginMove(gesture);
+    if (gesture === 'walk') beginMove(gesture);
     else if (gesture === 'groom') beginGesture(Math.random() < 0.5 ? 'groom' : 'groom2');
     else beginGesture(gesture);
   }
@@ -544,23 +601,39 @@ const CatWidget = (function () {
       || a.bottom + pad <= b.top || a.top - pad >= b.bottom);
   }
 
-  /* Candidate placements in preference order. Above the cat is the natural
-     home; beside it is what the tour needs when the cat is perched near the
-     top of the page, where "below" would drop the bubble straight onto the
-     grade buttons. Each returns viewport coordinates plus which way its tail
-     should point. */
+  /* Candidate placements, each in viewport coordinates plus which way its
+     tail should point; positionBubble() tries them in order and takes the
+     first that fits and stays clear of whatever must not be covered.
+
+     "up" leads everywhere: the knowledge graph is the actual lesson content
+     (a live, spinning, tappable map of words), not blank canvas, so a
+     bubble dropped onto it would sit on top of the very thing the cat is
+     meant to be pointing a child toward — never acceptable, tour or not.
+     Ordinary (non-tour) mode on tablet/desktop stands the cat on the line
+     between the grade row and the graph panel (see syncStrip()), where
+     "up" opens onto the row's own empty stretch above the strip (the strip
+     itself is kept clear of the grade circles and the search box, so
+     directly above it is clear too) — so "down" is dropped from the
+     rotation there entirely rather than kept as a fallback, and the
+     horizontal graph-panel clamp in positionBubble() keeps "up"/"right"/
+     "left" from sliding sideways into the search box or the definition
+     panel. Tour and the phone strip both still fall through to "down" as a
+     last resort — the tour perches on real elements where "below" usually
+     means empty page rather than the graph, and the phone's cat has no
+     graph beside it to protect either way. */
   function bubblePlacements(spriteRect, size, gap) {
     const catX = spriteRect.left + spriteRect.width / 2;
     const headY = spriteRect.top + CELL_TOP_PADDING * scale();
     const feetY = spriteRect.bottom;
     const middleY = (headY + feetY) / 2 - size.height / 2;
 
-    return [
-      { name: 'up', tail: 'down', left: catX - size.width / 2, top: headY - size.height - gap },
-      { name: 'right', tail: 'left', left: spriteRect.right + gap, top: middleY },
-      { name: 'left', tail: 'right', left: spriteRect.left - size.width - gap, top: middleY },
-      { name: 'down', tail: 'up', left: catX - size.width / 2, top: feetY + gap },
-    ];
+    const up = { name: 'up', tail: 'down', left: catX - size.width / 2, top: headY - size.height - gap };
+    const right = { name: 'right', tail: 'left', left: spriteRect.right + gap, top: middleY };
+    const left = { name: 'left', tail: 'right', left: spriteRect.left - size.width - gap, top: middleY };
+    const down = { name: 'down', tail: 'up', left: catX - size.width / 2, top: feetY + gap };
+
+    if (!tourMode && !isNarrowViewport()) return [up, right, left];
+    return [up, right, left, down];
   }
 
   /* Worked out from the sprite's real rendered box rather than from `x`/`y`,
@@ -582,7 +655,26 @@ const CatWidget = (function () {
     const vh = document.documentElement.clientHeight;
     const keepClear = avoidRect();
 
-    const fitsHorizontally = (p) => p.left >= edge && p.left + size.width <= vw - edge;
+    /* Ordinary desktop-tier mode (see bubblePlacements() above) slides the
+       bubble to stay inside the knowledge graph panel's own left/right
+       borders rather than the whole viewport — sliding all the way to the
+       viewport edge would let a bubble near either end of the strip spill
+       sideways into the search box or the definition panel, exactly the
+       overlap the graph-aligned strip exists to avoid. Falls back to the
+       viewport when the graph is narrower than the bubble itself (a very
+       small custom panel size), so the clamp range can never invert. */
+    let slideLeft = edge;
+    let slideRight = vw - edge;
+    if (!tourMode && !isNarrowViewport()) {
+      const panel = document.getElementById('graphPanel');
+      const panelRect = panel && panel.getBoundingClientRect();
+      if (panelRect && panelRect.width > size.width + edge * 2) {
+        slideLeft = panelRect.left + edge;
+        slideRight = panelRect.right - edge;
+      }
+    }
+
+    const fitsHorizontally = (p) => p.left >= slideLeft && p.left + size.width <= slideRight;
     const fitsVertically = (p) => p.top >= edge && p.top + size.height <= vh - edge;
 
     const candidates = bubblePlacements(spriteRect, size, gap);
@@ -595,7 +687,7 @@ const CatWidget = (function () {
       const horizontalOk = (p.name === 'up' || p.name === 'down') || fitsHorizontally(p);
       if (!horizontalOk || !fitsVertically(p)) continue;
 
-      const slid = { ...p, left: Math.min(Math.max(p.left, edge), Math.max(edge, vw - size.width - edge)) };
+      const slid = { ...p, left: Math.min(Math.max(p.left, slideLeft), Math.max(slideLeft, slideRight - size.width)) };
       const rect = { left: slid.left, top: slid.top, right: slid.left + size.width, bottom: slid.top + size.height };
       if (keepClear && overlaps(rect, keepClear, 4)) continue;
 
@@ -609,7 +701,7 @@ const CatWidget = (function () {
       const p = candidates[0];
       chosen = {
         ...p,
-        left: Math.min(Math.max(p.left, edge), Math.max(edge, vw - size.width - edge)),
+        left: Math.min(Math.max(p.left, slideLeft), Math.max(slideLeft, slideRight - size.width)),
         top: Math.min(Math.max(p.top, edge), Math.max(edge, vh - size.height - edge)),
       };
     }
@@ -966,14 +1058,15 @@ const CatWidget = (function () {
     // Sized synchronously: a page that opens in a background tab never gets
     // a requestAnimationFrame callback, so deferring the *layout* to one
     // leaves the cat as a zero-by-zero box until the tab is first looked at.
+    syncStrip();
     layoutSprite();
     goHome();
     settle();
     startLoop();
 
-    // #stats may still be mid-layout on that first synchronous pass, so the
-    // corner is measured once more after it settles.
-    requestAnimationFrame(goHome);
+    // The page may still be mid-layout on that first synchronous pass, so
+    // the strip and home are both measured once more after it settles.
+    requestAnimationFrame(() => { syncStrip(); goHome(); });
   }
 
   function setVisible(on) {
@@ -1017,12 +1110,20 @@ const CatWidget = (function () {
     bubble.hidden = true;
 
     /* Take off from wherever the cat is standing now, so it lifts out of its
-       corner instead of blinking to the top of the page. */
+       corner instead of blinking to the top of the page. Read before
+       tourMode flips: this rect still reflects the ordinary strip's real
+       (JS-set, inline) bounds, which syncStrip() is about to clear. */
     const from = sprite.getBoundingClientRect();
     const strip = root.getBoundingClientRect();
     homeAnchor = { x: strip.right - spriteSize() / 2, y: strip.bottom };
     tourMode = true;
     move = null;
+    /* syncStrip() no-ops on width/left/right while tourMode is true, but it
+       still has to run once right here to clear the *previous* (ordinary
+       mode) inline left/width it set — those are inline styles, so left
+       alone they would outrank .cat-widget-tour's own left:0;width:100% and
+       pin the tour to a strip-sized sliver instead of the full viewport. */
+    syncStrip();
     root.classList.add('cat-widget-tour');
     place(from.left + from.width / 2, from.bottom);
     setAnim('idle2');
@@ -1043,6 +1144,7 @@ const CatWidget = (function () {
       root.querySelectorAll('.cat-trail-dot').forEach((dot) => dot.remove());
       root.classList.remove('cat-widget-tour');
       unit.style.top = '';
+      syncStrip();
       layoutSprite();
       goHome();
       settle();
@@ -1077,6 +1179,16 @@ const CatWidget = (function () {
 
   function bindPage() {
     window.addEventListener('resize', clampToBounds);
+
+    /* The graph panel can change width without a window resize — dragging
+       #resizerLeft or #resizerDetail (src/panelResize.js) resizes it
+       directly — so the strip needs its own observer to stay aligned with
+       the panel's current borders instead of a stale measurement from load
+       or from before the drag. */
+    const graphPanel = document.getElementById('graphPanel');
+    if (graphPanel && typeof ResizeObserver !== 'undefined') {
+      new ResizeObserver(clampToBounds).observe(graphPanel);
+    }
 
     /* Only matters mid-tour, where the cat is standing on a real element that
        can slide out from under it — the left panel scrolls independently, so
