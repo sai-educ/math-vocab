@@ -755,7 +755,6 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   font-size:11.5px;color:var(--text-dim);border-top:1px solid var(--line);
   background:var(--panel);flex:0 0 auto;
   display:flex;align-items:center;gap:10px;flex-wrap:wrap;
-  position:relative; /* anchors .cat-widget to this border-top line */
 }
 .stats-updated{color:var(--text-muted);font-style:italic;}
 
@@ -1040,28 +1039,44 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
 .cat-skin-option:has(input:checked){color:var(--text);font-weight:600;}
 .cat-skin-option img{width:22px;height:22px;image-rendering:pixelated;flex:0 0 auto;}
 
-/* The widget is the cat's whole world: a short strip of floor pinned to the
-   RIGHT end of #stats's top border. Anchoring the box rather than the sprite
-   is what keeps the cat in the same corner at every viewport width — it can
-   only ever roam inside this strip, never across the footer. */
+/* The widget is the cat's whole world: a short strip of floor standing on
+   the line under #gradeSearchRow (the "Choose a grade" row's bottom
+   border). `top` is fixed viewport coordinates rather than a relative
+   anchor: the strip needs to reach a border many panels away from
+   #catWidget's actual DOM parent (#stats, down in the footer), which no
+   relative offset can do. The number is hard-coded from this row's actual
+   layout (header + "Choose a grade" heading + row = 192px tall, unchanged
+   across the whole width range below), verified against 761/1024/1280px
+   viewports; --font-sans is a system stack so there is no web-font swap to
+   shift it after first paint.
+
+   `left`/`width` below are only a fallback for the instant before JS runs —
+   syncStrip() in src/cat.js overwrites them (as inline styles, which is why
+   they win here) to track the knowledge graph panel's own left/right
+   borders, real empty canvas that is never a grade circle, the search box,
+   or a list. That panel is one of a row of user-resizable ones (see
+   src/panelResize.js), so a second hard-coded number here would drift out
+   of alignment the moment someone drags a splitter — unlike the row above,
+   which nothing resizes. Anchoring the box rather than the sprite is what
+   keeps the cat inside its own strip at every width — it can only ever roam
+   in here. Phones fall back to the original bottom-of-viewport strip below,
+   where the graph panel isn't beside anything and this gap doesn't apply
+   (see the max-width:760px block). */
 .cat-widget{
-  position:absolute;right:0;bottom:100%;height:0;
-  width:min(340px,58vw);
-  /* Below the graph's overlay controls (the zoom pair, curriculum menu and
-     map key all sit at 5-7) and above ordinary panel content. On a narrow,
-     stacked layout the vertically-centred zoom buttons land right where the
-     cat walks, and a decorative cat must never paint over a control — so
-     the cat passes behind them instead. */
+  position:fixed;top:192px;height:0;
+  left:284px;width:280px;
   z-index:4;pointer-events:none;overflow:visible;
 }
 .cat-widget-hidden{display:none;}
 
 /* Guided-tour mode. The cat leaves its strip of floor and works in viewport
    coordinates so it can perch on the grade row, a topic card, a word row —
-   anything on the page. #app and #stats are position:relative with no
-   transform anywhere above the widget, so fixed here really does resolve
-   against the viewport. Raised above the onboarding spotlight ring (50) so
-   the two can be on screen together, and kept below the About dialog (120). */
+   anything on the page. No ancestor between here and <body> sets a
+   transform/filter/perspective, so fixed positioning (here and on the
+   ordinary .cat-widget rule above) really does resolve against the
+   viewport rather than some nearer positioned ancestor. Raised above the
+   onboarding spotlight ring (50) so the two can be on screen together, and
+   kept below the About dialog (120). */
 .cat-widget-tour{
   position:fixed;left:0;top:0;right:auto;bottom:auto;
   width:100%;height:100%;z-index:60;
@@ -1103,7 +1118,17 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
 .cat-bubble{
   position:absolute;box-sizing:border-box;
   display:grid;
-  min-width:104px;max-width:min(300px,100%);width:max-content;
+  /* 260px, not a percentage of .cat-widget: that box is now only as wide as
+     the roam strip (see syncStrip() in src/cat.js), and a bubble sized off
+     it would be clipped down to strip width instead of wrapping onto its
+     own lines. 260px is measured, not guessed — the longest line in
+     src/catDialogue.js (a 70-character tool tip) wraps to exactly two lines
+     at this width at the 13.5px font-size below, and every shorter line
+     does too, so "the bubble runs to three-plus short lines" (a real
+     14px-per-word wrap bug that showed up once .cat-widget shrank to a
+     roam-strip width) cannot recur even if new lines are added, as long as
+     they stay in the same rough length range. */
+  min-width:104px;max-width:min(260px,90vw);width:max-content;
   padding:9px 13px;
   border-radius:12px;background:var(--panel);border:1.5px solid var(--accent);
   color:var(--text);font-size:13.5px;line-height:1.5;box-shadow:var(--shadow-md);
