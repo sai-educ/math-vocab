@@ -79,7 +79,7 @@ const CatTour = (function () {
     word: 'And now a word. Any of them.',
     detailA: 'Everything about your word lands over here.',
     detailB: 'You can hear it read out loud, and see it used in a real example.',
-    farewell: 'I will be down in this corner if you want me.',
+    farewell: 'I will stay right here from now on.',
   };
 
   // ---- flow ---------------------------------------------------------------
@@ -135,7 +135,7 @@ const CatTour = (function () {
     step = 'done';
     markTaken();
     CatWidget.tour.exit(() => {
-      // Said from the corner it has just landed in, so "here" means something.
+      // Said from the strip it has just landed back on, so "here" means something.
       CatWidget.say(LINES.farewell);
     });
   }
