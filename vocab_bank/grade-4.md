@@ -73,6 +73,16 @@
 
 **Standards:** US 4.OA
 
+### equation
+
+**Definition:** A math sentence with an equal sign, built from a word problem. A letter can stand for the number you are solving for.
+
+**Example:** Corn muffins cost $2 each and blueberry muffins cost $3 each. To find the total cost m of 8 corn muffins and 7 blueberry muffins, Chef Math Bear writes the equation (2 x 8) + (3 x 7) = m.
+
+**Common misconception:** The letter in an equation is not always x. Here it is m, standing in for the total cost - any letter can hold a missing number's place.
+
+**Standards:** US 4.OA
+
 ### factor pair
 
 **Definition:** Two numbers that multiply together to make a given number.

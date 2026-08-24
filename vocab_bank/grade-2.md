@@ -11,6 +11,16 @@
 
 **Standards:** US 2.OA
 
+### addition
+
+**Definition:** Putting numbers together to find a total. You can add two numbers, or add the same number many times.
+
+**Example:** A science class collects rocks and puts them into 5 buckets, 70 rocks in each one. Chef Math Bear adds the numbers to find the total: 70 + 70 + 70 + 70 + 70 = 350 rocks.
+
+**Common misconception:** Adding the same number again and again is still addition. It only becomes multiplication once you count how many equal groups you have, instead of adding them one at a time.
+
+**Standards:** US 2.OA
+
 ### array
 
 **Definition:** Objects set out in equal rows and columns.

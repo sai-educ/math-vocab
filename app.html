@@ -748,7 +748,12 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   background:var(--panel2);border:1px solid var(--line);
   box-shadow:var(--shadow-sm);text-align:center;
 }
-.term-visual img{max-width:100%;height:auto;border-radius:8px;display:block;margin:0 auto;}
+/* Fixed cap on both axes: source images vary wildly in intrinsic size (a
+   352x575 portrait chart next to an 880x880 square one), and max-width alone
+   let a tall one balloon the whole card, pushing later sections down into
+   where the pixel cat's floor strip is anchored. Capping height too keeps
+   every term's card a predictable size regardless of its source image. */
+.term-visual img{max-width:100%;max-height:220px;width:auto;height:auto;border-radius:8px;display:block;margin:0 auto;}
 .term-visual figcaption{margin:8px 2px 0;font-size:11px;color:var(--text-muted);text-align:right;}
 #detail .block{margin-bottom:18px;}
 #detail .block-label{
@@ -2669,11 +2674,11 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "example": "Gordon Stadium seats 79,407 people. Hillcrest Stadium seats 58,868 people. The difference tells how many more seats Gordon Stadium has: 20,539.",
     "misconception": "In math, 'difference' does not mean how two things are unlike. It is the subtraction answer.",
     "visual": {
-      "src": "assets/visuals/1-oa-difference-gordon-hillcrest-chart.webp",
-      "alt": "A bar chart comparing Gordon Stadium's 79,000 seats to Hillcrest Stadium's 59,000 seats, with the gap between them marked as the difference.",
-      "credit": "Usable Math — Add & Take Away: How Many More, Slide 7 (Visual Vicuna)",
-      "width": 504,
-      "height": 284
+      "src": "assets/visuals/1-oa-how-many-more-wildwood-chart.webp",
+      "alt": "A bar chart comparing Wildwood's 1,393 seats to Mark's Meadow's 682 seats, with the gap between them marked as the difference.",
+      "credit": "Usable Math — Add & Take Away: How Many More, Slide 5 (Hint 4, Visual Vicuna)",
+      "width": 538,
+      "height": 320
     }
   },
   {
@@ -3403,6 +3408,30 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "example": "Nina sets out 4 plates and puts 3 grapes on each. She adds 3 + 3 + 3 + 3 and gets 12 grapes.",
     "misconception": "",
     "visual": null
+  },
+  {
+    "id": "2-oa-addition",
+    "term": "addition",
+    "grade": "2",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "2.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.OA"
+      }
+    ],
+    "definition": "Putting numbers together to find a total. You can add two numbers, or add the same number many times.",
+    "example": "A science class collects rocks and puts them into 5 buckets, 70 rocks in each one. Chef Math Bear adds the numbers to find the total: 70 + 70 + 70 + 70 + 70 = 350 rocks.",
+    "misconception": "Adding the same number again and again is still addition. It only becomes multiplication once you count how many equal groups you have, instead of adding them one at a time.",
+    "visual": {
+      "src": "assets/visuals/2-oa-addition-science-buckets-chalkboard.webp",
+      "alt": "A chalkboard showing 70 written five times, stacked above a plus sign and a question mark, captioned \"Add the numbers.\"",
+      "credit": "Usable Math — Multiplication and Division, Slide 2 (Hint 2, Chef Math Bear)",
+      "width": 218,
+      "height": 307
+    }
   },
   {
     "id": "2-oa-array",
@@ -4204,6 +4233,30 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Multiplication and Division, Slide 19 (Visual Vicuna)",
       "width": 496,
       "height": 600
+    }
+  },
+  {
+    "id": "3-oa-multiplication",
+    "term": "multiplication",
+    "grade": "3",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "3.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "3.OA"
+      }
+    ],
+    "definition": "Putting equal groups together to find a total. It is the opposite of dividing.",
+    "example": "Corn muffins cost 2 dollars each. Blueberry muffins cost 3 dollars each. Chef Math Bear multiplies to find each cost: 8 x 2 = 16, and 7 x 3 = 21.",
+    "misconception": "Multiplication is not just fast addition. It counts equal groups all at once, instead of one at a time.",
+    "visual": {
+      "src": "assets/visuals/4-oa-equation-corn-blueberry-muffins.webp",
+      "alt": "Chef Math Bear's strategy: multiply to find the cost of 8 corn muffins at $2 each, multiply to find the cost of 7 blueberry muffins at $3 each, then add the two costs.",
+      "credit": "Usable Math — Algebraic Thinking, Slide 16 (Hint 2, Chef Math Bear)",
+      "width": 488,
+      "height": 488
     }
   },
   {
@@ -5077,6 +5130,30 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "example": "Zoe writes 6 × n = 42. The letter n is the variable. She solves it and finds n = 7.",
     "misconception": "",
     "visual": null
+  },
+  {
+    "id": "4-oa-equation",
+    "term": "equation",
+    "grade": "4",
+    "domainCode": "OA",
+    "domain": "Operations & Algebraic Thinking",
+    "standard": "4.OA",
+    "standards": [
+      {
+        "country": "US",
+        "code": "4.OA"
+      }
+    ],
+    "definition": "A math sentence with an equal sign, built from a word problem. A letter can stand for the number you are solving for.",
+    "example": "Corn muffins cost $2 each and blueberry muffins cost $3 each. To find the total cost m of 8 corn muffins and 7 blueberry muffins, Chef Math Bear writes the equation (2 x 8) + (3 x 7) = m.",
+    "misconception": "The letter in an equation is not always x. Here it is m, standing in for the total cost - any letter can hold a missing number's place.",
+    "visual": {
+      "src": "assets/visuals/4-oa-equation-corn-blueberry-muffins.webp",
+      "alt": "Chef Math Bear's strategy: multiply to find the cost of 8 corn muffins at $2 each, multiply to find the cost of 7 blueberry muffins at $3 each, then add the two costs.",
+      "credit": "Usable Math — Algebraic Thinking, Slide 16 (Hint 2, Chef Math Bear)",
+      "width": 488,
+      "height": 488
+    }
   },
   {
     "id": "4-oa-factor-pair",

@@ -53,6 +53,16 @@
 
 **Standards:** US 3.OA
 
+### multiplication
+
+**Definition:** Putting equal groups together to find a total. It is the opposite of dividing.
+
+**Example:** Corn muffins cost 2 dollars each. Blueberry muffins cost 3 dollars each. Chef Math Bear multiplies to find each cost: 8 x 2 = 16, and 7 x 3 = 21.
+
+**Common misconception:** Multiplication is not just fast addition. It counts equal groups all at once, instead of one at a time.
+
+**Standards:** US 3.OA
+
 ### equal groups
 
 **Definition:** Groups that all hold the same amount.
