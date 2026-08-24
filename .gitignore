@@ -7,3 +7,4 @@ public/
 __pycache__/
 *.py[cod]
 *.log
+.vercel
