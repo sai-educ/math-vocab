@@ -234,12 +234,16 @@ __STYLES__
          repeats what the panels above already show, so it stays out of the
          accessibility tree rather than doubling up srAnnounce, and its hints
          are reachable instead from "Ask the cat for a tip" in the Cat menu.
-         Pinned to the RIGHT end of #stats's top border (see .cat-widget), so
-         the cat keeps to that corner at every viewport width.
+         Still a DOM child of #stats (unchanged), but on tablet/desktop
+         widths (see .cat-widget) it is pinned via fixed coordinates to the
+         gap between the grade row and the search box, standing on the
+         border line below #gradeSearchRow — never over the grade circles or
+         real page content. Phones keep the original bottom-of-viewport strip
+         (see the max-width:760px block), where there is no such gap to use.
 
          The bubble is a sibling of the sprite, not a child: both are placed
-         from JS, but the bubble is clamped inside the strip while the cat is
-         not, so a line spoken from the corner cannot run off the page. -->
+         from JS, but the bubble is clamped inside the viewport while the cat
+         is not, so a line spoken from its spot cannot run off the page. -->
     <div id="catWidget" class="cat-widget" aria-hidden="true">
       <div id="catBubble" class="cat-bubble" aria-hidden="true" hidden>
         <!-- Holds the whole line, invisibly, so the bubble is already the
