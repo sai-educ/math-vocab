@@ -9826,8 +9826,12 @@ function renderStats() {
        is the whole reason this cat exists.
      - For the same reason, no "smart", "clever" or "talented" pointed at the
        child. Praise the move, never the mind that made it.
-     - Situational before generic. If the grade, topic or word is known, a
-       line that names it lands harder than one that could appear anywhere.
+     - Never name the grade, topic or word just picked, outside of
+       FIRST_TIME (which fires once per step, ever, and is genuine
+       orientation — "your topic list is over there" — not a readback). The
+       panels already show the selection; a cat that repeats it back on
+       every click is reciting, not encouraging, and that habit is exactly
+       what pulled this cat's job back to growth-mindset lines only.
      - Second person, present tense, one idea per line.
      - Short enough to read at a Grade-2 level; these are 5-to-11-year-olds.
      - Never state a definition, an example, or a word count. The panels own
@@ -10022,21 +10026,9 @@ const CatDialogue = (function () {
   };
   const MILESTONE_STEPS = Object.keys(MILESTONES).map(Number).sort((a, b) => a - b);
 
-  /* Openers for a word being opened. Naming the word is a nod, not a
-     definition, and it is what makes the line feel aimed at this moment
-     rather than pasted in from anywhere. */
-  const TERM_OPENERS_NAMED = [
-    (w) => `"${w}" is yours now.`,
-    (w) => `You went for "${w}".`,
-    (w) => `"${w}" — say it out loud once.`,
-    (w) => `Ah, "${w}".`,
-    (w) => `"${w}" is worth knowing.`,
-    (w) => `New word: "${w}".`,
-    (w) => `"${w}". Take your time with this one.`,
-    (w) => `So — "${w}".`,
-    (w) => `"${w}" turns up everywhere once you know it.`,
-  ];
-
+  /* Openers for a word being opened. Deliberately never name the word — the
+     detail panel is already showing it, and this cat's only job is the
+     motivational line that follows (see termScene()). */
   const TERM_OPENERS_PLAIN = [
     'Take your time with this one.',
     'Have a proper read.',
@@ -10076,23 +10068,6 @@ const CatDialogue = (function () {
     'Your search worked.',
   ];
 
-  /* Situational openers that weave in the grade or topic actually chosen, so
-     roughly half of those moments are about *this* choice rather than a line
-     that could have appeared anywhere. */
-  const GRADE_LINES = [
-    (l) => `${l}. Pick whatever looks interesting.`,
-    (l) => `${l} words, coming up.`,
-    (l) => `${l} has some sturdy words in it.`,
-    (l) => `Straight into ${l}, then.`,
-  ];
-
-  const TOPIC_LINES = [
-    (n) => `${n}. Take these one at a time.`,
-    (n) => `${n} words are worth saying out loud.`,
-    (n) => `Into ${n} we go.`,
-    (n) => `${n}. Pick the one you know least.`,
-  ];
-
   /* One short orientation the first time a child reaches each step. This is
      the only instructional copy left, and it fires once per session. */
   const FIRST_TIME = {
@@ -10125,13 +10100,12 @@ const CatDialogue = (function () {
      then something to carry away. Deliberately no definition and no example
      — the panel on the right is already showing both, and the screen reader
      announcement is already speaking them. */
-  function termScene(term, isRevisit) {
-    const opener = isRevisit
-      ? pick(REVISIT, 'revisit')
-      : (Math.random() < 0.75
-        ? pick(TERM_OPENERS_NAMED, 'termNamed')(term.term)
-        : pick(TERM_OPENERS_PLAIN, 'termPlain'));
-
+  /* Never names the word — that would just be reading back the click the
+     detail panel is already showing. The opener settles the child into the
+     moment (or, on a revisit, names *that*, which is real information); the
+     motivational line is the actual point. */
+  function termScene(isRevisit) {
+    const opener = isRevisit ? pick(REVISIT, 'revisit') : pick(TERM_OPENERS_PLAIN, 'termPlain');
     return [
       { text: opener, gesture: isRevisit ? 'tap' : 'cheer' },
       { text: motivationalLine(), gesture: 'idle2' },
@@ -10142,20 +10116,16 @@ const CatDialogue = (function () {
     return FIRST_TIME.term();
   }
 
+  /* Never names the grade or topic after the first time (see FIRST_TIME) —
+     this cat's ongoing job is encouragement, not reading back the click. */
   function gradeScene(label, isFirst) {
     if (isFirst) return FIRST_TIME.grade(label);
-    const text = Math.random() < 0.5
-      ? pick(GRADE_LINES, 'gradeLine')(label)
-      : motivationalLine();
-    return [{ text, gesture: 'tap' }];
+    return [{ text: motivationalLine(), gesture: 'tap' }];
   }
 
   function topicScene(name, isFirst) {
     if (isFirst) return FIRST_TIME.topic(name);
-    const text = Math.random() < 0.5
-      ? pick(TOPIC_LINES, 'topicLine')(name)
-      : motivationalLine();
-    return [{ text, gesture: 'tap' }];
+    return [{ text: motivationalLine(), gesture: 'tap' }];
   }
 
   function searchScene(query, count) {
@@ -10491,6 +10461,17 @@ const CatWidget = (function () {
   // Clearance from the graph panel's own edges, so the sprite and its
   // bubble never quite touch the panel border.
   const GRAPH_STRIP_INSET = 20;
+  /* Half the bubble's own max-width (see .cat-bubble in src/styles.css) plus
+     its gap off the sprite — the room a centred "up" bubble needs to one
+     side of wherever the cat is standing. Below roughly 1100px the graph
+     panel runs the full viewport width and the header's Sound/Cat/Home
+     cluster sits directly above its top-right corner, exactly where the
+     strip's home position (bounds().max) rests by default — so without this
+     the cat would happily go home to a spot its own "always on top" speech
+     bubble cannot fit next to. Reserving the room here, at the strip level,
+     means the bubble placement logic in positionBubble() rarely even has to
+     fall back on covering something. */
+  const BUBBLE_UP_CLEARANCE = 140;
 
   function isNarrowViewport() {
     return !!(window.matchMedia && window.matchMedia(NARROW_QUERY).matches);
@@ -10514,9 +10495,18 @@ const CatWidget = (function () {
     const panel = document.getElementById('graphPanel');
     const r = panel && panel.getBoundingClientRect();
     if (!r || r.width < GRAPH_STRIP_INSET * 2 + 20) return; // not laid out yet, or too small to bother with
+
+    const left = r.left + GRAPH_STRIP_INSET;
+    let right = r.right - GRAPH_STRIP_INSET;
+    const headerActions = document.querySelector('.header-actions');
+    const actionsRect = headerActions && headerActions.getBoundingClientRect();
+    if (actionsRect && actionsRect.width > 0) {
+      right = Math.min(right, actionsRect.left - BUBBLE_UP_CLEARANCE);
+    }
+
     root.style.right = 'auto';
-    root.style.left = `${r.left + GRAPH_STRIP_INSET}px`;
-    root.style.width = `${r.width - GRAPH_STRIP_INSET * 2}px`;
+    root.style.left = `${left}px`;
+    root.style.width = `${Math.max(40, right - left)}px`;
   }
 
   /* The cat's world is the widget box — see syncStrip() above and
@@ -10814,13 +10804,35 @@ const CatWidget = (function () {
      strip is only as wide as the cat's patch of floor — on a narrow screen
      that is 200px, and a bubble confined to it would be a column of one-word
      lines. This lets it overhang the strip and still never leave the page. */
-  /* Where a bubble may not go. During the tour the cat perches on something
-     the child is being asked to tap, and a bubble that covers it defeats the
-     whole point — so the perch supplies a rectangle to keep clear of. */
-  function avoidRect() {
-    if (!tourMode || !anchor || !anchor.avoid) return null;
-    const r = typeof anchor.avoid === 'function' ? anchor.avoid() : anchor.avoid;
-    return r && r.width >= 0 ? r : null;
+
+  /* Rectangles a placed bubble must not overlap, checked against every
+     candidate in bubblePlacements() order — the first one that fits the
+     viewport and clears all of these wins (see positionBubble()).
+
+     During the tour the cat perches on something the child is being asked
+     to tap, and a bubble that covers it defeats the whole point, so the
+     perch supplies its own rectangle. Ordinary desktop-tier mode (see
+     isNarrowViewport()) instead keeps clear of every *real* control near
+     the strip — the grade row, the search box, the header's Sound/Cat/Home
+     cluster, and the definition panel when one is visible beside the graph
+     — rather than reasoning about "inside the graph panel's borders" as a
+     stand-in for the same thing, which breaks down below ~1100px once the
+     graph panel runs the full viewport width and stops correlating with
+     where those controls actually are (see panelResize.js). Phones get
+     neither: their strip has no neighbours to protect against. */
+  function keepClearRects() {
+    if (tourMode) {
+      if (!anchor || !anchor.avoid) return [];
+      const r = typeof anchor.avoid === 'function' ? anchor.avoid() : anchor.avoid;
+      return r && r.width >= 0 ? [r] : [];
+    }
+    if (isNarrowViewport()) return [];
+    return ['searchWrap', 'gradeRow', 'detail']
+      .map((id) => document.getElementById(id))
+      .concat(document.querySelector('.header-actions'))
+      .filter(Boolean)
+      .map((el) => el.getBoundingClientRect())
+      .filter((r) => r.width > 0 && r.height > 0);
   }
 
   function overlaps(a, b, pad) {
@@ -10880,29 +10892,13 @@ const CatWidget = (function () {
        embedded frame the two can disagree by far more than that. */
     const vw = document.documentElement.clientWidth;
     const vh = document.documentElement.clientHeight;
-    const keepClear = avoidRect();
+    const keepClear = keepClearRects();
 
-    /* Ordinary desktop-tier mode (see bubblePlacements() above) slides the
-       bubble to stay inside the knowledge graph panel's own left/right
-       borders rather than the whole viewport — sliding all the way to the
-       viewport edge would let a bubble near either end of the strip spill
-       sideways into the search box or the definition panel, exactly the
-       overlap the graph-aligned strip exists to avoid. Falls back to the
-       viewport when the graph is narrower than the bubble itself (a very
-       small custom panel size), so the clamp range can never invert. */
-    let slideLeft = edge;
-    let slideRight = vw - edge;
-    if (!tourMode && !isNarrowViewport()) {
-      const panel = document.getElementById('graphPanel');
-      const panelRect = panel && panel.getBoundingClientRect();
-      if (panelRect && panelRect.width > size.width + edge * 2) {
-        slideLeft = panelRect.left + edge;
-        slideRight = panelRect.right - edge;
-      }
-    }
-
-    const fitsHorizontally = (p) => p.left >= slideLeft && p.left + size.width <= slideRight;
+    const fitsHorizontally = (p) => p.left >= edge && p.left + size.width <= vw - edge;
     const fitsVertically = (p) => p.top >= edge && p.top + size.height <= vh - edge;
+    const slideIntoViewport = (p) => (
+      { ...p, left: Math.min(Math.max(p.left, edge), Math.max(edge, vw - size.width - edge)) }
+    );
 
     const candidates = bubblePlacements(spriteRect, size, gap);
     let chosen = null;
@@ -10914,9 +10910,9 @@ const CatWidget = (function () {
       const horizontalOk = (p.name === 'up' || p.name === 'down') || fitsHorizontally(p);
       if (!horizontalOk || !fitsVertically(p)) continue;
 
-      const slid = { ...p, left: Math.min(Math.max(p.left, slideLeft), Math.max(slideLeft, slideRight - size.width)) };
+      const slid = slideIntoViewport(p);
       const rect = { left: slid.left, top: slid.top, right: slid.left + size.width, bottom: slid.top + size.height };
-      if (keepClear && overlaps(rect, keepClear, 4)) continue;
+      if (keepClear.some((r) => overlaps(rect, r, 4))) continue;
 
       chosen = slid;
       break;
@@ -10925,10 +10921,9 @@ const CatWidget = (function () {
     // Nothing was clean: keep it on screen and accept the overlap rather than
     // leaving the line somewhere it cannot be read.
     if (!chosen) {
-      const p = candidates[0];
+      const p = slideIntoViewport(candidates[0]);
       chosen = {
         ...p,
-        left: Math.min(Math.max(p.left, slideLeft), Math.max(slideLeft, slideRight - size.width)),
         top: Math.min(Math.max(p.top, edge), Math.max(edge, vh - size.height - edge)),
       };
     }
@@ -11144,7 +11139,7 @@ const CatWidget = (function () {
       // markVisited() has already run for this term by the time renderAll()
       // reaches here, so "was this already explored" is captured one step
       // earlier, in noteWordOpened().
-      const beats = CatDialogue.termScene(t, !first && wasRevisit);
+      const beats = CatDialogue.termScene(!first && wasRevisit);
       // The very first word a child opens is also where the detail panel and
       // the Listen button appear, so that beat is appended once, ever.
       if (first) beats.push(...CatDialogue.firstTermHint());
