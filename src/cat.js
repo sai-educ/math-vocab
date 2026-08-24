@@ -264,6 +264,17 @@ const CatWidget = (function () {
   // Clearance from the graph panel's own edges, so the sprite and its
   // bubble never quite touch the panel border.
   const GRAPH_STRIP_INSET = 20;
+  /* Half the bubble's own max-width (see .cat-bubble in src/styles.css) plus
+     its gap off the sprite — the room a centred "up" bubble needs to one
+     side of wherever the cat is standing. Below roughly 1100px the graph
+     panel runs the full viewport width and the header's Sound/Cat/Home
+     cluster sits directly above its top-right corner, exactly where the
+     strip's home position (bounds().max) rests by default — so without this
+     the cat would happily go home to a spot its own "always on top" speech
+     bubble cannot fit next to. Reserving the room here, at the strip level,
+     means the bubble placement logic in positionBubble() rarely even has to
+     fall back on covering something. */
+  const BUBBLE_UP_CLEARANCE = 140;
 
   function isNarrowViewport() {
     return !!(window.matchMedia && window.matchMedia(NARROW_QUERY).matches);
@@ -287,9 +298,18 @@ const CatWidget = (function () {
     const panel = document.getElementById('graphPanel');
     const r = panel && panel.getBoundingClientRect();
     if (!r || r.width < GRAPH_STRIP_INSET * 2 + 20) return; // not laid out yet, or too small to bother with
+
+    const left = r.left + GRAPH_STRIP_INSET;
+    let right = r.right - GRAPH_STRIP_INSET;
+    const headerActions = document.querySelector('.header-actions');
+    const actionsRect = headerActions && headerActions.getBoundingClientRect();
+    if (actionsRect && actionsRect.width > 0) {
+      right = Math.min(right, actionsRect.left - BUBBLE_UP_CLEARANCE);
+    }
+
     root.style.right = 'auto';
-    root.style.left = `${r.left + GRAPH_STRIP_INSET}px`;
-    root.style.width = `${r.width - GRAPH_STRIP_INSET * 2}px`;
+    root.style.left = `${left}px`;
+    root.style.width = `${Math.max(40, right - left)}px`;
   }
 
   /* The cat's world is the widget box — see syncStrip() above and
@@ -587,13 +607,35 @@ const CatWidget = (function () {
      strip is only as wide as the cat's patch of floor — on a narrow screen
      that is 200px, and a bubble confined to it would be a column of one-word
      lines. This lets it overhang the strip and still never leave the page. */
-  /* Where a bubble may not go. During the tour the cat perches on something
-     the child is being asked to tap, and a bubble that covers it defeats the
-     whole point — so the perch supplies a rectangle to keep clear of. */
-  function avoidRect() {
-    if (!tourMode || !anchor || !anchor.avoid) return null;
-    const r = typeof anchor.avoid === 'function' ? anchor.avoid() : anchor.avoid;
-    return r && r.width >= 0 ? r : null;
+
+  /* Rectangles a placed bubble must not overlap, checked against every
+     candidate in bubblePlacements() order — the first one that fits the
+     viewport and clears all of these wins (see positionBubble()).
+
+     During the tour the cat perches on something the child is being asked
+     to tap, and a bubble that covers it defeats the whole point, so the
+     perch supplies its own rectangle. Ordinary desktop-tier mode (see
+     isNarrowViewport()) instead keeps clear of every *real* control near
+     the strip — the grade row, the search box, the header's Sound/Cat/Home
+     cluster, and the definition panel when one is visible beside the graph
+     — rather than reasoning about "inside the graph panel's borders" as a
+     stand-in for the same thing, which breaks down below ~1100px once the
+     graph panel runs the full viewport width and stops correlating with
+     where those controls actually are (see panelResize.js). Phones get
+     neither: their strip has no neighbours to protect against. */
+  function keepClearRects() {
+    if (tourMode) {
+      if (!anchor || !anchor.avoid) return [];
+      const r = typeof anchor.avoid === 'function' ? anchor.avoid() : anchor.avoid;
+      return r && r.width >= 0 ? [r] : [];
+    }
+    if (isNarrowViewport()) return [];
+    return ['searchWrap', 'gradeRow', 'detail']
+      .map((id) => document.getElementById(id))
+      .concat(document.querySelector('.header-actions'))
+      .filter(Boolean)
+      .map((el) => el.getBoundingClientRect())
+      .filter((r) => r.width > 0 && r.height > 0);
   }
 
   function overlaps(a, b, pad) {
@@ -653,29 +695,13 @@ const CatWidget = (function () {
        embedded frame the two can disagree by far more than that. */
     const vw = document.documentElement.clientWidth;
     const vh = document.documentElement.clientHeight;
-    const keepClear = avoidRect();
+    const keepClear = keepClearRects();
 
-    /* Ordinary desktop-tier mode (see bubblePlacements() above) slides the
-       bubble to stay inside the knowledge graph panel's own left/right
-       borders rather than the whole viewport — sliding all the way to the
-       viewport edge would let a bubble near either end of the strip spill
-       sideways into the search box or the definition panel, exactly the
-       overlap the graph-aligned strip exists to avoid. Falls back to the
-       viewport when the graph is narrower than the bubble itself (a very
-       small custom panel size), so the clamp range can never invert. */
-    let slideLeft = edge;
-    let slideRight = vw - edge;
-    if (!tourMode && !isNarrowViewport()) {
-      const panel = document.getElementById('graphPanel');
-      const panelRect = panel && panel.getBoundingClientRect();
-      if (panelRect && panelRect.width > size.width + edge * 2) {
-        slideLeft = panelRect.left + edge;
-        slideRight = panelRect.right - edge;
-      }
-    }
-
-    const fitsHorizontally = (p) => p.left >= slideLeft && p.left + size.width <= slideRight;
+    const fitsHorizontally = (p) => p.left >= edge && p.left + size.width <= vw - edge;
     const fitsVertically = (p) => p.top >= edge && p.top + size.height <= vh - edge;
+    const slideIntoViewport = (p) => (
+      { ...p, left: Math.min(Math.max(p.left, edge), Math.max(edge, vw - size.width - edge)) }
+    );
 
     const candidates = bubblePlacements(spriteRect, size, gap);
     let chosen = null;
@@ -687,9 +713,9 @@ const CatWidget = (function () {
       const horizontalOk = (p.name === 'up' || p.name === 'down') || fitsHorizontally(p);
       if (!horizontalOk || !fitsVertically(p)) continue;
 
-      const slid = { ...p, left: Math.min(Math.max(p.left, slideLeft), Math.max(slideLeft, slideRight - size.width)) };
+      const slid = slideIntoViewport(p);
       const rect = { left: slid.left, top: slid.top, right: slid.left + size.width, bottom: slid.top + size.height };
-      if (keepClear && overlaps(rect, keepClear, 4)) continue;
+      if (keepClear.some((r) => overlaps(rect, r, 4))) continue;
 
       chosen = slid;
       break;
@@ -698,10 +724,9 @@ const CatWidget = (function () {
     // Nothing was clean: keep it on screen and accept the overlap rather than
     // leaving the line somewhere it cannot be read.
     if (!chosen) {
-      const p = candidates[0];
+      const p = slideIntoViewport(candidates[0]);
       chosen = {
         ...p,
-        left: Math.min(Math.max(p.left, slideLeft), Math.max(slideLeft, slideRight - size.width)),
         top: Math.min(Math.max(p.top, edge), Math.max(edge, vh - size.height - edge)),
       };
     }
@@ -917,7 +942,7 @@ const CatWidget = (function () {
       // markVisited() has already run for this term by the time renderAll()
       // reaches here, so "was this already explored" is captured one step
       // earlier, in noteWordOpened().
-      const beats = CatDialogue.termScene(t, !first && wasRevisit);
+      const beats = CatDialogue.termScene(!first && wasRevisit);
       // The very first word a child opens is also where the detail panel and
       // the Listen button appear, so that beat is appended once, ever.
       if (first) beats.push(...CatDialogue.firstTermHint());
