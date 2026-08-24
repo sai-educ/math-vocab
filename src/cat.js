@@ -113,6 +113,19 @@ const CatWidget = (function () {
   const HOLD_MS_PER_CHAR = 60;
   const BUBBLE_GAP_PX = 10;
 
+  // ---- selection-reaction throttle (grade/topic/word clicks) --------------
+
+  /* A scene on every single grade/topic/word click reads as narration, not
+     company — a child clicking through six words in a row does not want six
+     interruptions. So past each step's one-time introduction (see
+     `introduced` below), the cat only reacts every few clicks, on a
+     re-rolled 3-5 gap rather than a fixed one so it never settles into an
+     obviously countable rhythm. Milestones and the rapid-click "slow down"
+     coaching bypass this entirely — they are already rare/rate-based events
+     in their own right, not routine narration. */
+  const REACTION_GAP_MIN = 3;
+  const REACTION_GAP_MAX = 5;
+
   // ---- click-rate coaching (step 3, the word list) ------------------------
 
   /* Four consecutive words opened at an average of less than a second and a
@@ -185,6 +198,8 @@ const CatWidget = (function () {
   let lastSpokenKey = null;
   let lastMilestone = 0;
   let introduced = { grade: false, topic: false, term: false };
+  let clicksSinceReaction = 0;
+  let nextReactionGap = rollReactionGap();
   let wordClickTimes = [];
   let lastRapidWarnAt = -Infinity;
   /* How this session has been paced. In memory for the session only —
@@ -912,6 +927,23 @@ const CatWidget = (function () {
 
   // ---- context awareness --------------------------------------------------
 
+  function rollReactionGap() {
+    return REACTION_GAP_MIN + Math.floor(Math.random() * (REACTION_GAP_MAX - REACTION_GAP_MIN + 1));
+  }
+
+  /* Gates ordinary (non-first-time) selection reactions to roughly every
+     REACTION_GAP_MIN-REACTION_GAP_MAX clicks, re-rolled after every one that
+     gets through so the rhythm never becomes obviously countable. Milestones
+     and each step's one-time introduction call playScene() directly and
+     never go through this — see reactToState(). */
+  function shouldReactToClick() {
+    clicksSinceReaction += 1;
+    if (clicksSinceReaction < nextReactionGap) return false;
+    clicksSinceReaction = 0;
+    nextReactionGap = rollReactionGap();
+    return true;
+  }
+
   /* Reads the same `state` object ui.js just rendered from, so the bubble
      always matches what is actually on screen. Only speaks on a real change
      (see lastSpokenKey), so a debounced search or an unrelated re-render
@@ -922,7 +954,8 @@ const CatWidget = (function () {
 
     const seen = (stats && stats.seen) || 0;
 
-    // A milestone outranks whatever was selected to reach it.
+    // A milestone outranks whatever was selected to reach it, and is never
+    // throttled — it is already a rare event on its own terms.
     const milestone = CatDialogue.milestoneFor(seen);
     if (milestone && seen > lastMilestone) {
       lastMilestone = seen;
@@ -939,6 +972,7 @@ const CatWidget = (function () {
       if (!t) return;
       const first = !introduced.term;
       introduced.term = true;
+      if (!first && !shouldReactToClick()) return;
       // markVisited() has already run for this term by the time renderAll()
       // reaches here, so "was this already explored" is captured one step
       // earlier, in noteWordOpened().
@@ -953,12 +987,14 @@ const CatWidget = (function () {
       const name = DOMAIN_FULLNAME[state.domainCode] || 'This topic';
       const first = !introduced.topic;
       introduced.topic = true;
+      if (!first && !shouldReactToClick()) return;
       return playScene(CatDialogue.topicScene(name, first));
     }
 
     if (state.grade) {
       const first = !introduced.grade;
       introduced.grade = true;
+      if (!first && !shouldReactToClick()) return;
       return playScene(CatDialogue.gradeScene(gradeLabel(state.grade), first));
     }
 
