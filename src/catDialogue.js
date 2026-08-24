@@ -36,8 +36,12 @@
        is the whole reason this cat exists.
      - For the same reason, no "smart", "clever" or "talented" pointed at the
        child. Praise the move, never the mind that made it.
-     - Situational before generic. If the grade, topic or word is known, a
-       line that names it lands harder than one that could appear anywhere.
+     - Never name the grade, topic or word just picked, outside of
+       FIRST_TIME (which fires once per step, ever, and is genuine
+       orientation — "your topic list is over there" — not a readback). The
+       panels already show the selection; a cat that repeats it back on
+       every click is reciting, not encouraging, and that habit is exactly
+       what pulled this cat's job back to growth-mindset lines only.
      - Second person, present tense, one idea per line.
      - Short enough to read at a Grade-2 level; these are 5-to-11-year-olds.
      - Never state a definition, an example, or a word count. The panels own
@@ -232,21 +236,9 @@ const CatDialogue = (function () {
   };
   const MILESTONE_STEPS = Object.keys(MILESTONES).map(Number).sort((a, b) => a - b);
 
-  /* Openers for a word being opened. Naming the word is a nod, not a
-     definition, and it is what makes the line feel aimed at this moment
-     rather than pasted in from anywhere. */
-  const TERM_OPENERS_NAMED = [
-    (w) => `"${w}" is yours now.`,
-    (w) => `You went for "${w}".`,
-    (w) => `"${w}" — say it out loud once.`,
-    (w) => `Ah, "${w}".`,
-    (w) => `"${w}" is worth knowing.`,
-    (w) => `New word: "${w}".`,
-    (w) => `"${w}". Take your time with this one.`,
-    (w) => `So — "${w}".`,
-    (w) => `"${w}" turns up everywhere once you know it.`,
-  ];
-
+  /* Openers for a word being opened. Deliberately never name the word — the
+     detail panel is already showing it, and this cat's only job is the
+     motivational line that follows (see termScene()). */
   const TERM_OPENERS_PLAIN = [
     'Take your time with this one.',
     'Have a proper read.',
@@ -286,23 +278,6 @@ const CatDialogue = (function () {
     'Your search worked.',
   ];
 
-  /* Situational openers that weave in the grade or topic actually chosen, so
-     roughly half of those moments are about *this* choice rather than a line
-     that could have appeared anywhere. */
-  const GRADE_LINES = [
-    (l) => `${l}. Pick whatever looks interesting.`,
-    (l) => `${l} words, coming up.`,
-    (l) => `${l} has some sturdy words in it.`,
-    (l) => `Straight into ${l}, then.`,
-  ];
-
-  const TOPIC_LINES = [
-    (n) => `${n}. Take these one at a time.`,
-    (n) => `${n} words are worth saying out loud.`,
-    (n) => `Into ${n} we go.`,
-    (n) => `${n}. Pick the one you know least.`,
-  ];
-
   /* One short orientation the first time a child reaches each step. This is
      the only instructional copy left, and it fires once per session. */
   const FIRST_TIME = {
@@ -335,13 +310,12 @@ const CatDialogue = (function () {
      then something to carry away. Deliberately no definition and no example
      — the panel on the right is already showing both, and the screen reader
      announcement is already speaking them. */
-  function termScene(term, isRevisit) {
-    const opener = isRevisit
-      ? pick(REVISIT, 'revisit')
-      : (Math.random() < 0.75
-        ? pick(TERM_OPENERS_NAMED, 'termNamed')(term.term)
-        : pick(TERM_OPENERS_PLAIN, 'termPlain'));
-
+  /* Never names the word — that would just be reading back the click the
+     detail panel is already showing. The opener settles the child into the
+     moment (or, on a revisit, names *that*, which is real information); the
+     motivational line is the actual point. */
+  function termScene(isRevisit) {
+    const opener = isRevisit ? pick(REVISIT, 'revisit') : pick(TERM_OPENERS_PLAIN, 'termPlain');
     return [
       { text: opener, gesture: isRevisit ? 'tap' : 'cheer' },
       { text: motivationalLine(), gesture: 'idle2' },
@@ -352,20 +326,16 @@ const CatDialogue = (function () {
     return FIRST_TIME.term();
   }
 
+  /* Never names the grade or topic after the first time (see FIRST_TIME) —
+     this cat's ongoing job is encouragement, not reading back the click. */
   function gradeScene(label, isFirst) {
     if (isFirst) return FIRST_TIME.grade(label);
-    const text = Math.random() < 0.5
-      ? pick(GRADE_LINES, 'gradeLine')(label)
-      : motivationalLine();
-    return [{ text, gesture: 'tap' }];
+    return [{ text: motivationalLine(), gesture: 'tap' }];
   }
 
   function topicScene(name, isFirst) {
     if (isFirst) return FIRST_TIME.topic(name);
-    const text = Math.random() < 0.5
-      ? pick(TOPIC_LINES, 'topicLine')(name)
-      : motivationalLine();
-    return [{ text, gesture: 'tap' }];
+    return [{ text: motivationalLine(), gesture: 'tap' }];
   }
 
   function searchScene(query, count) {
