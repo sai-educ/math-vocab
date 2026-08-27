@@ -1287,7 +1287,13 @@
     "definition": "Taking one number away from another to find what is left.",
     "example": "Zoe uses subtraction to solve 9 - 4. She takes 4 away from 9 and finds 5.",
     "misconception": "Subtraction is the name for the operation. 'Subtract' is the action word for doing it.",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/1-oa-subtraction-column-example.webp",
+      "alt": "576 minus 44 worked out in a column: 6 minus 4 is 2, 7 minus 4 is 3, 5 minus 0 is 5, for a difference of 532.",
+      "credit": "Averater, Wikimedia Commons — CC0 / public domain",
+      "width": 360,
+      "height": 480
+    }
   },
   {
     "id": "1-nbt-place-value",
@@ -1454,8 +1460,14 @@
     ],
     "definition": "Find the size of something with a tool or a unit.",
     "example": "Leo measures his book with cubes. He lines them up with no gaps and counts 7.",
-    "misconception": "",
-    "visual": null
+    "misconception": "Line the tool up with the very start of what you measure. Starting partway in gives too small a number.",
+    "visual": {
+      "src": "assets/visuals/1-md-measure-drilling-wood.webp",
+      "alt": "A gloved hand driving a screw into a wooden plank being measured for a build.",
+      "credit": "Usable Math — Measurement, Slide 21 (Hint 3, How-to-Hound)",
+      "width": 250,
+      "height": 211
+    }
   },
   {
     "id": "1-md-order-by-length",
@@ -1491,7 +1503,13 @@
     "definition": "A unit of time. The short hand on a clock points to it.",
     "example": "Ben checks the clock. The short hand is on 3 and the long hand is on 12. It is 3 o'clock.",
     "misconception": "",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/1-md-hour-clock-face.webp",
+      "alt": "An analog clock face showing the hour and minute hands.",
+      "credit": "Usable Math — Measurement, Slide 6",
+      "width": 242,
+      "height": 234
+    }
   },
   {
     "id": "1-md-half-hour",
@@ -2063,7 +2081,13 @@
     "definition": "Trade ten of one unit for one of the next unit.",
     "example": "Omar adds 27 + 15. The ones make 12. He regroups 10 of them into 1 ten and writes 42.",
     "misconception": "",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/2-nbt-regroup-addition-carry.webp",
+      "alt": "525 plus 67 worked out in a column: a small carried 1 sits above the tens place, giving a sum of 592.",
+      "credit": "Averater, Wikimedia Commons — CC0 / public domain",
+      "width": 340,
+      "height": 460
+    }
   },
   {
     "id": "2-nbt-compare-numbers",
@@ -2583,7 +2607,13 @@
     "definition": "Add equal groups the fast way.",
     "example": "Zoe packs 6 boxes with 4 markers in each. Instead of adding six times, she multiplies 6 × 4 and gets 24.",
     "misconception": "",
-    "visual": null
+    "visual": {
+      "src": "assets/visuals/3-oa-multiply-scaling-number-line.webp",
+      "alt": "An animated number line showing a segment from 0 to 1 stretching to match a segment from 0 to 2, illustrating multiplication as scaling.",
+      "credit": "Lucas Vieira (LucasVB), Wikimedia Commons — public domain",
+      "width": 400,
+      "height": 200
+    }
   },
   {
     "id": "3-oa-factor",
@@ -3264,11 +3294,11 @@
     "example": "Ivy measures the hallway with a yardstick. It is 12 yards long.",
     "misconception": "",
     "visual": {
-      "src": "assets/visuals/3-md-yard-tape-measure.webp",
-      "alt": "A close-up of a tape measure's markings.",
-      "credit": "Usable Math — Measurement, Slide 12",
-      "width": 255,
-      "height": 171
+      "src": "assets/visuals/3-md-yard-chef-bear-strategy.webp",
+      "alt": "Chef Math Bear's strategy: 3 feet equal 1 yard, so 5 yards is 3 + 3 + 3 + 3 + 3 feet.",
+      "credit": "Usable Math — Measurement, Slide 12 (Hint 2, Chef Math Bear)",
+      "width": 232,
+      "height": 229
     }
   },
   {
