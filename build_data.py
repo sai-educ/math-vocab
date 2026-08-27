@@ -200,9 +200,34 @@ VISUALS = {
         "credit": "Usable Math — Measurement, Slide 8",
     },
     "3-md-yard": {
-        "src": "assets/visuals/3-md-yard-tape-measure.webp",
-        "alt": "A close-up of a tape measure's markings.",
-        "credit": "Usable Math — Measurement, Slide 12",
+        "src": "assets/visuals/3-md-yard-chef-bear-strategy.webp",
+        "alt": "Chef Math Bear's strategy: 3 feet equal 1 yard, so 5 yards is 3 + 3 + 3 + 3 + 3 feet.",
+        "credit": "Usable Math — Measurement, Slide 12 (Hint 2, Chef Math Bear)",
+    },
+    "1-md-hour": {
+        "src": "assets/visuals/1-md-hour-clock-face.webp",
+        "alt": "An analog clock face showing the hour and minute hands.",
+        "credit": "Usable Math — Measurement, Slide 6",
+    },
+    "1-md-measure": {
+        "src": "assets/visuals/1-md-measure-drilling-wood.webp",
+        "alt": "A gloved hand driving a screw into a wooden plank being measured for a build.",
+        "credit": "Usable Math — Measurement, Slide 21 (Hint 3, How-to-Hound)",
+    },
+    "1-oa-subtraction": {
+        "src": "assets/visuals/1-oa-subtraction-column-example.webp",
+        "alt": "576 minus 44 worked out in a column: 6 minus 4 is 2, 7 minus 4 is 3, 5 minus 0 is 5, for a difference of 532.",
+        "credit": "Averater, Wikimedia Commons — CC0 / public domain",
+    },
+    "2-nbt-regroup": {
+        "src": "assets/visuals/2-nbt-regroup-addition-carry.webp",
+        "alt": "525 plus 67 worked out in a column: a small carried 1 sits above the tens place, giving a sum of 592.",
+        "credit": "Averater, Wikimedia Commons — CC0 / public domain",
+    },
+    "3-oa-multiply": {
+        "src": "assets/visuals/3-oa-multiply-scaling-number-line.webp",
+        "alt": "An animated number line showing a segment from 0 to 1 stretching to match a segment from 0 to 2, illustrating multiplication as scaling.",
+        "credit": "Lucas Vieira (LucasVB), Wikimedia Commons — public domain",
     },
     "2-md-bar-graph": {
         "src": "assets/visuals/2-md-bar-graph-colorful.webp",
@@ -520,7 +545,7 @@ DATA = {
    ""),
   ("measure", "Find the size of something with a tool or a unit.",
    "Leo measures his book with cubes. He lines them up with no gaps and counts 7.",
-   ""),
+   "Line the tool up with the very start of what you measure. Starting partway in gives too small a number."),
   ("order by length", "Line things up from shortest to longest.",
    "Ana holds three ribbons. She lines up one end of each, then orders them by length.",
    ""),
