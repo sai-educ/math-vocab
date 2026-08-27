@@ -181,6 +181,8 @@
 
 **Example:** Leo measures his book with cubes. He lines them up with no gaps and counts 7.
 
+**Common misconception:** Line the tool up with the very start of what you measure. Starting partway in gives too small a number.
+
 **Standards:** US 1.MD
 
 ### order by length
