@@ -82,7 +82,7 @@ Each word has four parts:
 - **What it means** — a plain definition, one or two short sentences.
 - **See it in an example** — a short story with a named child and a real
   situation, showing the word being used.
-- **Watch out for** — the mistake children usually make with this word.
+- **Think about** — the mistake children usually make with this word.
 - **Listen** — a button that reads the whole thing aloud.
 
 Every entry is also cited to the standard(s) it comes from, shown as small
@@ -279,7 +279,7 @@ whose one standard is derived automatically from its grade and domain:
 ("denominator",
  "The bottom number. It tells how many equal parts make the whole.",
  "Maya writes 3/8. The denominator 8 means the whole pie was cut into 8 equal parts.",
- ""),   # <- the "watch out for" note, or "" if there isn't one
+ ""),   # <- the "think about" note, or "" if there isn't one
 ```
 
 A word sourced from the UK or India (or cited to more than one curriculum at

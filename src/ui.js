@@ -295,7 +295,7 @@ function renderDetail() {
     </section>
 
     ${t.misconception ? `<div class="block">
-      <h3 class="block-label">Watch for</h3>
+      <h3 class="block-label">Think about</h3>
       <p class="block-body misconception">${escapeHtml(t.misconception)}</p>
     </div>` : ''}
   `;
