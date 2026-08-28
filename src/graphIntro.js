@@ -24,16 +24,29 @@ const GraphIntro = (function () {
      by exactly the overflow ratio — cheaper and more precise than trying to
      guess a breakpoint that would still wrap at some panel width. Never
      scales up: the CSS default is already sized for a comfortable, typical
-     panel, so this only ever intervenes on the narrow end. */
+     panel, so this only ever intervenes on the narrow end.
+
+     On phone-width panels this quote doesn't fit on one line at any size a
+     child could actually read. A fixed px floor here previously let it
+     shrink to ~10px and still overflow, clipping the line on both edges.
+     Below MIN_LEGIBLE_PX, give up on one line and wrap at the base size
+     instead. */
+  const MIN_LEGIBLE_PX = 13;
+
   function fitOneLine(el) {
     const parent = el.parentElement;
     const parentStyle = getComputedStyle(parent);
     const available = parent.clientWidth
       - parseFloat(parentStyle.paddingLeft) - parseFloat(parentStyle.paddingRight);
     const needed = el.scrollWidth;
-    if (available > 0 && needed > available) {
-      const baseSize = parseFloat(getComputedStyle(el).fontSize);
-      el.style.fontSize = `${Math.max(10, baseSize * (available / needed))}px`;
+    if (available <= 0 || needed <= available) return;
+
+    const baseSize = parseFloat(getComputedStyle(el).fontSize);
+    const fitted = baseSize * (available / needed);
+    if (fitted >= MIN_LEGIBLE_PX) {
+      el.style.fontSize = `${fitted}px`;
+    } else {
+      el.style.whiteSpace = 'normal';
     }
   }
 
