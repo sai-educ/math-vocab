@@ -1016,6 +1016,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   header p{font-size:11.5px;}
   .header-actions{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;}
   .header-btn{justify-content:center;padding:8px 10px;}
+  .audio-picker{grid-column:span 1;}
+  .audio-settings-panel{right:auto;left:0;}
   .cat-picker{grid-column:span 1;}
   .cat-settings-panel{right:auto;left:0;}
 }
@@ -1029,6 +1031,38 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   .grade-node{width:50px;height:50px;min-width:50px;font-size:15px;}
   #gradeRow{gap:8px;}
 }
+
+/* =========================================================================
+   Voice menu — picks which Fish Audio voice reads explanations aloud.
+   Same disclosure-panel shape as the cat settings panel just below, kept as
+   its own rules rather than shared classes so the two features (and their
+   markup) stay easy to touch independently.
+   ========================================================================= */
+
+.audio-picker{position:relative;}
+
+.audio-settings-panel{
+  position:absolute;top:calc(100% + 8px);right:0;z-index:20;width:230px;
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:10px;box-shadow:var(--shadow-md);
+  opacity:0;transform:translateY(-6px);pointer-events:none;
+  transition:opacity var(--dur-fast) var(--ease),transform var(--dur-fast) var(--ease);
+}
+.audio-settings-panel.open{opacity:1;transform:translateY(0);pointer-events:auto;}
+
+.audio-settings-hint{
+  margin:2px 8px 4px;font-size:11px;color:var(--text-dim);
+  text-transform:uppercase;letter-spacing:.4px;
+}
+.audio-voice-picker{display:flex;flex-direction:column;}
+.audio-voice-option{
+  display:flex;align-items:center;gap:10px;min-height:var(--tap);padding:0 8px;
+  border-radius:8px;cursor:pointer;color:var(--text-dim);font-size:13px;
+  transition:background var(--dur-fast) var(--ease);
+}
+.audio-voice-option:hover{background:var(--node-hover);}
+.audio-voice-option input{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;flex:0 0 auto;}
+.audio-voice-option:has(input:checked){color:var(--text);font-weight:600;}
 
 /* =========================================================================
    Pixel cat mascot — header settings + the corner widget itself.
@@ -1346,6 +1380,16 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     </div>
     <div class="header-actions">
       <button id="soundBtn" class="header-btn" type="button" aria-pressed="true"></button>
+      <div class="audio-picker">
+        <button id="audioSettingsBtn" class="header-btn" type="button"
+                aria-haspopup="true" aria-expanded="false" aria-controls="audioSettingsPanel">
+          <span class="btn-icon" aria-hidden="true"></span><span class="btn-text">Voice</span>
+        </button>
+        <div id="audioSettingsPanel" class="audio-settings-panel" role="group" aria-label="Read-aloud voice" hidden>
+          <p class="audio-settings-hint">Choose the read-aloud voice:</p>
+          <div id="audioVoicePicker" class="audio-voice-picker"></div>
+        </div>
+      </div>
       <div class="cat-picker">
         <button id="catSettingsBtn" class="header-btn" type="button"
                 aria-haspopup="true" aria-expanded="false" aria-controls="catSettingsPanel">
@@ -1595,7 +1639,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Say number words in order. Touch one thing for each word you say.",
     "example": "Maya has a bowl of grapes. She touches each one and says: 1, 2, 3, 4, 5. She counted 5 grapes.",
     "misconception": "Kids often skip a number, or touch the same grape twice.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「数える」とは、数を順番に言うことです。言うたびに、1つずつ物にさわります。マヤはボウルに入ったぶどうを、ひとつずつさわりながら「1、2、3、4、5」と数えました。ぶどうは5つありました。"
   },
   {
     "id": "k-cc-number",
@@ -1613,7 +1658,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A word or sign that tells how many.",
     "example": "Leo draws 3 stars on his paper. Next to them he writes the number 3. The 3 tells how many stars are there.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「数」とは、いくつあるかを表す言葉や記号です。レオは紙に星を3つかきました。となりに数字の3を書きました。3は、星がいくつあるかを表しています。"
   },
   {
     "id": "k-cc-more",
@@ -1637,7 +1683,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Add & Take Away: How Many More, Slide 5",
       "width": 454,
       "height": 363
-    }
+    },
+    "speechJa": "「多い」とは、量が大きいことです。一方のグループのほうが、もう一方よりたくさんあります。アナはシールを7まい、サムは4まい持っています。7は4より大きいので、アナのほうが多く持っています。"
   },
   {
     "id": "k-cc-fewer",
@@ -1661,7 +1708,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Add & Take Away: How Many More, Slide 5",
       "width": 480,
       "height": 480
-    }
+    },
+    "speechJa": "「少ない」とは、量が小さいことです。一方のグループは、もう一方より少なくなっています。アイビーはりんごを3こ、ベンは6こ拾いました。アイビーはベンより少ないりんごを持っています。"
   },
   {
     "id": "k-cc-equal",
@@ -1685,7 +1733,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Fractions, Slide 11 (Visual Vicuna)",
       "width": 500,
       "height": 500
-    }
+    },
+    "speechJa": "「等しい」とは、同じ量ということです。多くも少なくもありません。ゾーイは赤いブロックを3こ、オマールは青いブロックを3こ持っています。どちらも3こなので、2つのグループは等しいです。"
   },
   {
     "id": "k-cc-greater-than",
@@ -1703,7 +1752,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A bigger value than another number.",
     "example": "Nina rolls an 8. Theo rolls a 5. Nina's number is greater than Theo's, so she moves first.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「〜より大きい」とは、ある数がほかの数より大きいことです。ニーナはさいころで8、テオは5を出しました。8は5より大きいので、ニーナが先に進みます。"
   },
   {
     "id": "k-cc-less-than",
@@ -1721,7 +1771,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A smaller value than another number.",
     "example": "Sam counts 2 birds on the wire. Maya counts 9. Sam's number is less than Maya's.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「〜より小さい」とは、ある数がほかの数より小さいことです。サムは電線に止まる鳥を2羽、マヤは9羽数えました。サムの数はマヤの数より小さいです。"
   },
   {
     "id": "k-cc-one-more",
@@ -1739,7 +1790,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The very next number when you count up.",
     "example": "Leo has 4 marbles. His mom hands him 1 more. Now he has 5. One more than 4 is 5.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「1つ多い」とは、数えて次に来る数のことです。レオはビー玉を4こ持っていて、お母さんが1こくれました。今は5こです。4より1つ多いのは5です。"
   },
   {
     "id": "k-cc-zero",
@@ -1763,7 +1815,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Algebraic Thinking, Slide 34 (\"The History of Zero\")",
       "width": 336,
       "height": 383
-    }
+    },
+    "speechJa": "「ゼロ」とは、まったく無いことを表す数です。クッキーのびんには3まい入っていましたが、アナの家族が全部食べました。クッキーはもうゼロになりました。"
   },
   {
     "id": "k-cc-in-order",
@@ -1781,7 +1834,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Lined up from smallest to biggest.",
     "example": "Ana drops her number cards and they get mixed up. She puts them back in order: 1, 2, 3, 4, 5.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「順番に」とは、小さいものから大きいものへと並んでいることです。アナは数字カードを落としてバラバラになりましたが、1、2、3、4、5と順番に並べ直しました。"
   },
   {
     "id": "k-cc-ordinal-number",
@@ -1799,7 +1853,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A word that tells the order, like first, second, or third.",
     "example": "Leo lines up his toy cars. The red car is first. The blue car is second. The green car is third.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「順序数」とは、順番を表す言葉のことです。1番目、2番目、3番目のように使います。レオはおもちゃの車を並べました。赤い車が1番目、青い車が2番目、緑の車が3番目です。"
   },
   {
     "id": "k-cc-before",
@@ -1817,7 +1872,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Coming earlier in a line or a count.",
     "example": "Ana counts to 10. She knows 4 comes before 5.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「前」とは、並びや数えるときに、より早く来ることです。アナは10まで数え、4は5の前に来ることを知っています。"
   },
   {
     "id": "k-cc-after",
@@ -1835,7 +1891,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Coming later in a line or a count.",
     "example": "Ben counts his blocks. He knows 6 comes after 5.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「後」とは、並びや数えるときに、より後に来ることです。ベンはブロックを数えて、6は5の後に来ることを知っています。"
   },
   {
     "id": "k-cc-between",
@@ -1853,7 +1910,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "In the middle of two other things.",
     "example": "Ivy looks at the number line. She sees that 5 sits between 4 and 6.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「間」とは、2つのものの真ん中にあることです。アイビーは数直線を見て、5が4と6の間にあることに気づきました。"
   },
   {
     "id": "k-cc-numeral",
@@ -1871,7 +1929,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The written symbol for a number, like 5 or 12.",
     "example": "Leo sees the numeral 7 on the classroom door. It tells him room 7 is his room.",
     "misconception": "A numeral is the symbol you write. The number is the amount it stands for.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「数字」とは、数を表す書き記号のことです。5や12のように書きます。レオは教室のドアに数字の7を見つけました。それは自分の教室が7番であることを表しています。"
   },
   {
     "id": "k-cc-unequal",
@@ -1889,7 +1948,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Not the same amount. One group has more or fewer than the other.",
     "example": "Ana has 4 shells and Ben has 6 shells. Their groups are unequal, because 4 and 6 are not the same.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「等しくない」とは、同じ量ではないことです。一方が多くても少なくてもかまいません。アナは貝がらを4こ、ベンは6こ持っています。4と6は同じ数ではないので、2つのグループは等しくありません。"
   },
   {
     "id": "k-oa-add",
@@ -1907,7 +1967,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Put groups together. You find how many there are in all.",
     "example": "Ben has 2 red cars. He gets 3 blue cars. He adds them together: 2 and 3 make 5 cars.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「たす」とは、グループを合わせることです。合わせて全部でいくつになるかを求めます。ベンは赤い車を2台持っていて、青い車を3台もらいました。2台と3台を合わせて、全部で5台になりました。"
   },
   {
     "id": "k-oa-subtract",
@@ -1925,7 +1986,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Take some away. You find how many are left.",
     "example": "Ivy has 5 balloons. Two of them pop. She subtracts 2 from 5. Now 3 balloons are left.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「ひく」とは、いくつか取りのぞくことです。残りがいくつになるかを求めます。アイビーは風船を5こ持っていましたが、2こ割れてしまいました。5から2をひくと、残りは3こです。"
   },
   {
     "id": "k-oa-sum",
@@ -1943,7 +2005,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The total you get when you add.",
     "example": "Zoe finds 2 shells, then 3 more. She adds them. The sum is 5 shells.",
     "misconception": "'Sum' means the answer to adding. Kids sometimes use it for any answer.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「和」とは、たし算をして出てきた合計のことです。ゾーイは貝がらを2こ見つけ、さらに3こ見つけました。合わせると、和は5こになります。"
   },
   {
     "id": "k-oa-put-together",
@@ -1961,7 +2024,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Join two groups to make one bigger group.",
     "example": "Theo puts together 3 red blocks and 2 blue blocks. Now he has one tower of 5 blocks.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「合わせる」とは、2つのグループを1つの大きなグループにすることです。テオは赤いブロック3こと青いブロック2こを合わせました。今は5このブロックが1つのタワーになっています。"
   },
   {
     "id": "k-oa-take-apart",
@@ -1979,7 +2043,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Split one group into smaller groups.",
     "example": "Nina has 5 crackers. She takes them apart into a group of 2 and a group of 3.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「分ける」とは、1つのグループを小さなグループに分けることです。ニーナはクラッカーを5まい持っていて、2まいと3まいのグループに分けました。"
   },
   {
     "id": "k-oa-decompose",
@@ -1997,7 +2062,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Break a number into smaller parts. It is a big word for 'break apart'.",
     "example": "Omar holds 5 pennies. He decomposes 5 into 4 and 1. He puts 4 in one hand and 1 in the other.",
     "misconception": "The word sounds hard, but the job is easy. It just means breaking a number into parts.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「分解する」とは、1つの数を小さな部分に分けることです。「分ける」の少し難しい言い方です。オマールは1円玉を5こ持っています。5を4と1に分解して、4こを片手に、1こをもう片方の手に持ちました。"
   },
   {
     "id": "k-oa-equation",
@@ -2015,7 +2081,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A math sentence with an equal sign. It shows two sides that match.",
     "example": "Maya writes 3 + 2 = 5. That is an equation. The left side and the right side are worth the same.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「式」とは、イコールの記号を使った数の文のことです。両側が同じ大きさであることを表します。マヤは3+2=5と書きました。これが式です。左側と右側は同じ大きさです。"
   },
   {
     "id": "k-oa-in-all",
@@ -2033,7 +2100,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Words in a problem that ask for the total.",
     "example": "Leo has 4 toy cars. Sam has 2. How many do they have in all? The boys add and find 6.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「全部で」とは、問題の中で合計を聞くときに使う言葉です。レオはおもちゃの車を4台、サムは2台持っています。全部で何台あるでしょうか。2人がたし算をすると、6台とわかります。"
   },
   {
     "id": "k-oa-left",
@@ -2051,7 +2119,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Words in a problem that ask what is still there.",
     "example": "Ana bakes 6 muffins and eats 2. How many are left? She subtracts and finds 4.",
     "misconception": "Hunting for key words alone can trick you. Always picture what is really happening in the story.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「残り」とは、問題の中でまだ残っているものを聞くときに使う言葉です。アナはマフィンを6こ焼いて、2こ食べました。残りは何こでしょうか。ひき算をすると、4ことわかります。"
   },
   {
     "id": "k-oa-pattern",
@@ -2073,7 +2142,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A set of shapes, colors, or numbers that repeat in the same order.",
     "example": "Theo lines up blocks: red, blue, red, blue. He says the pattern will keep going: red, blue, red.",
     "misconception": "A pattern needs to repeat more than once. Two shapes in a row are not a pattern yet.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「決まり」とは、形や色や数がある順番でくり返されることです。テオはブロックを赤、青、赤、青と並べました。この決まりは、赤、青、赤とずっと続くと言えます。"
   },
   {
     "id": "k-oa-plus-sign",
@@ -2091,7 +2161,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The sign (+) that tells you to add.",
     "example": "Maya writes 4 + 3 on her paper. She sees the plus sign and knows to add the two numbers together.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「たし算の記号」とは、たし算をすることを表す記号「+」のことです。マヤは紙に4+3と書きました。たし算の記号を見て、2つの数をたすとわかります。"
   },
   {
     "id": "k-oa-minus",
@@ -2109,7 +2180,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Another word for subtract. It means to take some away.",
     "example": "Sam has 5 pretzels and eats 2. He works out 5 minus 2, and finds 3 pretzels left.",
     "misconception": "'Minus' means the same thing as 'take away', even though the two words look nothing alike.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「マイナス」とは、「ひく」の別の言い方です。いくつか取りのぞくという意味です。サムはプレッツェルを5本持っていて、2本食べました。5マイナス2を計算すると、残りは3本です。"
   },
   {
     "id": "k-oa-take-away",
@@ -2133,7 +2205,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Add & Take Away: How Many More, Slide 3 (Visual Vicuna)",
       "width": 538,
       "height": 320
-    }
+    },
+    "speechJa": "「取り去る」とは、ひき算を表す言葉です。グループからいくつか取りのぞきます。ベンは風船を6こ持っていて、2こ飛んでいってしまいました。6から2を取り去ると、残りは4こです。"
   },
   {
     "id": "k-nbt-ten",
@@ -2151,7 +2224,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A group of ten ones.",
     "example": "Ben lines up 10 straws and wraps a band around them. Now he holds 1 ten.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「10」とは、10このまとまりのことです。ベンはストローを10本並べて、輪ゴムでたばねました。今、1つの10のまとまりを持っています。"
   },
   {
     "id": "k-nbt-ones",
@@ -2169,7 +2243,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Single things. You count them one at a time.",
     "example": "Ivy builds 13 with straws. She uses 1 bundle of ten, and 3 loose ones.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「ばら」とは、1つずつ数えるバラバラの物のことです。アイビーはストローで13を作りました。10のたばを1つと、ばらのストローを3本使いました。"
   },
   {
     "id": "k-nbt-teen-number",
@@ -2187,7 +2262,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A number from 11 to 19. Each one is a ten plus some ones.",
     "example": "Zoe counts 14 beads. 14 is a teen number. It is 1 ten and 4 ones.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「十いくつ」とは、11から19までの数のことです。どれも10といくつかを合わせた数です。ゾーイはビーズを14こ数えました。14は十いくつの数で、10と4でできています。"
   },
   {
     "id": "k-nbt-compose",
@@ -2205,7 +2281,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Put parts together to build a number.",
     "example": "Theo composes 12. He takes 1 bundle of ten and adds 2 loose ones.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「組み立てる」とは、部分を合わせて1つの数を作ることです。テオは12を組み立てます。10のたばを1つと、ばらの2こを合わせます。"
   },
   {
     "id": "k-md-longer",
@@ -2223,7 +2300,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Goes on for more length.",
     "example": "Nina lays her pencil beside her eraser. The pencil reaches farther, so the pencil is longer.",
     "misconception": "Line up the ends first. If one thing starts ahead, the test is not fair.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「長い」とは、長さがより大きいことです。ニーナはえんぴつを消しゴムの横に並べました。えんぴつのほうが遠くまで届くので、えんぴつのほうが長いです。"
   },
   {
     "id": "k-md-shorter",
@@ -2241,7 +2319,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Takes up less length.",
     "example": "Omar puts his crayon next to a ruler. The crayon stops sooner, so the crayon is shorter.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「短い」とは、長さがより小さいことです。オマールはクレヨンを定規の横に置きました。クレヨンは早く終わるので、クレヨンのほうが短いです。"
   },
   {
     "id": "k-md-taller",
@@ -2259,7 +2338,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Goes up higher.",
     "example": "Maya stands beside a young tree. The tree rises above her head, so the tree is taller.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「高い」とは、より上まで届くことです。マヤは若い木の横に立ちました。木は自分の頭より上まで伸びているので、木のほうが高いです。"
   },
   {
     "id": "k-md-heavier",
@@ -2277,7 +2357,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Weighs more. It pulls down harder.",
     "example": "Leo holds a rock in one hand and a leaf in the other. The rock pulls his hand down. The rock is heavier.",
     "misconception": "Big does not always mean heavy. A huge pillow weighs less than a small stone.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「重い」とは、より重さがあることです。手を強く下に引っぱります。レオは片手に石、もう片方の手に葉っぱを持ちました。石のほうが手を下に引っぱるので、石のほうが重いです。"
   },
   {
     "id": "k-md-lighter",
@@ -2295,7 +2376,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Weighs less.",
     "example": "Ana holds a feather and a book. The feather is easy to lift, so the feather is lighter.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「軽い」とは、重さが少ないことです。アナは羽根と本を持ちました。羽根は持ち上げやすいので、羽根のほうが軽いです。"
   },
   {
     "id": "k-md-measure",
@@ -2313,7 +2395,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Find out how big, how long, or how much.",
     "example": "Ben measures his desk with blocks. He lays them end to end with no gaps. The desk is 8 blocks long.",
     "misconception": "Leave no gaps and no overlaps. Sloppy spacing gives the wrong count.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「測る」とは、大きさや長さや量を調べることです。ベンはブロックを使って机を測りました。すきまなく端から端まで並べると、机はブロック8こ分の長さでした。"
   },
   {
     "id": "k-md-compare",
@@ -2331,7 +2414,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Look at two things. See how they are the same or different.",
     "example": "Ivy compares two ribbons. She lines up the ends. The red one reaches farther, so it is longer.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「比べる」とは、2つのものを見て、どこが同じでどこが違うかを調べることです。アイビーは2本のリボンを比べました。端をそろえてみると、赤いリボンのほうが遠くまで届くので、長いとわかります。"
   },
   {
     "id": "k-md-sort",
@@ -2349,7 +2433,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Put things in groups that go together.",
     "example": "Zoe sorts her buttons by color. Red buttons go in one pile. Blue buttons go in another.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「仲間分けする」とは、似ているものを同じグループに入れることです。ゾーイはボタンを色で仲間分けしました。赤いボタンは1つの山に、青いボタンは別の山になります。"
   },
   {
     "id": "k-md-category",
@@ -2367,7 +2452,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A group of things that share something.",
     "example": "Theo makes a category for round things. The ball and the coin both go in it.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「仲間」とは、何かが共通しているものたちのグループです。テオは丸いものの仲間を作りました。ボールとコインの両方が、その仲間に入ります。"
   },
   {
     "id": "k-g-shape",
@@ -2391,7 +2477,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 6",
       "width": 500,
       "height": 500
-    }
+    },
+    "speechJa": "「形」とは、あるものの外側の輪郭のことです。ニーナはびんのふたを紙になぞりました。できあがった形は円でした。"
   },
   {
     "id": "k-g-circle",
@@ -2409,7 +2496,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A round shape. It has no corners and no straight sides.",
     "example": "Omar looks at the clock on the wall. His finger slides all the way around the face with no bumps. It is a circle.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「円」とは、丸い形のことです。かども、まっすぐな辺もありません。オマールは壁の時計を見て、ふちに沿って指をすべらせました。出っぱりがなく、まん丸なので、それは円です。"
   },
   {
     "id": "k-g-triangle",
@@ -2433,7 +2521,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 13",
       "width": 640,
       "height": 594
-    }
+    },
+    "speechJa": "「三角形」とは、まっすぐな辺が3つと、かどが3つある形のことです。マヤはナプキンを折って三角形を作りました。辺を3つ、かどを3つ数えました。"
   },
   {
     "id": "k-g-square",
@@ -2457,7 +2546,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Geometry: Lines and Lines of Symmetry, Slide 7",
       "width": 200,
       "height": 114
-    }
+    },
+    "speechJa": "「正方形」とは、まっすぐな辺が4つある形です。4つの辺は全部同じ長さです。レオはふせんを定規に合わせてみました。4つの辺が全部同じ長さだったので、正方形です。"
   },
   {
     "id": "k-g-rectangle",
@@ -2481,7 +2571,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Area and Perimeter, Slide 8",
       "width": 880,
       "height": 586
-    }
+    },
+    "speechJa": "「長方形」とは、まっすぐな辺が4つ、かどが4つある形です。向かい合う辺の長さが同じです。アナはドアを測りました。長いほうの辺どうし、短いほうの辺どうしが、それぞれ同じ長さでした。ドアは長方形です。"
   },
   {
     "id": "k-g-hexagon",
@@ -2499,7 +2590,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A shape with 6 straight sides.",
     "example": "Ben studies a honeycomb up close. Each little cell has 6 sides, so each cell is a hexagon.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「六角形」とは、まっすぐな辺が6つある形です。ベンはハチの巣を近くで見ました。1つ1つの部屋に辺が6つあるので、六角形です。"
   },
   {
     "id": "k-g-cube",
@@ -2517,7 +2609,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A solid shape with 6 square faces.",
     "example": "Ivy rolls a number cube. Every face she lands on is a square. She counts 6 faces in all.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「立方体」とは、正方形の面が6つある立体の形です。アイビーはさいころを転がしました。どの面も正方形で、全部で6つの面がありました。"
   },
   {
     "id": "k-g-sphere",
@@ -2535,7 +2628,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A solid shape that is round all over, like a ball.",
     "example": "Zoe spins a basketball on her finger. It looks round from every side. It is a sphere.",
     "misconception": "A circle is flat. A sphere is solid. A plate is a circle, a marble is a sphere.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「球」とは、ボールのように、どこから見ても丸い立体の形です。ゾーイはバスケットボールを指の上で回しました。どの向きから見ても丸く見えるので、球です。"
   },
   {
     "id": "k-g-above",
@@ -2553,7 +2647,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Higher up than something else.",
     "example": "Theo watches a bird land on a branch. The bird is above the grass.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「上」とは、ほかのものより高い位置にあることです。テオは枝に鳥が止まるのを見ました。鳥は草より上にいます。"
   },
   {
     "id": "k-g-below",
@@ -2571,7 +2666,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Lower down than something else.",
     "example": "Nina digs in the garden. She finds the roots growing below the soil.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「下」とは、ほかのものより低い位置にあることです。ニーナは庭で土をほりました。根っこが土の下に伸びているのを見つけました。"
   },
   {
     "id": "k-g-beside",
@@ -2589,7 +2685,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Right next to something.",
     "example": "Omar's cat sits beside the dog. The two of them rest side by side on the rug.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「横」とは、あるもののすぐとなりにあることです。オマールのねこは犬の横にすわりました。2匹はしき物の上でとなり合って休んでいます。"
   },
   {
     "id": "k-g-corner",
@@ -2607,7 +2704,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The point where two sides meet.",
     "example": "Maya runs her finger around a square tile. She feels a sharp point at each corner and counts 4.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「角」とは、2つの辺が出会う点のことです。マヤは正方形のタイルのふちを指でなぞりました。それぞれの角でとがった点を感じ、4つ数えました。"
   },
   {
     "id": "k-g-cuboid",
@@ -2629,7 +2727,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A solid, box-like shape with 6 flat, rectangle faces.",
     "example": "Theo stacks a tissue box on the shelf. It has 6 flat sides shaped like rectangles. It is a cuboid.",
     "misconception": "A cuboid can be tall, short, or a cube. As long as it has 6 rectangle faces, it counts.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「直方体」とは、長方形の面が6つある、箱のような立体の形です。テオはたなにティッシュ箱を積みました。長方形の平らな面が6つあるので、直方体です。"
   },
   {
     "id": "k-g-solid-shape",
@@ -2651,7 +2750,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A shape you can pick up and hold. It takes up space. Another name for it is a 3D shape.",
     "example": "Omar holds a wooden block. He can turn it over in his hands, so it is a solid shape.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「立体」とは、手に取って持てる形のことです。場所を取ります。別の呼び方で3D形とも言います。オマールは木のブロックを持っています。手の中で回すことができるので、これは立体です。"
   },
   {
     "id": "1-oa-addend",
@@ -2669,7 +2769,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A number you add to another number.",
     "example": "Leo writes 3 + 4 = 7. The 3 and the 4 are the addends. They are the parts he put together.",
     "misconception": "The answer is not an addend. Only the numbers going in are addends.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「加数」とは、ほかの数にたす数のことです。レオは3+4=7と書きました。3と4が加数です。それらは、合わせた部分の数です。"
   },
   {
     "id": "1-oa-sum",
@@ -2687,7 +2788,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The answer you get when you add.",
     "example": "Ana finds 6 shells, then 2 more. She adds them up. The sum is 8 shells.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「和」とは、たし算をして出てきた答えのことです。アナは貝がらを6こ見つけ、さらに2こ見つけました。合わせると、和は8こになります。"
   },
   {
     "id": "1-oa-difference",
@@ -2711,7 +2813,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Add & Take Away: How Many More, Slide 5 (Hint 4, Visual Vicuna)",
       "width": 538,
       "height": 320
-    }
+    },
+    "speechJa": "「差」とは、ひき算をして出てきた答えのことです。ゴードン球場は79,407人、ヒルクレスト球場は58,868人入ります。差は、ゴードン球場のほうがどれだけ多く入れるかを表し、20,539人です。"
   },
   {
     "id": "1-oa-equation",
@@ -2729,7 +2832,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A math sentence with an equal sign. Both sides are worth the same.",
     "example": "Ivy writes 5 + 3 = 8. Each side of the equal sign is worth 8, so the sentence balances.",
     "misconception": "The equal sign does not mean 'here comes the answer'. It means both sides match.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「式」とは、イコールの記号を使った数の文のことです。両側が同じ大きさになります。アイビーは5+3=8と書きました。イコールの両側はどちらも8で、つり合っています。"
   },
   {
     "id": "1-oa-unknown",
@@ -2747,7 +2851,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The missing number in a problem. You solve to find it.",
     "example": "Zoe sees 4 + ? = 9. The ? is the unknown. She counts up from 4 to 9 and finds 5.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「わからない数」とは、問題の中で見つけていない数のことです。解いて求めます。ゾーイは4+□=9という式を見ました。□がわからない数です。4から9まで数えて、5だとわかりました。"
   },
   {
     "id": "1-oa-fact-family",
@@ -2765,7 +2870,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A set of facts built from the same three numbers.",
     "example": "Theo uses 3, 4, and 7. His fact family is 3 + 4 = 7, 4 + 3 = 7, 7 - 3 = 4, and 7 - 4 = 3.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「関係する式のまとまり」とは、同じ3つの数から作れる式の組のことです。テオは3、4、7を使います。3+4=7、4+3=7、7-3=4、7-4=3という式のまとまりができます。"
   },
   {
     "id": "1-oa-doubles",
@@ -2783,7 +2889,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Adding a number to itself.",
     "example": "Nina has 4 red beads and 4 blue beads. That is a double. She knows 4 + 4 = 8 right away.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「ぞろ数のたし算」とは、同じ数どうしをたすことです。ニーナは赤いビーズを4こ、青いビーズを4こ持っています。これはぞろ数のたし算です。4+4=8とすぐにわかります。"
   },
   {
     "id": "1-oa-compare",
@@ -2801,7 +2908,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Look at two numbers. Tell which is bigger or smaller.",
     "example": "Omar compares 6 and 9 on the number line. The 9 sits farther right, so 9 is bigger.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「比べる」とは、2つの数を見て、どちらが大きいか小さいかを言うことです。オマールは数直線で6と9を比べました。9のほうが右にあるので、9が大きい数です。"
   },
   {
     "id": "1-oa-how-many-more",
@@ -2825,7 +2933,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Add & Take Away: How Many More, Slide 3 (Visual Vicuna)",
       "width": 538,
       "height": 320
-    }
+    },
+    "speechJa": "「あといくつ多い」とは、2つの量の差を聞く言葉です。マヤはシールを8まい、レオは5まい持っています。マヤはあといくつ多いでしょうか。ひき算をして、3まい多いとわかります。"
   },
   {
     "id": "1-oa-total",
@@ -2849,7 +2958,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Multiplication and Division, Slide 5",
       "width": 880,
       "height": 880
-    }
+    },
+    "speechJa": "「合計」とは、全部を合わせたときの量のことです。アイビーは赤いビーズ3こと青いビーズ4こを持っています。たし算をして合計を求めると、7こです。"
   },
   {
     "id": "1-oa-subtraction",
@@ -2873,7 +2983,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Averater, Wikimedia Commons — CC0 / public domain",
       "width": 360,
       "height": 480
-    }
+    },
+    "speechJa": "「ひき算」とは、ある数からほかの数を取りのぞいて、残りを求めることです。ゾーイはひき算を使って9-4を解きます。9から4を取りのぞくと、5になります。"
   },
   {
     "id": "1-nbt-place-value",
@@ -2897,7 +3008,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Place Value, Slide 3",
       "width": 352,
       "height": 575
-    }
+    },
+    "speechJa": "「位」とは、数字が置かれる場所によって決まる値のことです。アナは47と書きました。4は十の位にあるので40の値を持ち、7はそのまま7の値です。"
   },
   {
     "id": "1-nbt-tens",
@@ -2915,7 +3027,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Groups of ten.",
     "example": "Ben bundles his straws into groups of ten. He makes 3 bundles. That is 3 tens, or 30.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「十の位」とは、10のまとまりのことです。ベンはストローを10本ずつたばねます。3たば作ると、それは10が3こ分、つまり30です。"
   },
   {
     "id": "1-nbt-ones",
@@ -2933,7 +3046,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Single units left over after you make tens.",
     "example": "Ivy has 25 beads. She makes 2 bundles of ten and has 5 ones left over.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「一の位」とは、10のまとまりを作った後に残るバラバラの単位のことです。アイビーはビーズを25こ持っています。10のたばを2つ作ると、一の位に5こ残ります。"
   },
   {
     "id": "1-nbt-greater-than",
@@ -2951,7 +3065,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A sign that points to the bigger number.",
     "example": "Zoe writes 8 > 5. The wide open side faces the 8, because 8 is the greater number.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「より大きい記号」とは、大きいほうの数を指す記号「>」のことです。ゾーイは8>5と書きました。開いた広いほうが8を向いています。8のほうが大きい数だからです。"
   },
   {
     "id": "1-nbt-less-than",
@@ -2969,7 +3084,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A sign that shows the first number is smaller.",
     "example": "Theo writes 3 < 7. The narrow point faces the 3, because 3 is less.",
     "misconception": "Think of a hungry mouth. It always opens toward the bigger number.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「より小さい記号」とは、最初の数が小さいことを表す記号「<」のことです。テオは3<7と書きました。とがった先が3を向いています。3のほうが小さいからです。"
   },
   {
     "id": "1-nbt-equal-to",
@@ -2987,7 +3103,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A sign that shows both sides are worth the same.",
     "example": "Nina writes 6 = 6. Both sides match exactly, so the equal sign fits.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「等しい記号」とは、両側が同じ大きさであることを表す記号「=」のことです。ニーナは6=6と書きました。両側がぴったり同じなので、等しい記号がぴったりです。"
   },
   {
     "id": "1-nbt-count-on",
@@ -3005,7 +3122,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Start at one number and keep counting up.",
     "example": "Omar has 6 marbles and gets 3 more. He counts on from 6: 7, 8, 9. He has 9.",
     "misconception": "Do not start over at 1. Begin at the number you already have.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「数えたす」とは、ある数から始めて、そのまま数え進めることです。オマールはビー玉を6こ持っていて、3こもらいました。6から数えたすと、7、8、9で、全部で9こになります。"
   },
   {
     "id": "1-md-length",
@@ -3023,7 +3141,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "How long something is from end to end.",
     "example": "Maya measures her shoe with paper clips. She lays them end to end. The length is 5 clips.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「長さ」とは、端から端までどれくらいの長さかということです。マヤはクリップを使って靴の長さを測りました。すきまなく並べると、長さはクリップ5こ分でした。"
   },
   {
     "id": "1-md-measure",
@@ -3047,7 +3166,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Measurement, Slide 21 (Hint 3, How-to-Hound)",
       "width": 250,
       "height": 211
-    }
+    },
+    "speechJa": "「測る」とは、道具や単位を使ってものの大きさを調べることです。レオは積み木を使って本を測りました。すきまなく並べて、7こ分だとわかりました。"
   },
   {
     "id": "1-md-order-by-length",
@@ -3065,7 +3185,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Line things up from shortest to longest.",
     "example": "Ana holds three ribbons. She lines up one end of each, then orders them by length.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「長さの順に並べる」とは、短いものから長いものへと並べることです。アナはリボンを3本持っています。片方の端をそろえて、長さの順に並べました。"
   },
   {
     "id": "1-md-hour",
@@ -3089,7 +3210,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Measurement, Slide 6",
       "width": 242,
       "height": 234
-    }
+    },
+    "speechJa": "「時間」とは、時間の単位で、時計の短い針が指すものです。ベンは時計を見ました。短い針が3、長い針が12を指しています。3時です。"
   },
   {
     "id": "1-md-half-hour",
@@ -3107,7 +3229,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Thirty minutes. Half of one hour.",
     "example": "Ivy looks at the clock. The long hand points straight down at 6. It is half past 2.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「30分」とは、1時間の半分の時間です。アイビーは時計を見ました。長い針がまっすぐ下の6を指しています。2時半です。"
   },
   {
     "id": "1-md-data",
@@ -3125,7 +3248,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Facts you collect and can count.",
     "example": "Zoe asks every classmate about their pet. She writes down each answer. Those answers are her data.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「データ」とは、集めて数えられる事実のことです。ゾーイはクラスの全員に、飼っているペットについて聞きました。答えを書き留めます。その答えがデータです。"
   },
   {
     "id": "1-md-tally-chart",
@@ -3149,7 +3273,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Charts and Graphs, Slide 21",
       "width": 282,
       "height": 162
-    }
+    },
+    "speechJa": "「正の字の表」とは、小さな印で数を数える表のことです。テオはバスの乗客を数える表を作りました。1人ごとに印を1本引き、5本目は前の4本を横に線で結びます。"
   },
   {
     "id": "1-md-graph",
@@ -3173,7 +3298,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Charts and Graphs, Slide 5",
       "width": 640,
       "height": 480
-    }
+    },
+    "speechJa": "「グラフ」とは、データを絵で表して比べやすくしたものです。ニーナはクラスのペットをグラフにしました。犬の棒が一番高いので、犬がいちばん多いペットです。"
   },
   {
     "id": "1-md-capacity",
@@ -3195,7 +3321,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "How much a container can hold.",
     "example": "Leo pours water into a jug until it is full. The amount it holds is its capacity.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「容積」とは、入れ物にどれだけ入るかということです。レオは水差しがいっぱいになるまで水を注ぎました。入った水の量が容積です。"
   },
   {
     "id": "1-md-carroll-diagram",
@@ -3213,7 +3340,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A sorting chart with boxes that shows whether something has a property or not.",
     "example": "Zoe sorts her buttons in a Carroll diagram: one box for round buttons, one box for buttons that are not round.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「キャロル図」とは、あるとくちょうがあるかないかで仲間分けする表のことです。ゾーイはボタンをキャロル図で仲間分けしました。丸いボタンの箱と、丸くないボタンの箱に分けます。"
   },
   {
     "id": "1-g-partition",
@@ -3231,7 +3359,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Cut a shape into parts.",
     "example": "Omar partitions his sandwich. He cuts straight down the middle into 2 equal parts.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「分ける」とは、形を部分に切り分けることです。オマールはサンドイッチを分けます。まん中をまっすぐ切って、2つの同じ大きさに分けます。"
   },
   {
     "id": "1-g-equal-shares",
@@ -3249,7 +3378,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Parts that are all the same size.",
     "example": "Maya splits a pancake with her sister. Each one gets an equal share. Neither piece is bigger.",
     "misconception": "Same number of pieces is not enough. The pieces have to be the same size too.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「同じ大きさの部分」とは、全部が同じ大きさになっている部分のことです。マヤは妹とパンケーキを分けます。それぞれが同じ大きさの部分をもらい、どちらも大きさは変わりません。"
   },
   {
     "id": "1-g-halves",
@@ -3267,7 +3397,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Two equal parts of one whole.",
     "example": "Leo cuts an apple into halves. Each piece is one of two equal parts.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「2等分」とは、1つの全体を2つの同じ大きさに分けることです。レオはりんごを2等分に切ります。それぞれが2つの同じ部分のうちの1つです。"
   },
   {
     "id": "1-g-half",
@@ -3285,7 +3416,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "One of two equal parts of a whole.",
     "example": "Sam cuts his sandwich into 2 equal parts and eats half.",
     "misconception": "A piece only counts as 'half' if both pieces are the same size. Two uneven pieces are not halves.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「半分」とは、全体を2つに等しく分けたうちの1つです。サムはサンドイッチを2つの同じ部分に切り、半分を食べます。"
   },
   {
     "id": "1-g-fourths",
@@ -3303,7 +3435,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Four equal parts of one whole.",
     "example": "Ana cuts a pizza into fourths. She and 3 friends each take one part.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「4等分」とは、1つの全体を4つの同じ大きさに分けることです。アナはピザを4等分にします。彼女と友達3人が、それぞれ1つずつ取ります。"
   },
   {
     "id": "1-g-quarters",
@@ -3321,7 +3454,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Another word for fourths.",
     "example": "Ben folds his paper in half, then in half again. He opens it up and finds 4 quarters.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「4分の1」とは、4等分の別の言い方です。ベンは紙を半分に折り、もう一度半分に折ります。開くと、4つの4分の1になっています。"
   },
   {
     "id": "1-g-attribute",
@@ -3339,7 +3473,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Something you can notice about a shape, like its sides or corners.",
     "example": "Ivy looks at a triangle. She names two attributes: 3 sides and 3 corners.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「特徴」とは、形について気づくことができる、辺や角のようなもののことです。アイビーは三角形を見ます。2つの特徴、3つの辺と3つの角を挙げます。"
   },
   {
     "id": "1-g-2d-shape",
@@ -3357,7 +3492,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A flat shape. It has length and width but no thickness.",
     "example": "Zoe draws a square on paper. It lies flat on the page, so it is a 2D shape.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「平面図形」とは、平らな形のことです。長さと幅はありますが、厚みはありません。ゾーイは紙に正方形をかきます。ページの上に平らにあるので、平面図形です。"
   },
   {
     "id": "1-g-3d-shape",
@@ -3375,7 +3511,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A solid shape you can hold. It takes up space.",
     "example": "Theo picks up a wooden cube. He can turn it over in his hand, so it is a 3D shape.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「立体図形」とは、手に持てる立体の形のことです。場所を取ります。テオは木の立方体を手に取ります。手の中で回すことができるので、立体図形です。"
   },
   {
     "id": "1-g-vertex-vertices",
@@ -3403,7 +3540,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 3 (Visual Vicuna)",
       "width": 120,
       "height": 123
-    }
+    },
+    "speechJa": "「頂点」とは、形の2つの辺が出会う点のことです。複数のときは「頂点たち」と言います。ゾーイは三角形を指でなぞります。辺が出会う点、つまり頂点を3つ数えます。"
   },
   {
     "id": "1-g-quarter-turn",
@@ -3421,7 +3559,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A turn of one-fourth of the way around, like turning to face a new wall.",
     "example": "Omar faces the window. He makes a quarter turn and now faces the door.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「4分の1回転」とは、ぐるっと4分の1だけ回ることです。たとえば、新しい壁のほうを向くような回り方です。オマールは窓のほうを向いています。4分の1回転すると、ドアのほうを向きます。"
   },
   {
     "id": "1-g-half-turn",
@@ -3439,7 +3578,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A turn of halfway around, so you end up facing the opposite way.",
     "example": "Maya faces the front of the room. She makes a half turn and now faces the back wall.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「半回転」とは、半分だけぐるっと回って、反対向きになることです。マヤは部屋の前のほうを向いています。半回転すると、後ろの壁のほうを向きます。"
   },
   {
     "id": "2-oa-repeated-addition",
@@ -3457,7 +3597,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Adding the same number again and again.",
     "example": "Nina sets out 4 plates and puts 3 grapes on each. She adds 3 + 3 + 3 + 3 and gets 12 grapes.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「くり返しのたし算」とは、同じ数を何度もたすことです。ニーナはお皿を4まい並べ、それぞれにぶどうを3こずつのせます。3+3+3+3をたすと、ぶどうは12こになります。"
   },
   {
     "id": "2-oa-addition",
@@ -3481,7 +3622,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Multiplication and Division, Slide 2 (Hint 2, Chef Math Bear)",
       "width": 218,
       "height": 307
-    }
+    },
+    "speechJa": "「たし算」とは、数を合わせて合計を求めることです。2つの数をたすことも、同じ数を何回もたすこともあります。理科の授業で石を集め、5このバケツにそれぞれ70こずつ入れました。数をたして合計を求めると、70+70+70+70+70=350この石です。"
   },
   {
     "id": "2-oa-array",
@@ -3499,7 +3641,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Objects set out in equal rows and columns.",
     "example": "Omar lines up his stickers in 3 rows of 5. That is an array. He counts 15 stickers.",
     "misconception": "Every row must hold the same amount. A ragged grid is not an array.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「配列」とは、同じ数ずつ、たての列と横の列にきれいに並べたもののことです。オマールはシールを3行5列に並べました。これが配列です。15まいと数えられます。"
   },
   {
     "id": "2-oa-even-number",
@@ -3517,7 +3660,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A number that splits into two equal groups with none left over.",
     "example": "Maya pairs up her 8 socks. She makes 4 pairs with nothing left over, so 8 is even.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「偶数」とは、2つの同じグループに分けて、あまりが出ない数のことです。マヤは靴下8足をペアにします。あまりなく4組できるので、8は偶数です。"
   },
   {
     "id": "2-oa-odd-number",
@@ -3535,7 +3679,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A number that leaves one extra when you split it in two.",
     "example": "Leo tries to pair up 7 crackers. He makes 3 pairs and 1 is left alone, so 7 is odd.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「奇数」とは、2つに分けると1つあまる数のことです。レオはクラッカー7まいをペアにしようとします。3組できて1まいあまるので、7は奇数です。"
   },
   {
     "id": "2-oa-two-step-problem",
@@ -3553,7 +3698,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A problem you solve in two moves.",
     "example": "Ana has 10 pencils. She buys 5 more, then gives 3 to Ben. First she adds to get 15. Then she subtracts to get 12.",
     "misconception": "Stopping after the first step is the usual slip. Reread the question to check you finished.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「2段階の問題」とは、2回の計算で解く問題のことです。アナはえんぴつを10本持っています。5本買い足し、ベンに3本あげます。まずたし算をして15本、それからひき算をして12本になります。"
   },
   {
     "id": "2-oa-unknown-number",
@@ -3571,7 +3717,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The number you are missing. A letter or a box can stand in for it.",
     "example": "Ivy sees 12 - ? = 7. She asks herself what takes 12 down to 7. The unknown number is 5.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「わからない数」とは、見つかっていない数のことです。文字や四角がその代わりになります。アイビーは12-□=7を見ました。12から何を引けば7になるかを考え、わからない数は5だとわかります。"
   },
   {
     "id": "2-oa-number-bond",
@@ -3589,7 +3736,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A pair of numbers that add up to a target number.",
     "example": "Omar learns the number bonds for 10: 6 and 4, 7 and 3, 8 and 2. Each pair adds up to 10.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「数の組み合わせ」とは、たすと目標の数になる2つの数の組のことです。オマールは10になる組み合わせを学びます。6と4、7と3、8と2。どの組もたすと10になります。"
   },
   {
     "id": "2-nbt-hundreds",
@@ -3607,7 +3755,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Groups of one hundred.",
     "example": "Zoe counts 342 pennies. She stacks them and finds 3 hundreds, 4 tens, and 2 ones.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「百の位」とは、100のまとまりのことです。ゾーイは1円玉を342こ数えます。積み重ねると、100が3こ、10が4こ、1が2こになります。"
   },
   {
     "id": "2-nbt-expanded-form",
@@ -3625,7 +3774,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A number written as the sum of what each digit is worth.",
     "example": "Theo writes 254 in expanded form: 200 + 50 + 4.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「展開形」とは、それぞれの位の値をたし算の形で書いた数のことです。テオは254を展開形で200+50+4と書きます。"
   },
   {
     "id": "2-nbt-place-value",
@@ -3643,7 +3793,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "What a digit is worth based on its spot.",
     "example": "Nina looks at 528. The 5 sits in the hundreds place, so it is worth 500.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「位」とは、数字が置かれた場所によって決まる値のことです。ニーナは528を見ます。5は百の位にあるので、500の値を持っています。"
   },
   {
     "id": "2-nbt-regroup",
@@ -3667,7 +3818,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Averater, Wikimedia Commons — CC0 / public domain",
       "width": 340,
       "height": 460
-    }
+    },
+    "speechJa": "「くり上げる」とは、あるまとまりの10こを、1つ上の位の1こに交換することです。オマールは27+15を計算します。一の位は12になります。10こを1つの十にくり上げて、42と書きます。"
   },
   {
     "id": "2-nbt-compare-numbers",
@@ -3685,7 +3837,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Decide which number is bigger by checking place value.",
     "example": "Maya compares 431 and 419. The hundreds match, so she checks the tens. 3 beats 1, so 431 is bigger.",
     "misconception": "More digits usually means bigger, but only when you start from the biggest place. Compare left to right.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「数を比べる」とは、位ごとに調べてどちらが大きいか決めることです。マヤは431と419を比べます。百の位は同じなので十の位を見ます。3は1より大きいので、431のほうが大きいです。"
   },
   {
     "id": "2-nbt-hundred-chart",
@@ -3703,7 +3856,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A grid that shows the numbers 1 to 100 in order.",
     "example": "Leo uses a hundred chart to skip count by 10s. He taps 10, 20, 30, all the way down one column.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「百までの数表」とは、1から100までの数を順番に並べた表のことです。レオは百までの数表を使って10ずつ数えます。10、20、30と、1つの列を下までたどります。"
   },
   {
     "id": "2-nbt-greatest-number",
@@ -3721,7 +3875,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The biggest number you can make or find in a group.",
     "example": "Ana has the digits 3, 7, and 1. She arranges them to make 731, the greatest number she can build.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「一番大きい数」とは、あるグループの中で作れる、または見つけられる一番大きい数のことです。アナは数字の3、7、1を持っています。並べ方をくふうして731を作り、これが作れる一番大きい数です。"
   },
   {
     "id": "2-nbt-smallest-number",
@@ -3739,7 +3894,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The tiniest number you can make or find in a group.",
     "example": "Ben has the digits 3, 7, and 1. He arranges them to make 137, the smallest number he can build.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「一番小さい数」とは、あるグループの中で作れる、または見つけられる一番小さい数のことです。ベンは数字の3、7、1を持っています。並べ方をくふうして137を作り、これが作れる一番小さい数です。"
   },
   {
     "id": "2-nbt-order",
@@ -3757,7 +3913,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Arrange numbers from smallest to biggest, or biggest to smallest.",
     "example": "Ana lines up the numbers 52, 18, and 40 in order: 18, 40, 52.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「順番に並べる」とは、数を小さいものから大きいもの、または大きいものから小さいものへと並べることです。アナは52、18、40という数を順番に並べます。18、40、52です。"
   },
   {
     "id": "2-md-centimeter",
@@ -3781,7 +3938,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Measurement, Slide 8",
       "width": 513,
       "height": 340
-    }
+    },
+    "speechJa": "「センチメートル」とは、長さの小さな単位です。だいたい指のつめくらいの幅です。レオはクレヨンを定規に沿わせます。クレヨンの長さは9センチメートルです。"
   },
   {
     "id": "2-md-meter",
@@ -3805,7 +3963,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Measurement, Slide 8",
       "width": 320,
       "height": 214
-    }
+    },
+    "speechJa": "「メートル」とは、長さの大きな単位です。だいたいドアくらいの幅です。アナはメートルざしでしき物を測ります。2回分の長さがあったので、しき物は2メートルです。"
   },
   {
     "id": "2-md-estimate",
@@ -3823,7 +3982,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A smart guess that is close, not exact.",
     "example": "Ben looks at a jar of beans and guesses about 50. The real count is 46, so his estimate was close.",
     "misconception": "An estimate is not a wild guess. Use what you know to get near the real amount.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「見積もる」とは、正確ではないけれど近い、じょうずな予想のことです。ベンはびんの中の豆を見て、だいたい50こだと予想します。実際は46こだったので、見積もりは近い数字でした。"
   },
   {
     "id": "2-md-number-line",
@@ -3847,7 +4007,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Algebraic Thinking, Slide 39",
       "width": 818,
       "height": 133
-    }
+    },
+    "speechJa": "「数直線」とは、数を順番に間をあけて並べた線のことです。アイビーは数直線の8から出発して13までジャンプします。5回ジャンプしたことになります。"
   },
   {
     "id": "2-md-bar-graph",
@@ -3871,7 +4032,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Charts and Graphs, Slide 3",
       "width": 681,
       "height": 489
-    }
+    },
+    "speechJa": "「棒グラフ」とは、棒の高さで量を表すグラフのことです。ゾーイは好きな果物の棒グラフを作ります。りんごの棒が一番高いので、りんごが1位です。"
   },
   {
     "id": "2-md-picture-graph",
@@ -3889,7 +4051,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A graph that uses pictures to stand for amounts.",
     "example": "Theo draws a picture graph of books read. Each little book stands for 1 real book.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「絵グラフ」とは、絵で量を表すグラフのことです。テオは読んだ本の絵グラフをかきます。小さな本の絵1つが、本物の本1さつを表します。"
   },
   {
     "id": "2-md-line-plot",
@@ -3907,7 +4070,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A graph that stacks marks above a number line.",
     "example": "Nina measures 10 leaves and marks an X above each length. Most of the X's stack above 4 centimeters.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「ドットプロット」とは、数直線の上に印を積み重ねていくグラフのことです。ニーナは葉っぱを10まい測り、それぞれの長さの上にバツ印をつけます。バツ印の多くは4センチメートルの上に集まっています。"
   },
   {
     "id": "2-md-dollar",
@@ -3931,7 +4095,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Money, Slide 18",
       "width": 880,
       "height": 396
-    }
+    },
+    "speechJa": "「ドル」とは、100セントに当たるお金の単位のことです。オマールは25セント硬貨を4まい貯金箱に貯めます。合わせると1ドルになります。"
   },
   {
     "id": "2-md-quarter-coin",
@@ -3949,7 +4114,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A coin worth 25 cents.",
     "example": "Maya has 3 quarters. She counts 25, 50, 75. She has 75 cents.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「25セント硬貨」とは、25セントの価値がある硬貨のことです。マヤは25セント硬貨を3まい持っています。25、50、75と数えます。75セント持っています。"
   },
   {
     "id": "2-md-cents",
@@ -3973,7 +4139,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Money, Slide 18",
       "width": 880,
       "height": 396
-    }
+    },
+    "speechJa": "「セント」とは、お金の小さな単位のことです。100セントで1ドルになります。オマールは10セント硬貨を3まい数えます。1まいが10セントなので、合わせて30セントです。"
   },
   {
     "id": "2-md-money",
@@ -3997,7 +4164,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Money, Slide 5",
       "width": 640,
       "height": 480
-    }
+    },
+    "speechJa": "「お金」とは、物を買ったり売ったりするときに使う硬貨やお札のことです。マヤは学校のお祭りの前に持っているお金を数えます。1ドル札2まいと25セント硬貨3まいです。"
   },
   {
     "id": "2-md-price",
@@ -4021,7 +4189,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Money, Slide 16",
       "width": 480,
       "height": 480
-    }
+    },
+    "speechJa": "「値段」とは、あるものにいくらお金がかかるかということです。レオはおもちゃの車の値札を見ます。4ドルします。"
   },
   {
     "id": "2-md-venn-diagram",
@@ -4039,7 +4208,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Two circles that overlap, used to sort things and show what they share.",
     "example": "Leo draws a Venn diagram. One circle is red things, one circle is round things. The apple goes where the circles overlap.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「ベン図」とは、2つの重なり合う円を使って、物を仲間分けし、共通点を表す図のことです。レオはベン図をかきます。片方の円は赤いもの、もう片方の円は丸いものです。りんごは、円が重なるところに入ります。"
   },
   {
     "id": "2-md-rupee",
@@ -4057,7 +4227,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "India's unit of money.",
     "example": "Ana saves 50 rupees from her allowance.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「ルピー」とは、インドのお金の単位のことです。アナはお小遣いから50ルピーを貯金します。"
   },
   {
     "id": "2-md-paise",
@@ -4075,7 +4246,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A small unit of Indian money. 100 paise make 1 rupee.",
     "example": "Ben has 1 rupee, which is the same as 100 paise.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「パイサ」とは、インドのお金の小さな単位のことです。100パイサで1ルピーになります。ベンは1ルピー持っていて、それは100パイサと同じです。"
   },
   {
     "id": "2-md-denomination",
@@ -4097,7 +4269,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The value printed on a coin or bill.",
     "example": "Ivy sorts her play money by denomination: all the $1 bills together, all the $5 bills together.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「額面」とは、硬貨やお札に印刷されている価値のことです。アイビーはおもちゃのお金を額面ごとに仲間分けします。1ドル札はまとめて、5ドル札もまとめます。"
   },
   {
     "id": "2-g-quadrilateral",
@@ -4115,7 +4288,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A closed shape with 4 straight sides.",
     "example": "Leo sorts his shape cards. The square, the rectangle, and the kite all go in one pile. Each has 4 sides.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「四角形」とは、まっすぐな辺が4つある閉じた形のことです。レオは形のカードを仲間分けします。正方形、長方形、たこ形が同じ山になります。どれも辺が4つあるからです。"
   },
   {
     "id": "2-g-pentagon",
@@ -4133,7 +4307,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A closed shape with 5 straight sides.",
     "example": "Ana traces home plate at the ball field. She counts 5 sides, so it is a pentagon.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「五角形」とは、まっすぐな辺が5つある閉じた形のことです。アナは野球場のホームベースをなぞります。辺を5つ数えたので、五角形です。"
   },
   {
     "id": "2-g-rows-and-columns",
@@ -4151,7 +4326,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Rows go across. Columns go up and down.",
     "example": "Ben sets up chairs in 4 rows and 6 columns. He counts 24 chairs in all.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「行と列」とは、行は横に、列はたてに並ぶことです。ベンはいすを4行6列に並べます。全部で24きゃくと数えます。"
   },
   {
     "id": "2-g-equal-shares",
@@ -4169,7 +4345,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Parts of one whole that are all the same size.",
     "example": "Ivy cuts a brownie into 4 equal shares. Each friend gets a piece the same size.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「同じ大きさの部分」とは、1つの全体を分けた、すべて同じ大きさの部分のことです。アイビーはブラウニーを4つの同じ大きさに切り分けます。友達それぞれが同じ大きさの1切れをもらいます。"
   },
   {
     "id": "3-oa-multiply",
@@ -4193,7 +4370,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Lucas Vieira (LucasVB), Wikimedia Commons — public domain",
       "width": 400,
       "height": 200
-    }
+    },
+    "speechJa": "「かける」とは、同じ数のグループを速いやり方でたすことです。ゾーイは箱6つに、それぞれマーカーを4本ずつ入れます。6回たす代わりに、6×4をかけて24とわかります。"
   },
   {
     "id": "3-oa-factor",
@@ -4211,7 +4389,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A number you multiply.",
     "example": "Theo writes 3 × 8 = 24. The 3 and the 8 are the factors.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「因数」とは、かけ算で使う数のことです。テオは3×8=24と書きました。3と8が因数です。"
   },
   {
     "id": "3-oa-product",
@@ -4229,7 +4408,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The answer when you multiply.",
     "example": "Nina multiplies 5 × 7. The product is 35.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「積」とは、かけ算をして出てきた答えのことです。ニーナは5×7をかけます。積は35です。"
   },
   {
     "id": "3-oa-divide",
@@ -4253,7 +4433,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Multiplication and Division, Slide 19 (Visual Vicuna)",
       "width": 496,
       "height": 600
-    }
+    },
+    "speechJa": "「わる」とは、同じ数ずつのグループに分けることです。オマールはぶどうを12こ、友達3人で分けます。同じ数ずつわけると、1人4こずつになります。"
   },
   {
     "id": "3-oa-quotient",
@@ -4271,7 +4452,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The answer when you divide.",
     "example": "Maya divides 20 by 4. The quotient is 5.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「商」とは、わり算をして出てきた答えのことです。マヤは20を4でわります。商は5です。"
   },
   {
     "id": "3-oa-division",
@@ -4295,7 +4477,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Multiplication and Division, Slide 19 (Visual Vicuna)",
       "width": 496,
       "height": 600
-    }
+    },
+    "speechJa": "「わり算」とは、ある数を同じ数ずつのグループに分けることです。かけ算の反対です。ニーナはわり算を使って、クッキー18まいを友達3人で分けます。1人6まいずつです。"
   },
   {
     "id": "3-oa-multiplication",
@@ -4319,7 +4502,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Algebraic Thinking, Slide 16 (Hint 2, Chef Math Bear)",
       "width": 488,
       "height": 488
-    }
+    },
+    "speechJa": "「かけ算」とは、同じ数ずつのグループを合わせて合計を求めることです。わり算の反対です。コーンマフィンは1こ2ドル、ブルーベリーマフィンは1こ3ドルです。それぞれの代金をかけ算で求めると、8×2=16、7×3=21です。"
   },
   {
     "id": "3-oa-equal-groups",
@@ -4337,7 +4521,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Groups that all hold the same amount.",
     "example": "Leo sorts 15 crayons into 3 equal groups. Each group holds 5 crayons.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「同じ数ずつのグループ」とは、どのグループも同じ量を持つグループのことです。レオはクレヨン15本を3つの同じ数ずつのグループに分けます。1つのグループに5本ずつです。"
   },
   {
     "id": "3-oa-array",
@@ -4355,7 +4540,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Objects in equal rows and columns. It shows a multiplication fact.",
     "example": "Ana draws 4 rows of 6 dots. Her array shows 4 × 6 = 24.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「配列」とは、同じ数ずつを行と列にきれいに並べたもののことです。かけ算の式を表します。アナは点を4行6列にかきます。この配列は4×6=24を表しています。"
   },
   {
     "id": "3-oa-area-model",
@@ -4373,7 +4559,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A rectangle drawing that shows a multiplication problem.",
     "example": "Ben draws a rectangle 3 units tall and 5 units wide. He counts 15 squares inside. His area model shows 3 × 5 = 15.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「面積モデル」とは、長方形をかいてかけ算の問題を表す図のことです。ベンはたて3、横5の長方形をかきます。中の四角を15こ数えます。この面積モデルは3×5=15を表しています。"
   },
   {
     "id": "3-oa-unknown-factor",
@@ -4391,7 +4578,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The missing number in a multiplication fact.",
     "example": "Ivy sees 4 × ? = 28. She counts by fours until she reaches 28. The unknown factor is 7.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「わからない因数」とは、かけ算の式の中で見つかっていない数のことです。アイビーは4×□=28を見ます。4ずつ数えて28になるまで進むと、わからない因数は7だとわかります。"
   },
   {
     "id": "3-oa-multiplication-table",
@@ -4413,7 +4601,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A chart of multiplication facts, also called a times table.",
     "example": "Theo studies the multiplication table for 5s to learn 5 x 1 up to 5 x 12 by heart.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「かけ算表」とは、かけ算の答えをまとめた表のことです。九九の表とも呼ばれます。テオは5の段の表を勉強して、5×1から5×12までを覚えます。"
   },
   {
     "id": "3-oa-rate-chart",
@@ -4431,7 +4620,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A list that shows the price of items, used to find the total cost.",
     "example": "Ana uses a rate chart to see that pencils cost 5 rupees each, then finds that 3 pencils cost 15 rupees.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「値段の一覧表」とは、品物の値段を表した表のことで、合計金額を求めるのに使います。アナは一覧表を見て、えんぴつ1本が5ルピーだと知り、3本で15ルピーだと求めます。"
   },
   {
     "id": "3-oa-inverse",
@@ -4449,7 +4639,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "An action that undoes another action. Adding and taking away undo each other.",
     "example": "Omar adds 6 + 3 to get 9. He checks it with the inverse: 9 - 3 gets him back to 6.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「逆の計算」とは、ある計算をもとに戻す計算のことです。たし算とひき算はおたがいに逆の関係です。オマールは6+3をたして9を求めます。逆の計算で確かめます。9-3をすると6に戻ります。"
   },
   {
     "id": "3-oa-check",
@@ -4467,7 +4658,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Make sure an answer is right, often by working it a different way.",
     "example": "Maya solves 15 - 7 = 8. To check, she adds 8 + 7 and gets back to 15.",
     "misconception": "Checking is not redoing the exact same steps. Using the inverse operation catches more mistakes.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「確かめる」とは、別のやり方で計算をして、答えが正しいか確認することです。マヤは15-7=8を解きます。確かめるために8+7をたすと、15に戻ります。"
   },
   {
     "id": "3-oa-increment",
@@ -4485,7 +4677,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A set amount added each time you count up.",
     "example": "Leo counts by 5s: 5, 10, 15, 20. Each increment adds 5 more.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「一定の増える量」とは、数えるたびにたす決まった量のことです。レオは5ずつ数えます。5、10、15、20。1回ごとに5ずつ増えます。"
   },
   {
     "id": "3-nbt-round",
@@ -4503,7 +4696,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Change a number to a nearby easier one.",
     "example": "Zoe rounds 47 to the nearest ten. On the number line 47 sits closer to 50 than to 40, so she rounds up.",
     "misconception": "Look at where the number really sits. Do not just chop the last digit off.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「がい数にする」とは、数を近くのわかりやすい数に変えることです。ゾーイは47を一番近い十の位のがい数にします。数直線では47は40より50に近いので、切り上げます。"
   },
   {
     "id": "3-nbt-rounding",
@@ -4527,7 +4721,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Estimation, Slide 5",
       "width": 880,
       "height": 596
-    }
+    },
+    "speechJa": "「がい数にすること」とは、数を近くの十や百に変えて、扱いやすくすることです。ベンは63をがい数にします。数直線では63は70より60に近いので、切り捨てて60にします。"
   },
   {
     "id": "3-nbt-place-value",
@@ -4545,7 +4740,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "What a digit is worth because of its spot.",
     "example": "Theo looks at 528. The 2 sits in the tens place, so it is worth 20.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「位」とは、数字が置かれた場所によって決まる値のことです。テオは528を見ます。2は十の位にあるので、20の値を持っています。"
   },
   {
     "id": "3-nf-fraction",
@@ -4569,7 +4765,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Fractions, Slide 5",
       "width": 553,
       "height": 508
-    }
+    },
+    "speechJa": "「分数」とは、全体の一部を表す数のことです。ニーナはパイを4つの同じ大きさに切り、1つ取ります。パイの4分の1を食べました。"
   },
   {
     "id": "3-nf-numerator",
@@ -4587,7 +4784,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The top number. It counts the parts you have.",
     "example": "Omar eats 3 slices out of 8. He writes 3/8. The numerator 3 is how many he ate.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「分子」とは、分数の上の数のことです。持っている部分の数を表します。オマールは8切れのうち3切れを食べます。3/8と書きます。分子の3が、食べた数です。"
   },
   {
     "id": "3-nf-denominator",
@@ -4605,7 +4803,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The bottom number. It tells how many equal parts make the whole.",
     "example": "Maya writes 3/8. The denominator 8 means the whole pie was cut into 8 equal parts.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「分母」とは、分数の下の数のことです。全体がいくつの同じ部分に分かれているかを表します。マヤは3/8と書きます。分母の8は、パイ全体が8つの同じ部分に切られたことを表します。"
   },
   {
     "id": "3-nf-unit-fraction",
@@ -4623,7 +4822,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A fraction with 1 on top. It is one single part.",
     "example": "Leo cuts a ribbon into 5 equal pieces and picks up one. He holds 1/5, a unit fraction.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「単位分数」とは、上の数が1の分数のことです。1つ分の部分を表します。レオはリボンを5等分に切り、1本手に取ります。1/5という単位分数を持っています。"
   },
   {
     "id": "3-nf-equivalent-fractions",
@@ -4641,7 +4841,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Different fractions that name the same amount.",
     "example": "Ana eats 1/2 of a pizza. Ben eats 2/4 of a pizza the same size. They both ate the same amount.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「等しい分数」とは、書き方は違っても同じ量を表す分数のことです。アナはピザの1/2を食べます。ベンは同じ大きさのピザの2/4を食べます。2人は同じ量を食べたことになります。"
   },
   {
     "id": "3-nf-whole",
@@ -4659,7 +4860,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "All of the parts together. One complete thing.",
     "example": "Ivy has 4 quarter slices of an orange. Put back together they make one whole orange.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「全体」とは、すべての部分を合わせた、1つのまとまったもののことです。アイビーはオレンジの4分の1切れを4つ持っています。合わせると、オレンジ1つ分の全体になります。"
   },
   {
     "id": "3-nf-partition",
@@ -4677,7 +4879,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Split something into equal parts.",
     "example": "Zoe partitions a paper strip into 6 equal parts. Now each part is 1/6 of the strip.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「等分する」とは、あるものを同じ大きさの部分に分けることです。ゾーイは紙のテープを6等分します。それぞれの部分は、テープの1/6です。"
   },
   {
     "id": "3-nf-compare-fractions",
@@ -4695,7 +4898,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Decide which fraction is larger.",
     "example": "Theo compares 1/3 and 1/5 of the same cake. Fewer slices means bigger slices, so 1/3 is more.",
     "misconception": "A bigger bottom number does not mean a bigger piece. It means the whole was cut into more, smaller parts.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「分数を比べる」とは、どちらの分数が大きいかを決めることです。テオは同じ大きさのケーキの1/3と1/5を比べます。切る数が少ないほど1切れは大きいので、1/3のほうが多いです。"
   },
   {
     "id": "3-md-area",
@@ -4719,7 +4923,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Area and Perimeter, Slide 6",
       "width": 512,
       "height": 512
-    }
+    },
+    "speechJa": "「面積」とは、ある形がおおう平らな場所の広さのことです。ニーナはテーブルの上を正方形のタイルでしきつめます。24まい数えたので、面積は24平方単位です。"
   },
   {
     "id": "3-md-perimeter",
@@ -4737,7 +4942,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The distance all the way around a shape.",
     "example": "Omar walks around a square garden. Each side takes 5 steps, so the perimeter is 20 steps.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「周りの長さ」とは、ある形のまわりをぐるっと1周した長さのことです。オマールは正方形の庭のまわりを歩きます。1辺が5歩なので、周りの長さは20歩です。"
   },
   {
     "id": "3-md-square-unit",
@@ -4755,7 +4961,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "One square used to measure area.",
     "example": "Maya covers a card with squares, leaving no gaps. Each one is a square unit. She counts 12.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「面積の単位」とは、面積を測るために使う正方形1つ分のことです。マヤはカードをすきまなく正方形でおおいます。1つ1つが面積の単位です。12こ数えます。"
   },
   {
     "id": "3-md-elapsed-time",
@@ -4773,7 +4980,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "How much time has passed.",
     "example": "Leo starts reading at 2:00 and stops at 2:45. The elapsed time is 45 minutes.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「経過した時間」とは、どれだけの時間がたったかということです。レオは2時に本を読み始め、2時45分にやめました。経過した時間は45分です。"
   },
   {
     "id": "3-md-liquid-volume",
@@ -4791,7 +4999,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "How much liquid a container holds.",
     "example": "Ana fills a bottle from the jug. The bottle holds 1 liter, so that is its liquid volume.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「体積(液体の量)」とは、入れ物にどれだけの液体が入るかということです。アナはジャグからボトルに水を入れます。ボトルには1リットル入るので、それが体積です。"
   },
   {
     "id": "3-md-mass",
@@ -4809,7 +5018,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "How much matter is in an object.",
     "example": "Ben sets an apple on the scale. Its mass is 150 grams.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「質量」とは、あるものにどれだけの物質がふくまれているかということです。ベンはりんごをはかりに乗せます。質量は150グラムです。"
   },
   {
     "id": "3-md-scaled-graph",
@@ -4827,7 +5037,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A graph where one picture or step stands for more than one thing.",
     "example": "Ivy makes a graph where each square stands for 5 books. A bar 4 squares tall means 20 books.",
     "misconception": "Count the value of each step, not the number of steps.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「目盛りグラフ」とは、1つの絵や1目盛りが2つ以上のものを表すグラフのことです。アイビーは1つの四角が本5さつを表すグラフを作ります。高さ4この棒は、本20さつを意味します。"
   },
   {
     "id": "3-md-kilogram",
@@ -4855,7 +5066,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Measurement, Slide 8",
       "width": 231,
       "height": 228
-    }
+    },
+    "speechJa": "「キログラム」とは、1000グラムに等しい質量の単位のことです。ゾーイは米の袋の重さをはかります。質量は2キログラムです。"
   },
   {
     "id": "3-md-yard",
@@ -4879,7 +5091,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Measurement, Slide 12 (Hint 2, Chef Math Bear)",
       "width": 232,
       "height": 229
-    }
+    },
+    "speechJa": "「ヤード」とは、長さの単位のことです。だいたい大また1歩分の長さです。アイビーはヤードざしで廊下を測ります。長さは12ヤードです。"
   },
   {
     "id": "3-md-standard-unit",
@@ -4897,7 +5110,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A fixed unit of measurement that everyone agrees on, like a centimeter.",
     "example": "Nina measures her desk in centimeters, a standard unit, so her measurement means the same thing to everyone.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「標準単位」とは、センチメートルのように、みんなが共通して使う決まった単位のことです。ニーナは机をセンチメートルという標準単位で測るので、その測り方は誰にとっても同じ意味になります。"
   },
   {
     "id": "3-md-non-standard-unit",
@@ -4915,7 +5129,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "An everyday object used to measure, like a hand span or a paperclip, before using standard units.",
     "example": "Omar measures his desk using hand spans, a non-standard unit, before he learns to use a ruler.",
     "misconception": "A hand span is different for every person, so measurements made with it will not match.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「標準ではない単位」とは、標準単位を使う前に、手のはばやクリップのような身近なもので測る単位のことです。オマールは定規の使い方を習う前に、手のはばという標準ではない単位で机を測ります。"
   },
   {
     "id": "3-g-quadrilateral",
@@ -4933,7 +5148,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A closed shape with exactly 4 straight sides.",
     "example": "Zoe drops shapes into a hoop labeled 4 sides. Squares, rectangles, and rhombuses all belong.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「四角形」とは、まっすぐな辺がちょうど4つある閉じた形のことです。ゾーイは「辺が4つ」と書かれた輪の中に形を入れていきます。正方形、長方形、ひし形はみんな当てはまります。"
   },
   {
     "id": "3-g-category",
@@ -4951,7 +5167,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A group whose members share a trait.",
     "example": "Theo makes a category for shapes with 4 sides. The square and the rectangle both belong in it.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「仲間」とは、共通する特徴を持つグループのことです。テオは辺が4つある形の仲間を作ります。正方形と長方形は両方とも、その仲間に入ります。"
   },
   {
     "id": "3-g-attribute",
@@ -4969,7 +5186,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A feature of a shape you can name.",
     "example": "Nina looks at a rectangle. She names two attributes. It has 4 square corners, and the sides across from each other match.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「特徴」とは、形について名前をつけられる特ちょうのことです。ニーナは長方形を見ます。2つの特徴を挙げます。4つの角が正方形の角で、向かい合う辺の長さが同じです。"
   },
   {
     "id": "3-g-polygon",
@@ -4991,7 +5209,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A closed flat shape made only of straight sides.",
     "example": "Maya sorts shapes into a group of polygons: triangles, squares, and hexagons, because they all have straight sides.",
     "misconception": "A circle is not a polygon because its side is curved, not straight.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「多角形」とは、まっすぐな辺だけでできた閉じた平らな形のことです。マヤは三角形、正方形、六角形を多角形の仲間に分けます。どれもまっすぐな辺でできているからです。"
   },
   {
     "id": "3-g-diagonal",
@@ -5013,7 +5232,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A line that connects two corners of a shape that are not already next to each other.",
     "example": "Leo draws a diagonal across a rectangle. It joins two corners that are not next to each other.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「対角線」とは、形のとなり合っていない2つの角を結ぶ線のことです。レオは長方形に対角線をかきます。となり合っていない2つの角を結んでいます。"
   },
   {
     "id": "3-g-tessellation",
@@ -5035,7 +5255,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Covering a flat surface with shapes that fit together with no gaps or overlaps.",
     "example": "Ana notices the tiles on the floor form a tessellation. The squares fit together perfectly with no gaps.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「しきつめ」とは、すきまや重なりなく、形をぴったり組み合わせて平らな面をおおうことです。アナは床のタイルがしきつめになっていることに気づきます。正方形がすきまなくぴったり組み合わさっています。"
   },
   {
     "id": "4-oa-factor",
@@ -5053,7 +5274,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A number that divides into another with nothing left over.",
     "example": "Omar tests 12. He finds 1, 2, 3, 4, 6, and 12 all divide it evenly. Those are the factors of 12.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「約数」とは、ある数をわり切ることができる数のことです。オマールは12を調べます。1、2、3、4、6、12がどれも12をわり切れると気づきます。これらが12の約数です。"
   },
   {
     "id": "4-oa-multiple",
@@ -5071,7 +5293,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "What you get when you multiply a number by a whole number.",
     "example": "Maya skip counts by 4: 4, 8, 12, 16. Each number she lands on is a multiple of 4.",
     "misconception": "Factors are smaller and divide in. Multiples are bigger and count up.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「倍数」とは、ある数に整数をかけて出てくる数のことです。マヤは4ずつ数えます。4、8、12、16。たどり着く数はどれも4の倍数です。"
   },
   {
     "id": "4-oa-prime-number",
@@ -5095,7 +5318,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Algebraic Thinking, Slide 32 (Hint 2)",
       "width": 600,
       "height": 450
-    }
+    },
+    "speechJa": "「素数」とは、約数がちょうど2つ、つまり1とその数自身しかない数のことです。レオはおはじき7こを同じ数ずつのグループに分けようとします。7こ1グループしかうまくいきません。だから7は素数です。"
   },
   {
     "id": "4-oa-composite-number",
@@ -5113,7 +5337,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A number with more than two factors.",
     "example": "Ana splits 12 counters into 2 groups of 6, then into 3 groups of 4. Many splits work, so 12 is composite.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「合成数」とは、約数が3つ以上ある数のことです。アナはおはじき12こを、6こずつ2グループにしたり、4こずつ3グループにしたりします。いろいろな分け方ができるので、12は合成数です。"
   },
   {
     "id": "4-oa-multi-step-problem",
@@ -5131,7 +5356,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A problem that needs more than one step.",
     "example": "Ben buys 3 packs of 8 pencils, then gives 5 away. First he multiplies to get 24. Then he subtracts to get 19.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「何段階かの問題」とは、1回以上の計算が必要な問題のことです。ベンはえんぴつ8本入りのパックを3つ買い、5本を人にあげます。まずかけ算をして24本、それからひき算をして19本になります。"
   },
   {
     "id": "4-oa-remainder",
@@ -5149,7 +5375,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The amount left over after dividing.",
     "example": "Ivy shares 17 stickers with 5 friends. Each one gets 3, and the remainder is 2.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「あまり」とは、わり算をした後に残る量のことです。アイビーはシール17まいを友達5人と分けます。1人3まいずつになり、あまりは2まいです。"
   },
   {
     "id": "4-oa-left-over",
@@ -5173,7 +5400,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Multiplication and Division, Slide 11 (Visual Vicuna)",
       "width": 514,
       "height": 570
-    }
+    },
+    "speechJa": "「あまり」とは、同じ数ずつのグループに分けた後、もう1グループ分には足りないけれど残っているもののことです。レオはえんぴつ14本を4本ずつのグループに分けます。3グループできて、2本あまります。"
   },
   {
     "id": "4-oa-variable",
@@ -5191,7 +5419,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A letter that stands for a number you do not know yet.",
     "example": "Zoe writes 6 × n = 42. The letter n is the variable. She solves it and finds n = 7.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「変数」とは、まだわからない数の代わりに使う文字のことです。ゾーイは6×n=42と書きます。文字のnが変数です。解いてn=7だとわかります。"
   },
   {
     "id": "4-oa-equation",
@@ -5215,7 +5444,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Algebraic Thinking, Slide 16 (Hint 2, Chef Math Bear)",
       "width": 488,
       "height": 488
-    }
+    },
+    "speechJa": "「式」とは、文章題から作る、イコールの記号を使った数の文のことです。求めたい数の代わりに文字を使うこともあります。コーンマフィンは1こ2ドル、ブルーベリーマフィンは1こ3ドルです。コーンマフィン8ことブルーベリーマフィン7この合計金額mを求めるため、(2×8)+(3×7)=mという式を書きます。"
   },
   {
     "id": "4-oa-factor-pair",
@@ -5237,7 +5467,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Two numbers that multiply together to make a given number.",
     "example": "Ben finds the factor pairs of 12: 1 and 12, 2 and 6, 3 and 4.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「約数の組」とは、かけ算をするとある数になる2つの数の組のことです。ベンは12の約数の組を見つけます。1と12、2と6、3と4です。"
   },
   {
     "id": "4-nbt-place-value",
@@ -5255,7 +5486,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "What each digit is worth based on its position.",
     "example": "Theo studies 5,283. The 5 sits in the thousands place, so it is worth 5,000.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「位」とは、それぞれの数字が置かれた場所によって決まる値のことです。テオは5,283を調べます。5は千の位にあるので、5,000の値を持っています。"
   },
   {
     "id": "4-nbt-multi-digit",
@@ -5273,7 +5505,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A number with more than one digit.",
     "example": "Nina adds 3,472 and 1,915. Both are multi-digit numbers, so she lines up the places before she starts.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「複数けたの数」とは、けたが2つ以上ある数のことです。ニーナは3,472と1,915をたします。どちらも複数けたの数なので、計算を始める前に位をそろえます。"
   },
   {
     "id": "4-nbt-standard-algorithm",
@@ -5291,7 +5524,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The usual step by step way to work a problem on paper.",
     "example": "Omar multiplies 34 × 26. He uses the standard algorithm, working one place at a time and carrying when needed.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「筆算のやり方」とは、紙の上で問題を解くときの、いつも決まった手順のことです。オマールは34×26をかけ算します。筆算のやり方を使い、1つの位ずつ計算して、必要なときはくり上げます。"
   },
   {
     "id": "4-nbt-algorithm",
@@ -5309,7 +5543,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A set of steps that always gets you to the answer, done in the same order every time.",
     "example": "Nina follows an algorithm every time she adds two big numbers. First she lines up the places. Then she adds one column at a time.",
     "misconception": "An algorithm is not one fixed set of steps for every problem. Different kinds of problems can each have their own algorithm.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「アルゴリズム」とは、いつも同じ順番で行えば必ず答えにたどり着く、一連の手順のことです。ニーナは大きな数を2つたすときはいつも同じ手順に従います。まず位をそろえ、それから1つの列ずつたします。"
   },
   {
     "id": "4-nbt-hindu-arabic-numbers",
@@ -5333,7 +5568,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Algebraic Thinking, Slide 33",
       "width": 408,
       "height": 277
-    }
+    },
+    "speechJa": "「インド・アラビア数字」とは、毎日使っている0から9までの数字記号のことで、十進法で書かれます。テオは2,048をインド・アラビア数字で書きます。それぞれの数字の位置が、その値を表しています。"
   },
   {
     "id": "4-nf-equivalent-fraction",
@@ -5351,7 +5587,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A fraction that names the same amount as another.",
     "example": "Maya has 2/4 of a chocolate bar. Leo has 1/2 of the same bar. Their pieces are exactly the same size.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「等しい分数」とは、別の分数と同じ量を表す分数のことです。マヤは板チョコの2/4を持っています。レオは同じ板チョコの1/2を持っています。2人の分は、大きさがまったく同じです。"
   },
   {
     "id": "4-nf-mixed-number",
@@ -5369,7 +5606,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A whole number joined with a fraction.",
     "example": "Ana pours 2 full glasses of juice and half of a third. She has 2 1/2 glasses.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「帯分数」とは、整数と分数を合わせた数のことです。アナはジュースをコップいっぱいに2はい、そして3はい目の半分を注ぎます。2と1/2はいです。"
   },
   {
     "id": "4-nf-improper-fraction",
@@ -5387,7 +5625,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A fraction whose top number is bigger than its bottom.",
     "example": "Ben has 5 quarter slices of pie. He writes 5/4, which is more than one whole pie.",
     "misconception": "An improper fraction is not wrong. It is just written as parts instead of wholes.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「仮分数」とは、上の数が下の数より大きい分数のことです。ベンはパイの4分の1切れを5切れ持っています。5/4と書き、これはパイ1つ分より多いです。"
   },
   {
     "id": "4-nf-proper-fraction",
@@ -5411,7 +5650,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Fractions, Slide 17 (Visual Vicuna)",
       "width": 500,
       "height": 500
-    }
+    },
+    "speechJa": "「真分数」とは、上の数が下の数より小さい分数のことです。全体より小さい量を表します。ゾーイは食べたピザの分を3/4と書きます。3は4より小さいので、真分数です。"
   },
   {
     "id": "4-nf-common-denominator",
@@ -5429,7 +5669,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A shared bottom number for two fractions.",
     "example": "Ivy adds 1/3 and 1/4. She rewrites them as 4/12 and 3/12. Now they share a denominator, so she can add.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「共通の分母」とは、2つの分数が共有する下の数のことです。アイビーは1/3と1/4をたします。4/12と3/12に書き直します。分母が共通になったので、たし算ができます。"
   },
   {
     "id": "4-nf-decimal",
@@ -5447,7 +5688,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A number that uses a dot to show parts smaller than one.",
     "example": "Zoe reads a price tag: $2.75. The dot separates the whole dollars from the cents.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「小数」とは、点を使って1より小さい部分を表す数のことです。ゾーイは値札を読みます。2.75ドル。この点が、整数のドルとセントを区切っています。"
   },
   {
     "id": "4-nf-tenths",
@@ -5465,7 +5707,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "One whole split into 10 equal parts.",
     "example": "Theo shades 3 strips out of 10. He shaded 3 tenths, which he writes as 0.3.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「十分の一」とは、1つの全体を10個の同じ部分に分けたものです。テオは10本の帯のうち3本に色をぬります。十分の三を色ぬりし、0.3と書きます。"
   },
   {
     "id": "4-nf-hundredths",
@@ -5483,7 +5726,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "One whole split into 100 equal parts.",
     "example": "Nina shades 25 little squares on a grid of 100. She shaded 25 hundredths, or 0.25.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「百分の一」とは、1つの全体を100個の同じ部分に分けたものです。ニーナは100マスの表の小さな四角25こに色をぬります。百分の二十五、つまり0.25を色ぬりしました。"
   },
   {
     "id": "4-nf-benchmark-fraction",
@@ -5501,7 +5745,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A well known fraction you use to judge others.",
     "example": "Omar wonders how big 5/8 is. He compares it to 1/2, a benchmark. 5/8 is a little more than half.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「目安となる分数」とは、ほかの分数の大きさを判断するために使う、よく知られた分数のことです。オマールは5/8がどれくらいの大きさか考えます。目安となる1/2と比べると、5/8は半分より少し多いです。"
   },
   {
     "id": "4-md-angle",
@@ -5519,7 +5764,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The corner shape made where two rays meet.",
     "example": "Maya opens a pair of scissors. The space between the blades forms an angle.",
     "misconception": "Longer arms do not make a bigger angle. Only the spread between them counts.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「角」とは、2本の半直線が出会ってできる、かどの形のことです。マヤははさみを開きます。2枚の刃の間の空間が角を作っています。"
   },
   {
     "id": "4-md-degree",
@@ -5537,7 +5783,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The unit used to measure an angle.",
     "example": "Leo measures a square corner with his protractor. It reads 90 degrees.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「度」とは、角の大きさを測る単位のことです。レオは分度器で正方形のかどを測ります。90度と読み取ります。"
   },
   {
     "id": "4-md-protractor",
@@ -5555,7 +5802,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A tool for measuring angles.",
     "example": "Ana lines up the middle of her protractor with the corner. She reads 45 degrees.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「分度器」とは、角の大きさを測るための道具のことです。アナは分度器の中心をかどに合わせます。45度と読み取ります。"
   },
   {
     "id": "4-md-perimeter",
@@ -5579,7 +5827,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Area and Perimeter, Slide 8",
       "width": 277,
       "height": 240
-    }
+    },
+    "speechJa": "「周りの長さ」とは、ある形の外側をぐるっと1周した長さの合計のことです。ベンはたて8フィート、横3フィートの庭にさくを立てます。8+3+8+3をたすと、22フィート分のさくが必要です。"
   },
   {
     "id": "4-md-formula",
@@ -5597,7 +5846,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A rule written with symbols that works every time.",
     "example": "Ivy uses the formula for area: length × width. Her rug is 6 by 4, so the area is 24.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「公式」とは、記号で書かれた、いつでも使える決まりのことです。アイビーは面積の公式、たて×横を使います。しき物はたて6、横4なので、面積は24です。"
   },
   {
     "id": "4-md-conversion",
@@ -5615,7 +5865,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Changing a measure into a different unit.",
     "example": "Zoe has 3 feet of ribbon and needs inches. She multiplies 3 × 12 and gets 36 inches.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「単位の変換」とは、ある単位をちがう単位に変えることです。ゾーイはリボンを3フィート持っていて、インチで表したいと思います。3×12をかけて、36インチとわかります。"
   },
   {
     "id": "4-md-am-and-pm",
@@ -5633,7 +5884,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The two 12-hour halves of the day. A.M. is before noon. P.M. is after noon.",
     "example": "Maya wakes up at 7 A.M. and goes to bed at 8 P.M.",
     "misconception": "Noon is 12 P.M. and midnight is 12 A.M., which trips kids up since there is no 12 in between.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「午前と午後」とは、1日を12時間ずつに分けた2つのことです。午前は正午より前、午後は正午より後です。マヤは午前7時に起き、午後8時にねます。"
   },
   {
     "id": "4-md-24-hour-clock",
@@ -5655,7 +5907,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A way of telling time using the numbers 00:00 to 23:59, with no A.M. or P.M.",
     "example": "Leo reads a train schedule that uses the 24-hour clock. 14:00 means 2 P.M.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「24時間表記」とは、00:00から23:59までの数字を使って時刻を表す方法で、午前や午後を使いません。レオは24時間表記の電車の時刻表を読みます。14:00は午後2時のことです。"
   },
   {
     "id": "4-md-kilometer",
@@ -5673,7 +5926,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A metric unit for long distances. It equals 1,000 meters.",
     "example": "Maya's family drives 5 kilometers to the lake, much farther than she could walk.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「キロメートル」とは、長い距離を表す単位のことです。1000メートルに等しいです。マヤの家族は湖まで5キロメートル車で走ります。歩くにはとても遠い距離です。"
   },
   {
     "id": "4-g-point",
@@ -5691,7 +5945,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "An exact spot. It has no size at all.",
     "example": "Theo marks a dot on the map where the library sits. That dot is a point.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「点」とは、正確な場所のことです。大きさはまったくありません。テオは地図の図書館がある場所に点をつけます。その点が点です。"
   },
   {
     "id": "4-g-line",
@@ -5709,7 +5964,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A straight path that goes on forever both ways.",
     "example": "Nina draws a straight path and puts an arrow on each end. The arrows show the line never stops.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「直線」とは、両方向にどこまでもまっすぐ続く道のことです。ニーナはまっすぐな道をかき、両はしに矢印をつけます。矢印は、直線が終わらないことを表しています。"
   },
   {
     "id": "4-g-ray",
@@ -5727,7 +5983,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A straight path with one end. It goes on forever the other way.",
     "example": "Omar shines a flashlight. The beam starts at the bulb and keeps going, much like a ray.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「半直線」とは、はしが1つあり、もう一方はどこまでも続くまっすぐな道のことです。オマールは懐中電灯を照らします。光は電球から始まり、ずっと進み続けます。半直線によく似ています。"
   },
   {
     "id": "4-g-acute-angle",
@@ -5751,7 +6008,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 11",
       "width": 320,
       "height": 159
-    }
+    },
+    "speechJa": "「鋭角」とは、正方形のかどより小さい角のことです。マヤは本を少しだけ開きます。背表紙のところにできる、せまい角が鋭角です。"
   },
   {
     "id": "4-g-obtuse-angle",
@@ -5769,7 +6027,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "An angle bigger than a square corner.",
     "example": "Leo leans a chair back until it nearly lies flat. The wide angle it makes is obtuse.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「鈍角」とは、正方形のかどより大きい角のことです。レオはいすをほとんど平らになるまでたおします。そのときにできる広い角が鈍角です。"
   },
   {
     "id": "4-g-right-angle",
@@ -5787,7 +6046,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A square corner. It measures 90 degrees.",
     "example": "Ana checks the corner of her paper against a tile. They match exactly, so it is a right angle.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「直角」とは、正方形のかどの形のことです。90度です。アナは紙のかどをタイルに合わせてみます。ぴったり合うので、直角です。"
   },
   {
     "id": "4-g-equilateral-triangle",
@@ -5805,7 +6065,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A triangle with all 3 sides the same length.",
     "example": "Ben checks a triangle tile with his ruler. All 3 sides measure 4 centimeters, so it is equilateral.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「正三角形」とは、3つの辺すべてが同じ長さの三角形のことです。ベンは三角形のタイルを定規で調べます。3つの辺がすべて4センチメートルなので、正三角形です。"
   },
   {
     "id": "4-g-isosceles-triangle",
@@ -5829,7 +6090,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 13",
       "width": 640,
       "height": 427
-    }
+    },
+    "speechJa": "「二等辺三角形」とは、ちょうど2つの辺が同じ長さの三角形のことです。アイビーは三角の旗を測ります。2つの辺が6インチ、残り1つが4インチなので、二等辺三角形です。"
   },
   {
     "id": "4-g-parallel-lines",
@@ -5853,7 +6115,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Geometry: Lines and Lines of Symmetry, Slide 5",
       "width": 880,
       "height": 606
-    }
+    },
+    "speechJa": "「平行線」とは、いつも同じ間隔で、決して交わらない線のことです。ベンは線路をながめます。レールはずっと横に並んだままなので、平行です。"
   },
   {
     "id": "4-g-perpendicular-lines",
@@ -5877,7 +6140,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Geometry: Lines and Lines of Symmetry, Slide 3",
       "width": 488,
       "height": 341
-    }
+    },
+    "speechJa": "「垂直な線」とは、交わって正方形のかどの形を作る線のことです。アイビーは窓わくを調べます。たての枠と下の枠が直角に交わっているので、これらの線は垂直です。"
   },
   {
     "id": "4-g-line-of-symmetry",
@@ -5895,7 +6159,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A line that folds a shape into two matching halves.",
     "example": "Zoe folds a paper heart down the middle. The two halves match exactly, so the fold is a line of symmetry.",
     "misconception": "Not every fold works. The halves have to land on each other exactly.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「対称の軸」とは、形を折って、ぴったり重なる2つの半分に分ける線のことです。ゾーイは紙のハートを真ん中で折ります。2つの半分がぴったり重なるので、その折り目が対称の軸です。"
   },
   {
     "id": "4-g-radius",
@@ -5917,7 +6182,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The distance from the center of a circle to its edge.",
     "example": "Theo measures from the center of a pizza to its crust. That distance is the radius.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「半径」とは、円の中心から円のふちまでの距離のことです。テオはピザの中心からふちまでを測ります。その距離が半径です。"
   },
   {
     "id": "4-g-diameter",
@@ -5939,7 +6205,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The distance across a circle, through its center. It is twice the radius.",
     "example": "Nina measures straight across a round table, through the middle. That distance is the diameter.",
     "misconception": "The diameter has to pass through the center. Any line across the circle that misses the center is shorter.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「直径」とは、円の中心を通って、はしからはしまで測った距離のことです。半径の2倍です。ニーナは丸いテーブルの真ん中を通って、まっすぐ測ります。その距離が直径です。"
   },
   {
     "id": "4-g-circumference",
@@ -5957,7 +6224,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The distance around a circle.",
     "example": "Omar wraps a string around a can to measure the circumference.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「円周」とは、円のまわりをぐるっと1周した長さのことです。オマールは円周を測るために、缶にひもを巻きつけます。"
   },
   {
     "id": "4-g-net-of-a-solid",
@@ -5979,7 +6247,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A flat pattern that can be folded up to make a solid shape.",
     "example": "Maya cuts out a net of six squares and folds it up into a cube.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「展開図」とは、折りたたむと立体の形になる、平らな模様のことです。マヤは正方形6つの展開図を切り取り、折りたたんで立方体を作ります。"
   },
   {
     "id": "4-g-reflection-symmetry",
@@ -6001,7 +6270,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "When one half of a shape is the mirror image of the other half.",
     "example": "Leo folds a paper butterfly down the middle. Both wings match exactly, so it has reflection symmetry.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「線対称」とは、形の片方の半分が、もう片方の半分の鏡にうつした形になっていることです。レオは紙のチョウを真ん中で折ります。両方の羽がぴったり重なるので、線対称です。"
   },
   {
     "id": "4-g-top-front-side-view",
@@ -6019,7 +6289,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Drawings that show what a solid object looks like from different directions.",
     "example": "Ana draws her toy box from the top, from the front, and from the side to show all three views.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「上・正面・横から見た図」とは、立体を別々の向きから見たときの様子をかいた絵のことです。アナはおもちゃ箱を、上から、正面から、横からの3つの向きでかいて表します。"
   },
   {
     "id": "5-oa-order-of-operations",
@@ -6037,7 +6308,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The agreed order for working a problem. Do parentheses first. Then multiply and divide. Add and subtract last.",
     "example": "Theo solves 2 + 3 × 4. He multiplies first and gets 12. Then he adds 2 for a total of 14.",
     "misconception": "Working left to right gives 20 here, which is wrong. Multiplying comes before adding.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「計算の順序」とは、問題を解くときの決まった順番のことです。まずかっこの中、次にかけ算とわり算、最後にたし算とひき算をします。テオは2+3×4を解きます。先にかけ算をして12、それに2をたして合計14です。"
   },
   {
     "id": "5-oa-parentheses",
@@ -6055,7 +6327,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Curved marks that show what to work out first.",
     "example": "Nina solves (2 + 3) × 4. The parentheses come first, so she gets 5. Then 5 × 4 gives 20.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「かっこ」とは、先に計算する部分を表す曲がった記号のことです。ニーナは(2+3)×4を解きます。かっこの中を先に計算して5、それから5×4で20になります。"
   },
   {
     "id": "5-oa-expression",
@@ -6073,7 +6346,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A math phrase with numbers and signs. It has no equal sign.",
     "example": "Omar writes 6 × (2 + 1). That is an expression, not an equation.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「式」とは、数と記号でできた数の言い方のことです。イコールの記号はありません。オマールは6×(2+1)と書きます。これは式であり、方程式ではありません。"
   },
   {
     "id": "5-oa-evaluate",
@@ -6091,7 +6365,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Work out what an expression is worth.",
     "example": "Maya evaluates 4 × (3 + 2). Inside the parentheses gives 5. Then 4 × 5 gives 20.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「計算して値を求める」とは、式の値がいくつになるかを求めることです。マヤは4×(3+2)の値を求めます。かっこの中は5になり、4×5で20になります。"
   },
   {
     "id": "5-oa-numerical-pattern",
@@ -6109,7 +6384,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A list of numbers that follows a rule.",
     "example": "Leo starts at 3 and adds 5 each time: 3, 8, 13, 18. His pattern grows by 5.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「数のきまり」とは、ある決まりに従って並ぶ数のリストのことです。レオは3から始めて、毎回5ずつたします。3、8、13、18。この数のきまりは5ずつ増えていきます。"
   },
   {
     "id": "5-oa-coordinate-pair",
@@ -6127,7 +6403,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Two numbers that locate a point on a grid.",
     "example": "Ana plots (4, 3). She moves 4 across, then 3 up, and marks the spot.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「座標の組」とは、方眼の上の点の場所を表す2つの数のことです。アナは(4,3)を打ちます。横に4、たてに3進んで、その場所に印をつけます。"
   },
   {
     "id": "5-oa-square-number",
@@ -6149,7 +6426,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A number made by multiplying a whole number by itself.",
     "example": "Zoe multiplies 6 x 6 and gets 36. 36 is a square number.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「平方数」とは、ある整数を自分自身にかけてできる数のことです。ゾーイは6×6をかけて36を求めます。36は平方数です。"
   },
   {
     "id": "5-oa-cube-number",
@@ -6167,7 +6445,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A number made by multiplying a whole number by itself three times.",
     "example": "Theo multiplies 3 x 3 x 3 and gets 27. 27 is a cube number.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「立方数」とは、ある整数を自分自身に3回かけてできる数のことです。テオは3×3×3をかけて27を求めます。27は立方数です。"
   },
   {
     "id": "5-oa-triangular-number",
@@ -6189,7 +6468,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A number that can be arranged as dots in a triangle, like 1, 3, 6, 10.",
     "example": "Nina stacks dots in rows of 1, then 2, then 3. The running totals, 1, 3, 6, are triangular numbers.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「三角数」とは、点を三角形の形に並べられる数のことで、1、3、6、10のようなものです。ニーナは点を1こ、2こ、3このだんに積みます。それまでの合計、1、3、6が三角数です。"
   },
   {
     "id": "5-nbt-exponent",
@@ -6207,7 +6487,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A small raised number. It tells how many times to multiply the base by itself.",
     "example": "Ben writes 10 with a small 3 above it. The exponent means 10 × 10 × 10, which is 1,000.",
     "misconception": "An exponent is not the same as multiplying by 3. It means three tens multiplied together.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「指数」とは、小さく上に書く数のことです。もとの数を何回かけるかを表します。ベンは10の右上に小さな3を書きます。指数は10×10×10という意味で、1000になります。"
   },
   {
     "id": "5-nbt-power-of-ten",
@@ -6225,7 +6506,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "What you get when you multiply 10 by itself.",
     "example": "Ivy sees that 100 is 10 × 10. That makes 100 a power of ten.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「10のべき乗」とは、10を自分自身にかけてできる数のことです。アイビーは100が10×10であることに気づきます。だから100は10のべき乗です。"
   },
   {
     "id": "5-nbt-round-decimals",
@@ -6243,7 +6525,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Change a decimal to a nearby simpler one.",
     "example": "Zoe rounds 3.67 to the nearest tenth. The 7 pushes it up, so she writes 3.7.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「小数をがい数にする」とは、小数を近くのわかりやすい数に変えることです。ゾーイは3.67を一番近い十分の一の位のがい数にします。7が大きいので切り上げて、3.7と書きます。"
   },
   {
     "id": "5-nbt-multiply-decimals",
@@ -6261,7 +6544,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Multiply as you would whole numbers. Then place the dot.",
     "example": "Theo multiplies 0.4 × 0.3. He thinks 4 × 3 = 12. Two decimal places give him 0.12.",
     "misconception": "The answer can be smaller than what you started with. Multiplying by a part shrinks it.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「小数のかけ算」とは、整数のときと同じようにかけ算をしてから、点の位置を決めることです。テオは0.4×0.3をかけ算します。4×3=12と考え、小数点を2けた分下げて0.12にします。"
   },
   {
     "id": "5-nbt-divide-decimals",
@@ -6279,7 +6563,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Split a decimal into equal parts.",
     "example": "Nina pours 4.5 liters into 3 bottles evenly. Each bottle gets 1.5 liters.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「小数のわり算」とは、小数を同じ量ずつに分けることです。ニーナは4.5リットルを3本のボトルに同じ量ずつ注ぎます。1本あたり1.5リットルです。"
   },
   {
     "id": "5-nbt-thousandths",
@@ -6301,7 +6586,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A place value equal to one-thousandth of a whole. It is the third digit after the decimal point.",
     "example": "Omar writes 0.125. The 5 is in the thousandths place.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「千分の一の位」とは、全体の千分の一に等しい位のことです。小数点の後ろ3番目の数字です。オマールは0.125と書きます。5は千分の一の位にあります。"
   },
   {
     "id": "5-nbt-lakh",
@@ -6319,7 +6605,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "An Indian place-value unit equal to 100,000.",
     "example": "Maya reads that a car costs 5 lakh rupees, which means 500,000 rupees.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「ラック」とは、インドで使われる位取りの単位で、10万に等しいです。マヤは、ある車の値段が5ラックルピーだと読みます。それは50万ルピーという意味です。"
   },
   {
     "id": "5-nbt-crore",
@@ -6337,7 +6624,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "An Indian place-value unit equal to 10,000,000.",
     "example": "Leo reads that a stadium cost 50 crore rupees to build, which means 500,000,000 rupees.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「クロール」とは、インドで使われる位取りの単位で、1千万に等しいです。レオは、あるスタジアムの建設費が50クロールルピーだったと読みます。それは5億ルピーという意味です。"
   },
   {
     "id": "5-nf-common-denominator",
@@ -6355,7 +6643,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A shared bottom number that lets you add or compare fractions.",
     "example": "Omar adds 1/2 and 1/3. He rewrites them as 3/6 and 2/6, then adds to get 5/6.",
     "misconception": "You cannot add the bottom numbers. Make them match first, then add only the tops.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「共通の分母」とは、分数をたしたり比べたりできるようにする、共通の下の数のことです。オマールは1/2と1/3をたします。3/6と2/6に書き直してからたすと、5/6になります。"
   },
   {
     "id": "5-nf-mixed-number",
@@ -6373,7 +6662,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A whole number plus a fraction.",
     "example": "Maya runs 3 whole laps and half of another. She ran 3 1/2 laps.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「帯分数」とは、整数と分数を合わせた数のことです。マヤはトラックを3周と、もう1周の半分を走ります。3と1/2周走ったことになります。"
   },
   {
     "id": "5-nf-multiply-fractions",
@@ -6391,7 +6681,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Multiply the top numbers. Then multiply the bottom numbers.",
     "example": "Leo scoops 1/2 of a 1/3 cup measure. He multiplies and finds he has 1/6 of a cup.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「分数のかけ算」とは、上の数どうし、下の数どうしをそれぞれかけることです。レオは1/3カップの計量カップの半分をすくいます。かけ算をすると、1/6カップだとわかります。"
   },
   {
     "id": "5-nf-divide-fractions",
@@ -6409,7 +6700,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Split a fraction into equal parts, or find how many fit inside.",
     "example": "Ana has 1/2 a pizza and shares it with 2 people. Each one gets 1/4 of the pizza.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「分数のわり算」とは、分数を同じ大きさに分けたり、中にいくつ入るかを求めたりすることです。アナはピザの1/2を持っていて、2人と分けます。1人あたりピザの1/4になります。"
   },
   {
     "id": "5-nf-simplify",
@@ -6427,7 +6719,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Write a fraction with the smallest numbers that still name the same amount.",
     "example": "Ben has 6/8 of a bar. He divides the top and bottom by 2 and writes 3/4.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「約分する」とは、同じ量を表しながら、できるだけ小さい数で分数を書くことです。ベンはチョコバーの6/8を持っています。上の数と下の数を2でわって、3/4と書きます。"
   },
   {
     "id": "5-nf-reciprocal",
@@ -6445,7 +6738,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The fraction you get when you flip one over.",
     "example": "Ivy flips 2/5 and gets 5/2. That is the reciprocal. The two of them multiply to 1.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「逆数」とは、分数の上下をひっくり返してできる分数のことです。アイビーは2/5をひっくり返して5/2を作ります。これが逆数です。この2つをかけると1になります。"
   },
   {
     "id": "5-nf-percentage",
@@ -6463,7 +6757,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A fraction expressed as parts per hundred, written with a % sign.",
     "example": "Ana scores 90% on her spelling test. Out of 100 equal parts, she got 90 of them right.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「百分率(パーセント)」とは、100分の何こかで表した分数のことで、%の記号を使います。アナはスペリングテストで90%とりました。100個の同じ部分のうち、90個正解したことになります。"
   },
   {
     "id": "5-md-volume",
@@ -6481,7 +6776,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The amount of space a solid takes up.",
     "example": "Zoe fills a box with unit cubes. It holds 3 layers of 8, so the volume is 24 cubic units.",
     "misconception": "Volume fills the inside. Area only covers a flat surface.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「体積」とは、立体がしめる空間の広さのことです。ゾーイは箱を1辺が1の立方体でうめます。8こずつを3だん積んだので、体積は24立方単位です。"
   },
   {
     "id": "5-md-cubic-unit",
@@ -6499,7 +6795,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "One cube used to measure volume.",
     "example": "Theo stacks cubes inside a box with no gaps. Each cube is one cubic unit, and he counts 18.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「体積の単位」とは、体積を測るために使う立方体1つ分のことです。テオは箱の中にすきまなく立方体を積みます。1つ1つが体積の単位で、18こ数えます。"
   },
   {
     "id": "5-md-convert-units",
@@ -6517,7 +6814,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Change a measure to a different unit.",
     "example": "Nina has 2,000 meters left to run. She converts it and sees that is just 2 kilometers.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「単位を変換する」とは、ある測り方をちがう単位に変えることです。ニーナは走る距離が残り2000メートルです。単位を変換すると、それはちょうど2キロメートルだとわかります。"
   },
   {
     "id": "5-md-knot",
@@ -6535,7 +6833,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A unit used to measure the speed of a boat or the wind. It is not a unit of length.",
     "example": "Omar reads that a ship is sailing at 12 knots, meaning it covers 12 nautical miles every hour.",
     "misconception": "A knot already means a speed, not a distance. Nobody says 'knots per hour'.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「ノット」とは、船や風の速さを測る単位のことです。長さの単位ではありません。オマールは、ある船が12ノットで航海していると読みます。これは1時間に12海里進むという意味です。"
   },
   {
     "id": "5-md-coordinate-plane",
@@ -6553,7 +6852,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A grid made by two number lines that cross.",
     "example": "Omar maps his neighborhood on a coordinate plane. He finds the park at (4, 3).",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「座標平面」とは、交わる2本の数直線でできた方眼のことです。オマールは自分の住む地域を座標平面に表します。公園の場所は(4,3)だとわかります。"
   },
   {
     "id": "5-md-x-axis",
@@ -6571,7 +6871,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The number line that runs across the grid.",
     "example": "Maya moves right along the x-axis to 5 before she moves up at all.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「x軸」とは、方眼の横方向に通る数直線のことです。マヤはx軸に沿って右へ5まで進んでから、上に動きます。"
   },
   {
     "id": "5-md-y-axis",
@@ -6589,7 +6890,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "The number line that runs up and down the grid.",
     "example": "Leo counts up the y-axis to 4 to finish plotting his point.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「y軸」とは、方眼のたて方向に通る数直線のことです。レオはy軸を上へ4まで数えて、点を打ち終えます。"
   },
   {
     "id": "5-g-coordinate-plane",
@@ -6607,7 +6909,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A grid for locating points. A level line and an upright line cross to make it.",
     "example": "Ana plots (4, 3) on the coordinate plane. She goes 4 across, then 3 up.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「座標平面」とは、点の場所を表すための方眼のことです。水平な線とたての線が交わってできています。アナは座標平面に(4,3)を打ちます。横に4、それからたてに3進みます。"
   },
   {
     "id": "5-g-ordered-pair",
@@ -6631,7 +6934,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "credit": "Usable Math — Geometry: Maps + Grids + Ordered Pairs, Slide 11 (Visual Vicuna)",
       "width": 623,
       "height": 609
-    }
+    },
+    "speechJa": "「順序対」とは、点の場所を表す、順番のある2つの数のことです。横の数が先に来ます。ベンは(2,5)を打ちます。横に2、たてに5進みます。順番を変えると、ちがう場所になります。"
   },
   {
     "id": "5-g-classify",
@@ -6649,7 +6953,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "Sort shapes into groups by what they have in common.",
     "example": "Ivy classifies triangles by their angles. She makes one pile each for acute, right, and obtuse.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「仲間分けする」とは、共通することによって形をグループに分けることです。アイビーは三角形を角の種類で仲間分けします。鋭角、直角、鈍角のそれぞれに1つの山を作ります。"
   },
   {
     "id": "5-g-hierarchy-of-shapes",
@@ -6667,7 +6972,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A way to order shape groups. Smaller groups fit inside bigger ones.",
     "example": "Zoe draws a chart of shapes. Squares fit inside rectangles, and rectangles fit inside quadrilaterals.",
     "misconception": "Every square is a rectangle, but not every rectangle is a square.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「形の包含関係」とは、形のグループを順序づける方法のことです。小さいグループは大きいグループの中に入ります。ゾーイは形の表をかきます。正方形は長方形の中に、長方形は四角形の中に入ります。"
   },
   {
     "id": "5-g-quadrant",
@@ -6689,7 +6995,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "One of the four sections made when a coordinate plane is divided by its axes.",
     "example": "Theo plots a point with two positive coordinates. It lands in the first quadrant.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「象限」とは、座標平面が2本の軸で分けられてできる4つの部分の1つのことです。テオは2つとも正の数の座標を持つ点を打ちます。それは第一象限に入ります。"
   },
   {
     "id": "5-g-rotation-symmetry",
@@ -6711,7 +7018,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "When a shape looks the same after being turned part of the way around its center.",
     "example": "Omar spins a pinwheel shape a third of the way around. It looks exactly the same, so it has rotation symmetry.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「回転対称」とは、形をその中心のまわりで少し回しても、同じ形に見えることです。オマールは風車の形を3分の1だけ回します。まったく同じに見えるので、回転対称を持っています。"
   },
   {
     "id": "5-g-regular-polygon",
@@ -6729,7 +7037,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A polygon where all the sides and all the angles are equal.",
     "example": "Maya checks a hexagon tile. All the sides and all the angles match, so it is a regular polygon.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「正多角形」とは、すべての辺とすべての角が等しい多角形のことです。マヤは六角形のタイルを調べます。すべての辺とすべての角が同じなので、正多角形です。"
   },
   {
     "id": "5-g-irregular-polygon",
@@ -6747,7 +7056,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "A polygon where the sides and angles are not all equal.",
     "example": "Leo draws a five-sided shape. Its sides are not all the same length, so it is an irregular polygon.",
     "misconception": "",
-    "visual": null
+    "visual": null,
+    "speechJa": "「不規則な多角形」とは、辺や角がすべて等しいわけではない多角形のことです。レオは辺が5つある形をかきます。辺の長さがすべて同じではないので、不規則な多角形です。"
   },
   {
     "id": "5-g-reflex-angle",
@@ -6765,7 +7075,8 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
     "definition": "An angle greater than 180 degrees but less than 360 degrees.",
     "example": "A door swings almost all the way open. Ana measures the angle: 300 degrees. That is a reflex angle.",
     "misconception": "Kids often measure the small angle instead of the wide one. A reflex angle is always the bigger way around.",
-    "visual": null
+    "visual": null,
+    "speechJa": "「優角」とは、180度より大きく360度より小さい角のことです。ドアがほとんど全開近くまで開きます。アナが角度を測ると300度でした。これは優角です。"
   }
 ]</script>
 <!-- The 3D graph's libraries, at the end of the body so every panel paints
@@ -7166,6 +7477,7 @@ const STORAGE_KEYS = {
   activeStandards: 'mathVocabActiveStandards',
   showCat: 'mathVocabShowCat',
   catSkin: 'mathVocabCatSkin',
+  ttsVoiceMode: 'mathVocabTtsVoiceMode',
 };
 
 // ---- pixel cat mascot -------------------------------------------------
@@ -9241,11 +9553,20 @@ function speechScriptFor(term) {
   return `Let’s explore ${term.term}. ${definitionForSpeech(term)} ${exampleForSpeech(term)}`;
 }
 
+// term.speechJa comes from narration_ja.py via build_data.py — a
+// machine-translated, unreviewed passage per term (see that file's own
+// docstring). Falls back to the English script for any term newly added
+// since the last translation pass, rather than sending empty text.
+function speechScriptForJapanese(term) {
+  return term.speechJa || speechScriptFor(term);
+}
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     definitionForSpeech,
     exampleForSpeech,
     speechScriptFor,
+    speechScriptForJapanese,
   };
 }
 
@@ -9260,8 +9581,28 @@ if (typeof module !== 'undefined' && module.exports) {
    ========================================================================= */
 
 const DEFAULT_TTS_PROXY_URL = '/api/tts';
-const TTS_VOICE_ID = 'd38790551b0548ba9de248dbd10b74e1';
+
+// Fish Audio "Voice Library" voices (fish.audio/app/m/<id>) offered in the
+// header's Voice settings panel. "Random voice each time" draws only from
+// this pool — keep it English-only: applying a non-English voice model to
+// this app's English narration script would say English words in that
+// voice's accent, not actually speak another language.
+const TTS_VOICES = [
+  { id: 'a71f0b05f92b4b749b477f5b1001c95f', label: 'Friendly Teen Voice' },
+  { id: '933563129e564b19a115bedd57b7406a', label: 'Sarah' },
+  { id: '5f9dc1849c7644eaa48df363d988ad0e', label: 'Storyteller' },
+  { id: 'bd799bad679e4b259b7f21607590c00c', label: 'Snoop Dogg' },
+  { id: 'ed2f0fe411dd4362bf9dfbd71544b258', label: 'Neil deGrasse Tyson' },
+];
+const TTS_VOICE_MODE_RANDOM = 'random';
+
+// Not part of TTS_VOICES / the random pool above — see the comment on that
+// array. Only reachable by picking it explicitly in the Voice settings
+// panel, and only then does speakTerm() send Japanese text at all.
+const TTS_VOICE_JA = { id: '35c8e5ae5239435f8d9c26c86802b86d', label: 'Japanese (Female)' };
+
 const TTS_PROXY_URL = readTtsProxyUrl();
+let ttsVoiceMode = readTtsVoiceMode();
 
 // Fish Audio's own mp3s come back quiet — well under 0dBFS even at this
 // voice's natural level — and an <audio> element's `.volume` tops out at 1
@@ -9338,6 +9679,35 @@ function readTtsProxyUrl() {
   return configured || DEFAULT_TTS_PROXY_URL;
 }
 
+function isSelectableVoiceId(id) {
+  return id === TTS_VOICE_JA.id || TTS_VOICES.some((voice) => voice.id === id);
+}
+
+function readTtsVoiceMode() {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEYS.ttsVoiceMode);
+    if (stored === TTS_VOICE_MODE_RANDOM) return TTS_VOICE_MODE_RANDOM;
+    if (stored && isSelectableVoiceId(stored)) return stored;
+  } catch (e) { /* storage unavailable — fall back to random */ }
+  return TTS_VOICE_MODE_RANDOM;
+}
+
+function setTtsVoiceMode(mode) {
+  ttsVoiceMode = isSelectableVoiceId(mode) ? mode : TTS_VOICE_MODE_RANDOM;
+  try { localStorage.setItem(STORAGE_KEYS.ttsVoiceMode, ttsVoiceMode); } catch (e) { /* private browsing */ }
+}
+
+function getTtsVoiceMode() {
+  return ttsVoiceMode;
+}
+
+// Re-rolled on every call — that's the whole point of "random each time"
+// rather than once per session.
+function pickVoiceId() {
+  if (ttsVoiceMode !== TTS_VOICE_MODE_RANDOM) return ttsVoiceMode;
+  return TTS_VOICES[Math.floor(Math.random() * TTS_VOICES.length)].id;
+}
+
 async function speakTerm(t) {
   const btn = document.getElementById('listenBtn');
   const status = document.getElementById('listenStatus');
@@ -9355,8 +9725,13 @@ async function speakTerm(t) {
     return;
   }
 
-  if (ttsCache[t.id]) {
-    audioEl.src = ttsCache[t.id];
+  // Picked once per tap, up front, so the same voice is used for both the
+  // cache lookup and (on a miss) the request that fills it.
+  const voiceId = pickVoiceId();
+  const cacheKey = `${t.id}:${voiceId}`;
+
+  if (ttsCache[cacheKey]) {
+    audioEl.src = ttsCache[cacheKey];
     activeAudioEl = audioEl;
     playQuietly(audioEl, status);
     return;
@@ -9376,7 +9751,10 @@ async function speakTerm(t) {
     const res = await fetch(TTS_PROXY_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: speechScriptFor(t), reference_id: TTS_VOICE_ID }),
+      body: JSON.stringify({
+        text: voiceId === TTS_VOICE_JA.id ? speechScriptForJapanese(t) : speechScriptFor(t),
+        reference_id: voiceId,
+      }),
       signal: controller.signal,
     });
     if (!res.ok) {
@@ -9388,7 +9766,7 @@ async function speakTerm(t) {
       throw new Error(message);
     }
     const url = URL.createObjectURL(await res.blob());
-    ttsCache[t.id] = url;
+    ttsCache[cacheKey] = url;
     // Superseded while the request was in flight (a newer word, a mute, a
     // second tap) — the fetch finished, but nothing should play it.
     if (activeAbortController !== controller) return;
@@ -9424,6 +9802,110 @@ function playQuietly(audioEl, status) {
 window.addEventListener('pagehide', () => {
   Object.values(ttsCache).forEach((url) => URL.revokeObjectURL(url));
 });
+
+/* ---------- src/audioSettings.js ---------- */
+/* =========================================================================
+   The "Voice" menu in the header.
+
+   Split out the same way src/catSettings.js is split from src/cat.js: this
+   file is only the disclosure-panel UI. The voice list, the "random each
+   time" logic, and persistence all live in src/tts.js — this just reflects
+   and edits that state.
+   ========================================================================= */
+
+const AudioSettings = (function () {
+  const FOCUSABLE = 'input:not([disabled]),button:not([disabled])';
+
+  let panel, panelBtn, voicePicker;
+
+  /* "Random voice each time" sits in the same flat radio group as the named
+     voices, rather than behind a separate mode toggle — one list, every
+     option reachable the same way, nothing hidden pending a prior choice.
+     TTS_VOICE_JA is listed here but never in "random each time" — see the
+     comment on it in src/tts.js for why. */
+  function buildVoicePicker() {
+    const options = [
+      { id: TTS_VOICE_MODE_RANDOM, label: 'Random voice each time' },
+      ...TTS_VOICES,
+      TTS_VOICE_JA,
+    ];
+    voicePicker.innerHTML = options.map((voice) => `
+      <label class="audio-voice-option">
+        <input type="radio" name="ttsVoice" value="${voice.id}">
+        <span>${voice.label}</span>
+      </label>
+    `).join('');
+
+    voicePicker.querySelectorAll('input[type="radio"]').forEach((input) => {
+      input.checked = input.value === getTtsVoiceMode();
+      input.addEventListener('change', () => {
+        if (!input.checked) return;
+        setTtsVoiceMode(input.value);
+        Sound.play('toggle');
+      });
+    });
+  }
+
+  function open() {
+    panel.hidden = false;
+    panelBtn.setAttribute('aria-expanded', 'true');
+    requestAnimationFrame(() => panel.classList.add('open'));
+    voicePicker.querySelector('input:checked').focus();
+    Sound.play('open');
+  }
+
+  function close() {
+    panel.classList.remove('open');
+    panelBtn.setAttribute('aria-expanded', 'false');
+    Sound.play('close');
+    const finish = () => { panel.hidden = true; };
+    if (REDUCED_MOTION) finish();
+    else setTimeout(finish, 180);
+    panelBtn.focus();
+  }
+
+  function trapFocus(event) {
+    const items = [...panel.querySelectorAll(FOCUSABLE)].filter((el) => el.offsetParent !== null);
+    if (!items.length) return;
+    const first = items[0];
+    const last = items[items.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  function bind() {
+    panelBtn.addEventListener('click', () => (panel.hidden ? open() : close()));
+
+    document.addEventListener('click', (event) => {
+      if (panel.hidden) return;
+      if (!panel.contains(event.target) && event.target !== panelBtn && !panelBtn.contains(event.target)) close();
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (panel.hidden) return;
+      if (event.key === 'Escape') { close(); return; }
+      if (event.key === 'Tab') trapFocus(event);
+    });
+  }
+
+  function init() {
+    panelBtn = document.getElementById('audioSettingsBtn');
+    panel = document.getElementById('audioSettingsPanel');
+    voicePicker = document.getElementById('audioVoicePicker');
+    if (!panelBtn || !panel) return;
+
+    panelBtn.querySelector('.btn-icon').innerHTML = iconSvg('speaker', { size: 18 });
+    buildVoicePicker();
+    bind();
+  }
+
+  return { init };
+}());
 
 /* ---------- src/ui.js ---------- */
 /* =========================================================================
@@ -12589,6 +13071,7 @@ function boot() {
   // After CatWidget.init(), which loads the stored colour and visibility the
   // Cat menu reflects.
   CatSettings.init();
+  AudioSettings.init();
   // Before renderAll(), so a pending tour has already claimed the opening
   // line by the time the cat would otherwise greet.
   CatTour.init();
