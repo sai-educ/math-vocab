@@ -48,6 +48,7 @@ const STORAGE_KEYS = {
   activeStandards: 'mathVocabActiveStandards',
   showCat: 'mathVocabShowCat',
   catSkin: 'mathVocabCatSkin',
+  ttsVoiceMode: 'mathVocabTtsVoiceMode',
 };
 
 // ---- pixel cat mascot -------------------------------------------------
