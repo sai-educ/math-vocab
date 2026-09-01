@@ -265,10 +265,19 @@ function speechScriptFor(term) {
   return `Let’s explore ${term.term}. ${definitionForSpeech(term)} ${exampleForSpeech(term)}`;
 }
 
+// term.speechJa comes from narration_ja.py via build_data.py — a
+// machine-translated, unreviewed passage per term (see that file's own
+// docstring). Falls back to the English script for any term newly added
+// since the last translation pass, rather than sending empty text.
+function speechScriptForJapanese(term) {
+  return term.speechJa || speechScriptFor(term);
+}
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     definitionForSpeech,
     exampleForSpeech,
     speechScriptFor,
+    speechScriptForJapanese,
   };
 }
