@@ -106,6 +106,7 @@ APP_SCRIPTS = (
     "graphIntro.js",
     "narration.js",
     "tts.js",
+    "audioSettings.js",
     "ui.js",
     "catDialogue.js",
     "cat.js",
