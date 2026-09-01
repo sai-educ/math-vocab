@@ -39,6 +39,16 @@ __STYLES__
     </div>
     <div class="header-actions">
       <button id="soundBtn" class="header-btn" type="button" aria-pressed="true"></button>
+      <div class="audio-picker">
+        <button id="audioSettingsBtn" class="header-btn" type="button"
+                aria-haspopup="true" aria-expanded="false" aria-controls="audioSettingsPanel">
+          <span class="btn-icon" aria-hidden="true"></span><span class="btn-text">Voice</span>
+        </button>
+        <div id="audioSettingsPanel" class="audio-settings-panel" role="group" aria-label="Read-aloud voice" hidden>
+          <p class="audio-settings-hint">Choose the read-aloud voice:</p>
+          <div id="audioVoicePicker" class="audio-voice-picker"></div>
+        </div>
+      </div>
       <div class="cat-picker">
         <button id="catSettingsBtn" class="header-btn" type="button"
                 aria-haspopup="true" aria-expanded="false" aria-controls="catSettingsPanel">
