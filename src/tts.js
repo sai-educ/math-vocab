@@ -8,8 +8,28 @@
    ========================================================================= */
 
 const DEFAULT_TTS_PROXY_URL = '/api/tts';
-const TTS_VOICE_ID = 'd38790551b0548ba9de248dbd10b74e1';
+
+// Fish Audio "Voice Library" voices (fish.audio/app/m/<id>) offered in the
+// header's Voice settings panel. "Random voice each time" draws only from
+// this pool — keep it English-only: applying a non-English voice model to
+// this app's English narration script would say English words in that
+// voice's accent, not actually speak another language.
+const TTS_VOICES = [
+  { id: 'a71f0b05f92b4b749b477f5b1001c95f', label: 'Friendly Teen Voice' },
+  { id: '933563129e564b19a115bedd57b7406a', label: 'Sarah' },
+  { id: '5f9dc1849c7644eaa48df363d988ad0e', label: 'Storyteller' },
+  { id: 'bd799bad679e4b259b7f21607590c00c', label: 'Snoop Dogg' },
+  { id: 'ed2f0fe411dd4362bf9dfbd71544b258', label: 'Neil deGrasse Tyson' },
+];
+const TTS_VOICE_MODE_RANDOM = 'random';
+
+// Not part of TTS_VOICES / the random pool above — see the comment on that
+// array. Only reachable by picking it explicitly in the Voice settings
+// panel, and only then does speakTerm() send Japanese text at all.
+const TTS_VOICE_JA = { id: '35c8e5ae5239435f8d9c26c86802b86d', label: 'Japanese (Female)' };
+
 const TTS_PROXY_URL = readTtsProxyUrl();
+let ttsVoiceMode = readTtsVoiceMode();
 
 // Fish Audio's own mp3s come back quiet — well under 0dBFS even at this
 // voice's natural level — and an <audio> element's `.volume` tops out at 1
@@ -86,6 +106,35 @@ function readTtsProxyUrl() {
   return configured || DEFAULT_TTS_PROXY_URL;
 }
 
+function isSelectableVoiceId(id) {
+  return id === TTS_VOICE_JA.id || TTS_VOICES.some((voice) => voice.id === id);
+}
+
+function readTtsVoiceMode() {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEYS.ttsVoiceMode);
+    if (stored === TTS_VOICE_MODE_RANDOM) return TTS_VOICE_MODE_RANDOM;
+    if (stored && isSelectableVoiceId(stored)) return stored;
+  } catch (e) { /* storage unavailable — fall back to random */ }
+  return TTS_VOICE_MODE_RANDOM;
+}
+
+function setTtsVoiceMode(mode) {
+  ttsVoiceMode = isSelectableVoiceId(mode) ? mode : TTS_VOICE_MODE_RANDOM;
+  try { localStorage.setItem(STORAGE_KEYS.ttsVoiceMode, ttsVoiceMode); } catch (e) { /* private browsing */ }
+}
+
+function getTtsVoiceMode() {
+  return ttsVoiceMode;
+}
+
+// Re-rolled on every call — that's the whole point of "random each time"
+// rather than once per session.
+function pickVoiceId() {
+  if (ttsVoiceMode !== TTS_VOICE_MODE_RANDOM) return ttsVoiceMode;
+  return TTS_VOICES[Math.floor(Math.random() * TTS_VOICES.length)].id;
+}
+
 async function speakTerm(t) {
   const btn = document.getElementById('listenBtn');
   const status = document.getElementById('listenStatus');
@@ -103,8 +152,13 @@ async function speakTerm(t) {
     return;
   }
 
-  if (ttsCache[t.id]) {
-    audioEl.src = ttsCache[t.id];
+  // Picked once per tap, up front, so the same voice is used for both the
+  // cache lookup and (on a miss) the request that fills it.
+  const voiceId = pickVoiceId();
+  const cacheKey = `${t.id}:${voiceId}`;
+
+  if (ttsCache[cacheKey]) {
+    audioEl.src = ttsCache[cacheKey];
     activeAudioEl = audioEl;
     playQuietly(audioEl, status);
     return;
@@ -124,7 +178,10 @@ async function speakTerm(t) {
     const res = await fetch(TTS_PROXY_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: speechScriptFor(t), reference_id: TTS_VOICE_ID }),
+      body: JSON.stringify({
+        text: voiceId === TTS_VOICE_JA.id ? speechScriptForJapanese(t) : speechScriptFor(t),
+        reference_id: voiceId,
+      }),
       signal: controller.signal,
     });
     if (!res.ok) {
@@ -136,7 +193,7 @@ async function speakTerm(t) {
       throw new Error(message);
     }
     const url = URL.createObjectURL(await res.blob());
-    ttsCache[t.id] = url;
+    ttsCache[cacheKey] = url;
     // Superseded while the request was in flight (a newer word, a mute, a
     // second tap) — the fetch finished, but nothing should play it.
     if (activeAbortController !== controller) return;
