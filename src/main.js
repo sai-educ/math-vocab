@@ -298,6 +298,7 @@ function boot() {
   // After CatWidget.init(), which loads the stored colour and visibility the
   // Cat menu reflects.
   CatSettings.init();
+  AudioSettings.init();
   // Before renderAll(), so a pending tour has already claimed the opening
   // line by the time the cat would otherwise greet.
   CatTour.init();
