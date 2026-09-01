@@ -28,6 +28,7 @@ import os
 import re
 
 import readability
+from narration_ja import NARRATION_JA
 
 DOMAIN_NAMES = {
     "CC": "Counting & Cardinality",
@@ -1248,6 +1249,10 @@ def build_entries() -> list[dict]:
                     "example": example,
                     "misconception": misconception,
                     "visual": VISUALS.get(term_id),
+                    # Machine-translated, unreviewed — see narration_ja.py's
+                    # own docstring. None for a term with no entry yet; the
+                    # Japanese voice then falls back to the English script.
+                    "speechJa": NARRATION_JA.get(term_id),
                 })
     return entries
 
