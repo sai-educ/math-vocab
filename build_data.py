@@ -80,6 +80,11 @@ VISUALS = {
         "alt": "Three circles each split into 8 equal wedges, showing 2/8, 1/4, and 1/2 shaded.",
         "credit": "Usable Math — Fractions, Slide 11 (Visual Vicuna)",
     },
+    "k-cc-number": {
+        "src": "assets/visuals/k-cc-number-five-eagles-outline.svg",
+        "alt": "The number 5, outlined with a pattern of eagle silhouettes.",
+        "credit": "Wikimedia Commons — Steve70196 (CC0)",
+    },
     "4-nf-proper-fraction": {
         "src": "assets/visuals/4-nf-proper-fraction-tulips.webp",
         "alt": "An animated tally of 7 boxes filling in with tulip icons, one at a time.",
@@ -136,9 +141,14 @@ VISUALS = {
         "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 6",
     },
     "k-g-triangle": {
-        "src": "assets/visuals/k-g-triangle-fractal.webp",
-        "alt": "A large triangle made of many smaller triangles.",
-        "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 13",
+        "src": "assets/visuals/k-g-triangle-pascal-fractal.webp",
+        "alt": "An animation of Pascal's triangle with odd numbers highlighted, forming a triangular fractal pattern.",
+        "credit": "Wikimedia Commons — Exxu (public domain)",
+    },
+    "k-g-hexagon": {
+        "src": "assets/visuals/k-g-hexagon-compass-construction.webp",
+        "alt": "An animation of a regular hexagon being constructed with a straightedge and compass.",
+        "credit": "Wikimedia Commons — Jacopo Bertolotti (CC0)",
     },
     "4-g-isosceles-triangle": {
         "src": "assets/visuals/4-g-isosceles-triangle-icecream.webp",
@@ -206,9 +216,9 @@ VISUALS = {
         "credit": "Usable Math — Measurement, Slide 12 (Hint 2, Chef Math Bear)",
     },
     "1-md-hour": {
-        "src": "assets/visuals/1-md-hour-clock-face.webp",
-        "alt": "An analog clock face showing the hour and minute hands.",
-        "credit": "Usable Math — Measurement, Slide 6",
+        "src": "assets/visuals/1-md-hour-clock-animation.webp",
+        "alt": "An animated analog clock face with the hour and minute hands sweeping through a full hour.",
+        "credit": "Wikimedia Commons — Jahobr (CC0)",
     },
     "1-md-measure": {
         "src": "assets/visuals/1-md-measure-drilling-wood.webp",
