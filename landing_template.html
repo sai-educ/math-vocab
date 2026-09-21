@@ -156,26 +156,54 @@ __STYLES__
     </p>
     <div class="team">
       <article class="team-member">
-        <img class="team-photo" src="assets/team/aubrey-coyne.webp" alt="Aubrey Coyne" width="96" height="96" loading="lazy">
-        <h3>Aubrey Coyne</h3>
-        <p class="team-title">Master's Degree Student</p>
-      </article>
-      <article class="team-member">
-        <img class="team-photo" src="assets/team/sharon-edwards.webp" alt="Sharon Edwards" width="96" height="96" loading="lazy">
-        <h3>Sharon Edwards, Ed.D.</h3>
-        <p class="team-title">Clinical Faculty</p>
-      </article>
-      <article class="team-member">
         <img class="team-photo" src="assets/team/sai-gattupalli.webp" alt="Sai Gattupalli" width="96" height="96" loading="lazy">
         <h3>Sai Gattupalli, Ph.D.</h3>
-        <p class="team-title">Learning Systems Designer</p>
+        <p class="team-title">Data Scientist, Society &amp; AI</p>
       </article>
       <article class="team-member">
         <img class="team-photo" src="assets/team/robert-maloy.webp" alt="Robert Maloy" width="96" height="96" loading="lazy">
         <h3>Robert Maloy, Ed.D.</h3>
-        <p class="team-title">Senior Lecturer</p>
+        <p class="team-title">Senior Lecturer, University of Massachusetts Amherst</p>
+      </article>
+      <article class="team-member">
+        <img class="team-photo" src="assets/team/sharon-edwards.webp" alt="Sharon Edwards" width="96" height="96" loading="lazy">
+        <h3>Sharon Edwards, Ed.D.</h3>
+        <p class="team-title">Lecturer, University of Massachusetts Amherst</p>
+      </article>
+      <article class="team-member">
+        <img class="team-photo" src="assets/team/aubrey-coyne.webp" alt="Aubrey Coyne" width="96" height="96" loading="lazy">
+        <h3>Aubrey Coyne</h3>
+        <p class="team-title">Graduate Student, Harvard University</p>
       </article>
     </div>
+  </section>
+
+  <section class="panel" id="feedback">
+    <h2>Send us feedback</h2>
+    <p>
+      Found a confusing word, a broken visual, or have an idea for the Explorer? Tell us —
+      this goes straight to the team.
+    </p>
+    <form id="feedbackForm" class="feedback-form">
+      <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY">
+      <input type="hidden" name="subject" value="Math Word Explorer feedback">
+      <input type="hidden" name="from_name" value="Math Word Explorer feedback form">
+      <input type="checkbox" name="botcheck" class="feedback-honeypot" tabindex="-1" autocomplete="off">
+      <div class="feedback-row">
+        <label for="feedbackName">Name <span class="feedback-optional">(optional)</span></label>
+        <input type="text" id="feedbackName" name="name" autocomplete="name">
+      </div>
+      <div class="feedback-row">
+        <label for="feedbackEmail">Email <span class="feedback-optional">(optional — only if you'd like a reply)</span></label>
+        <input type="email" id="feedbackEmail" name="email" autocomplete="email">
+      </div>
+      <div class="feedback-row">
+        <label for="feedbackMessage">Your feedback</label>
+        <textarea id="feedbackMessage" name="message" rows="4" required></textarea>
+      </div>
+      <button type="submit" class="feedback-submit">Send feedback</button>
+      <p class="feedback-status" id="feedbackStatus" role="status" aria-live="polite"></p>
+    </form>
   </section>
 
   <section class="panel privacy">
@@ -262,6 +290,42 @@ __STYLES__
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
 __GRAPH_SCRIPT__
+</script>
+<script>
+(function () {
+  var form = document.getElementById('feedbackForm');
+  if (!form) return;
+  var status = document.getElementById('feedbackStatus');
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    if (form.botcheck.checked) return;
+    var submitBtn = form.querySelector('.feedback-submit');
+    submitBtn.disabled = true;
+    status.textContent = 'Sending…';
+    status.classList.remove('feedback-status-error');
+    fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify(Object.fromEntries(new FormData(form))),
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        submitBtn.disabled = false;
+        if (data.success) {
+          status.textContent = 'Thanks — your feedback was sent.';
+          form.reset();
+        } else {
+          status.textContent = 'Something went wrong. Please try again.';
+          status.classList.add('feedback-status-error');
+        }
+      })
+      .catch(function () {
+        submitBtn.disabled = false;
+        status.textContent = 'Something went wrong. Please try again.';
+        status.classList.add('feedback-status-error');
+      });
+  });
+})();
 </script>
 </body>
 </html>
