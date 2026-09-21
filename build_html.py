@@ -322,6 +322,21 @@ def main() -> None:
     else:
         print("Warning: assets/team not found; the landing page team photos will be missing.")
 
+    # Social share image (assets/og/*, landing page's og:image/twitter:image
+    # meta tags) — same lazy-loaded, not-inlined pattern as the assets above.
+    og_src_dir = os.path.join(HERE, "assets", "og")
+    if os.path.isdir(og_src_dir):
+        public_og_dir = os.path.join(public_dir, "assets", "og")
+        os.makedirs(public_og_dir, exist_ok=True)
+        for name in os.listdir(og_src_dir):
+            shutil.copyfile(
+                os.path.join(og_src_dir, name),
+                os.path.join(public_og_dir, name),
+            )
+        print(f"Copied {og_src_dir} -> {public_og_dir}")
+    else:
+        print("Warning: assets/og not found; the social share image will be missing.")
+
 
 if __name__ == "__main__":
     main()
