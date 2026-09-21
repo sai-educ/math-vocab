@@ -150,6 +150,16 @@ VISUALS = {
         "alt": "An animation of a regular hexagon being constructed with a straightedge and compass.",
         "credit": "Wikimedia Commons — Jacopo Bertolotti (CC0)",
     },
+    "k-g-circle": {
+        "src": "assets/visuals/k-g-circle-orange-disc.webp",
+        "alt": "A solid orange circle.",
+        "credit": "Wikimedia Commons — Adapa (public domain)",
+    },
+    "k-g-sphere": {
+        "src": "assets/visuals/k-g-sphere-basketball-spin.webp",
+        "alt": "A sailor balancing a spinning basketball on one finger.",
+        "credit": "Wikimedia Commons — U.S. Navy photo by MC1 Brian Brannon (public domain)",
+    },
     "4-g-isosceles-triangle": {
         "src": "assets/visuals/4-g-isosceles-triangle-icecream.webp",
         "alt": "A tall ice cream cone, its two slanted sides the same length.",
@@ -281,9 +291,14 @@ VISUALS = {
         "credit": "Usable Math — Estimation, Slide 5",
     },
     "1-nbt-place-value": {
-        "src": "assets/visuals/1-nbt-place-value-counters-chart.webp",
-        "alt": "An animated place-value chart for 52,068: colored counters stack into columns as the digits break out into 5 ten-thousands, 2 thousands, 0 hundreds, 6 tens, and 8 ones.",
-        "credit": "Usable Math — Place Value, Slide 3",
+        "src": "assets/visuals/1-nbt-place-value-abacus-14987.webp",
+        "alt": "An animated place-value abacus for 14,987: colored beads count out into ten-thousands, thousands, hundreds, tens, and ones columns as How-to-Hound paints alongside.",
+        "credit": "Usable Math — Place Value, Slide 5 (Hint 4, How-to-Hound)",
+    },
+    "2-nbt-expanded-form": {
+        "src": "assets/visuals/2-nbt-expanded-form-quadrant-breakdown.webp",
+        "alt": "An animation revealing four ways to write 52,068: 5+2+0+6+8, 50,000+200+60+8, 52 thousands 6 tens 8 ones, and five thousand two hundred sixty-eight.",
+        "credit": "Usable Math — Place Value, Slide 3 (Hint 2)",
     },
     "2-oa-addition": {
         "src": "assets/visuals/2-oa-addition-science-buckets-chalkboard.webp",
