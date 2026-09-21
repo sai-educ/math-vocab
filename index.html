@@ -246,12 +246,39 @@ footer p{margin:0;font-size:13.5px;color:var(--text-dim);}
 .credits-list li p a{color:var(--accent-ink);text-decoration:underline;text-underline-offset:2px;}
 .credits-list li p a:hover{color:var(--accent3-ink);}
 
+/* ---------- feedback form ---------- */
+
+.feedback-form{margin-top:18px;display:flex;flex-direction:column;gap:14px;max-width:480px;}
+.feedback-row{display:flex;flex-direction:column;gap:6px;}
+.feedback-row label{font-size:14px;font-weight:600;color:var(--text);}
+.feedback-optional{font-weight:400;color:var(--text-dim);}
+.feedback-row input,.feedback-row textarea{
+  font:inherit;font-size:15px;color:var(--text);
+  background:var(--panel2);border:1px solid var(--line);border-radius:10px;
+  padding:10px 12px;resize:vertical;
+}
+.feedback-row input:focus,.feedback-row textarea:focus{
+  outline:2px solid var(--focus-ring);outline-offset:1px;
+}
+.feedback-honeypot{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;}
+.feedback-submit{
+  align-self:flex-start;
+  min-height:46px;padding:0 24px;border:none;border-radius:12px;cursor:pointer;
+  background:var(--accent-ink);color:#0f1420;font-size:15px;font-weight:700;
+  transition:background var(--dur) var(--ease),transform var(--dur) var(--ease);
+}
+.feedback-submit:hover{background:#93b0ff;transform:translateY(-1px);}
+.feedback-submit:disabled{opacity:.6;cursor:default;transform:none;}
+.feedback-status{margin:0;font-size:14px;color:var(--accent3-ink);min-height:1.2em;}
+.feedback-status-error{color:var(--accent2-ink);}
+
 /* ---------- responsive ---------- */
 
 @media (max-width: 620px){
   .hero{padding:48px 0 4px;}
   .panel{padding:22px 20px;border-radius:15px;}
   .launch{width:100%;justify-content:center;padding:0 22px;}
+  .feedback-submit{width:100%;}
 }
 
 @media (prefers-reduced-motion: reduce){
@@ -398,26 +425,54 @@ footer p{margin:0;font-size:13.5px;color:var(--text-dim);}
     </p>
     <div class="team">
       <article class="team-member">
-        <img class="team-photo" src="assets/team/aubrey-coyne.webp" alt="Aubrey Coyne" width="96" height="96" loading="lazy">
-        <h3>Aubrey Coyne</h3>
-        <p class="team-title">Master's Degree Student</p>
-      </article>
-      <article class="team-member">
-        <img class="team-photo" src="assets/team/sharon-edwards.webp" alt="Sharon Edwards" width="96" height="96" loading="lazy">
-        <h3>Sharon Edwards, Ed.D.</h3>
-        <p class="team-title">Clinical Faculty</p>
-      </article>
-      <article class="team-member">
         <img class="team-photo" src="assets/team/sai-gattupalli.webp" alt="Sai Gattupalli" width="96" height="96" loading="lazy">
         <h3>Sai Gattupalli, Ph.D.</h3>
-        <p class="team-title">Learning Systems Designer</p>
+        <p class="team-title">Data Scientist, Society &amp; AI</p>
       </article>
       <article class="team-member">
         <img class="team-photo" src="assets/team/robert-maloy.webp" alt="Robert Maloy" width="96" height="96" loading="lazy">
         <h3>Robert Maloy, Ed.D.</h3>
-        <p class="team-title">Senior Lecturer</p>
+        <p class="team-title">Senior Lecturer, University of Massachusetts Amherst</p>
+      </article>
+      <article class="team-member">
+        <img class="team-photo" src="assets/team/sharon-edwards.webp" alt="Sharon Edwards" width="96" height="96" loading="lazy">
+        <h3>Sharon Edwards, Ed.D.</h3>
+        <p class="team-title">Lecturer, University of Massachusetts Amherst</p>
+      </article>
+      <article class="team-member">
+        <img class="team-photo" src="assets/team/aubrey-coyne.webp" alt="Aubrey Coyne" width="96" height="96" loading="lazy">
+        <h3>Aubrey Coyne</h3>
+        <p class="team-title">Graduate Student, Harvard University</p>
       </article>
     </div>
+  </section>
+
+  <section class="panel" id="feedback">
+    <h2>Send us feedback</h2>
+    <p>
+      Found a confusing word, a broken visual, or have an idea for the Explorer? Tell us —
+      this goes straight to the team.
+    </p>
+    <form id="feedbackForm" class="feedback-form">
+      <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY">
+      <input type="hidden" name="subject" value="Math Word Explorer feedback">
+      <input type="hidden" name="from_name" value="Math Word Explorer feedback form">
+      <input type="checkbox" name="botcheck" class="feedback-honeypot" tabindex="-1" autocomplete="off">
+      <div class="feedback-row">
+        <label for="feedbackName">Name <span class="feedback-optional">(optional)</span></label>
+        <input type="text" id="feedbackName" name="name" autocomplete="name">
+      </div>
+      <div class="feedback-row">
+        <label for="feedbackEmail">Email <span class="feedback-optional">(optional — only if you'd like a reply)</span></label>
+        <input type="email" id="feedbackEmail" name="email" autocomplete="email">
+      </div>
+      <div class="feedback-row">
+        <label for="feedbackMessage">Your feedback</label>
+        <textarea id="feedbackMessage" name="message" rows="4" required></textarea>
+      </div>
+      <button type="submit" class="feedback-submit">Send feedback</button>
+      <p class="feedback-status" id="feedbackStatus" role="status" aria-live="polite"></p>
+    </form>
   </section>
 
   <section class="panel privacy">
@@ -877,6 +932,42 @@ footer p{margin:0;font-size:13.5px;color:var(--text-dim);}
     console.warn('The landing page backdrop could not start.', error);
   }
 }());
+</script>
+<script>
+(function () {
+  var form = document.getElementById('feedbackForm');
+  if (!form) return;
+  var status = document.getElementById('feedbackStatus');
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    if (form.botcheck.checked) return;
+    var submitBtn = form.querySelector('.feedback-submit');
+    submitBtn.disabled = true;
+    status.textContent = 'Sending…';
+    status.classList.remove('feedback-status-error');
+    fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify(Object.fromEntries(new FormData(form))),
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        submitBtn.disabled = false;
+        if (data.success) {
+          status.textContent = 'Thanks — your feedback was sent.';
+          form.reset();
+        } else {
+          status.textContent = 'Something went wrong. Please try again.';
+          status.classList.add('feedback-status-error');
+        }
+      })
+      .catch(function () {
+        submitBtn.disabled = false;
+        status.textContent = 'Something went wrong. Please try again.';
+        status.classList.add('feedback-status-error');
+      });
+  });
+})();
 </script>
 </body>
 </html>
