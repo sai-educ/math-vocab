@@ -48,7 +48,9 @@ const STORAGE_KEYS = {
   activeStandards: 'mathVocabActiveStandards',
   showCat: 'mathVocabShowCat',
   catSkin: 'mathVocabCatSkin',
-  ttsVoiceMode: 'mathVocabTtsVoiceMode',
+  // V2: bumped when Neil deGrasse Tyson became the default voice, so a
+  // "random each time" picked under the old default doesn't linger.
+  ttsVoiceMode: 'mathVocabTtsVoiceModeV2',
 };
 
 // ---- pixel cat mascot -------------------------------------------------
