@@ -51,7 +51,10 @@ const CatWidget = (function () {
     idle2: { row: 1, frames: 4, fps: 2 },
     groom: { row: 2, frames: 4, fps: 3 },
     groom2: { row: 3, frames: 4, fps: 3 },
-    walk: { row: 4, frames: 8, fps: 8, pxPerFrame: 7 },
+    // A shorter stride than the art strictly implies, so the slow stroll
+    // below still steps through its legs at a fluid rate instead of
+    // shuffling between poses three times a second.
+    walk: { row: 4, frames: 8, fps: 8, pxPerFrame: 5 },
     run: { row: 5, frames: 8, fps: 11, pxPerFrame: 11 },
     sleep: { row: 6, frames: 4, fps: 1.5 },
     tap: { row: 7, frames: 6, fps: 6 },
@@ -59,7 +62,7 @@ const CatWidget = (function () {
     perk: { row: 9, frames: 8, fps: 6 },
   };
 
-  const GAIT_SPEED_PX_S = { walk: 30, run: 105 };
+  const GAIT_SPEED_PX_S = { walk: 24, run: 105 };
 
   /* Tour flights cross the whole page rather than a corner of it, so they get
      their own pace — an ambling 105px/s would take ten seconds to reach the
@@ -77,8 +80,11 @@ const CatWidget = (function () {
 
   const MIN_IDLE_MS = 7000;
   const MAX_IDLE_MS = 14000;
-  // How long a gesture that plays in place holds before the cat settles.
-  const GESTURE_MS = { tap: 2400, cheer: 2100, groom: 4200, groom2: 4200, perk: 1500 };
+  /* How long a gesture that plays in place holds before the cat settles.
+     Each is a whole number of loops of its row (frames / fps), so the
+     gesture finishes its last cycle before the cat drops back to sitting
+     rather than cutting off mid-pose — that cut was a visible pop. */
+  const GESTURE_MS = { tap: 2000, cheer: 2100, groom: 4000, groom2: 4000, perk: 2667 };
   const MIN_MOVE_MS = 450;
   const MAX_MOVE_MS = 9000;
 
@@ -87,9 +93,18 @@ const CatWidget = (function () {
      as a distraction on the tenth repeat in a room of kids trying to read —
      it stays reserved for tour flights and celebration beats (see flyTo()),
      never ambient wandering. In-place variety (groom/cheer/perk) outweighs
-     walking, so the cat spends more time doing something a child can watch
-     from where they are than crossing the strip. */
-  const AMBIENT_WEIGHTS = { walk: 3, tap: 2, groom: 3, cheer: 2, perk: 2 };
+     walking by a wide margin, so the cat mostly stays put and plays —
+     grooming, jumping (cheer), looking about — and only occasionally takes
+     a short stroll. */
+  const AMBIENT_WEIGHTS = { walk: 1, tap: 2, groom: 3, cheer: 3, perk: 2 };
+
+  /* Ambient strolls stay inside the half of the strip nearest home (the
+     graph's top-right corner) and each one covers only a short distance, so
+     the cat never paces back and forth along the top of the knowledge graph
+     while a child is reading it. */
+  const ROAM_FRACTION = 0.5;
+  const MIN_STROLL_PX = 24;
+  const MAX_STROLL_PX = 90;
 
   // Quiet for this long and the cat offers a hint about the tool.
   const TIP_AFTER_MS = 38000;
@@ -262,11 +277,18 @@ const CatWidget = (function () {
     sprite.classList.toggle('face-right', facingRight);
   }
 
+  // Poses that get the slow CSS breathing swell (see .cat-sprite.is-resting
+  // in src/styles.css), which keeps a sitting cat alive between its sparse
+  // two-frames-a-second idle cells.
+  const RESTING_ANIMS = new Set(['idle1', 'idle2', 'sleep']);
+
   function setAnim(name) {
     if (!ANIMS[name] || anim === name) return;
     anim = name;
     frame = 0;
     frameClock = 0;
+    sprite.classList.toggle('is-resting', RESTING_ANIMS.has(name));
+    sprite.classList.toggle('is-asleep', name === 'sleep');
     paint();
   }
 
@@ -341,7 +363,10 @@ const CatWidget = (function () {
      mode, where the feet are always on the strip. */
   function place(px, py) {
     x = px;
-    unit.style.left = `${px}px`;
+    /* A transform rather than `left`: layout snaps `left` to whole pixels,
+       which turned a slow stroll into a visible stutter, while a composited
+       translate glides at sub-pixel precision. */
+    unit.style.transform = `translate3d(${px}px, 0, 0) translateX(-50%)`;
     if (!tourMode || typeof py !== 'number') return;
     y = py;
     unit.style.top = `${py - spriteSize()}px`;
@@ -384,21 +409,36 @@ const CatWidget = (function () {
     return p < 0.5 ? 4 * p * p * p : 1 - ((-2 * p + 2) ** 3) / 2;
   }
 
-  function pickTarget() {
+  /* Sine in-out for the ambient stroll. Cubic peaks at three times the
+     average speed mid-stride, which turned a short walk into a scurry that
+     read as running; sine peaks at about 1.6x, so the cat ambles evenly
+     from start to stop. */
+  function easeInOutSine(p) {
+    return -(Math.cos(Math.PI * p) - 1) / 2;
+  }
+
+  /* The home half of the strip — see ROAM_FRACTION. */
+  function roamBounds() {
     const { min, max } = bounds();
-    const span = max - min;
-    if (span <= 1) return x;
+    return { min: Math.max(min, max - (max - min) * ROAM_FRACTION), max };
+  }
 
-    // Drifted most of the way across the strip? Head back to the corner, so
-    // the cat is never far from where a child last saw it.
-    if (Math.abs(x - homeX) > span * 0.55) return homeX;
+  function pickTarget() {
+    const { min, max } = roamBounds();
+    if (max - min <= 1) return x;
 
-    const minTravel = span * 0.2;
-    for (let attempt = 0; attempt < 6; attempt += 1) {
-      const target = min + Math.random() * span;
-      if (Math.abs(target - x) >= minTravel) return target;
-    }
-    return homeX;
+    // Outside the home half (a resize or the tour left it there)? Walk back
+    // to the corner, so the cat is never far from where a child last saw it.
+    if (x < min - 1 || x > max + 1) return homeX;
+
+    const reach = MIN_STROLL_PX + Math.random() * (MAX_STROLL_PX - MIN_STROLL_PX);
+    const roomLeft = x - min;
+    const roomRight = max - x;
+    const canGoLeft = roomLeft >= MIN_STROLL_PX;
+    const canGoRight = roomRight >= MIN_STROLL_PX;
+    if (!canGoLeft && !canGoRight) return x;
+    const goRight = canGoRight && (!canGoLeft || Math.random() < 0.5);
+    return goRight ? x + Math.min(reach, roomRight) : x - Math.min(reach, roomLeft);
   }
 
   /* `explicitTarget` bypasses the random pickTarget() — used to send the cat
@@ -413,7 +453,7 @@ const CatWidget = (function () {
     const duration = Math.min(MAX_MOVE_MS, Math.max(MIN_MOVE_MS, (distance / speed) * 1000));
     facingRight = target > x;
     setAnim(gait);
-    move = { fromX: x, toX: target, fromY: y, toY: y, duration, elapsed: 0, arc: 0 };
+    move = { fromX: x, toX: target, fromY: y, toY: y, duration, elapsed: 0, arc: 0, ease: easeInOutSine };
     busyUntil = performance.now() + duration;
     return duration;
   }
@@ -510,7 +550,7 @@ const CatWidget = (function () {
     stepTrail(dt);
     move.elapsed += dt;
     const p = Math.min(1, move.elapsed / move.duration);
-    const eased = easeInOut(p);
+    const eased = (move.ease || easeInOut)(p);
 
     const nx = move.fromX + (move.toX - move.fromX) * eased;
     let ny = move.fromY + (move.toY - move.fromY) * eased;
@@ -1307,6 +1347,9 @@ const CatWidget = (function () {
     if (!root || started) return;
     started = true;
 
+    // The cat boots sitting (anim starts as idle1), which setAnim() never
+    // sees as a change — so the resting breath is switched on here.
+    sprite.classList.add('is-resting');
     skin = loadSkin();
     visible = loadVisible();
     lastActivityAt = performance.now();
