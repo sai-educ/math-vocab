@@ -290,6 +290,16 @@ def main() -> None:
         shutil.copytree(visuals_src_dir, public_visuals_dir)
         print(f"Copied {visuals_src_dir} -> {public_visuals_dir}")
 
+    # Explainer videos (assets/videos/*): fetched only when a term with one is
+    # opened, never inlined. Replaced wholesale like the visuals above.
+    videos_src_dir = os.path.join(HERE, "assets", "videos")
+    if os.path.isdir(videos_src_dir):
+        public_videos_dir = os.path.join(public_dir, "assets", "videos")
+        if os.path.isdir(public_videos_dir):
+            shutil.rmtree(public_videos_dir)
+        shutil.copytree(videos_src_dir, public_videos_dir)
+        print(f"Copied {videos_src_dir} -> {public_videos_dir}")
+
     # Pixel cat sprite sheet (assets/cat/*, see src/cat.js) — same
     # lazy-loaded, not-inlined pattern as the sun model and term visuals
     # above. The .txt licence ships with it, since the art is MIT and the

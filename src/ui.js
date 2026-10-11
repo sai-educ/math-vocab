@@ -281,10 +281,12 @@ function renderDetail() {
       <p class="block-body">${escapeHtml(t.definition)}</p>
     </div>
 
-    ${t.visual ? `<figure class="term-visual">
-      <img src="${escapeHtml(t.visual.src)}" alt="${escapeHtml(t.visual.alt)}" loading="lazy" decoding="async"${t.visual.width ? ` width="${t.visual.width}" height="${t.visual.height}"` : ''}>
-      <figcaption>${escapeHtml(t.visual.credit)}</figcaption>
-    </figure>` : ''}
+    ${(t.visual || t.video) ? `<div class="term-media${t.visual && t.video ? ' has-both' : ''}">
+      ${t.visual ? `<figure class="term-visual">
+        <img src="${escapeHtml(t.visual.src)}" alt="${escapeHtml(t.visual.alt)}" loading="lazy" decoding="async"${t.visual.width ? ` width="${t.visual.width}" height="${t.visual.height}"` : ''}>
+        <figcaption>${escapeHtml(t.visual.credit)}</figcaption>
+      </figure>` : ''}${t.video ? videoPlayerHtml(t.video) : ''}
+    </div>` : ''}
 
     <section class="story" aria-labelledby="storyHeading">
       <h3 class="story-heading" id="storyHeading">
@@ -300,6 +302,63 @@ function renderDetail() {
     </div>` : ''}
   `;
   document.getElementById('listenBtn').addEventListener('click', () => speakTerm(t));
+  if (t.video) wireVideoPlayer();
+}
+
+// ---- short explainer video (Manim) -------------------------------------
+// A black frame with a plain play button and a scrubbable timeline. Never
+// autoplays; captions are on by default. Native <input type=range> and
+// <button> keep it keyboard- and screen-reader-accessible.
+
+function videoPlayerHtml(v) {
+  return `<figure class="term-video">
+    <div class="tv-frame">
+      <video id="tvVideo" preload="none" playsinline poster="${escapeHtml(v.poster)}"
+             aria-label="${escapeHtml(v.label)}">
+        <source src="${escapeHtml(v.src)}" type="video/mp4">
+        <track kind="captions" srclang="en" label="English" src="${escapeHtml(v.captions)}" default>
+      </video>
+    </div>
+    <div class="tv-bar">
+      <button id="tvPlay" type="button" aria-label="Play the animation"><svg class="tv-ico-play" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg><svg class="tv-ico-pause" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 2.5h3v11h-3zM9.5 2.5h3v11h-3z" fill="currentColor"/></svg></button>
+      <input id="tvSeek" type="range" min="0" max="1000" value="0" step="1" aria-label="Animation timeline">
+      <span id="tvTime" aria-hidden="true">0:00</span>
+    </div>
+    <figcaption>Short animation</figcaption>
+  </figure>`;
+}
+
+function fmtVideoTime(sec) {
+  const s = Math.max(0, Math.floor(sec || 0));
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+}
+
+function wireVideoPlayer() {
+  const video = document.getElementById('tvVideo');
+  const play = document.getElementById('tvPlay');
+  const seek = document.getElementById('tvSeek');
+  const time = document.getElementById('tvTime');
+  if (!video || !play || !seek || !time) return;
+  const sync = () => {
+    const d = video.duration || 0;
+    if (d && !seeking) seek.value = String(Math.round((video.currentTime / d) * 1000));
+    time.textContent = `${fmtVideoTime(video.currentTime)} / ${fmtVideoTime(d)}`;
+    play.classList.toggle('is-playing', !video.paused && !video.ended);
+    play.setAttribute('aria-label', video.paused || video.ended ? 'Play the animation' : 'Pause the animation');
+  };
+  let seeking = false;
+  play.addEventListener('click', () => {
+    if (video.paused || video.ended) video.play().catch(() => {});
+    else video.pause();
+  });
+  seek.addEventListener('input', () => {
+    seeking = true;
+    if (video.duration) video.currentTime = (Number(seek.value) / 1000) * video.duration;
+    sync();
+  });
+  seek.addEventListener('change', () => { seeking = false; });
+  ['timeupdate', 'play', 'pause', 'ended', 'loadedmetadata'].forEach((e) => video.addEventListener(e, sync));
+  sync();
 }
 
 // ---- onboarding hint + spotlight ---------------------------------------

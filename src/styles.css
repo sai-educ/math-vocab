@@ -728,6 +728,26 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
    every term's card a predictable size regardless of its source image. */
 .term-visual img{max-width:100%;max-height:220px;width:auto;height:auto;border-radius:8px;display:block;margin:0 auto;}
 .term-visual figcaption{margin:8px 2px 0;font-size:11px;color:var(--text-muted);text-align:right;}
+/* Visual + explainer video: side by side when the panel is wide enough,
+   stacked otherwise (flex-wrap does the switch, no breakpoint needed). */
+.term-media{display:flex;flex-wrap:wrap;gap:12px;margin:0 0 18px;align-items:flex-start;}
+.term-media .term-visual{margin:0;flex:1 1 150px;min-width:0;}
+.term-media.has-both .term-visual img{max-height:160px;}
+.term-video{margin:0;flex:1 1 220px;min-width:0;border-radius:14px;overflow:hidden;background:#0b0b10;border:1px solid #000;box-shadow:var(--shadow-sm);}
+.tv-frame{aspect-ratio:16/9;background:#0b0b10;}
+.tv-frame video{display:block;width:100%;height:100%;object-fit:contain;background:#0b0b10;}
+.tv-bar{display:flex;align-items:center;gap:10px;padding:6px 10px;background:#000;color:#fff;}
+#tvPlay{
+  flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+  width:var(--tap);height:var(--tap);min-width:44px;min-height:44px;border-radius:50%;
+  background:#fff;color:#000;border:2px solid #fff;cursor:pointer;
+}
+#tvPlay:focus-visible,#tvSeek:focus-visible{outline:3px solid #ffd23f;outline-offset:2px;}
+#tvPlay .tv-ico-pause,#tvPlay.is-playing .tv-ico-play{display:none;}
+#tvPlay.is-playing .tv-ico-pause{display:block;}
+#tvSeek{flex:1 1 auto;min-width:0;height:44px;accent-color:#ffd23f;cursor:pointer;background:transparent;}
+#tvTime{flex:0 0 auto;font-size:11px;font-variant-numeric:tabular-nums;color:#e6e7f2;}
+.term-video figcaption{margin:0;padding:0 10px 6px;font-size:11px;color:#c8cae0;background:#000;text-align:right;}
 #detail .block{margin-bottom:18px;}
 #detail .block-label{
   font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--text-dim);

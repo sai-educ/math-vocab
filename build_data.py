@@ -39,6 +39,18 @@ DOMAIN_NAMES = {
     "G": "Geometry",
 }
 
+# term id -> short Manim explainer video (source: videos/*.py, rendered by
+# videos/render.sh). Optional; shown beside the visual when present. Captions
+# are required (a11y): `captions` is a WebVTT file next to the video.
+VIDEOS = {
+    "3-oa-multiplication": {
+        "src": "assets/videos/3-oa-multiplication.mp4",
+        "poster": "assets/videos/3-oa-multiplication.poster.jpg",
+        "captions": "assets/videos/3-oa-multiplication.vtt",
+        "label": "Short animation: multiplication as equal groups, 3 groups of 4 makes 12.",
+    },
+}
+
 # term id -> visual. Optional; a term with none renders exactly as before.
 # Sourced from Usable Math's own coach-hint slides (with permission pending -
 # see the project roadmap), not authored for this bank. `src` is relative to
@@ -1274,6 +1286,7 @@ def build_entries() -> list[dict]:
                     "example": example,
                     "misconception": misconception,
                     "visual": VISUALS.get(term_id),
+                    "video": VIDEOS.get(term_id),
                     # Machine-translated, unreviewed — see narration_ja.py's
                     # own docstring. None for a term with no entry yet; the
                     # Japanese voice then falls back to the English script.

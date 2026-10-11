@@ -53,6 +53,8 @@ const MIME_TYPES = {
   ".svg": "image/svg+xml",
   ".webp": "image/webp",
   ".glb": "model/gltf-binary",
+  ".mp4": "video/mp4",
+  ".vtt": "text/vtt; charset=utf-8",
 };
 
 const server = http.createServer(async (request, response) => {
@@ -196,6 +198,27 @@ function serveStatic(request, response, pathname) {
       "Content-Length": String(stats.size),
       "Cache-Control": "no-store",
     };
+    // Browsers need byte ranges to seek inside a <video>.
+    headers["Accept-Ranges"] = "bytes";
+    const range = /^bytes=(\d*)-(\d*)$/.exec(request.headers.range || "");
+    if (range && (range[1] || range[2])) {
+      const start = range[1] ? Number(range[1]) : Math.max(0, stats.size - Number(range[2]));
+      const end = range[1] && range[2] ? Math.min(Number(range[2]), stats.size - 1) : stats.size - 1;
+      if (start > end || start >= stats.size) {
+        response.writeHead(416, { "Content-Range": `bytes */${stats.size}` });
+        response.end();
+        return;
+      }
+      headers["Content-Range"] = `bytes ${start}-${end}/${stats.size}`;
+      headers["Content-Length"] = String(end - start + 1);
+      response.writeHead(206, headers);
+      if (request.method === "HEAD") {
+        response.end();
+        return;
+      }
+      fs.createReadStream(filePath, { start, end }).pipe(response);
+      return;
+    }
     response.writeHead(200, headers);
     if (request.method === "HEAD") {
       response.end();
