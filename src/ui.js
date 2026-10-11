@@ -247,6 +247,7 @@ function renderDetail() {
   // so anything still playing or in flight has to be stopped here, not left
   // to keep running on an element that is no longer even on screen.
   stopSpeaking();
+  if (videoModal) { videoModal.busy = false; closeVideoModal(true); }
   if (!state.term) {
     detail.innerHTML = '<p class="placeholder">Select a grade, then a topic, then a word to see its definition here.</p>';
     return;
@@ -306,26 +307,37 @@ function renderDetail() {
 }
 
 // ---- short explainer video (Manim) -------------------------------------
-// A black frame with a plain play button and a scrubbable timeline. Never
-// autoplays; captions are on by default. Native <input type=range> and
-// <button> keep it keyboard- and screen-reader-accessible.
+// A black frame with a plain play button, a live-scrubbing timeline, and an
+// expand button that zooms the player into a centred modal. Never autoplays;
+// captions are on by default. Native <input type=range> and <button> keep it
+// keyboard- and screen-reader-accessible.
+
+const VIDEO_ZOOM_MS = 420;
+const VIDEO_ZOOM_EASE = 'ease-in-out';
+const VIDEO_MODAL_MAX_W = 1100;
+const VIDEO_MODAL_FILL = 0.9;
+const SVG_EXPAND = '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 6V2h4M14 6V2h-4M2 10v4h4M14 10v4h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const SVG_COLLAPSE = '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6 2v4H2M10 2v4h4M6 14v-4H2M10 14v-4h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+let videoModal = null; // { figure, slot, backdrop, expandBtn, onKey, busy }
 
 function videoPlayerHtml(v) {
-  return `<figure class="term-video">
+  return `<div class="tv-slot" id="tvSlot"><figure class="term-video" id="tvFigure">
     <div class="tv-frame">
-      <video id="tvVideo" preload="none" playsinline poster="${escapeHtml(v.poster)}"
+      <video id="tvVideo" preload="auto" playsinline poster="${escapeHtml(v.poster)}"
              aria-label="${escapeHtml(v.label)}">
         <source src="${escapeHtml(v.src)}" type="video/mp4">
         <track kind="captions" srclang="en" label="English" src="${escapeHtml(v.captions)}" default>
       </video>
+      <button id="tvExpand" class="tv-expand" type="button" aria-expanded="false"
+              aria-label="Open the animation in a larger view">${SVG_EXPAND}</button>
     </div>
     <div class="tv-bar">
       <button id="tvPlay" type="button" aria-label="Play the animation"><svg class="tv-ico-play" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg><svg class="tv-ico-pause" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 2.5h3v11h-3zM9.5 2.5h3v11h-3z" fill="currentColor"/></svg></button>
       <input id="tvSeek" type="range" min="0" max="1000" value="0" step="1" aria-label="Animation timeline">
       <span id="tvTime" aria-hidden="true">0:00</span>
     </div>
-    <figcaption>Short animation</figcaption>
-  </figure>`;
+  </figure></div>`;
 }
 
 function fmtVideoTime(sec) {
@@ -338,27 +350,159 @@ function wireVideoPlayer() {
   const play = document.getElementById('tvPlay');
   const seek = document.getElementById('tvSeek');
   const time = document.getElementById('tvTime');
-  if (!video || !play || !seek || !time) return;
-  const sync = () => {
+  const expand = document.getElementById('tvExpand');
+  if (!video || !play || !seek || !time || !expand) return;
+
+  let scrubbing = false;
+  let resumeAfterScrub = false;
+  let raf = 0;
+
+  const render = () => {
     const d = video.duration || 0;
-    if (d && !seeking) seek.value = String(Math.round((video.currentTime / d) * 1000));
+    if (d && !scrubbing) seek.value = String(Math.round((video.currentTime / d) * 1000));
     time.textContent = `${fmtVideoTime(video.currentTime)} / ${fmtVideoTime(d)}`;
-    play.classList.toggle('is-playing', !video.paused && !video.ended);
-    play.setAttribute('aria-label', video.paused || video.ended ? 'Play the animation' : 'Pause the animation');
+    const playing = !video.paused && !video.ended;
+    play.classList.toggle('is-playing', playing);
+    play.setAttribute('aria-label', playing ? 'Pause the animation' : 'Play the animation');
   };
-  let seeking = false;
+  // timeupdate only fires ~4x a second, which makes the thumb jump; while
+  // playing, follow the video every frame instead.
+  const tick = () => {
+    render();
+    raf = video.paused || video.ended ? 0 : requestAnimationFrame(tick);
+  };
+  const startTick = () => { if (!raf) raf = requestAnimationFrame(tick); };
+
   play.addEventListener('click', () => {
     if (video.paused || video.ended) video.play().catch(() => {});
     else video.pause();
   });
+
+  // Scrub live: every input event moves the video to that frame. Pause while
+  // dragging so playback doesn't fight the thumb, then resume if it was playing.
+  const beginScrub = () => {
+    if (scrubbing) return;
+    scrubbing = true;
+    resumeAfterScrub = !video.paused && !video.ended;
+    if (resumeAfterScrub) video.pause();
+  };
+  const endScrub = () => {
+    if (!scrubbing) return;
+    scrubbing = false;
+    if (resumeAfterScrub) video.play().catch(() => {});
+    resumeAfterScrub = false;
+    render();
+  };
+  seek.addEventListener('pointerdown', beginScrub);
+  seek.addEventListener('pointerup', endScrub);
+  seek.addEventListener('pointercancel', endScrub);
+  seek.addEventListener('blur', endScrub);
   seek.addEventListener('input', () => {
-    seeking = true;
-    if (video.duration) video.currentTime = (Number(seek.value) / 1000) * video.duration;
-    sync();
+    if (!video.duration) return;
+    const t = (Number(seek.value) / 1000) * video.duration;
+    if (typeof video.fastSeek === 'function' && scrubbing) video.fastSeek(t);
+    else video.currentTime = t;
+    time.textContent = `${fmtVideoTime(t)} / ${fmtVideoTime(video.duration)}`;
   });
-  seek.addEventListener('change', () => { seeking = false; });
-  ['timeupdate', 'play', 'pause', 'ended', 'loadedmetadata'].forEach((e) => video.addEventListener(e, sync));
-  sync();
+
+  ['timeupdate', 'pause', 'ended', 'seeked', 'loadedmetadata'].forEach((e) => video.addEventListener(e, render));
+  video.addEventListener('play', () => { render(); startTick(); });
+  expand.addEventListener('click', () => (videoModal ? closeVideoModal() : openVideoModal()));
+  render();
+}
+
+function videoModalTargetRect(figure) {
+  const barH = figure.querySelector('.tv-bar').offsetHeight;
+  const width = Math.min(
+    window.innerWidth * VIDEO_MODAL_FILL,
+    ((window.innerHeight * VIDEO_MODAL_FILL) - barH) * (16 / 9),
+    VIDEO_MODAL_MAX_W
+  );
+  const height = (width * 9) / 16 + barH;
+  return {
+    left: (window.innerWidth - width) / 2,
+    top: (window.innerHeight - height) / 2,
+    width,
+  };
+}
+
+function boxStyle(r) {
+  return { left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px` };
+}
+
+function zoomFigure(figure, from, to) {
+  const ms = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : VIDEO_ZOOM_MS;
+  Object.assign(figure.style, boxStyle(to));
+  if (!ms) return Promise.resolve();
+  return figure.animate([boxStyle(from), boxStyle(to)], { duration: ms, easing: VIDEO_ZOOM_EASE }).finished.catch(() => {});
+}
+
+async function openVideoModal() {
+  const figure = document.getElementById('tvFigure');
+  const slot = document.getElementById('tvSlot');
+  const expandBtn = document.getElementById('tvExpand');
+  if (!figure || !slot || videoModal) return;
+
+  const from = figure.getBoundingClientRect();
+  slot.style.height = `${from.height}px`; // hold the layout while the player is lifted out
+  Object.assign(figure.style, boxStyle(from));
+  figure.classList.add('is-open');
+  figure.setAttribute('role', 'dialog');
+  figure.setAttribute('aria-modal', 'true');
+  figure.setAttribute('aria-label', 'Animation');
+
+  const backdrop = document.createElement('div');
+  backdrop.className = 'tv-backdrop';
+  backdrop.addEventListener('click', () => closeVideoModal());
+  document.body.appendChild(backdrop);
+
+  const onKey = (e) => {
+    if (e.key === 'Escape') { e.preventDefault(); closeVideoModal(); return; }
+    if (e.key !== 'Tab') return;
+    const items = [...figure.querySelectorAll('button, input')];
+    const first = items[0];
+    const last = items[items.length - 1];
+    if (!figure.contains(document.activeElement)) { e.preventDefault(); first.focus(); }
+    else if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  };
+  document.addEventListener('keydown', onKey);
+
+  videoModal = { figure, slot, backdrop, expandBtn, onKey, busy: true };
+  expandBtn.innerHTML = SVG_COLLAPSE;
+  expandBtn.setAttribute('aria-expanded', 'true');
+  expandBtn.setAttribute('aria-label', 'Close the larger view');
+  expandBtn.focus();
+
+  const fade = backdrop.animate([{ opacity: 0 }, { opacity: 1 }], { duration: VIDEO_ZOOM_MS, easing: VIDEO_ZOOM_EASE, fill: 'forwards' });
+  await zoomFigure(figure, from, videoModalTargetRect(figure));
+  if (videoModal) videoModal.busy = false;
+  void fade;
+}
+
+async function closeVideoModal(immediate = false) {
+  const m = videoModal;
+  if (!m || m.busy) return;
+  m.busy = true;
+  document.removeEventListener('keydown', m.onKey);
+  if (!immediate) {
+    const to = m.slot.getBoundingClientRect();
+    const from = m.figure.getBoundingClientRect();
+    m.backdrop.animate([{ opacity: 1 }, { opacity: 0 }], { duration: VIDEO_ZOOM_MS, easing: VIDEO_ZOOM_EASE, fill: 'forwards' });
+    await zoomFigure(m.figure, from, { left: to.left, top: to.top, width: to.width });
+  }
+  m.figure.classList.remove('is-open');
+  ['left', 'top', 'width'].forEach((k) => m.figure.style.removeProperty(k));
+  m.figure.removeAttribute('role');
+  m.figure.removeAttribute('aria-modal');
+  m.figure.removeAttribute('aria-label');
+  m.slot.style.removeProperty('height');
+  m.backdrop.remove();
+  m.expandBtn.innerHTML = SVG_EXPAND;
+  m.expandBtn.setAttribute('aria-expanded', 'false');
+  m.expandBtn.setAttribute('aria-label', 'Open the animation in a larger view');
+  videoModal = null;
+  if (!immediate) m.expandBtn.focus();
 }
 
 // ---- onboarding hint + spotlight ---------------------------------------

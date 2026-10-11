@@ -733,21 +733,29 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
 .term-media{display:flex;flex-wrap:wrap;gap:12px;margin:0 0 18px;align-items:flex-start;}
 .term-media .term-visual{margin:0;flex:1 1 150px;min-width:0;}
 .term-media.has-both .term-visual img{max-height:160px;}
-.term-video{margin:0;flex:1 1 220px;min-width:0;border-radius:14px;overflow:hidden;background:#0b0b10;border:1px solid #000;box-shadow:var(--shadow-sm);}
-.tv-frame{aspect-ratio:16/9;background:#0b0b10;}
+.tv-slot{flex:1 1 220px;min-width:0;}
+.term-video{margin:0;border-radius:14px;overflow:hidden;background:#0b0b10;border:1px solid #000;box-shadow:var(--shadow-sm);}
+.term-video.is-open{position:fixed;z-index:10001;box-shadow:0 18px 60px rgba(0,0,0,.55);}
+.tv-backdrop{position:fixed;inset:0;z-index:10000;background:rgba(5,5,10,.78);cursor:zoom-out;}
+.tv-frame{position:relative;aspect-ratio:16/9;background:#0b0b10;}
 .tv-frame video{display:block;width:100%;height:100%;object-fit:contain;background:#0b0b10;}
+.tv-expand{
+  position:absolute;top:6px;right:6px;display:flex;align-items:center;justify-content:center;
+  width:44px;height:44px;border-radius:10px;border:0;cursor:pointer;
+  background:rgba(0,0,0,.55);color:#fff;
+}
+.tv-expand:hover{background:rgba(0,0,0,.8);}
 .tv-bar{display:flex;align-items:center;gap:10px;padding:6px 10px;background:#000;color:#fff;}
 #tvPlay{
   flex:0 0 auto;display:flex;align-items:center;justify-content:center;
   width:var(--tap);height:var(--tap);min-width:44px;min-height:44px;border-radius:50%;
   background:#fff;color:#000;border:2px solid #fff;cursor:pointer;
 }
-#tvPlay:focus-visible,#tvSeek:focus-visible{outline:3px solid #ffd23f;outline-offset:2px;}
+#tvPlay:focus-visible,#tvSeek:focus-visible,.tv-expand:focus-visible{outline:3px solid #ffd23f;outline-offset:2px;}
 #tvPlay .tv-ico-pause,#tvPlay.is-playing .tv-ico-play{display:none;}
 #tvPlay.is-playing .tv-ico-pause{display:block;}
 #tvSeek{flex:1 1 auto;min-width:0;height:44px;accent-color:#ffd23f;cursor:pointer;background:transparent;}
 #tvTime{flex:0 0 auto;font-size:11px;font-variant-numeric:tabular-nums;color:#e6e7f2;}
-.term-video figcaption{margin:0;padding:0 10px 6px;font-size:11px;color:#c8cae0;background:#000;text-align:right;}
 #detail .block{margin-bottom:18px;}
 #detail .block-label{
   font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--text-dim);

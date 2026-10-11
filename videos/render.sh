@@ -9,5 +9,5 @@ MANIM="${MANIM:-$HOME/manim-env/bin/manim}"
 
 # Re-encode small + web-friendly (faststart, no audio track) and grab a poster.
 OUT="../assets/videos/$2.mp4"
-ffmpeg -y -loglevel error -i "../.manim-media/videos/$1/720p30/$3.mp4" -c:v libx264 -crf 26 -pix_fmt yuv420p -movflags +faststart -an "$OUT"
+ffmpeg -y -loglevel error -i "../.manim-media/videos/$1/720p30/$3.mp4" -c:v libx264 -crf 24 -g 6 -keyint_min 6 -sc_threshold 0 -pix_fmt yuv420p -movflags +faststart -an "$OUT"
 ffmpeg -y -loglevel error -ss "${4:-9}" -i "$OUT" -frames:v 1 "../assets/videos/$2.poster.jpg"
