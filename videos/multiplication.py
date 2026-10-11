@@ -1,38 +1,16 @@
 """Manim scene: "multiplication" (term id 3-oa-multiplication).
 
-Render + captions:  videos/render.sh multiplication
-
-Motion is ease-in-out only (smooth), never linear or overshooting. Text uses
-Manim's plain Text (no LaTeX needed). The scene records the time of every
-caption it shows and writes a matching WebVTT file next to the video, so the
-captions can never drift from the animation.
+Render:  videos/render.sh multiplication 3-oa-multiplication Multiplication 8
 """
-import os
-from manim import *
-
-config.background_color = "#0b0b10"
-Text.set_default(font="Helvetica Neue")
+from common import *
 
 GROUPS, PER_GROUP = 3, 4
-COLORS = ["#7c9eff", "#ff5fa8", "#7cffb2"]
-HERE = os.path.dirname(os.path.abspath(__file__))
-OUT_VTT = os.path.join(HERE, "..", "assets", "videos", "3-oa-multiplication.vtt")
 
 
-def ease(t):
-    return smooth(t)
+class Multiplication(CaptionScene):
+    TERM_ID = "3-oa-multiplication"
 
-
-def fmt(sec):
-    return f"{int(sec // 60):02d}:{sec % 60:06.3f}"
-
-
-class Multiplication(Scene):
     def construct(self):
-        self.cues = []
-        self._cap = None
-        self._cap_start = 0.0
-
         # 1. Name the parts of 3 x 4 -------------------------------------
         self.caption("3 × 4 means 3 groups of 4.")
         three = Text("3", font_size=88, weight=BOLD, color=COLORS[0])
@@ -96,19 +74,3 @@ class Multiplication(Scene):
         self.caption(None)
         self.play(FadeOut(VGroup(eq, answer, counter, *dots)), run_time=0.6, rate_func=ease)
         self.write_vtt()
-
-    def now(self):
-        return self.renderer.time
-
-    def caption(self, text):
-        t = self.now()
-        if self._cap is not None:
-            self.cues.append((self._cap_start, t, self._cap))
-        self._cap, self._cap_start = text, t
-
-    def write_vtt(self):
-        lines = ["WEBVTT", ""]
-        for i, (a, b, text) in enumerate(self.cues, 1):
-            lines += [str(i), f"{fmt(a)} --> {fmt(b)}", text, ""]
-        with open(OUT_VTT, "w", encoding="utf-8") as f:
-            f.write("\n".join(lines))

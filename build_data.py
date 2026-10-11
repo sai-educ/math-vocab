@@ -49,6 +49,18 @@ VIDEOS = {
         "captions": "assets/videos/3-oa-multiplication.vtt",
         "label": "Short animation: multiplication as equal groups, 3 groups of 4 makes 12.",
     },
+    "3-nf-fraction": {
+        "src": "assets/videos/3-nf-fraction.mp4",
+        "poster": "assets/videos/3-nf-fraction.poster.jpg",
+        "captions": "assets/videos/3-nf-fraction.vtt",
+        "label": "Short animation: a bar cut into 4 equal parts with 3 shaded makes the fraction 3 over 4.",
+    },
+    "3-oa-division": {
+        "src": "assets/videos/3-oa-division.mp4",
+        "poster": "assets/videos/3-oa-division.poster.jpg",
+        "captions": "assets/videos/3-oa-division.vtt",
+        "label": "Short animation: sharing 12 dots into 3 equal groups gives 4 in each group.",
+    },
 }
 
 # term id -> visual. Optional; a term with none renders exactly as before.
