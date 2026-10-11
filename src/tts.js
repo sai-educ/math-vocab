@@ -22,6 +22,10 @@ const TTS_VOICES = [
   { id: 'ed2f0fe411dd4362bf9dfbd71544b258', label: 'Neil deGrasse Tyson' },
 ];
 const TTS_VOICE_MODE_RANDOM = 'random';
+// Every explanation plays in this voice unless a child picks another one in
+// the Voice settings panel. One consistent narrator, not a different stranger
+// on each tap.
+const TTS_DEFAULT_VOICE_ID = 'ed2f0fe411dd4362bf9dfbd71544b258'; // Neil deGrasse Tyson
 
 // Not part of TTS_VOICES / the random pool above — see the comment on that
 // array. Only reachable by picking it explicitly in the Voice settings
@@ -115,12 +119,12 @@ function readTtsVoiceMode() {
     const stored = localStorage.getItem(STORAGE_KEYS.ttsVoiceMode);
     if (stored === TTS_VOICE_MODE_RANDOM) return TTS_VOICE_MODE_RANDOM;
     if (stored && isSelectableVoiceId(stored)) return stored;
-  } catch (e) { /* storage unavailable — fall back to random */ }
-  return TTS_VOICE_MODE_RANDOM;
+  } catch (e) { /* storage unavailable — fall back to the default voice */ }
+  return TTS_DEFAULT_VOICE_ID;
 }
 
 function setTtsVoiceMode(mode) {
-  ttsVoiceMode = isSelectableVoiceId(mode) ? mode : TTS_VOICE_MODE_RANDOM;
+  ttsVoiceMode = mode === TTS_VOICE_MODE_RANDOM || isSelectableVoiceId(mode) ? mode : TTS_DEFAULT_VOICE_ID;
   try { localStorage.setItem(STORAGE_KEYS.ttsVoiceMode, ttsVoiceMode); } catch (e) { /* private browsing */ }
 }
 
