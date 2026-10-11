@@ -1148,11 +1148,22 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
 }
 .cat-widget-tour .cat-unit{bottom:auto;}
 
-/* `left` is written from JS on every animation frame; translateX(-50%) keeps
-   the sprite centred on it. Deliberately no CSS transition here: the travel
-   is eased inside the rAF loop instead, so the walk-cycle frames can be
-   advanced by distance covered and the paws stay locked to the ground. */
-.cat-unit{position:absolute;bottom:0;left:0;transform:translateX(-50%);}
+/* `transform` is written from JS on every animation frame (a sub-pixel
+   translate3d, then translateX(-50%) to centre the sprite on it).
+   Deliberately no CSS transition here: the travel is eased inside the rAF
+   loop instead, so the walk-cycle frames can be advanced by distance covered
+   and the paws stay locked to the ground. */
+.cat-unit{position:absolute;bottom:0;left:0;transform:translateX(-50%);will-change:transform;}
+
+/* A soft contact shadow under the paws: grounds the cat on its strip
+   instead of leaving a flat sprite floating over the page. Stays on the
+   floor while the sprite itself leaps (the cheer row draws the jump). */
+.cat-unit::before{
+  content:"";position:absolute;left:50%;bottom:-3px;width:44%;height:7px;
+  transform:translateX(-50%);border-radius:50%;pointer-events:none;
+  background:radial-gradient(closest-side,rgba(0,0,0,.2),rgba(0,0,0,0));
+}
+.cat-widget-tour .cat-unit::before{display:none;}
 
 /* One sprite sheet, 8x10 cells of 32px. width/height/background-size and the
    per-frame background-position are all set from src/cat.js, which is also
@@ -1165,8 +1176,24 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
   /* The art is drawn facing right and the cat lives in the right-hand
      corner, so facing left — into the page — is the resting default. */
   transform:scaleX(-1);
+  /* Turning around eases through the flip instead of snapping. */
+  transition:transform .26s var(--ease);
 }
 .cat-sprite.face-right{transform:scaleX(1);}
+
+/* A slow breathing swell while the cat sits or sleeps, anchored at its feet
+   (transform-origin above). Uses the separate `scale` property so it
+   composes with the facing flip on `transform` rather than replacing it. */
+.cat-sprite.is-resting{animation:cat-breathe 1.8s var(--ease) infinite alternate;}
+.cat-sprite.is-asleep{animation-duration:2.8s;}
+@keyframes cat-breathe{
+  from{scale:1 1;}
+  to{scale:1.012 1.035;}
+}
+@media (prefers-reduced-motion: reduce){
+  .cat-sprite{transition:none;}
+  .cat-sprite.is-resting{animation:none;}
+}
 
 /* Positioned from JS: centred on the cat, then clamped into the viewport so
    a line spoken from the far corner cannot run off the edge of the page.
