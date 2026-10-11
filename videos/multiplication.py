@@ -33,14 +33,14 @@ class Multiplication(CaptionScene):
         self.caption("Each group adds 4 more.")
         boxes, dots = [], []
         for g in range(GROUPS):
-            box = RoundedRectangle(corner_radius=0.2, width=2.0, height=2.0,
+            box = RoundedRectangle(corner_radius=0.2, width=1.9, height=1.9,
                                    color=COLORS[g], stroke_width=4)
             grid = VGroup(*[Dot(radius=0.17, color=COLORS[g]) for _ in range(PER_GROUP)])
             grid.arrange_in_grid(rows=2, cols=2, buff=0.4).move_to(box)
             boxes.append(box)
             dots.append(grid)
         row = VGroup(*[VGroup(b, d) for b, d in zip(boxes, dots)])
-        row.arrange(RIGHT, buff=0.6).shift(UP * 0.1)
+        row.arrange(RIGHT, buff=0.5).shift(UP * 0.1)
         counter = None
         for g in range(GROUPS):
             new = Text(str((g + 1) * PER_GROUP), font_size=60, weight=BOLD, color=YELLOW)

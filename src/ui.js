@@ -315,15 +315,21 @@ function renderDetail() {
 const VIDEO_ZOOM_MS = 420;
 const VIDEO_ZOOM_EASE = 'ease-in-out';
 const VIDEO_MODAL_MAX_W = 1100;
+const VIDEO_DEFAULT_ASPECT = 16 / 9;
 const VIDEO_MODAL_FILL = 0.9;
 const SVG_EXPAND = '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 6V2h4M14 6V2h-4M2 10v4h4M14 10v4h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const SVG_COLLAPSE = '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6 2v4H2M10 2v4h4M6 14v-4H2M10 14v-4h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
 let videoModal = null; // { figure, slot, backdrop, expandBtn, onKey, busy }
 
+function videoAspect(v) {
+  return Number(v.aspect) > 0 ? Number(v.aspect) : VIDEO_DEFAULT_ASPECT;
+}
+
 function videoPlayerHtml(v) {
-  return `<div class="tv-slot" id="tvSlot"><figure class="term-video" id="tvFigure">
-    <div class="tv-frame">
+  const aspect = videoAspect(v);
+  return `<div class="tv-slot" id="tvSlot"><figure class="term-video" id="tvFigure" data-aspect="${aspect}">
+    <div class="tv-frame" style="aspect-ratio:${aspect}">
       <video id="tvVideo" preload="auto" playsinline poster="${escapeHtml(v.poster)}"
              aria-label="${escapeHtml(v.label)}">
         <source src="${escapeHtml(v.src)}" type="video/mp4">
@@ -413,12 +419,13 @@ function wireVideoPlayer() {
 
 function videoModalTargetRect(figure) {
   const barH = figure.querySelector('.tv-bar').offsetHeight;
+  const aspect = Number(figure.dataset.aspect) || VIDEO_DEFAULT_ASPECT;
   const width = Math.min(
     window.innerWidth * VIDEO_MODAL_FILL,
-    ((window.innerHeight * VIDEO_MODAL_FILL) - barH) * (16 / 9),
+    ((window.innerHeight * VIDEO_MODAL_FILL) - barH) * aspect,
     VIDEO_MODAL_MAX_W
   );
-  const height = (width * 9) / 16 + barH;
+  const height = width / aspect + barH;
   return {
     left: (window.innerWidth - width) / 2,
     top: (window.innerHeight - height) / 2,

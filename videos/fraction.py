@@ -5,7 +5,7 @@ Render:  videos/render.sh fraction 3-nf-fraction Fraction 9
 from common import *
 
 PARTS, SHADED = 4, 3
-BAR_W, BAR_H = 8.8, 1.8
+BAR_W, BAR_H = 6.8, 2.0
 NUM_COLOR, DEN_COLOR = COLORS[0], COLORS[1]
 
 
@@ -16,7 +16,7 @@ class Fraction(CaptionScene):
         # 1. One whole ----------------------------------------------------
         self.caption("A fraction names part of a whole.")
         bar = RoundedRectangle(corner_radius=0.15, width=BAR_W, height=BAR_H,
-                               color=WHITE, stroke_width=5).shift(DOWN * 0.7)
+                               color=WHITE, stroke_width=5).shift(DOWN * 0.6)
         whole = Text("1 whole", font_size=34, color=SOFT).next_to(bar, DOWN, buff=0.35)
         self.play(FadeIn(bar, scale=0.95), run_time=1.0, rate_func=ease)
         self.play(FadeIn(whole, shift=UP * 0.12), run_time=0.8, rate_func=ease)
@@ -26,8 +26,6 @@ class Fraction(CaptionScene):
         self.caption("Cut the whole into 4 equal parts.")
         step = BAR_W / PARTS
         x0 = bar.get_left()[0]
-        cuts = [Line(UP * (bar.get_top()[1]), DOWN * (-bar.get_bottom()[1]), color=WHITE,
-                     stroke_width=4).set_x(x0 + step * (i + 1)) for i in range(PARTS - 1)]
         cuts = [Line([x0 + step * (i + 1), bar.get_top()[1], 0],
                      [x0 + step * (i + 1), bar.get_bottom()[1], 0],
                      color=WHITE, stroke_width=4) for i in range(PARTS - 1)]
@@ -36,11 +34,10 @@ class Fraction(CaptionScene):
 
         bar_line = Line(LEFT * 0.7, RIGHT * 0.7, color=WHITE, stroke_width=6)
         den = Text("4", font_size=78, weight=BOLD, color=DEN_COLOR)
-        num_slot = Text("3", font_size=78, weight=BOLD, color=NUM_COLOR)  # sizing only
-        bar_line.move_to(UP * 2.95)
+        bar_line.move_to(UP * 2.35)
         den.next_to(bar_line, DOWN, buff=0.18)
-        den_lab = Text("equal parts in the whole", font_size=28, color=DEN_COLOR)
-        den_lab.next_to(den, RIGHT, buff=0.6)
+        den_lab = Text("equal parts\nin the whole", font_size=26, color=DEN_COLOR, line_spacing=0.6)
+        den_lab.next_to(den, RIGHT, buff=0.7, aligned_edge=LEFT).align_to(den, DOWN)
         self.play(FadeIn(bar_line), FadeIn(den, shift=UP * 0.15),
                   FadeIn(den_lab, shift=LEFT * 0.15), run_time=1.0, rate_func=ease)
         self.wait(1.0)
@@ -57,7 +54,7 @@ class Fraction(CaptionScene):
                   run_time=2.0, rate_func=ease)
         num = Text("3", font_size=78, weight=BOLD, color=NUM_COLOR)
         num.next_to(bar_line, UP, buff=0.18)
-        num_lab = Text("parts we have", font_size=28, color=NUM_COLOR).next_to(num, RIGHT, buff=0.6)
+        num_lab = Text("parts\nwe have", font_size=26, color=NUM_COLOR, line_spacing=0.6).next_to(num, RIGHT, buff=0.7, aligned_edge=LEFT)
         self.play(FadeIn(num, shift=DOWN * 0.15), FadeIn(num_lab, shift=LEFT * 0.15),
                   run_time=0.9, rate_func=ease)
         self.wait(0.9)
@@ -66,7 +63,7 @@ class Fraction(CaptionScene):
         self.caption("3 out of 4 equal parts is the fraction 3/4.")
         frac = VGroup(num, bar_line, den)
         self.play(FadeOut(num_lab), FadeOut(den_lab),
-                  frac.animate.scale(1.18).move_to(UP * 2.95), run_time=0.9, rate_func=ease)
+                  frac.animate.scale(1.1).move_to(UP * 2.35), run_time=0.9, rate_func=ease)
         self.wait(2.2)
 
         self.caption(None)

@@ -42,23 +42,27 @@ DOMAIN_NAMES = {
 # term id -> short Manim explainer video (source: videos/*.py, rendered by
 # videos/render.sh). Optional; shown beside the visual when present. Captions
 # are required (a11y): `captions` is a WebVTT file next to the video.
+# `aspect` is width / height (1.0 = square); the player and modal size from it.
 VIDEOS = {
     "3-oa-multiplication": {
         "src": "assets/videos/3-oa-multiplication.mp4",
         "poster": "assets/videos/3-oa-multiplication.poster.jpg",
         "captions": "assets/videos/3-oa-multiplication.vtt",
+        "aspect": 1.0,
         "label": "Short animation: multiplication as equal groups, 3 groups of 4 makes 12.",
     },
     "3-nf-fraction": {
         "src": "assets/videos/3-nf-fraction.mp4",
         "poster": "assets/videos/3-nf-fraction.poster.jpg",
         "captions": "assets/videos/3-nf-fraction.vtt",
+        "aspect": 1.0,
         "label": "Short animation: a bar cut into 4 equal parts with 3 shaded makes the fraction 3 over 4.",
     },
     "3-oa-division": {
         "src": "assets/videos/3-oa-division.mp4",
         "poster": "assets/videos/3-oa-division.poster.jpg",
         "captions": "assets/videos/3-oa-division.vtt",
+        "aspect": 1.0,
         "label": "Short animation: sharing 12 dots into 3 equal groups gives 4 in each group.",
     },
 }

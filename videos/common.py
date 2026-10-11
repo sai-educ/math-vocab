@@ -13,6 +13,13 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from manim import *  # noqa: E402,F401,F403
 
 config.background_color = "#0b0b10"
+# Square 1:1 frame: x and y both run -4..4. Keep content inside ~x +/-3.6 and
+# y -2.9..3.7 (captions overlay the bottom of the player). To make another
+# aspect ratio later, change these three and re-lay out against the new frame.
+config.frame_width = 8.0
+config.frame_height = 8.0
+config.pixel_width = 720
+config.pixel_height = 720
 Text.set_default(font="Helvetica Neue")
 
 COLORS = ["#7c9eff", "#ff5fa8", "#7cffb2"]  # blue, pink, green

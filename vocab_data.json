@@ -3024,6 +3024,7 @@
       "src": "assets/videos/3-oa-division.mp4",
       "poster": "assets/videos/3-oa-division.poster.jpg",
       "captions": "assets/videos/3-oa-division.vtt",
+      "aspect": 1.0,
       "label": "Short animation: sharing 12 dots into 3 equal groups gives 4 in each group."
     },
     "speechJa": "「わり算」とは、ある数を同じ数ずつのグループに分けることです。かけ算の反対です。ニーナはわり算を使って、クッキー18まいを友達3人で分けます。1人6まいずつです。"
@@ -3055,6 +3056,7 @@
       "src": "assets/videos/3-oa-multiplication.mp4",
       "poster": "assets/videos/3-oa-multiplication.poster.jpg",
       "captions": "assets/videos/3-oa-multiplication.vtt",
+      "aspect": 1.0,
       "label": "Short animation: multiplication as equal groups, 3 groups of 4 makes 12."
     },
     "speechJa": "「かけ算」とは、同じ数ずつのグループを合わせて合計を求めることです。わり算の反対です。コーンマフィンは1こ2ドル、ブルーベリーマフィンは1こ3ドルです。それぞれの代金をかけ算で求めると、8×2=16、7×3=21です。"
@@ -3336,6 +3338,7 @@
       "src": "assets/videos/3-nf-fraction.mp4",
       "poster": "assets/videos/3-nf-fraction.poster.jpg",
       "captions": "assets/videos/3-nf-fraction.vtt",
+      "aspect": 1.0,
       "label": "Short animation: a bar cut into 4 equal parts with 3 shaded makes the fraction 3 over 4."
     },
     "speechJa": "「分数」とは、全体の一部を表す数のことです。ニーナはパイを4つの同じ大きさに切り、1つ取ります。パイの4分の1を食べました。"

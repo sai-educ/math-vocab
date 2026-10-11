@@ -31,9 +31,9 @@ class Division(CaptionScene):
         # the 12 dots, loose, and 3 empty groups to share them into
         pile = VGroup(*[Dot(radius=0.17, color=WHITE) for _ in range(TOTAL)])
         pile.arrange_in_grid(rows=2, cols=6, buff=0.35).move_to(UP * 1.75)
-        boxes = VGroup(*[RoundedRectangle(corner_radius=0.2, width=2.0, height=2.0,
+        boxes = VGroup(*[RoundedRectangle(corner_radius=0.2, width=1.9, height=1.9,
                                           color=COLORS[g], stroke_width=4) for g in range(GROUPS)])
-        boxes.arrange(RIGHT, buff=0.6).move_to(DOWN * 0.45)
+        boxes.arrange(RIGHT, buff=0.5).move_to(DOWN * 0.45)
         self.play(FadeOut(lab12), FadeOut(lab3), Transform(eq, head),
                   LaggedStart(*[FadeIn(d, scale=0.5) for d in pile], lag_ratio=0.05),
                   *[FadeIn(b, scale=0.92) for b in boxes], run_time=1.2, rate_func=ease)
