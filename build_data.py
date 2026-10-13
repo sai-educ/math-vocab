@@ -67,6 +67,20 @@ VIDEOS = {
     },
 }
 
+# term id -> picture shown inside the "See it in an example" card, under the
+# example sentence. Optional. `caption` is the sentence that ties the picture
+# to the term and is shown as the figure's caption; `credit` is the source line.
+ATTRIBUTE_BLOCKS_EXAMPLE = {
+    "src": "assets/visuals/3-g-attribute-attribute-blocks.webp",
+    "alt": "Rows of flat blocks in 3 colors (red, yellow, blue), 5 shapes, 2 sizes, and 2 thicknesses.",
+    "caption": "Color, Size, Shape, and Thickness are the attributes of the blocks in the picture.",
+    "credit": "Wikimedia Commons — GameForthAndLearn (CC0)",
+}
+EXAMPLE_VISUALS = {
+    "1-g-attribute": ATTRIBUTE_BLOCKS_EXAMPLE,
+    "3-g-attribute": ATTRIBUTE_BLOCKS_EXAMPLE,
+}
+
 # term id -> visual. Optional; a term with none renders exactly as before.
 # Sourced from Usable Math's own coach-hint slides (with permission pending -
 # see the project roadmap), not authored for this bank. `src` is relative to
@@ -164,9 +178,24 @@ VISUALS = {
         "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 3 (Visual Vicuna)",
     },
     "k-g-shape": {
-        "src": "assets/visuals/k-g-shape-mosaic.webp",
-        "alt": "A colorful mosaic of triangles, circles, squares, and other shapes.",
-        "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 6",
+        "src": "assets/visuals/k-g-shape-basic-shape-names.webp",
+        "alt": "Twelve basic shapes, each with its name: sphere, cylinder, cone, cube, pyramid, circle, triangle, square, rectangle, pentagon, hexagon, octagon, and oval.",
+        "credit": "Wikimedia Commons — Conrad 7 (CC0)",
+    },
+    "1-g-half": {
+        "src": "assets/visuals/1-g-half-two-of-four-circle.svg",
+        "alt": "A circle cut into 4 equal parts with 2 of them shaded, so exactly half is shaded.",
+        "credit": "Wikimedia Commons — Kuartas (public domain)",
+    },
+    "1-g-3d-shape": {
+        "src": "assets/visuals/1-g-3d-shape-cube-model.webp",
+        "alt": "A 3D cube seen from the corner, showing its top and two side faces.",
+        "credit": "Wikimedia Commons — Obijuan.cube (public domain), rendered from a 3D model",
+    },
+    "4-md-kilometer": {
+        "src": "assets/visuals/4-md-kilometer-definition-globe.svg",
+        "alt": "A globe with a red arrow running from the North Pole down through Paris to the Equator, labeled 10000 km.",
+        "credit": "Wikimedia Commons — US Government, adapted by Martinvl (public domain)",
     },
     "k-g-triangle": {
         "src": "assets/visuals/k-g-triangle-pascal-fractal.webp",
@@ -733,7 +762,7 @@ DATA = {
   ("centimeter", "A small unit of length. It is about as wide as your fingernail.",
    "Leo lays his crayon along a ruler. The crayon is 9 centimeters long.",
    ""),
-  ("meter", "A larger unit of length. It is about as wide as a door.",
+  ("meter", "Meter measures distance. One meter is about as wide as a door.",
    "Ana measures the rug with a meter stick. She steps it out twice, so the rug is 2 meters long.",
    ""),
   ("estimate", "A smart guess that is close, not exact.",
@@ -1303,6 +1332,7 @@ def build_entries() -> list[dict]:
                     "misconception": misconception,
                     "visual": VISUALS.get(term_id),
                     "video": VIDEOS.get(term_id),
+                    "exampleVisual": dict(EXAMPLE_VISUALS[term_id]) if term_id in EXAMPLE_VISUALS else None,
                     # Machine-translated, unreviewed — see narration_ja.py's
                     # own docstring. None for a term with no entry yet; the
                     # Japanese voice then falls back to the English script.
@@ -1339,30 +1369,52 @@ def write_markdown(out_dir: str) -> None:
             f.write("\n".join(lines))
 
 
+def _svg_size(path: str):
+    """Width/height from an SVG's root element (Pillow cannot open SVG).
+    None when either is missing or not a plain number."""
+    with open(path, encoding="utf-8") as f:
+        root = re.search(r"<svg\b[^>]*>", f.read(), re.S)
+    if not root:
+        return None
+    dims = [re.search(rf'\s{k}="([\d.]+)(?:px)?"', root.group(0)) for k in ("width", "height")]
+    if not all(dims):
+        return None
+    return tuple(round(float(m.group(1))) for m in dims)
+
+
 def attach_visual_dimensions(entries) -> None:
-    """Stamp each visual with its image's real width/height (best effort, via
-    Pillow). The app emits these as <img> width/height attributes so the
+    """Stamp each visual (and example visual) with its image's real
+    width/height. The app emits these as <img> width/height attributes so the
     definition panel reserves the right box before the lazy-loaded image
-    arrives — no layout jump mid-lesson. A missing file or a machine without
-    Pillow simply skips the stamping; the <img> renders exactly as before."""
+    arrives — no layout jump mid-lesson. Raster sizes come from Pillow (best
+    effort); SVG sizes come from the root element. A missing file or a machine
+    without Pillow simply skips the stamping; the <img> renders as before."""
     try:
         from PIL import Image
     except ImportError:
         print("Note: Pillow not installed; visuals get no width/height stamps.")
         return
+    root_dir = os.path.dirname(os.path.abspath(__file__))
     for entry in entries:
-        visual = entry.get("visual")
-        if not visual:
-            continue
-        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), visual["src"])
-        if not os.path.exists(path):
-            print(f"Warning: visual missing on disk: {visual['src']}")
-            continue
-        try:
-            with Image.open(path) as im:
-                visual["width"], visual["height"] = im.size
-        except OSError as exc:
-            print(f"Warning: could not read {visual['src']}: {exc}")
+        for key in ("visual", "exampleVisual"):
+            visual = entry.get(key)
+            if not visual:
+                continue
+            path = os.path.join(root_dir, visual["src"])
+            if not os.path.exists(path):
+                print(f"Warning: visual missing on disk: {visual['src']}")
+                continue
+            try:
+                if path.endswith(".svg"):
+                    size = _svg_size(path)
+                else:
+                    with Image.open(path) as im:
+                        size = im.size
+            except OSError as exc:
+                print(f"Warning: could not read {visual['src']}: {exc}")
+                continue
+            if size:
+                visual["width"], visual["height"] = size
 
 
 def main() -> None:
