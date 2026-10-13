@@ -295,6 +295,7 @@ function renderDetail() {
         See it in an example
       </h3>
       <p class="story-body">${escapeHtml(t.example)}</p>
+      ${t.exampleVisual ? exampleVisualHtml(t.exampleVisual) : ''}
     </section>
 
     ${t.misconception ? `<div class="block">
@@ -304,6 +305,18 @@ function renderDetail() {
   `;
   document.getElementById('listenBtn').addEventListener('click', () => speakTerm(t));
   if (t.video) wireVideoPlayer();
+}
+
+// A picture that belongs to the worked example itself: the caption is the
+// sentence that ties the picture to the word, the credit stays small below.
+function exampleVisualHtml(v) {
+  return `<figure class="story-visual">
+    <img src="${escapeHtml(v.src)}" alt="${escapeHtml(v.alt)}" loading="lazy" decoding="async"${v.width ? ` width="${v.width}" height="${v.height}"` : ''}>
+    <figcaption>
+      <span class="story-visual-caption">${escapeHtml(v.caption)}</span>
+      <span class="story-visual-credit">${escapeHtml(v.credit)}</span>
+    </figcaption>
+  </figure>`;
 }
 
 // ---- short explainer video (Manim) -------------------------------------
