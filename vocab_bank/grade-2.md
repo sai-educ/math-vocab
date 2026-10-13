@@ -163,7 +163,7 @@
 
 ### meter
 
-**Definition:** A larger unit of length. It is about as wide as a door.
+**Definition:** Meter measures distance. One meter is about as wide as a door.
 
 **Example:** Ana measures the rug with a meter stick. She steps it out twice, so the rug is 2 meters long.
 
