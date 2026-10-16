@@ -24,6 +24,8 @@ Text.set_default(font="Helvetica Neue")
 
 COLORS = ["#7c9eff", "#ff5fa8", "#7cffb2"]  # blue, pink, green
 SOFT = "#c8cae0"
+SFX_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sfx")
+SFX_GAIN_DB = -9  # quiet: the cues punctuate, the captions carry the meaning
 VIDEOS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "videos")
 
 
@@ -48,6 +50,14 @@ class CaptionScene(Scene):
         if self._cap is not None:
             self.cues.append((self._cap_start, t, self._cap))
         self._cap, self._cap_start = text, t
+
+    def sfx(self, role, delay=0.0):
+        """Play a cue when something is introduced, `delay` seconds from now.
+
+        role: "number" (numbers and groups), "operation" (+ - x / = signs),
+        "result" (the answer). WAVs are rendered by sfx/make_sfx.mjs.
+        """
+        self.add_sound(os.path.join(SFX_DIR, f"{role}.wav"), time_offset=delay, gain=SFX_GAIN_DB)
 
     def write_vtt(self):
         lines = ["WEBVTT", ""]

@@ -20,7 +20,12 @@ class Division(CaptionScene):
         eq = VGroup(twelve, divide, three).arrange(RIGHT, buff=0.5).move_to(UP * 0.4)
         lab12 = Text("in all", font_size=30, color=SOFT).next_to(twelve, DOWN, buff=0.3)
         lab3 = Text("equal groups", font_size=30, color=COLORS[0]).next_to(three, DOWN, buff=0.3)
+        self.sfx("number")
+        self.sfx("operation", 0.25)
+        self.sfx("number", 0.5)
         self.play(FadeIn(eq, scale=0.92), run_time=0.9, rate_func=ease)
+        self.sfx("number")
+        self.sfx("number", 0.2)
         self.play(FadeIn(lab12, shift=UP * 0.12), FadeIn(lab3, shift=UP * 0.12),
                   run_time=0.8, rate_func=ease)
         self.wait(1.1)
@@ -34,6 +39,7 @@ class Division(CaptionScene):
         boxes = VGroup(*[RoundedRectangle(corner_radius=0.2, width=1.9, height=1.9,
                                           color=COLORS[g], stroke_width=4) for g in range(GROUPS)])
         boxes.arrange(RIGHT, buff=0.5).move_to(DOWN * 0.45)
+        self.sfx("number", 0.3)  # the pile of 12 and the 3 groups appear
         self.play(FadeOut(lab12), FadeOut(lab3), Transform(eq, head),
                   LaggedStart(*[FadeIn(d, scale=0.5) for d in pile], lag_ratio=0.05),
                   *[FadeIn(b, scale=0.92) for b in boxes], run_time=1.2, rate_func=ease)
@@ -55,6 +61,8 @@ class Division(CaptionScene):
         self.caption("Each group gets 4.")
         counts = VGroup(*[Text("4", font_size=56, weight=BOLD, color=YELLOW)
                           .next_to(boxes[g], DOWN, buff=0.2) for g in range(GROUPS)])
+        for k in range(GROUPS):
+            self.sfx("number", k * 0.26)
         self.play(LaggedStart(*[FadeIn(c, shift=UP * 0.12) for c in counts], lag_ratio=0.3),
                   run_time=1.4, rate_func=ease)
         self.wait(0.8)
@@ -62,8 +70,11 @@ class Division(CaptionScene):
         # 4. Land on the answer, check with multiplication ----------------
         self.caption("12 ÷ 3 = 4. Check it: 3 × 4 = 12.")
         answer = Text("= 4", font_size=70, weight=BOLD, color=YELLOW).next_to(eq, RIGHT, buff=0.3)
+        self.sfx("operation")
+        self.sfx("result", 0.3)
         self.play(FadeIn(answer, shift=LEFT * 0.2), run_time=0.8, rate_func=ease)
         check = Text("3 × 4 = 12", font_size=34, color=SOFT).move_to(DOWN * 2.85)
+        self.sfx("operation")
         self.play(FadeIn(check, shift=UP * 0.12), run_time=0.8, rate_func=ease)
         self.wait(1.3)
 

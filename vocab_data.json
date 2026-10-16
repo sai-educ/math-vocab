@@ -1462,7 +1462,13 @@
       "width": 538,
       "height": 320
     },
-    "video": null,
+    "video": {
+      "src": "assets/videos/1-oa-how-many-more.mp4",
+      "poster": "assets/videos/1-oa-how-many-more.poster.jpg",
+      "captions": "assets/videos/1-oa-how-many-more.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: Maya has 8 stickers and Leo has 5, so 8 minus 5 shows Maya has 3 more."
+    },
     "exampleVisual": null,
     "speechJa": "「あといくつ多い」とは、2つの量の差を聞く言葉です。マヤはシールを8まい、レオは5まい持っています。マヤはあといくつ多いでしょうか。ひき算をして、3まい多いとわかります。"
   },

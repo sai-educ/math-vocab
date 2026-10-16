@@ -65,6 +65,13 @@ VIDEOS = {
         "aspect": 1.0,
         "label": "Short animation: sharing 12 dots into 3 equal groups gives 4 in each group.",
     },
+    "1-oa-how-many-more": {
+        "src": "assets/videos/1-oa-how-many-more.mp4",
+        "poster": "assets/videos/1-oa-how-many-more.poster.jpg",
+        "captions": "assets/videos/1-oa-how-many-more.vtt",
+        "aspect": 1.0,
+        "label": "Short animation: Maya has 8 stickers and Leo has 5, so 8 minus 5 shows Maya has 3 more.",
+    },
 }
 
 # term id -> picture shown inside the "See it in an example" card, under the
