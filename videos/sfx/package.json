@@ -1,8 +1,0 @@
-{
-  "name": "math-vocab-sfx",
-  "private": true,
-  "type": "module",
-  "description": "Renders Cuelume cues to WAV for the Manim explainer videos (npm run render).",
-  "scripts": { "render": "node make_sfx.mjs" },
-  "dependencies": { "cuelume": "0.2.8", "node-web-audio-api": "^1.0.0" }
-}

@@ -21,10 +21,10 @@ class Multiplication(CaptionScene):
         lab4 = Text("in each group", font_size=30, color=COLORS[1]).next_to(four, DOWN, buff=0.3)
         self.sfx("number")
         self.sfx("operation", 0.25)
-        self.sfx("number", 0.5)
+        self.sfx("number", 0.5, step=2)
         self.play(FadeIn(eq, scale=0.92), run_time=0.9, rate_func=ease)
         self.sfx("number")
-        self.sfx("number", 0.2)
+        self.sfx("number", 0.2, step=2)
         self.play(FadeIn(lab3, shift=UP * 0.12), FadeIn(lab4, shift=UP * 0.12),
                   run_time=0.8, rate_func=ease)
         self.wait(1.1)
@@ -50,7 +50,7 @@ class Multiplication(CaptionScene):
         for g in range(GROUPS):
             new = Text(str((g + 1) * PER_GROUP), font_size=60, weight=BOLD, color=YELLOW)
             new.move_to(DOWN * 2.1)
-            self.sfx("number")
+            self.sfx("number", step=g * 2)
             self.play(FadeIn(boxes[g], scale=0.9),
                       LaggedStart(*[FadeIn(d, scale=0.5) for d in dots[g]], lag_ratio=0.2),
                       (FadeIn(new) if counter is None else ReplacementTransform(counter, new)),

@@ -51,13 +51,15 @@ class CaptionScene(Scene):
             self.cues.append((self._cap_start, t, self._cap))
         self._cap, self._cap_start = text, t
 
-    def sfx(self, role, delay=0.0):
+    def sfx(self, role, delay=0.0, step=0):
         """Play a cue when something is introduced, `delay` seconds from now.
 
-        role: "number" (numbers and groups), "operation" (+ - x / = signs),
-        "result" (the answer). WAVs are rendered by sfx/make_sfx.mjs.
+        role: "number" (numbers and groups; `step` 0-5 picks a higher note, so
+        counting in turn climbs), "operation" (+ - x / = signs), "result" (the
+        answer), "tick" (one item dealt or moved). WAVs: sfx/make_sfx.py.
         """
-        self.add_sound(os.path.join(SFX_DIR, f"{role}.wav"), time_offset=delay, gain=SFX_GAIN_DB)
+        name = f"number_{min(step, 5)}" if role == "number" else role
+        self.add_sound(os.path.join(SFX_DIR, f"{name}.wav"), time_offset=delay, gain=SFX_GAIN_DB)
 
     def write_vtt(self):
         lines = ["WEBVTT", ""]

@@ -20,12 +20,12 @@ class Division(CaptionScene):
         eq = VGroup(twelve, divide, three).arrange(RIGHT, buff=0.5).move_to(UP * 0.4)
         lab12 = Text("in all", font_size=30, color=SOFT).next_to(twelve, DOWN, buff=0.3)
         lab3 = Text("equal groups", font_size=30, color=COLORS[0]).next_to(three, DOWN, buff=0.3)
-        self.sfx("number")
+        self.sfx("number", step=3)
         self.sfx("operation", 0.25)
-        self.sfx("number", 0.5)
+        self.sfx("number", 0.5, step=2)
         self.play(FadeIn(eq, scale=0.92), run_time=0.9, rate_func=ease)
-        self.sfx("number")
-        self.sfx("number", 0.2)
+        self.sfx("number", step=3)
+        self.sfx("number", 0.2, step=2)
         self.play(FadeIn(lab12, shift=UP * 0.12), FadeIn(lab3, shift=UP * 0.12),
                   run_time=0.8, rate_func=ease)
         self.wait(1.1)
@@ -54,6 +54,8 @@ class Division(CaptionScene):
             ox, oy = offsets[k]
             target = boxes[g].get_center() + np.array([ox, oy, 0])
             moves.append(dot.animate.move_to(target).set_color(COLORS[g]))
+        for i in range(TOTAL):
+            self.sfx("tick", i * 0.25)
         self.play(LaggedStart(*moves, lag_ratio=0.2), run_time=4.0, rate_func=ease)
         self.wait(0.4)
 
@@ -62,7 +64,7 @@ class Division(CaptionScene):
         counts = VGroup(*[Text("4", font_size=56, weight=BOLD, color=YELLOW)
                           .next_to(boxes[g], DOWN, buff=0.2) for g in range(GROUPS)])
         for k in range(GROUPS):
-            self.sfx("number", k * 0.26)
+            self.sfx("number", k * 0.26, step=k * 2)
         self.play(LaggedStart(*[FadeIn(c, shift=UP * 0.12) for c in counts], lag_ratio=0.3),
                   run_time=1.4, rate_func=ease)
         self.wait(0.8)

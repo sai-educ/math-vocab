@@ -20,7 +20,7 @@ class Fraction(CaptionScene):
         whole = Text("1 whole", font_size=34, color=SOFT).next_to(bar, DOWN, buff=0.35)
         self.sfx("number")
         self.play(FadeIn(bar, scale=0.95), run_time=1.0, rate_func=ease)
-        self.sfx("number")
+        self.sfx("number", step=2)
         self.play(FadeIn(whole, shift=UP * 0.12), run_time=0.8, rate_func=ease)
         self.wait(1.4)
 
@@ -32,7 +32,7 @@ class Fraction(CaptionScene):
                      [x0 + step * (i + 1), bar.get_bottom()[1], 0],
                      color=WHITE, stroke_width=4) for i in range(PARTS - 1)]
         for k in range(PARTS - 1):
-            self.sfx("number", k * 0.33)
+            self.sfx("number", k * 0.33, step=k)
         self.play(LaggedStart(*[Create(c) for c in cuts], lag_ratio=0.35),
                   FadeOut(whole), run_time=1.6, rate_func=ease)
 
@@ -43,7 +43,7 @@ class Fraction(CaptionScene):
         den_lab = Text("equal parts\nin the whole", font_size=26, color=DEN_COLOR, line_spacing=0.6)
         den_lab.next_to(den, RIGHT, buff=0.7, aligned_edge=LEFT).align_to(den, DOWN)
         self.sfx("operation")
-        self.sfx("number", 0.2)
+        self.sfx("number", 0.2, step=2)
         self.play(FadeIn(bar_line), FadeIn(den, shift=UP * 0.15),
                   FadeIn(den_lab, shift=LEFT * 0.15), run_time=1.0, rate_func=ease)
         self.wait(1.0)
@@ -57,13 +57,13 @@ class Fraction(CaptionScene):
             f.move_to([x0 + step * (i + 0.5), bar.get_center()[1], 0])
             fills.append(f)
         for k in range(SHADED):
-            self.sfx("number", k * 0.47)
+            self.sfx("number", k * 0.47, step=k * 2)
         self.play(LaggedStart(*[FadeIn(f, scale=0.92) for f in fills], lag_ratio=0.45),
                   run_time=2.0, rate_func=ease)
         num = Text("3", font_size=78, weight=BOLD, color=NUM_COLOR)
         num.next_to(bar_line, UP, buff=0.18)
         num_lab = Text("parts\nwe have", font_size=26, color=NUM_COLOR, line_spacing=0.6).next_to(num, RIGHT, buff=0.7, aligned_edge=LEFT)
-        self.sfx("number")
+        self.sfx("number", step=4)
         self.play(FadeIn(num, shift=DOWN * 0.15), FadeIn(num_lab, shift=LEFT * 0.15),
                   run_time=0.9, rate_func=ease)
         self.wait(0.9)

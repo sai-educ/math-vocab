@@ -31,12 +31,12 @@ class HowManyMore(CaptionScene):
         leo = dot_row(LEO, COLORS[1], 0.4)
         maya_tag = name_tag("Maya", MAYA, COLORS[0], 2.0)
         leo_tag = name_tag("Leo", LEO, COLORS[1], 0.4)
-        self.sfx("number")
+        self.sfx("number", step=4)
         self.play(FadeIn(maya_tag, shift=RIGHT * 0.12),
                   LaggedStart(*[FadeIn(d, scale=0.5) for d in maya], lag_ratio=0.12),
                   run_time=1.4, rate_func=ease)
         self.wait(0.5)
-        self.sfx("number")
+        self.sfx("number", step=2)
         self.play(FadeIn(leo_tag, shift=RIGHT * 0.12),
                   LaggedStart(*[FadeIn(d, scale=0.5) for d in leo], lag_ratio=0.12),
                   run_time=1.2, rate_func=ease)
@@ -69,8 +69,9 @@ class HowManyMore(CaptionScene):
                  for t, c in (("8", COLORS[0]), ("−", WHITE), ("5", COLORS[1]),
                               ("=", WHITE), ("3", YELLOW))]
         eq = VGroup(*parts).arrange(RIGHT, buff=0.35).move_to(DOWN * 1.7)
-        for part, role in zip(parts, ("number", "operation", "number", "operation", "result")):
-            self.sfx(role)
+        for part, (role, step) in zip(parts, (("number", 4), ("operation", 0), ("number", 2),
+                                              ("operation", 0), ("result", 0))):
+            self.sfx(role, step=step)
             self.play(FadeIn(part, shift=UP * 0.12), run_time=0.5, rate_func=ease)
         self.wait(2.0)
 
