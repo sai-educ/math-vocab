@@ -25,7 +25,7 @@ Text.set_default(font="Helvetica Neue")
 COLORS = ["#7c9eff", "#ff5fa8", "#7cffb2"]  # blue, pink, green
 SOFT = "#c8cae0"
 SFX_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sfx")
-SFX_GAIN_DB = -9  # quiet: the cues punctuate, the captions carry the meaning
+SFX_GAIN_DB = -1  # loud enough for laptop and iPad speakers; the WAVs are already peak-normalized
 VIDEOS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "videos")
 
 
