@@ -108,6 +108,8 @@ VISUALS = {
         "src": "assets/visuals/1-oa-how-many-more-wildwood-chart.webp",
         "alt": "A bar chart comparing Wildwood's 1,393 seats to Mark's Meadow's 682 seats, with the gap between them marked as the difference.",
         "credit": "Usable Math — Add & Take Away: How Many More, Slide 3 (Visual Vicuna)",
+        # The explainer video takes the top spot; the chart moves down to Think about.
+        "placement": "think-about",
     },
     "k-oa-take-away": {
         "src": "assets/visuals/1-oa-how-many-more-wildwood-chart.webp",

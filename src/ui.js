@@ -255,6 +255,10 @@ function renderDetail() {
   const t = termById(state.term);
   if (!t) return;
 
+  // A visual can ask to sit in "Think about" instead of beside the video.
+  const thinkVisual = t.visual && t.visual.placement === 'think-about' ? t.visual : null;
+  const topVisual = thinkVisual ? null : t.visual;
+
   detail.innerHTML = `
     <p class="breadcrumb">
       <span class="crumb-icon" aria-hidden="true">${domainIconSvg(t.domainCode, { size: 15 })}</span>
@@ -282,11 +286,8 @@ function renderDetail() {
       <p class="block-body">${escapeHtml(t.definition)}</p>
     </div>
 
-    ${(t.visual || t.video) ? `<div class="term-media${t.visual && t.video ? ' has-both' : ''}">
-      ${t.visual ? `<figure class="term-visual">
-        <img src="${escapeHtml(t.visual.src)}" alt="${escapeHtml(t.visual.alt)}" loading="lazy" decoding="async"${t.visual.width ? ` width="${t.visual.width}" height="${t.visual.height}"` : ''}>
-        <figcaption>${escapeHtml(t.visual.credit)}</figcaption>
-      </figure>` : ''}${t.video ? videoPlayerHtml(t.video) : ''}
+    ${(topVisual || t.video) ? `<div class="term-media${topVisual && t.video ? ' has-both' : ''}">
+      ${topVisual ? termVisualHtml(topVisual) : ''}${t.video ? videoPlayerHtml(t.video) : ''}
     </div>` : ''}
 
     <section class="story" aria-labelledby="storyHeading">
@@ -298,13 +299,21 @@ function renderDetail() {
       ${t.exampleVisual ? exampleVisualHtml(t.exampleVisual) : ''}
     </section>
 
-    ${t.misconception ? `<div class="block">
+    ${(t.misconception || thinkVisual) ? `<div class="block">
       <h3 class="block-label">Think about</h3>
-      <p class="block-body misconception">${escapeHtml(t.misconception)}</p>
+      ${t.misconception ? `<p class="block-body misconception">${escapeHtml(t.misconception)}</p>` : ''}
+      ${thinkVisual ? termVisualHtml(thinkVisual) : ''}
     </div>` : ''}
   `;
   document.getElementById('listenBtn').addEventListener('click', () => speakTerm(t));
   if (t.video) wireVideoPlayer();
+}
+
+function termVisualHtml(v) {
+  return `<figure class="term-visual">
+    <img src="${escapeHtml(v.src)}" alt="${escapeHtml(v.alt)}" loading="lazy" decoding="async"${v.width ? ` width="${v.width}" height="${v.height}"` : ''}>
+    <figcaption>${escapeHtml(v.credit)}</figcaption>
+  </figure>`;
 }
 
 // A picture that belongs to the worked example itself: the caption is the

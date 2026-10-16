@@ -767,6 +767,7 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
    stacked otherwise (flex-wrap does the switch, no breakpoint needed). */
 .term-media{display:flex;flex-wrap:wrap;gap:12px;margin:0 0 18px;align-items:flex-start;}
 .term-media .term-visual{margin:0;flex:1 1 150px;min-width:0;}
+#detail .block .term-visual{margin:12px 0 0;}
 .term-media.has-both .term-visual img{max-height:160px;}
 .tv-slot{flex:1 1 220px;min-width:0;max-width:380px;}
 .term-video{margin:0;border-radius:14px;overflow:hidden;background:#0b0b10;border:1px solid #000;box-shadow:var(--shadow-sm);}
@@ -3143,6 +3144,7 @@ header p{margin:0;font-size:12.5px;color:var(--text-dim);}
       "src": "assets/visuals/1-oa-how-many-more-wildwood-chart.webp",
       "alt": "A bar chart comparing Wildwood's 1,393 seats to Mark's Meadow's 682 seats, with the gap between them marked as the difference.",
       "credit": "Usable Math — Add & Take Away: How Many More, Slide 3 (Visual Vicuna)",
+      "placement": "think-about",
       "width": 538,
       "height": 320
     },
@@ -10851,6 +10853,10 @@ function renderDetail() {
   const t = termById(state.term);
   if (!t) return;
 
+  // A visual can ask to sit in "Think about" instead of beside the video.
+  const thinkVisual = t.visual && t.visual.placement === 'think-about' ? t.visual : null;
+  const topVisual = thinkVisual ? null : t.visual;
+
   detail.innerHTML = `
     <p class="breadcrumb">
       <span class="crumb-icon" aria-hidden="true">${domainIconSvg(t.domainCode, { size: 15 })}</span>
@@ -10878,11 +10884,8 @@ function renderDetail() {
       <p class="block-body">${escapeHtml(t.definition)}</p>
     </div>
 
-    ${(t.visual || t.video) ? `<div class="term-media${t.visual && t.video ? ' has-both' : ''}">
-      ${t.visual ? `<figure class="term-visual">
-        <img src="${escapeHtml(t.visual.src)}" alt="${escapeHtml(t.visual.alt)}" loading="lazy" decoding="async"${t.visual.width ? ` width="${t.visual.width}" height="${t.visual.height}"` : ''}>
-        <figcaption>${escapeHtml(t.visual.credit)}</figcaption>
-      </figure>` : ''}${t.video ? videoPlayerHtml(t.video) : ''}
+    ${(topVisual || t.video) ? `<div class="term-media${topVisual && t.video ? ' has-both' : ''}">
+      ${topVisual ? termVisualHtml(topVisual) : ''}${t.video ? videoPlayerHtml(t.video) : ''}
     </div>` : ''}
 
     <section class="story" aria-labelledby="storyHeading">
@@ -10894,13 +10897,21 @@ function renderDetail() {
       ${t.exampleVisual ? exampleVisualHtml(t.exampleVisual) : ''}
     </section>
 
-    ${t.misconception ? `<div class="block">
+    ${(t.misconception || thinkVisual) ? `<div class="block">
       <h3 class="block-label">Think about</h3>
-      <p class="block-body misconception">${escapeHtml(t.misconception)}</p>
+      ${t.misconception ? `<p class="block-body misconception">${escapeHtml(t.misconception)}</p>` : ''}
+      ${thinkVisual ? termVisualHtml(thinkVisual) : ''}
     </div>` : ''}
   `;
   document.getElementById('listenBtn').addEventListener('click', () => speakTerm(t));
   if (t.video) wireVideoPlayer();
+}
+
+function termVisualHtml(v) {
+  return `<figure class="term-visual">
+    <img src="${escapeHtml(v.src)}" alt="${escapeHtml(v.alt)}" loading="lazy" decoding="async"${v.width ? ` width="${v.width}" height="${v.height}"` : ''}>
+    <figcaption>${escapeHtml(v.credit)}</figcaption>
+  </figure>`;
 }
 
 // A picture that belongs to the worked example itself: the caption is the
