@@ -33,6 +33,13 @@ def ease(t):
     return smooth(t)
 
 
+def dots(count, color, center, step=0.62, radius=0.2):
+    """A centered horizontal row of `count` dots."""
+    row = VGroup(*[Dot(radius=radius, color=color) for _ in range(count)])
+    row.arrange(RIGHT, buff=step - 2 * radius)
+    return row.move_to(center)
+
+
 def _fmt(sec):
     return f"{int(sec // 60):02d}:{sec % 60:06.3f}"
 
