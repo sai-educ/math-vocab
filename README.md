@@ -467,5 +467,16 @@ Outcomes.
 
 **Software** — [Three.js](https://threejs.org) and [GSAP](https://gsap.com)
 for the 3D map, [cuelume](https://github.com/Danilaa1/cuelume) (MIT) for the
-sounds, and the [Inter](https://rsms.me/inter/) typeface (SIL Open Font
-Licence 1.1).
+interface sound feedback, and the [Inter](https://rsms.me/inter/) typeface
+(SIL Open Font Licence 1.1).
+
+**Explainer videos** — the short animated videos are made with
+[Manim Community](https://www.manim.community) (MIT), the mathematical
+animation engine created by Grant Sanderson (3Blue1Brown) and developed by the
+Manim community. Their soft sound cues (marimba, wood tock, bell) are
+synthesized with [NumPy](https://numpy.org) (`videos/sfx/make_sfx.py`), and the
+videos are encoded with [FFmpeg](https://ffmpeg.org). Source scenes are in
+`videos/`.
+
+**Text-to-speech** — the **Listen to an explanation** voice is powered by
+[Fish Audio](https://fish.audio). Thank you to the Fish Audio team.
