@@ -181,9 +181,29 @@
 
 ### number line
 
-**Definition:** A line with numbers spaced out in order.
+**Definition:** A number line is a straight line with numbers on it. The numbers are in order. You can use a number line to see where numbers are and how far apart they are.
 
 **Example:** Ivy starts at 8 on the number line and hops to 13. She counts 5 hops.
+
+**Standards:** US 2.MD
+
+### positive number
+
+**Definition:** A number greater than zero. It sits to the right of zero on a number line.
+
+**Example:** Leo has 3 marbles. He finds 2 more. The 3 and the 2 are positive numbers, and they sit to the right of zero.
+
+**Common misconception:** Positive numbers do not need a plus sign. The number 4 and the number +4 mean the same thing.
+
+**Standards:** US 2.MD
+
+### negative number
+
+**Definition:** A number less than zero. It sits to the left of zero on a number line and has a minus sign.
+
+**Example:** On a cold morning, Maya reads the thermometer. It says negative 3 degrees. That is 3 steps below zero.
+
+**Common misconception:** Negative 5 is not bigger than negative 2. On a number line, the number farther left is smaller.
 
 **Standards:** US 2.MD
 

@@ -39,9 +39,7 @@
     "visual": {
       "src": "assets/visuals/k-cc-number-five-eagles-outline.svg",
       "alt": "The number 5, outlined with a pattern of eagle silhouettes.",
-      "credit": "Wikimedia Commons — Steve70196 (CC0)",
-      "width": 240,
-      "height": 240
+      "credit": "Wikimedia Commons — Steve70196 (CC0)"
     },
     "video": null,
     "exampleVisual": null,
@@ -66,9 +64,7 @@
     "visual": {
       "src": "assets/visuals/k-cc-more-colorful-balls.webp",
       "alt": "An animated bowl overflowing with many colorful balls.",
-      "credit": "Usable Math — Add & Take Away: How Many More, Slide 5",
-      "width": 454,
-      "height": 363
+      "credit": "Usable Math — Add & Take Away: How Many More, Slide 5"
     },
     "video": null,
     "exampleVisual": null,
@@ -93,9 +89,7 @@
     "visual": {
       "src": "assets/visuals/k-cc-fewer-dog-ball.webp",
       "alt": "An animated dog with just one ball.",
-      "credit": "Usable Math — Add & Take Away: How Many More, Slide 5",
-      "width": 480,
-      "height": 480
+      "credit": "Usable Math — Add & Take Away: How Many More, Slide 5"
     },
     "video": null,
     "exampleVisual": null,
@@ -120,9 +114,7 @@
     "visual": {
       "src": "assets/visuals/k-cc-equal-spinner.webp",
       "alt": "Three circles each split into 8 equal wedges, showing 2/8, 1/4, and 1/2 shaded.",
-      "credit": "Usable Math — Fractions, Slide 11 (Visual Vicuna)",
-      "width": 500,
-      "height": 500
+      "credit": "Usable Math — Fractions, Slide 11 (Visual Vicuna)"
     },
     "video": {
       "src": "assets/videos/k-cc-equal.mp4",
@@ -151,7 +143,13 @@
     "example": "Nina rolls an 8. Theo rolls a 5. Nina's number is greater than Theo's, so she moves first.",
     "misconception": "",
     "visual": null,
-    "video": null,
+    "video": {
+      "src": "assets/videos/k-cc-greater-than.mp4",
+      "poster": "assets/videos/k-cc-greater-than.poster.jpg",
+      "captions": "assets/videos/k-cc-greater-than.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: a group of 7 dots is compared with a group of 4, the 3 extra dots are marked, and the greater-than sign opens toward the 7, so 7 is greater than 4."
+    },
     "exampleVisual": null,
     "speechJa": "「〜より大きい」とは、ある数がほかの数より大きいことです。ニーナはさいころで8、テオは5を出しました。8は5より大きいので、ニーナが先に進みます。"
   },
@@ -172,7 +170,13 @@
     "example": "Sam counts 2 birds on the wire. Maya counts 9. Sam's number is less than Maya's.",
     "misconception": "",
     "visual": null,
-    "video": null,
+    "video": {
+      "src": "assets/videos/k-cc-less-than.mp4",
+      "poster": "assets/videos/k-cc-less-than.poster.jpg",
+      "captions": "assets/videos/k-cc-less-than.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: Sam's 2 birds and Maya's 9 birds are shown as dots, the smaller group of 2 is circled, then 2 < 9 is written with the open side of the sign pointing at the bigger number, 9."
+    },
     "exampleVisual": null,
     "speechJa": "「〜より小さい」とは、ある数がほかの数より小さいことです。サムは電線に止まる鳥を2羽、マヤは9羽数えました。サムの数はマヤの数より小さいです。"
   },
@@ -216,9 +220,7 @@
     "visual": {
       "src": "assets/visuals/k-cc-zero-numeral.webp",
       "alt": "The numeral 0.",
-      "credit": "Usable Math — Algebraic Thinking, Slide 34 (\"The History of Zero\")",
-      "width": 336,
-      "height": 383
+      "credit": "Usable Math — Algebraic Thinking, Slide 34 (\"The History of Zero\")"
     },
     "video": null,
     "exampleVisual": null,
@@ -658,9 +660,7 @@
     "visual": {
       "src": "assets/visuals/1-oa-how-many-more-wildwood-chart.webp",
       "alt": "A bar chart comparing Wildwood's 1,393 seats to Mark's Meadow's 682 seats, with the gap between them marked as the difference.",
-      "credit": "Usable Math — Add & Take Away: How Many More, Slide 3 (Visual Vicuna)",
-      "width": 538,
-      "height": 320
+      "credit": "Usable Math — Add & Take Away: How Many More, Slide 3 (Visual Vicuna)"
     },
     "video": null,
     "exampleVisual": null,
@@ -958,9 +958,7 @@
     "visual": {
       "src": "assets/visuals/k-g-shape-basic-shape-names.webp",
       "alt": "Twelve basic shapes, each with its name: sphere, cylinder, cone, cube, pyramid, circle, triangle, square, rectangle, pentagon, hexagon, octagon, and oval.",
-      "credit": "Wikimedia Commons — Conrad 7 (CC0)",
-      "width": 1200,
-      "height": 960
+      "credit": "Wikimedia Commons — Conrad 7 (CC0)"
     },
     "video": null,
     "exampleVisual": null,
@@ -985,9 +983,7 @@
     "visual": {
       "src": "assets/visuals/k-g-circle-orange-disc.webp",
       "alt": "A solid orange circle.",
-      "credit": "Wikimedia Commons — Adapa (public domain)",
-      "width": 800,
-      "height": 560
+      "credit": "Wikimedia Commons — Adapa (public domain)"
     },
     "video": null,
     "exampleVisual": null,
@@ -1012,9 +1008,7 @@
     "visual": {
       "src": "assets/visuals/k-g-triangle-pascal-fractal.webp",
       "alt": "An animation of Pascal's triangle with odd numbers highlighted, forming a triangular fractal pattern.",
-      "credit": "Wikimedia Commons — Exxu (public domain)",
-      "width": 648,
-      "height": 562
+      "credit": "Wikimedia Commons — Exxu (public domain)"
     },
     "video": null,
     "exampleVisual": null,
@@ -1039,9 +1033,7 @@
     "visual": {
       "src": "assets/visuals/k-g-square-video-thumb.webp",
       "alt": "A green square, captioned \"It's a green square.\"",
-      "credit": "Usable Math — Geometry: Lines and Lines of Symmetry, Slide 7",
-      "width": 200,
-      "height": 114
+      "credit": "Usable Math — Geometry: Lines and Lines of Symmetry, Slide 7"
     },
     "video": null,
     "exampleVisual": null,
@@ -1066,9 +1058,7 @@
     "visual": {
       "src": "assets/visuals/k-g-rectangle-field.webp",
       "alt": "A rectangular soccer field, from a perimeter word problem.",
-      "credit": "Usable Math — Area and Perimeter, Slide 8",
-      "width": 880,
-      "height": 586
+      "credit": "Usable Math — Area and Perimeter, Slide 8"
     },
     "video": null,
     "exampleVisual": null,
@@ -1093,9 +1083,7 @@
     "visual": {
       "src": "assets/visuals/k-g-hexagon-compass-construction.webp",
       "alt": "An animation of a regular hexagon being constructed with a straightedge and compass.",
-      "credit": "Wikimedia Commons — Jacopo Bertolotti (CC0)",
-      "width": 480,
-      "height": 480
+      "credit": "Wikimedia Commons — Jacopo Bertolotti (CC0)"
     },
     "video": null,
     "exampleVisual": null,
@@ -1141,9 +1129,7 @@
     "visual": {
       "src": "assets/visuals/k-g-sphere-basketball-spin.webp",
       "alt": "A sailor balancing a spinning basketball on one finger.",
-      "credit": "Wikimedia Commons — U.S. Navy photo by MC1 Brian Brannon (public domain)",
-      "width": 800,
-      "height": 553
+      "credit": "Wikimedia Commons — U.S. Navy photo by MC1 Brian Brannon (public domain)"
     },
     "video": null,
     "exampleVisual": null,
@@ -1344,9 +1330,7 @@
     "visual": {
       "src": "assets/visuals/1-oa-how-many-more-wildwood-chart.webp",
       "alt": "A bar chart comparing Wildwood's 1,393 seats to Mark's Meadow's 682 seats, with the gap between them marked as the difference.",
-      "credit": "Usable Math — Add & Take Away: How Many More, Slide 5 (Hint 4, Visual Vicuna)",
-      "width": 538,
-      "height": 320
+      "credit": "Usable Math — Add & Take Away: How Many More, Slide 5 (Hint 4, Visual Vicuna)"
     },
     "video": null,
     "exampleVisual": null,
@@ -1411,7 +1395,13 @@
     "example": "Theo uses 3, 4, and 7. His fact family is 3 + 4 = 7, 4 + 3 = 7, 7 - 3 = 4, and 7 - 4 = 3.",
     "misconception": "",
     "visual": null,
-    "video": null,
+    "video": {
+      "src": "assets/videos/1-oa-fact-family.mp4",
+      "poster": "assets/videos/1-oa-fact-family.poster.jpg",
+      "captions": "assets/videos/1-oa-fact-family.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: the numbers 3, 4 and 7 sit in a triangle, then four facts appear one by one (3 + 4 = 7, 4 + 3 = 7, 7 - 3 = 4, 7 - 4 = 3) and are boxed together as a fact family."
+    },
     "exampleVisual": null,
     "speechJa": "「関係する式のまとまり」とは、同じ3つの数から作れる式の組のことです。テオは3、4、7を使います。3+4=7、4+3=7、7-3=4、7-4=3という式のまとまりができます。"
   },
@@ -1432,7 +1422,13 @@
     "example": "Nina has 4 red beads and 4 blue beads. That is a double. She knows 4 + 4 = 8 right away.",
     "misconception": "",
     "visual": null,
-    "video": null,
+    "video": {
+      "src": "assets/videos/1-oa-doubles.mp4",
+      "poster": "assets/videos/1-oa-doubles.poster.jpg",
+      "captions": "assets/videos/1-oa-doubles.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: a group of 4 pink dots is copied across a dashed mirror line as a matching group of 4 blue dots, the word 'double' appears, then 4 + 4 = 8 is written."
+    },
     "exampleVisual": null,
     "speechJa": "「ぞろ数のたし算」とは、同じ数どうしをたすことです。ニーナは赤いビーズを4こ、青いビーズを4こ持っています。これはぞろ数のたし算です。4+4=8とすぐにわかります。"
   },
@@ -1477,9 +1473,7 @@
       "src": "assets/visuals/1-oa-how-many-more-wildwood-chart.webp",
       "alt": "A bar chart comparing Wildwood's 1,393 seats to Mark's Meadow's 682 seats, with the gap between them marked as the difference.",
       "credit": "Usable Math — Add & Take Away: How Many More, Slide 3 (Visual Vicuna)",
-      "placement": "think-about",
-      "width": 538,
-      "height": 320
+      "placement": "think-about"
     },
     "video": {
       "src": "assets/videos/1-oa-how-many-more.mp4",
@@ -1510,9 +1504,7 @@
     "visual": {
       "src": "assets/visuals/1-oa-total-dog-treats.webp",
       "alt": "Rows of dog bone treats, from a word problem about a daily total.",
-      "credit": "Usable Math — Multiplication and Division, Slide 5",
-      "width": 880,
-      "height": 880
+      "credit": "Usable Math — Multiplication and Division, Slide 5"
     },
     "video": null,
     "exampleVisual": null,
@@ -1537,9 +1529,7 @@
     "visual": {
       "src": "assets/visuals/1-oa-subtraction-column-example.webp",
       "alt": "576 minus 44 worked out in a column: 6 minus 4 is 2, 7 minus 4 is 3, 5 minus 0 is 5, for a difference of 532.",
-      "credit": "Averater, Wikimedia Commons — CC0 / public domain",
-      "width": 360,
-      "height": 480
+      "credit": "Averater, Wikimedia Commons — CC0 / public domain"
     },
     "video": {
       "src": "assets/videos/1-oa-subtraction.mp4",
@@ -1570,9 +1560,7 @@
     "visual": {
       "src": "assets/visuals/1-nbt-place-value-abacus-14987.webp",
       "alt": "An animated place-value abacus for 14,987: colored beads count out into ten-thousands, thousands, hundreds, tens, and ones columns as How-to-Hound paints alongside.",
-      "credit": "Usable Math — Place Value, Slide 5 (Hint 4, How-to-Hound)",
-      "width": 550,
-      "height": 550
+      "credit": "Usable Math — Place Value, Slide 5 (Hint 4, How-to-Hound)"
     },
     "video": {
       "src": "assets/videos/2-nbt-place-value.mp4",
@@ -1601,7 +1589,13 @@
     "example": "Ben bundles his straws into groups of ten. He makes 3 bundles. That is 3 tens, or 30.",
     "misconception": "",
     "visual": null,
-    "video": null,
+    "video": {
+      "src": "assets/videos/1-nbt-tens.mp4",
+      "poster": "assets/videos/1-nbt-tens.poster.jpg",
+      "captions": "assets/videos/1-nbt-tens.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: ten dots slide together into one ten-bar labeled '1 ten = 10', two more bars appear to make 3 tens, and 10 + 10 + 10 = 30 shows that 3 tens is 30."
+    },
     "exampleVisual": null,
     "speechJa": "「十の位」とは、10のまとまりのことです。ベンはストローを10本ずつたばねます。3たば作ると、それは10が3こ分、つまり30です。"
   },
@@ -1712,7 +1706,13 @@
     "example": "Omar has 6 marbles and gets 3 more. He counts on from 6: 7, 8, 9. He has 9.",
     "misconception": "Do not start over at 1. Begin at the number you already have.",
     "visual": null,
-    "video": null,
+    "video": {
+      "src": "assets/videos/1-nbt-count-on.mp4",
+      "poster": "assets/videos/1-nbt-count-on.poster.jpg",
+      "captions": "assets/videos/1-nbt-count-on.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: six dots and a number line starting at 6; three more dots appear, and a marker hops from 6 to 7, 8, then 9 without recounting from 1, ending on 9."
+    },
     "exampleVisual": null,
     "speechJa": "「数えたす」とは、ある数から始めて、そのまま数え進めることです。オマールはビー玉を6こ持っていて、3こもらいました。6から数えたすと、7、8、9で、全部で9こになります。"
   },
@@ -1756,9 +1756,7 @@
     "visual": {
       "src": "assets/visuals/1-md-measure-drilling-wood.webp",
       "alt": "A gloved hand driving a screw into a wooden plank being measured for a build.",
-      "credit": "Usable Math — Measurement, Slide 21 (Hint 3, How-to-Hound)",
-      "width": 250,
-      "height": 211
+      "credit": "Usable Math — Measurement, Slide 21 (Hint 3, How-to-Hound)"
     },
     "video": null,
     "exampleVisual": null,
@@ -1804,9 +1802,7 @@
     "visual": {
       "src": "assets/visuals/1-md-hour-clock-animation.webp",
       "alt": "An animated analog clock face with the hour and minute hands sweeping through a full hour.",
-      "credit": "Wikimedia Commons — Jahobr (CC0)",
-      "width": 900,
-      "height": 900
+      "credit": "Wikimedia Commons — Jahobr (CC0)"
     },
     "video": null,
     "exampleVisual": null,
@@ -1874,10 +1870,15 @@
       "src": "assets/visuals/1-md-tally-chart-numbers-to-ten.png",
       "alt": "A table pairing the numbers 1 through 10 with their matching tally marks.",
       "credit": "Usable Math — Charts and Graphs, Slide 21",
-      "width": 282,
-      "height": 162
+      "placement": "think-about"
     },
-    "video": null,
+    "video": {
+      "src": "assets/videos/1-md-tally-chart.mp4",
+      "poster": "assets/videos/1-md-tally-chart.poster.jpg",
+      "captions": "assets/videos/1-md-tally-chart.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: a tally chart of bus riders, four marks crossed by a fifth make a group of 5, then 3 more marks, and 5 + 3 = 8."
+    },
     "exampleVisual": null,
     "speechJa": "「正の字の表」とは、小さな印で数を数える表のことです。テオはバスの乗客を数える表を作りました。1人ごとに印を1本引き、5本目は前の4本を横に線で結びます。"
   },
@@ -1900,9 +1901,7 @@
     "visual": {
       "src": "assets/visuals/1-md-graph-pictures-symbols.webp",
       "alt": "A dashboard illustration with bar, line, and gauge charts.",
-      "credit": "Usable Math — Charts and Graphs, Slide 5",
-      "width": 640,
-      "height": 480
+      "credit": "Usable Math — Charts and Graphs, Slide 5"
     },
     "video": null,
     "exampleVisual": null,
@@ -2013,7 +2012,13 @@
     "example": "Leo cuts an apple into halves. Each piece is one of two equal parts.",
     "misconception": "",
     "visual": null,
-    "video": null,
+    "video": {
+      "src": "assets/videos/1-g-halves.mp4",
+      "poster": "assets/videos/1-g-halves.poster.jpg",
+      "captions": "assets/videos/1-g-halves.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: a circle is cut into 2 equal parts and one part is shaded, showing 1 half."
+    },
     "exampleVisual": null,
     "speechJa": "「2等分」とは、1つの全体を2つの同じ大きさに分けることです。レオはりんごを2等分に切ります。それぞれが2つの同じ部分のうちの1つです。"
   },
@@ -2036,9 +2041,7 @@
     "visual": {
       "src": "assets/visuals/1-g-half-two-of-four-circle.svg",
       "alt": "A circle cut into 4 equal parts with 2 of them shaded, so exactly half is shaded.",
-      "credit": "Wikimedia Commons — Kuartas (public domain)",
-      "width": 400,
-      "height": 400
+      "credit": "Wikimedia Commons — Kuartas (public domain)"
     },
     "video": null,
     "exampleVisual": null,
@@ -2061,7 +2064,13 @@
     "example": "Ana cuts a pizza into fourths. She and 3 friends each take one part.",
     "misconception": "",
     "visual": null,
-    "video": null,
+    "video": {
+      "src": "assets/videos/1-g-fourths.mp4",
+      "poster": "assets/videos/1-g-fourths.poster.jpg",
+      "captions": "assets/videos/1-g-fourths.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: a circle is cut into 4 equal parts, the parts are counted, and one part is shaded, showing 1 fourth."
+    },
     "exampleVisual": null,
     "speechJa": "「4等分」とは、1つの全体を4つの同じ大きさに分けることです。アナはピザを4等分にします。彼女と友達3人が、それぞれ1つずつ取ります。"
   },
@@ -2108,9 +2117,7 @@
       "src": "assets/visuals/3-g-attribute-attribute-blocks.webp",
       "alt": "Rows of flat blocks in 3 colors (red, yellow, blue), 5 shapes, 2 sizes, and 2 thicknesses.",
       "caption": "Color, Size, Shape, and Thickness are the attributes of the blocks in the picture.",
-      "credit": "Wikimedia Commons — GameForthAndLearn (CC0)",
-      "width": 1400,
-      "height": 817
+      "credit": "Wikimedia Commons — GameForthAndLearn (CC0)"
     },
     "speechJa": "「特徴」とは、形について気づくことができる、辺や角のようなもののことです。アイビーは三角形を見ます。2つの特徴、3つの辺と3つの角を挙げます。"
   },
@@ -2154,9 +2161,7 @@
     "visual": {
       "src": "assets/visuals/1-g-3d-shape-cube-model.webp",
       "alt": "A 3D cube seen from the corner, showing its top and two side faces.",
-      "credit": "Wikimedia Commons — Obijuan.cube (public domain), rendered from a 3D model",
-      "width": 960,
-      "height": 720
+      "credit": "Wikimedia Commons — Obijuan.cube (public domain), rendered from a 3D model"
     },
     "video": null,
     "exampleVisual": null,
@@ -2185,9 +2190,7 @@
     "visual": {
       "src": "assets/visuals/1-g-vertex-dots.webp",
       "alt": "A cube's 8 corners marked as colored dots.",
-      "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 3 (Visual Vicuna)",
-      "width": 120,
-      "height": 123
+      "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 3 (Visual Vicuna)"
     },
     "video": null,
     "exampleVisual": null,
@@ -2252,7 +2255,13 @@
     "example": "Nina sets out 4 plates and puts 3 grapes on each. She adds 3 + 3 + 3 + 3 and gets 12 grapes.",
     "misconception": "",
     "visual": null,
-    "video": null,
+    "video": {
+      "src": "assets/videos/2-oa-repeated-addition.mp4",
+      "poster": "assets/videos/2-oa-repeated-addition.poster.jpg",
+      "captions": "assets/videos/2-oa-repeated-addition.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: four plates each get 3 grapes one at a time, and adding 3 plus 3 plus 3 plus 3 equals 12."
+    },
     "exampleVisual": null,
     "speechJa": "「くり返しのたし算」とは、同じ数を何度もたすことです。ニーナはお皿を4まい並べ、それぞれにぶどうを3こずつのせます。3+3+3+3をたすと、ぶどうは12こになります。"
   },
@@ -2275,9 +2284,7 @@
     "visual": {
       "src": "assets/visuals/2-oa-addition-science-buckets-chalkboard.webp",
       "alt": "A chalkboard showing 70 written five times, stacked above a plus sign and a question mark, captioned \"Add the numbers.\"",
-      "credit": "Usable Math — Multiplication and Division, Slide 2 (Hint 2, Chef Math Bear)",
-      "width": 218,
-      "height": 307
+      "credit": "Usable Math — Multiplication and Division, Slide 2 (Hint 2, Chef Math Bear)"
     },
     "video": {
       "src": "assets/videos/2-oa-addition.mp4",
@@ -2306,7 +2313,13 @@
     "example": "Omar lines up his stickers in 3 rows of 5. That is an array. He counts 15 stickers.",
     "misconception": "Every row must hold the same amount. A ragged grid is not an array.",
     "visual": null,
-    "video": null,
+    "video": {
+      "src": "assets/videos/2-oa-array.mp4",
+      "poster": "assets/videos/2-oa-array.poster.jpg",
+      "captions": "assets/videos/2-oa-array.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: 12 dots are set out in 3 equal rows of 4, with braces marking 3 rows and 4 columns, and the array shows 3 times 4 equals 12."
+    },
     "exampleVisual": null,
     "speechJa": "「配列」とは、同じ数ずつ、たての列と横の列にきれいに並べたもののことです。オマールはシールを3行5列に並べました。これが配列です。15まいと数えられます。"
   },
@@ -2327,7 +2340,13 @@
     "example": "Maya pairs up her 8 socks. She makes 4 pairs with nothing left over, so 8 is even.",
     "misconception": "",
     "visual": null,
-    "video": null,
+    "video": {
+      "src": "assets/videos/2-oa-even-number.mp4",
+      "poster": "assets/videos/2-oa-even-number.poster.jpg",
+      "captions": "assets/videos/2-oa-even-number.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: six dots split into two matching columns of 3 with each dot paired across and none left over, so 6 is even, then 8 dots split into two columns of 4 the same way."
+    },
     "exampleVisual": null,
     "speechJa": "「偶数」とは、2つの同じグループに分けて、あまりが出ない数のことです。マヤは靴下8足をペアにします。あまりなく4組できるので、8は偶数です。"
   },
@@ -2348,7 +2367,13 @@
     "example": "Leo tries to pair up 7 crackers. He makes 3 pairs and 1 is left alone, so 7 is odd.",
     "misconception": "",
     "visual": null,
-    "video": null,
+    "video": {
+      "src": "assets/videos/2-oa-odd-number.mp4",
+      "poster": "assets/videos/2-oa-odd-number.poster.jpg",
+      "captions": "assets/videos/2-oa-odd-number.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: seven dots split into two matching columns of 3 and one dot is left over by itself, circled in yellow, so 7 is odd."
+    },
     "exampleVisual": null,
     "speechJa": "「奇数」とは、2つに分けると1つあまる数のことです。レオはクラッカー7まいをペアにしようとします。3組できて1まいあまるので、7は奇数です。"
   },
@@ -2432,7 +2457,13 @@
     "example": "Zoe counts 342 pennies. She stacks them and finds 3 hundreds, 4 tens, and 2 ones.",
     "misconception": "",
     "visual": null,
-    "video": null,
+    "video": {
+      "src": "assets/videos/2-nbt-hundreds.mp4",
+      "poster": "assets/videos/2-nbt-hundreds.poster.jpg",
+      "captions": "assets/videos/2-nbt-hundreds.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: ten blue tens rods slide together into one green hundred square labeled 1 hundred, then three hundred squares appear side by side, each labeled 100, with 3 hundreds = 300."
+    },
     "exampleVisual": null,
     "speechJa": "「百の位」とは、100のまとまりのことです。ゾーイは1円玉を342こ数えます。積み重ねると、100が3こ、10が4こ、1が2こになります。"
   },
@@ -2456,10 +2487,15 @@
       "src": "assets/visuals/2-nbt-expanded-form-quadrant-breakdown.webp",
       "alt": "An animation revealing four ways to write 52,068: 5+2+0+6+8, 50,000+200+60+8, 52 thousands 6 tens 8 ones, and five thousand two hundred sixty-eight.",
       "credit": "Usable Math — Place Value, Slide 3 (Hint 2)",
-      "width": 543,
-      "height": 410
+      "placement": "think-about"
     },
-    "video": null,
+    "video": {
+      "src": "assets/videos/2-nbt-expanded-form.mp4",
+      "poster": "assets/videos/2-nbt-expanded-form.poster.jpg",
+      "captions": "assets/videos/2-nbt-expanded-form.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: the number 346 splits into its digits in the hundreds, tens and ones places, each shown with its value and a small picture, joined by plus signs into 300 + 40 + 6, called expanded form."
+    },
     "exampleVisual": null,
     "speechJa": "「展開形」とは、それぞれの位の値をたし算の形で書いた数のことです。テオは254を展開形で200+50+4と書きます。"
   },
@@ -2510,10 +2546,15 @@
       "src": "assets/visuals/2-nbt-regroup-addition-carry.webp",
       "alt": "525 plus 67 worked out in a column: a small carried 1 sits above the tens place, giving a sum of 592.",
       "credit": "Averater, Wikimedia Commons — CC0 / public domain",
-      "width": 340,
-      "height": 460
+      "placement": "think-about"
     },
-    "video": null,
+    "video": {
+      "src": "assets/videos/2-nbt-regroup.mp4",
+      "poster": "assets/videos/2-nbt-regroup.poster.jpg",
+      "captions": "assets/videos/2-nbt-regroup.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: 14 ones squares are sorted into a group of 10 and a group of 4, the group of 10 is traded for one tens rod, leaving 1 ten and 4 ones, so 14 = 1 ten + 4 ones."
+    },
     "exampleVisual": null,
     "speechJa": "「くり上げる」とは、あるまとまりの10こを、1つ上の位の1こに交換することです。オマールは27+15を計算します。一の位は12になります。10こを1つの十にくり上げて、42と書きます。"
   },
@@ -2534,7 +2575,13 @@
     "example": "Maya compares 431 and 419. The hundreds match, so she checks the tens. 3 beats 1, so 431 is bigger.",
     "misconception": "More digits usually means bigger, but only when you start from the biggest place. Compare left to right.",
     "visual": null,
-    "video": null,
+    "video": {
+      "src": "assets/videos/2-nbt-compare-numbers.mp4",
+      "poster": "assets/videos/2-nbt-compare-numbers.poster.jpg",
+      "captions": "assets/videos/2-nbt-compare-numbers.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: 342 and 328 are lined up in hundreds, tens and ones columns; the hundreds match, so a box moves to the tens where 4 is greater than 2, and the result 342 > 328 appears."
+    },
     "exampleVisual": null,
     "speechJa": "「数を比べる」とは、位ごとに調べてどちらが大きいか決めることです。マヤは431と419を比べます。百の位は同じなので十の位を見ます。3は1より大きいので、431のほうが大きいです。"
   },
@@ -2641,9 +2688,7 @@
     "visual": {
       "src": "assets/visuals/2-md-centimeter-ruler.webp",
       "alt": "A tape measure next to small tools.",
-      "credit": "Usable Math — Measurement, Slide 8",
-      "width": 513,
-      "height": 340
+      "credit": "Usable Math — Measurement, Slide 8"
     },
     "video": null,
     "exampleVisual": null,
@@ -2668,9 +2713,7 @@
     "visual": {
       "src": "assets/visuals/2-md-meter-track.webp",
       "alt": "Runners racing on a track, a distance measured in meters.",
-      "credit": "Usable Math — Measurement, Slide 8",
-      "width": 320,
-      "height": 214
+      "credit": "Usable Math — Measurement, Slide 8"
     },
     "video": null,
     "exampleVisual": null,
@@ -2710,19 +2753,88 @@
         "code": "2.MD"
       }
     ],
-    "definition": "A line with numbers spaced out in order.",
+    "definition": "A number line is a straight line with numbers on it. The numbers are in order. You can use a number line to see where numbers are and how far apart they are.",
     "example": "Ivy starts at 8 on the number line and hops to 13. She counts 5 hops.",
     "misconception": "",
     "visual": {
-      "src": "assets/visuals/2-md-number-line-points.webp",
-      "alt": "A number line from 0 to 1 with four labeled points.",
-      "credit": "Usable Math — Algebraic Thinking, Slide 39",
-      "width": 818,
-      "height": 133
+      "src": "assets/visuals/2-md-number-line-zero-to-five.svg",
+      "alt": "A number line from 0 to 5 with the numbers in order and evenly spaced.",
+      "credit": "Math Word Explorer",
+      "placement": "think-about"
     },
-    "video": null,
+    "video": {
+      "src": "assets/videos/2-md-number-line.mp4",
+      "poster": "assets/videos/2-md-number-line.poster.jpg",
+      "captions": "assets/videos/2-md-number-line.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: a number line from 0 to 5 appears with evenly spaced numbers in order, colored bars show each gap is the same size, then Ivy hops along a line from 8 to 13 in 5 counted hops."
+    },
     "exampleVisual": null,
     "speechJa": "「数直線」とは、数を順番に間をあけて並べた線のことです。アイビーは数直線の8から出発して13までジャンプします。5回ジャンプしたことになります。"
+  },
+  {
+    "id": "2-md-positive-number",
+    "term": "positive number",
+    "grade": "2",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "2.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.MD"
+      }
+    ],
+    "definition": "A number greater than zero. It sits to the right of zero on a number line.",
+    "example": "Leo has 3 marbles. He finds 2 more. The 3 and the 2 are positive numbers, and they sit to the right of zero.",
+    "misconception": "Positive numbers do not need a plus sign. The number 4 and the number +4 mean the same thing.",
+    "visual": {
+      "src": "assets/visuals/2-md-number-line-negative-positive.svg",
+      "alt": "A number line from negative 5 to 5. Positive numbers are to the right of 0.",
+      "credit": "Math Word Explorer",
+      "placement": "think-about"
+    },
+    "video": {
+      "src": "assets/videos/2-md-positive-number.mp4",
+      "poster": "assets/videos/2-md-positive-number.poster.jpg",
+      "captions": "assets/videos/2-md-positive-number.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: on a number line from negative 5 to 5, zero lights up and the numbers to its right turn green and are named positive, then the 3 and the 2 are marked with 3 > 0 and 2 > 0."
+    },
+    "exampleVisual": null,
+    "speechJa": null
+  },
+  {
+    "id": "2-md-negative-number",
+    "term": "negative number",
+    "grade": "2",
+    "domainCode": "MD",
+    "domain": "Measurement & Data",
+    "standard": "2.MD",
+    "standards": [
+      {
+        "country": "US",
+        "code": "2.MD"
+      }
+    ],
+    "definition": "A number less than zero. It sits to the left of zero on a number line and has a minus sign.",
+    "example": "On a cold morning, Maya reads the thermometer. It says negative 3 degrees. That is 3 steps below zero.",
+    "misconception": "Negative 5 is not bigger than negative 2. On a number line, the number farther left is smaller.",
+    "visual": {
+      "src": "assets/visuals/2-md-number-line-negative-positive.svg",
+      "alt": "A number line from negative 5 to 5. Negative numbers are to the left of 0.",
+      "credit": "Math Word Explorer",
+      "placement": "think-about"
+    },
+    "video": {
+      "src": "assets/videos/2-md-negative-number.mp4",
+      "poster": "assets/videos/2-md-negative-number.poster.jpg",
+      "captions": "assets/videos/2-md-negative-number.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: on a number line from negative 5 to 5, the numbers to the left of zero turn pink and show a minus sign, then a thermometer's liquid drops 3 steps below zero to read negative 3."
+    },
+    "exampleVisual": null,
+    "speechJa": null
   },
   {
     "id": "2-md-bar-graph",
@@ -2744,10 +2856,15 @@
       "src": "assets/visuals/2-md-bar-graph-colorful.webp",
       "alt": "A bar graph with four colored bars of different heights.",
       "credit": "Usable Math — Charts and Graphs, Slide 3",
-      "width": 681,
-      "height": 489
+      "placement": "think-about"
     },
-    "video": null,
+    "video": {
+      "src": "assets/videos/2-md-bar-graph.mp4",
+      "poster": "assets/videos/2-md-bar-graph.poster.jpg",
+      "captions": "assets/videos/2-md-bar-graph.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: a bar graph of favorite fruits, bars for apple 7, banana 4, grape 5 and pear 3 grow up, and the tallest bar, apple, is highlighted as the winner."
+    },
     "exampleVisual": null,
     "speechJa": "「棒グラフ」とは、棒の高さで量を表すグラフのことです。ゾーイは好きな果物の棒グラフを作ります。りんごの棒が一番高いので、りんごが1位です。"
   },
@@ -2789,7 +2906,13 @@
     "example": "Nina measures 10 leaves and marks an X above each length. Most of the X's stack above 4 centimeters.",
     "misconception": "",
     "visual": null,
-    "video": null,
+    "video": {
+      "src": "assets/videos/2-md-line-plot.mp4",
+      "poster": "assets/videos/2-md-line-plot.poster.jpg",
+      "captions": "assets/videos/2-md-line-plot.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: a line plot of 10 leaf lengths, X marks appear one at a time above a number line from 1 to 7 centimeters, and the tallest stack, 4 centimeters, is outlined as the most common."
+    },
     "exampleVisual": null,
     "speechJa": "「ドットプロット」とは、数直線の上に印を積み重ねていくグラフのことです。ニーナは葉っぱを10まい測り、それぞれの長さの上にバツ印をつけます。バツ印の多くは4センチメートルの上に集まっています。"
   },
@@ -2812,9 +2935,7 @@
     "visual": {
       "src": "assets/visuals/2-md-dollar-cents-comic-prices.webp",
       "alt": "Three comic books priced at $1.00, $2.00, and $2.25.",
-      "credit": "Usable Math — Money, Slide 18",
-      "width": 880,
-      "height": 396
+      "credit": "Usable Math — Money, Slide 18"
     },
     "video": null,
     "exampleVisual": null,
@@ -2860,9 +2981,7 @@
     "visual": {
       "src": "assets/visuals/2-md-dollar-cents-comic-prices.webp",
       "alt": "Three comic books priced at $1.00, $2.00, and $2.25.",
-      "credit": "Usable Math — Money, Slide 18",
-      "width": 880,
-      "height": 396
+      "credit": "Usable Math — Money, Slide 18"
     },
     "video": null,
     "exampleVisual": null,
@@ -2887,9 +3006,7 @@
     "visual": {
       "src": "assets/visuals/2-md-money-cash-coins.webp",
       "alt": "An illustration of stacked cash and coins.",
-      "credit": "Usable Math — Money, Slide 5",
-      "width": 640,
-      "height": 480
+      "credit": "Usable Math — Money, Slide 5"
     },
     "video": null,
     "exampleVisual": null,
@@ -2914,9 +3031,7 @@
     "visual": {
       "src": "assets/visuals/2-md-price-toy-store.webp",
       "alt": "Toy figures on a store shelf, from the toy-store price problem.",
-      "credit": "Usable Math — Money, Slide 16",
-      "width": 480,
-      "height": 480
+      "credit": "Usable Math — Money, Slide 16"
     },
     "video": null,
     "exampleVisual": null,
@@ -3113,9 +3228,7 @@
     "visual": {
       "src": "assets/visuals/3-oa-multiply-scaling-number-line.webp",
       "alt": "An animated number line showing a segment from 0 to 1 stretching to match a segment from 0 to 2, illustrating multiplication as scaling.",
-      "credit": "Lucas Vieira (LucasVB), Wikimedia Commons — public domain",
-      "width": 400,
-      "height": 200
+      "credit": "Lucas Vieira (LucasVB), Wikimedia Commons — public domain"
     },
     "video": null,
     "exampleVisual": null,
@@ -3182,9 +3295,7 @@
     "visual": {
       "src": "assets/visuals/3-oa-division-cupcakes.webp",
       "alt": "An animation dividing 52 cupcakes into 8 boxes, with some left over.",
-      "credit": "Usable Math — Multiplication and Division, Slide 19 (Visual Vicuna)",
-      "width": 496,
-      "height": 600
+      "credit": "Usable Math — Multiplication and Division, Slide 19 (Visual Vicuna)"
     },
     "video": null,
     "exampleVisual": null,
@@ -3230,9 +3341,7 @@
     "visual": {
       "src": "assets/visuals/3-oa-division-cupcakes.webp",
       "alt": "An animation dividing 52 cupcakes into 8 boxes, with some left over.",
-      "credit": "Usable Math — Multiplication and Division, Slide 19 (Visual Vicuna)",
-      "width": 496,
-      "height": 600
+      "credit": "Usable Math — Multiplication and Division, Slide 19 (Visual Vicuna)"
     },
     "video": {
       "src": "assets/videos/3-oa-division.mp4",
@@ -3263,9 +3372,7 @@
     "visual": {
       "src": "assets/visuals/4-oa-equation-corn-blueberry-muffins.webp",
       "alt": "Chef Math Bear's strategy: multiply to find the cost of 8 corn muffins at $2 each, multiply to find the cost of 7 blueberry muffins at $3 each, then add the two costs.",
-      "credit": "Usable Math — Algebraic Thinking, Slide 16 (Hint 2, Chef Math Bear)",
-      "width": 488,
-      "height": 488
+      "credit": "Usable Math — Algebraic Thinking, Slide 16 (Hint 2, Chef Math Bear)"
     },
     "video": {
       "src": "assets/videos/3-oa-multiplication.mp4",
@@ -3315,7 +3422,13 @@
     "example": "Ana draws 4 rows of 6 dots. Her array shows 4 × 6 = 24.",
     "misconception": "",
     "visual": null,
-    "video": null,
+    "video": {
+      "src": "assets/videos/3-oa-array.mp4",
+      "poster": "assets/videos/3-oa-array.poster.jpg",
+      "captions": "assets/videos/3-oa-array.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: 12 dots are set out in 3 equal rows of 4, with braces marking 3 rows and 4 columns, and the array shows 3 times 4 equals 12."
+    },
     "exampleVisual": null,
     "speechJa": "「配列」とは、同じ数ずつを行と列にきれいに並べたもののことです。かけ算の式を表します。アナは点を4行6列にかきます。この配列は4×6=24を表しています。"
   },
@@ -3487,7 +3600,13 @@
     "example": "Zoe rounds 47 to the nearest ten. On the number line 47 sits closer to 50 than to 40, so she rounds up.",
     "misconception": "Look at where the number really sits. Do not just chop the last digit off.",
     "visual": null,
-    "video": null,
+    "video": {
+      "src": "assets/videos/3-nbt-round.mp4",
+      "poster": "assets/videos/3-nbt-round.poster.jpg",
+      "captions": "assets/videos/3-nbt-round.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: on a number line from 40 to 50 with 45 marked as halfway, a dot at 47 sits near 50, arrows show it is 3 away from 50 and 7 away from 40, and the dot slides to 50: 47 rounds to 50."
+    },
     "exampleVisual": null,
     "speechJa": "「がい数にする」とは、数を近くのわかりやすい数に変えることです。ゾーイは47を一番近い十の位のがい数にします。数直線では47は40より50に近いので、切り上げます。"
   },
@@ -3510,9 +3629,7 @@
     "visual": {
       "src": "assets/visuals/3-nbt-rounding-pencils.webp",
       "alt": "Rows of colored pencils, from a rounding word problem about packs of pencils.",
-      "credit": "Usable Math — Estimation, Slide 5",
-      "width": 880,
-      "height": 596
+      "credit": "Usable Math — Estimation, Slide 5"
     },
     "video": null,
     "exampleVisual": null,
@@ -3564,9 +3681,7 @@
     "visual": {
       "src": "assets/visuals/3-nf-fraction-cake-slices.webp",
       "alt": "A chocolate cake marked with lines dividing it into 8 equal slices.",
-      "credit": "Usable Math — Fractions, Slide 5",
-      "width": 553,
-      "height": 508
+      "credit": "Usable Math — Fractions, Slide 5"
     },
     "video": {
       "src": "assets/videos/3-nf-fraction.mp4",
@@ -3658,7 +3773,13 @@
     "example": "Ana eats 1/2 of a pizza. Ben eats 2/4 of a pizza the same size. They both ate the same amount.",
     "misconception": "",
     "visual": null,
-    "video": null,
+    "video": {
+      "src": "assets/videos/3-nf-equivalent-fractions.mp4",
+      "poster": "assets/videos/3-nf-equivalent-fractions.poster.jpg",
+      "captions": "assets/videos/3-nf-equivalent-fractions.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: three stacked bars show 1/2, 2/4 and 4/8 with the same length shaded, marked by a dashed line, so the fractions are equal."
+    },
     "exampleVisual": null,
     "speechJa": "「等しい分数」とは、書き方は違っても同じ量を表す分数のことです。アナはピザの1/2を食べます。ベンは同じ大きさのピザの2/4を食べます。2人は同じ量を食べたことになります。"
   },
@@ -3745,10 +3866,15 @@
       "src": "assets/visuals/3-md-area-grid.webp",
       "alt": "A 10-by-10 grid of squares, for counting area.",
       "credit": "Usable Math — Area and Perimeter, Slide 6",
-      "width": 512,
-      "height": 512
+      "placement": "think-about"
     },
-    "video": null,
+    "video": {
+      "src": "assets/videos/3-md-area.mp4",
+      "poster": "assets/videos/3-md-area.poster.jpg",
+      "captions": "assets/videos/3-md-area.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: a 4 by 3 rectangle fills with numbered unit squares, one by one, until 12 squares cover it, so the area is 12 square units."
+    },
     "exampleVisual": null,
     "speechJa": "「面積」とは、ある形がおおう平らな場所の広さのことです。ニーナはテーブルの上を正方形のタイルでしきつめます。24まい数えたので、面積は24平方単位です。"
   },
@@ -3769,7 +3895,13 @@
     "example": "Omar walks around a square garden. Each side takes 5 steps, so the perimeter is 20 steps.",
     "misconception": "",
     "visual": null,
-    "video": null,
+    "video": {
+      "src": "assets/videos/3-md-perimeter.mp4",
+      "poster": "assets/videos/3-md-perimeter.poster.jpg",
+      "captions": "assets/videos/3-md-perimeter.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: a dot walks all the way around a 4 by 3 rectangle, and the side lengths 4, 3, 4 and 3 are added to make a perimeter of 14 units."
+    },
     "exampleVisual": null,
     "speechJa": "「周りの長さ」とは、ある形のまわりをぐるっと1周した長さのことです。オマールは正方形の庭のまわりを歩きます。1辺が5歩なので、周りの長さは20歩です。"
   },
@@ -3901,9 +4033,7 @@
     "visual": {
       "src": "assets/visuals/3-md-kilogram-scale.webp",
       "alt": "A bathroom scale, for measuring weight in kilograms.",
-      "credit": "Usable Math — Measurement, Slide 8",
-      "width": 231,
-      "height": 228
+      "credit": "Usable Math — Measurement, Slide 8"
     },
     "video": null,
     "exampleVisual": null,
@@ -3928,9 +4058,7 @@
     "visual": {
       "src": "assets/visuals/3-md-yard-chef-bear-strategy.webp",
       "alt": "Chef Math Bear's strategy: 3 feet equal 1 yard, so 5 yards is 3 + 3 + 3 + 3 + 3 feet.",
-      "credit": "Usable Math — Measurement, Slide 12 (Hint 2, Chef Math Bear)",
-      "width": 232,
-      "height": 229
+      "credit": "Usable Math — Measurement, Slide 12 (Hint 2, Chef Math Bear)"
     },
     "video": null,
     "exampleVisual": null,
@@ -4042,9 +4170,7 @@
       "src": "assets/visuals/3-g-attribute-attribute-blocks.webp",
       "alt": "Rows of flat blocks in 3 colors (red, yellow, blue), 5 shapes, 2 sizes, and 2 thicknesses.",
       "caption": "Color, Size, Shape, and Thickness are the attributes of the blocks in the picture.",
-      "credit": "Wikimedia Commons — GameForthAndLearn (CC0)",
-      "width": 1400,
-      "height": 817
+      "credit": "Wikimedia Commons — GameForthAndLearn (CC0)"
     },
     "speechJa": "「特徴」とは、形について名前をつけられる特ちょうのことです。ニーナは長方形を見ます。2つの特徴を挙げます。4つの角が正方形の角で、向かい合う辺の長さが同じです。"
   },
@@ -4184,9 +4310,7 @@
     "visual": {
       "src": "assets/visuals/4-oa-prime-number-seven.webp",
       "alt": "The number 7 painted in yellow on pavement — a prime number.",
-      "credit": "Usable Math — Algebraic Thinking, Slide 32 (Hint 2)",
-      "width": 600,
-      "height": 450
+      "credit": "Usable Math — Algebraic Thinking, Slide 32 (Hint 2)"
     },
     "video": null,
     "exampleVisual": null,
@@ -4251,7 +4375,13 @@
     "example": "Ivy shares 17 stickers with 5 friends. Each one gets 3, and the remainder is 2.",
     "misconception": "",
     "visual": null,
-    "video": null,
+    "video": {
+      "src": "assets/videos/4-oa-remainder.mp4",
+      "poster": "assets/videos/4-oa-remainder.poster.jpg",
+      "captions": "assets/videos/4-oa-remainder.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: 13 dots are dealt one at a time into 4 groups of 3, 1 dot is left over, and 13 ÷ 4 = 3 R 1."
+    },
     "exampleVisual": null,
     "speechJa": "「あまり」とは、わり算をした後に残る量のことです。アイビーはシール17まいを友達5人と分けます。1人3まいずつになり、あまりは2まいです。"
   },
@@ -4274,9 +4404,7 @@
     "visual": {
       "src": "assets/visuals/4-oa-left-over-strawberries.webp",
       "alt": "An animation dividing 47 strawberries into 5 baskets, with 2 left over.",
-      "credit": "Usable Math — Multiplication and Division, Slide 11 (Visual Vicuna)",
-      "width": 514,
-      "height": 570
+      "credit": "Usable Math — Multiplication and Division, Slide 11 (Visual Vicuna)"
     },
     "video": null,
     "exampleVisual": null,
@@ -4322,9 +4450,7 @@
     "visual": {
       "src": "assets/visuals/4-oa-equation-corn-blueberry-muffins.webp",
       "alt": "Chef Math Bear's strategy: multiply to find the cost of 8 corn muffins at $2 each, multiply to find the cost of 7 blueberry muffins at $3 each, then add the two costs.",
-      "credit": "Usable Math — Algebraic Thinking, Slide 16 (Hint 2, Chef Math Bear)",
-      "width": 488,
-      "height": 488
+      "credit": "Usable Math — Algebraic Thinking, Slide 16 (Hint 2, Chef Math Bear)"
     },
     "video": null,
     "exampleVisual": null,
@@ -4464,9 +4590,7 @@
     "visual": {
       "src": "assets/visuals/4-nbt-hindu-arabic-numbers-character.webp",
       "alt": "A child surrounded by the playful digits 0 through 9.",
-      "credit": "Usable Math — Algebraic Thinking, Slide 33",
-      "width": 408,
-      "height": 277
+      "credit": "Usable Math — Algebraic Thinking, Slide 33"
     },
     "video": null,
     "exampleVisual": null,
@@ -4510,7 +4634,13 @@
     "example": "Ana pours 2 full glasses of juice and half of a third. She has 2 1/2 glasses.",
     "misconception": "",
     "visual": null,
-    "video": null,
+    "video": {
+      "src": "assets/videos/4-nf-mixed-number.mp4",
+      "poster": "assets/videos/4-nf-mixed-number.poster.jpg",
+      "captions": "assets/videos/4-nf-mixed-number.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: a mixed number, one full bar and a second bar with 3 of 4 parts shaded come together as 1 and 3/4."
+    },
     "exampleVisual": null,
     "speechJa": "「帯分数」とは、整数と分数を合わせた数のことです。アナはジュースをコップいっぱいに2はい、そして3はい目の半分を注ぎます。2と1/2はいです。"
   },
@@ -4554,9 +4684,7 @@
     "visual": {
       "src": "assets/visuals/4-nf-proper-fraction-tulips.webp",
       "alt": "An animated tally of 7 boxes filling in with tulip icons, one at a time.",
-      "credit": "Usable Math — Fractions, Slide 17 (Visual Vicuna)",
-      "width": 500,
-      "height": 500
+      "credit": "Usable Math — Fractions, Slide 17 (Visual Vicuna)"
     },
     "video": null,
     "exampleVisual": null,
@@ -4600,7 +4728,13 @@
     "example": "Zoe reads a price tag: $2.75. The dot separates the whole dollars from the cents.",
     "misconception": "",
     "visual": null,
-    "video": null,
+    "video": {
+      "src": "assets/videos/4-nf-decimal.mp4",
+      "poster": "assets/videos/4-nf-decimal.poster.jpg",
+      "captions": "assets/videos/4-nf-decimal.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: a bar cut into 10 equal parts has 3 parts shaded, which is written as 0.3, and the dot separates the wholes from the tenths."
+    },
     "exampleVisual": null,
     "speechJa": "「小数」とは、点を使って1より小さい部分を表す数のことです。ゾーイは値札を読みます。2.75ドル。この点が、整数のドルとセントを区切っています。"
   },
@@ -4684,7 +4818,13 @@
     "example": "Maya opens a pair of scissors. The space between the blades forms an angle.",
     "misconception": "Longer arms do not make a bigger angle. Only the spread between them counts.",
     "visual": null,
-    "video": null,
+    "video": {
+      "src": "assets/videos/4-md-angle.mp4",
+      "poster": "assets/videos/4-md-angle.poster.jpg",
+      "captions": "assets/videos/4-md-angle.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: two rays meet at a point called the vertex, the opening between them is shaded and labeled angle, and the opening smoothly widens and then narrows."
+    },
     "exampleVisual": null,
     "speechJa": "「角」とは、2本の半直線が出会ってできる、かどの形のことです。マヤははさみを開きます。2枚の刃の間の空間が角を作っています。"
   },
@@ -4750,10 +4890,15 @@
       "src": "assets/visuals/4-md-perimeter-field.webp",
       "alt": "An aerial view of a stadium track and field, its running track forming the perimeter.",
       "credit": "Usable Math — Area and Perimeter, Slide 8",
-      "width": 277,
-      "height": 240
+      "placement": "think-about"
     },
-    "video": null,
+    "video": {
+      "src": "assets/videos/4-md-perimeter.mp4",
+      "poster": "assets/videos/4-md-perimeter.poster.jpg",
+      "captions": "assets/videos/4-md-perimeter.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: a dot walks all the way around a 4 by 3 rectangle, and the side lengths 4, 3, 4 and 3 are added to make a perimeter of 14 units."
+    },
     "exampleVisual": null,
     "speechJa": "「周りの長さ」とは、ある形の外側をぐるっと1周した長さの合計のことです。ベンはたて8フィート、横3フィートの庭にさくを立てます。8+3+8+3をたすと、22フィート分のさくが必要です。"
   },
@@ -4864,9 +5009,7 @@
     "visual": {
       "src": "assets/visuals/4-md-kilometer-definition-globe.svg",
       "alt": "A globe with a red arrow running from the North Pole down through Paris to the Equator, labeled 10000 km.",
-      "credit": "Wikimedia Commons — US Government, adapted by Martinvl (public domain)",
-      "width": 596,
-      "height": 599
+      "credit": "Wikimedia Commons — US Government, adapted by Martinvl (public domain)"
     },
     "video": null,
     "exampleVisual": null,
@@ -4954,9 +5097,7 @@
     "visual": {
       "src": "assets/visuals/4-g-acute-angle-compare.webp",
       "alt": "An acute angle drawn next to a right angle for comparison.",
-      "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 11",
-      "width": 320,
-      "height": 159
+      "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 11"
     },
     "video": null,
     "exampleVisual": null,
@@ -5044,9 +5185,7 @@
     "visual": {
       "src": "assets/visuals/4-g-isosceles-triangle-icecream.webp",
       "alt": "A tall ice cream cone, its two slanted sides the same length.",
-      "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 13",
-      "width": 640,
-      "height": 427
+      "credit": "Usable Math — Geometry: Figures, Shapes and Angles, Slide 13"
     },
     "video": null,
     "exampleVisual": null,
@@ -5071,9 +5210,7 @@
     "visual": {
       "src": "assets/visuals/4-g-parallel-lines-chairs.webp",
       "alt": "Two striped beach chairs, their stripes running parallel.",
-      "credit": "Usable Math — Geometry: Lines and Lines of Symmetry, Slide 5",
-      "width": 880,
-      "height": 606
+      "credit": "Usable Math — Geometry: Lines and Lines of Symmetry, Slide 5"
     },
     "video": null,
     "exampleVisual": null,
@@ -5098,9 +5235,7 @@
     "visual": {
       "src": "assets/visuals/4-g-perpendicular-lines-cross.webp",
       "alt": "Two lines crossing at a right angle.",
-      "credit": "Usable Math — Geometry: Lines and Lines of Symmetry, Slide 3",
-      "width": 488,
-      "height": 341
+      "credit": "Usable Math — Geometry: Lines and Lines of Symmetry, Slide 3"
     },
     "video": null,
     "exampleVisual": null,
@@ -5676,7 +5811,13 @@
     "example": "Maya runs 3 whole laps and half of another. She ran 3 1/2 laps.",
     "misconception": "",
     "visual": null,
-    "video": null,
+    "video": {
+      "src": "assets/videos/5-nf-mixed-number.mp4",
+      "poster": "assets/videos/5-nf-mixed-number.poster.jpg",
+      "captions": "assets/videos/5-nf-mixed-number.vtt",
+      "aspect": 1.0,
+      "label": "Short animation: a mixed number, one full bar and a second bar with 3 of 4 parts shaded come together as 1 and 3/4."
+    },
     "exampleVisual": null,
     "speechJa": "「帯分数」とは、整数と分数を合わせた数のことです。マヤはトラックを3周と、もう1周の半分を走ります。3と1/2周走ったことになります。"
   },
@@ -5978,9 +6119,7 @@
     "visual": {
       "src": "assets/visuals/5-g-ordered-pair-axes.webp",
       "alt": "A blank coordinate grid with labeled x and y axes.",
-      "credit": "Usable Math — Geometry: Maps + Grids + Ordered Pairs, Slide 11 (Visual Vicuna)",
-      "width": 623,
-      "height": 609
+      "credit": "Usable Math — Geometry: Maps + Grids + Ordered Pairs, Slide 11 (Visual Vicuna)"
     },
     "video": null,
     "exampleVisual": null,

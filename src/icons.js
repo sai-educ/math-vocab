@@ -174,7 +174,7 @@ const TERM_ICON_NAMES = {
   'hundreds': 'hundred', 'expanded form': 'expand', 'regroup': 'regroup',
   'compare numbers': 'balance',
   'centimeter': 'ruler', 'meter': 'ruler', 'estimate': 'estimate',
-  'number line': 'numberLine', 'bar graph': 'barChart',
+  'number line': 'numberLine', 'positive number': 'numberLine', 'negative number': 'numberLine', 'bar graph': 'barChart',
   'picture graph': 'pictureGraph', 'line plot': 'linePlot',
   'dollar': 'dollar', 'quarter (coin)': 'coin',
   'quadrilateral': 'quadrilateral', 'pentagon': 'pentagon',

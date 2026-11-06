@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="170" viewBox="0 0 520 170" role="img" aria-labelledby="t d"><title id="t">A number line from 0 to 5</title><desc id="d">A straight line with the numbers 0, 1, 2, 3, 4 and 5 in order from left to right. The numbers are evenly spaced.</desc>
+<rect width="520" height="170" rx="14" fill="#fffdf7"/>
+<line x1="26" y1="95" x2="494" y2="95" stroke="#2b3a55" stroke-width="5" stroke-linecap="round"/>
+<path d="M500 95 l-12 -9 v18 z" fill="#2b3a55"/>
+<line x1="50.0" y1="81" x2="50.0" y2="109" stroke="#2b3a55" stroke-width="4"/>
+<text x="50.0" y="143" text-anchor="middle" font-family="Arial,sans-serif" font-size="26" font-weight="700" fill="#2b3a55">0</text>
+<line x1="134.0" y1="81" x2="134.0" y2="109" stroke="#1d6fb8" stroke-width="4"/>
+<text x="134.0" y="143" text-anchor="middle" font-family="Arial,sans-serif" font-size="26" font-weight="700" fill="#1d6fb8">1</text>
+<line x1="218.0" y1="81" x2="218.0" y2="109" stroke="#1d6fb8" stroke-width="4"/>
+<text x="218.0" y="143" text-anchor="middle" font-family="Arial,sans-serif" font-size="26" font-weight="700" fill="#1d6fb8">2</text>
+<line x1="302.0" y1="81" x2="302.0" y2="109" stroke="#1d6fb8" stroke-width="4"/>
+<text x="302.0" y="143" text-anchor="middle" font-family="Arial,sans-serif" font-size="26" font-weight="700" fill="#1d6fb8">3</text>
+<line x1="386.0" y1="81" x2="386.0" y2="109" stroke="#1d6fb8" stroke-width="4"/>
+<text x="386.0" y="143" text-anchor="middle" font-family="Arial,sans-serif" font-size="26" font-weight="700" fill="#1d6fb8">4</text>
+<line x1="470.0" y1="81" x2="470.0" y2="109" stroke="#1d6fb8" stroke-width="4"/>
+<text x="470.0" y="143" text-anchor="middle" font-family="Arial,sans-serif" font-size="26" font-weight="700" fill="#1d6fb8">5</text>
+<circle cx="50.0" cy="95" r="9" fill="#f59e0b" stroke="#2b3a55" stroke-width="3"/>
+<circle cx="470.0" cy="95" r="9" fill="#f59e0b" stroke="#2b3a55" stroke-width="3"/>
+</svg>
